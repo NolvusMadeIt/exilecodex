@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
+import { Button, ButtonGroup } from '@mui/material'
 import { useDropdownPortal } from '../lib/useDropdownPortal.js'
 import { Upload, Save, Clipboard, RotateCcw, ChevronDown, Star, FileDown, FilePlus2, Cloud, Code2, Check } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
@@ -168,83 +169,75 @@ export function ActionBar() {
     : 'Overwrite imported file'
 
   return (
-    <div className="sticky bottom-0 z-30 border-t border-poe-line bg-poe-bg/95 backdrop-blur">
-      <div className="app-shell py-2 flex items-center gap-2">
-        {/* Import split */}
-        <div className="relative" ref={importMenuRef}>
-          <div className="flex">
-            <button className="btn-dark rounded-r-none" onClick={() => fileRef.current?.click()}>
-              <Upload size={14} /> Import
-            </button>
-            <button className="btn-dark rounded-l-none border-l-0 px-1.5" onClick={() => setImportMenu(o => !o)} aria-label="Import options">
-              <ChevronDown size={12} className="opacity-70" />
-            </button>
-          </div>
-          <input ref={fileRef} type="file" accept=".filter,.json,text/plain" className="hidden" onChange={onImport} />
-          <PortalMenu open={importMenu} onClose={() => setImportMenu(false)} anchorRef={importMenuRef}>
-            <MenuItem onClick={() => { setImportMenu(false); fileRef.current?.click() }} icon={Upload} label="Import .filter / .json" sub="Browse and load a file" />
-            <MenuItem
-              onClick={openWithHandle}
-              disabled={!HAS_FS_ACCESS}
-              icon={FileDown}
-              label="Open for editing (link to file)"
-              sub={HAS_FS_ACCESS ? 'Keeps a link so you can overwrite later (Chromium only)' : 'Not supported in this browser'}
-            />
-          </PortalMenu>
-        </div>
-        <span className="text-[10px] text-poe-text/70 hidden md:inline">.filter (NeverSink / Filterblade OK)</span>
-
-        {/* Save split-button */}
-        <div className="flex-1 flex justify-center">
-          <div className="relative" ref={saveMenuRef}>
-            <div className="flex">
-              <button className="btn-action rounded-r-none min-w-[150px]" onClick={saveToNewFile}>
-                <Save size={14} /> Save to new file
-              </button>
-              <button className="btn-action rounded-l-none border-l border-black/20 px-1.5" onClick={() => setSaveMenu(o => !o)} aria-label="Save options">
-                <ChevronDown size={12} />
-              </button>
-            </div>
-            <PortalMenu open={saveMenu} onClose={() => setSaveMenu(false)} anchorRef={saveMenuRef} align="right">
-              <MenuItem onClick={saveToNewFile} icon={FilePlus2} label="Save to new file"
-                sub="Download a fresh .filter (bumps version)" />
-              <MenuItem onClick={overwriteImported} icon={FileDown} disabled={!hasSource}
-                label={overwriteLabel}
-                sub={!hasSource
-                  ? 'Available after you import a filter'
-                  : (handleRef.current
-                      ? 'Writes directly back to the same file (Chromium)'
-                      : 'Re-downloads using the original filename')} />
-              <MenuItem onClick={saveSettingsJson} icon={Code2}
-                label="Save settings as .json"
-                sub="Editor state backup (re-importable here)" />
-              <MenuItem onClick={() => {}} disabled icon={Cloud}
-                label="Save to PoE2 account"
-                sub="Coming soon — needs pathofexile.com login" />
-            </PortalMenu>
-          </div>
-          <button className="btn-dark min-w-[150px] ml-2" onClick={copy}>
-            <Clipboard size={14} /> {copied ? 'Copied!' : 'Copy to Clipboard'}
-          </button>
-        </div>
-
-        <button className="btn-dark" onClick={() => navigate('/presets')}><Star size={14} /> Presets</button>
-        <button
-          className="btn-dark"
-          onClick={async () => {
-            const ok = await toast.confirm(
-              `Reset "${active.name}" to defaults?\nThis clears your Quick Filters, Custom Rules and Cosmetic edits.`,
-              { title: 'Reset filter', confirmLabel: 'Reset', cancelLabel: 'Keep' }
-            )
-            if (ok) {
-              resetActive()
-              toast.info(`"${active.name}" reset to defaults.`)
-            }
-          }}
-        >
-          <RotateCcw size={14} /> Reset
-        </button>
+    <div className="flex items-center gap-2">
+      {/* Import split */}
+      <div className="relative" ref={importMenuRef}>
+        <ButtonGroup variant="outlined" size="small" aria-label="Import">
+          <Button startIcon={<Upload size={14} />} onClick={() => fileRef.current?.click()}>Import</Button>
+          <Button onClick={() => setImportMenu(o => !o)} aria-label="Import options" sx={{ px: 0.75, minWidth: 0 }}>
+            <ChevronDown size={12} />
+          </Button>
+        </ButtonGroup>
+        <input ref={fileRef} type="file" accept=".filter,.json,text/plain" className="hidden" onChange={onImport} />
+        <PortalMenu open={importMenu} onClose={() => setImportMenu(false)} anchorRef={importMenuRef}>
+          <MenuItem onClick={() => { setImportMenu(false); fileRef.current?.click() }} icon={Upload} label="Import .filter / .json" sub="Browse and load a file" />
+          <MenuItem
+            onClick={openWithHandle}
+            disabled={!HAS_FS_ACCESS}
+            icon={FileDown}
+            label="Open for editing (link to file)"
+            sub={HAS_FS_ACCESS ? 'Keeps a link so you can overwrite later (Chromium only)' : 'Not supported in this browser'}
+          />
+        </PortalMenu>
       </div>
+
+      {/* Save split-button */}
+      <div className="relative" ref={saveMenuRef}>
+        <ButtonGroup variant="contained" color="primary" size="small" aria-label="Save">
+          <Button startIcon={<Save size={14} />} onClick={saveToNewFile} sx={{ minWidth: 130 }}>Save to new file</Button>
+          <Button onClick={() => setSaveMenu(o => !o)} aria-label="Save options" sx={{ px: 0.75, minWidth: 0 }}>
+            <ChevronDown size={12} />
+          </Button>
+        </ButtonGroup>
+        <PortalMenu open={saveMenu} onClose={() => setSaveMenu(false)} anchorRef={saveMenuRef} align="right">
+          <MenuItem onClick={saveToNewFile} icon={FilePlus2} label="Save to new file"
+            sub="Download a fresh .filter (bumps version)" />
+          <MenuItem onClick={overwriteImported} icon={FileDown} disabled={!hasSource}
+            label={overwriteLabel}
+            sub={!hasSource
+              ? 'Available after you import a filter'
+              : (handleRef.current
+                  ? 'Writes directly back to the same file (Chromium)'
+                  : 'Re-downloads using the original filename')} />
+          <MenuItem onClick={saveSettingsJson} icon={Code2}
+            label="Save settings as .json"
+            sub="Editor state backup (re-importable here)" />
+          <MenuItem onClick={() => {}} disabled icon={Cloud}
+            label="Save to PoE2 account"
+            sub="Coming soon — needs pathofexile.com login" />
+        </PortalMenu>
+      </div>
+
+      <Button variant="outlined" size="small" startIcon={<Clipboard size={14} />} onClick={copy}>
+        {copied ? 'Copied!' : 'Copy'}
+      </Button>
+      <Button
+        variant="outlined"
+        size="small"
+        startIcon={<RotateCcw size={14} />}
+        onClick={async () => {
+          const ok = await toast.confirm(
+            `Reset "${active.name}" to defaults?\nThis clears your Quick Filters, Custom Rules and Cosmetic edits.`,
+            { title: 'Reset filter', confirmLabel: 'Reset', cancelLabel: 'Keep' }
+          )
+          if (ok) {
+            resetActive()
+            toast.info(`"${active.name}" reset to defaults.`)
+          }
+        }}
+      >
+        Reset
+      </Button>
     </div>
   )
 }
@@ -258,7 +251,7 @@ function PortalMenu({ open, onClose, anchorRef, align = 'left', children }) {
     minWidth: 260,
     maxHeight: 400,
     align,
-    preferUp: true,
+    preferUp: false,
   })
 
   if (!open || !menuStyle) return null

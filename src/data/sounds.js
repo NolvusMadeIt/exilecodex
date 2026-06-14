@@ -1,7 +1,7 @@
 // Drop-sound options + preview.
 //
 // PoE2's 16 built-in alert sounds are referenced in filters as `PlayAlertSound <id> <vol>`.
-// We preview the REAL game audio: the actual sound files (extracted by poe2filter) are stored
+// We preview the REAL game audio: the actual PoE2 alert sound files are stored
 // locally at /public/sounds/sound1.mp3 .. sound16.mp3. If a file ever fails to load we fall
 // back to a synthesised tone so the button still does something. Custom sounds
 // (`CustomAlertSound "file" <vol>`) preview the user's own uploaded file.

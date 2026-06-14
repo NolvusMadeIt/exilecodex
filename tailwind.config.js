@@ -20,6 +20,7 @@ export default {
           steel: 'rgb(var(--c-accent) / <alpha-value>)',
           'steel-light': 'rgb(var(--c-accent-light) / <alpha-value>)',
           danger: 'rgb(var(--c-danger) / <alpha-value>)',
+          accent2: 'rgb(var(--c-accent2) / <alpha-value>)',
         },
         // PoE in-game rarity / item label colors (for previews + dropdowns)
         rarity: {
@@ -43,14 +44,30 @@ export default {
         },
       },
       fontFamily: {
+        // Fontin kept ONLY for the in-game item-label preview (ItemLabel uses font-smallcaps).
         smallcaps: ['FontinSmallCaps', 'Verdana', 'sans-serif'],
         fontin: ['FontinRegular', 'Verdana', 'sans-serif'],
-        body: ['Verdana', 'Arial', 'Helvetica', 'sans-serif'],
+        // App UI fonts — Ember Forge identity.
+        display: ['Sora Variable', 'Sora', 'system-ui', 'sans-serif'],
+        body: ['Inter Variable', 'Inter', 'system-ui', 'Arial', 'sans-serif'],
         mono: ['Consolas', 'ui-monospace', 'monospace'],
       },
       boxShadow: {
-        panel: '0 8px 28px -14px rgba(0,0,0,0.9), inset 0 1px 0 0 rgba(255,255,255,0.025)',
-        glow: '0 0 0 1px rgb(var(--c-accent) / 0.45), 0 0 18px -5px rgb(var(--c-accent) / 0.5)',
+        panel: '0 10px 30px -18px rgba(0,0,0,0.85), inset 0 1px 0 0 rgba(255,255,255,0.025)',
+        glow: '0 0 0 1px rgb(var(--c-accent) / 0.4), 0 0 22px -6px rgb(var(--c-accent) / 0.55)',
+      },
+      // Sharp, angular PoE2-native paneling — overrides Tailwind's soft default radii so the
+      // whole app sharpens at once (rounded-full kept for dots/avatars).
+      borderRadius: {
+        none: '0',
+        sm: '2px',
+        DEFAULT: '3px',
+        md: '3px',
+        lg: '4px',
+        xl: '5px',
+        '2xl': '6px',
+        '3xl': '8px',
+        full: '9999px',
       },
     },
   },

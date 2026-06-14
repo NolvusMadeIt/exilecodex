@@ -1,4 +1,6 @@
-/* Real Path of Exile fonts (downloaded from poe2filter.com → public/font/) */
+/* Sora (display/headings) + Inter (body) are imported in main.jsx via @fontsource-variable
+   (bundled locally → works offline in the desktop app). The Fontin faces below are kept
+   ONLY for the in-game item-label preview (ItemLabel.jsx), which should look like the game. */
 @font-face { font-family: 'FontinSmallCaps'; src: url('/font/fontin-smallcaps-webfont.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
 @font-face { font-family: 'FontinRegular'; src: url('/font/fontin-regular-webfont.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
 @font-face { font-family: 'FontinItalic'; src: url('/font/fontin-italic-webfont.woff') format('woff'); font-weight: normal; font-style: italic; font-display: swap; }
@@ -8,54 +10,59 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Themes — RGB triplets (no rgb() wrapper) so Tailwind utilities w/ opacity work. */
+/* Themes — "Ember Forge" identity. RGB triplets (no rgb() wrapper) so Tailwind utilities
+   + MUI overrides can apply opacity. Default = ember (coral). The other two share the same
+   modern structure (Sora type, soft panels) with a complementary accent. */
 :root, [data-theme="ember"] {
   color-scheme: dark;
-  --c-bg: 10 10 12;
-  --c-panel: 20 19 24;
-  --c-panel-light: 28 27 33;
-  --c-line: 44 42 50;
-  --c-text: 183 177 168;
-  --c-text-bright: 236 230 220;
-  --c-heading: 244 239 232;
-  --c-accent: 255 111 92;          /* ember/coral */
-  --c-accent-light: 255 140 121;
-  --c-accent-dim: 196 80 61;
-  --c-danger: 184 70 63;
-  --bg-glow-1: rgba(255,111,92,0.05);
-  --bg-glow-2: rgba(255,255,255,0.015);
+  --c-bg: 15 14 13;
+  --c-panel: 26 23 20;
+  --c-panel-light: 34 29 24;
+  --c-line: 52 45 38;
+  --c-text: 199 190 180;
+  --c-text-bright: 236 229 219;
+  --c-heading: 246 241 234;
+  --c-accent: 255 107 74;          /* molten coral */
+  --c-accent-light: 255 138 107;
+  --c-accent-dim: 200 78 52;
+  --c-accent2: 244 163 60;         /* amber (secondary / gradient end) */
+  --c-danger: 224 92 84;
+  --bg-glow-1: rgba(255,107,74,0.06);
+  --bg-glow-2: rgba(244,163,60,0.03);
 }
 [data-theme="abyss"] {
   color-scheme: dark;
-  --c-bg: 8 11 16;
-  --c-panel: 16 21 30;
-  --c-panel-light: 22 28 40;
-  --c-line: 38 46 60;
-  --c-text: 168 184 200;
-  --c-text-bright: 216 226 240;
-  --c-heading: 236 244 252;
-  --c-accent: 92 175 230;          /* abyssal cyan */
-  --c-accent-light: 138 198 240;
-  --c-accent-dim: 56 128 184;
-  --c-danger: 200 76 76;
-  --bg-glow-1: rgba(92,175,230,0.07);
-  --bg-glow-2: rgba(255,255,255,0.02);
+  --c-bg: 12 16 18;
+  --c-panel: 20 26 29;
+  --c-panel-light: 27 35 39;
+  --c-line: 40 52 57;
+  --c-text: 176 190 195;
+  --c-text-bright: 220 232 236;
+  --c-heading: 238 247 250;
+  --c-accent: 56 200 176;          /* teal */
+  --c-accent-light: 110 222 202;
+  --c-accent-dim: 36 150 132;
+  --c-accent2: 79 182 224;         /* cyan */
+  --c-danger: 224 92 84;
+  --bg-glow-1: rgba(56,200,176,0.06);
+  --bg-glow-2: rgba(79,182,224,0.03);
 }
 [data-theme="arcane"] {
   color-scheme: dark;
-  --c-bg: 12 9 18;
-  --c-panel: 22 18 32;
-  --c-panel-light: 30 24 42;
-  --c-line: 50 40 70;
-  --c-text: 184 168 210;
-  --c-text-bright: 230 218 248;
-  --c-heading: 244 236 255;
-  --c-accent: 178 124 240;         /* arcane violet */
+  --c-bg: 16 13 22;
+  --c-panel: 26 22 34;
+  --c-panel-light: 34 28 46;
+  --c-line: 50 41 68;
+  --c-text: 191 182 208;
+  --c-text-bright: 230 222 246;
+  --c-heading: 244 238 255;
+  --c-accent: 178 124 240;         /* violet */
   --c-accent-light: 204 158 250;
   --c-accent-dim: 132 84 188;
-  --c-danger: 200 76 76;
+  --c-accent2: 224 137 200;        /* orchid pink */
+  --c-danger: 224 92 84;
   --bg-glow-1: rgba(178,124,240,0.07);
-  --bg-glow-2: rgba(255,255,255,0.015);
+  --bg-glow-2: rgba(224,137,200,0.03);
 }
 
 html, body, #root { min-height: 100%; }
@@ -63,58 +70,68 @@ html, body, #root { min-height: 100%; }
 body {
   @apply bg-poe-bg text-poe-text font-body antialiased;
   background-image:
-    radial-gradient(1200px 700px at 50% -10%, var(--bg-glow-1), transparent 60%),
-    radial-gradient(900px 600px at 50% 110%, var(--bg-glow-2), transparent 60%);
+    radial-gradient(1100px 640px at 50% -12%, var(--bg-glow-1), transparent 62%),
+    radial-gradient(820px 540px at 88% 8%, var(--bg-glow-2), transparent 60%);
   background-repeat: no-repeat;
+  background-attachment: scroll;
 }
 
-* { scrollbar-width: thin; scrollbar-color: #2a2f37 transparent; }
-::-webkit-scrollbar { width: 9px; height: 9px; }
-::-webkit-scrollbar-thumb { background: #2a2f37; border-radius: 6px; }
-::-webkit-scrollbar-thumb:hover { background: #3a4150; }
+* { scrollbar-width: thin; scrollbar-color: rgb(var(--c-line)) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgb(var(--c-line)); border-radius: 8px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--c-accent) / 0.5); background-clip: content-box; }
 
 @layer components {
   /* Shared page container — wide but capped so it's never too wide or too skinny. */
   .app-shell { @apply mx-auto w-full px-4; max-width: 1680px; }
 
-  /* Smallcaps heading, the iconic PoE look */
-  .heading { font-family: 'FontinSmallCaps', Verdana, sans-serif; color: var(--poe-heading); letter-spacing: .02em; }
-  .gold-heading { font-family: 'FontinSmallCaps', Verdana, sans-serif; color: var(--poe-gold); letter-spacing: .03em; }
+  /* Headings now use Sora (modern), not the medieval smallcaps. */
+  .heading { font-family: 'Sora Variable', Sora, system-ui, sans-serif; color: rgb(var(--c-heading)); font-weight: 600; letter-spacing: -0.01em; }
+  .gold-heading { font-family: 'Sora Variable', Sora, system-ui, sans-serif; color: rgb(var(--c-accent)); font-weight: 600; letter-spacing: -0.01em; }
 
-  /* Accent-tinted section divider bars used across Quick Filters / Cosmetic */
+  /* Section label + trailing hairline (replaces the fantasy gradient bar). */
   .section-bar {
-    @apply relative text-center py-1.5 my-2;
-    font-family: 'FontinSmallCaps', Verdana, sans-serif;
-    color: rgb(var(--c-accent));
-    letter-spacing: .04em;
-    background: linear-gradient(90deg, transparent 0%, rgb(var(--c-accent) / 0) 8%, rgb(var(--c-accent) / 0.16) 50%, rgb(var(--c-accent) / 0) 92%, transparent 100%);
-    border-top: 1px solid rgb(var(--c-accent) / 0.18);
-    border-bottom: 1px solid rgb(var(--c-accent) / 0.18);
+    @apply relative flex items-center gap-3 py-1.5 my-2 text-[12.5px];
+    font-family: 'Sora Variable', Sora, system-ui, sans-serif;
+    color: rgb(var(--c-accent)); font-weight: 600; letter-spacing: 0.02em;
+  }
+  .section-bar::after {
+    content: ''; @apply flex-1 h-px;
+    background: linear-gradient(90deg, rgb(var(--c-accent) / 0.4), rgb(var(--c-line) / 0.6) 40%, transparent);
   }
 
-  .panel { @apply rounded border border-poe-line bg-poe-panel/85 backdrop-blur-sm; }
+  .panel {
+    @apply rounded-xl border border-poe-line;
+    background: rgb(var(--c-panel) / 0.92);
+    box-shadow: 0 10px 30px -18px rgba(0,0,0,0.85), inset 0 1px 0 0 rgba(255,255,255,0.025);
+  }
 
   /* Buttons */
-  .btn { @apply inline-flex items-center justify-center gap-1.5 px-3 h-8 rounded text-[13px] font-medium transition-colors select-none cursor-pointer whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed; }
-  .btn-action { @apply btn bg-poe-gold text-[#1a0d0a] font-semibold border border-poe-steel-light/50 hover:bg-poe-steel-light; } /* accent Save/primary */
-  .btn-dark { @apply btn bg-poe-panel text-poe-text-bright border border-poe-line hover:border-poe-gold-dim/60 hover:text-poe-heading; }
-  .btn-ghost { @apply btn text-poe-text hover:text-poe-heading hover:bg-white/5; }
+  .btn { @apply inline-flex items-center justify-center gap-1.5 px-3.5 h-9 rounded-lg text-[13px] font-semibold transition-all select-none cursor-pointer whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed; font-family: 'Sora Variable', Sora, system-ui, sans-serif; }
+  .btn-action { @apply btn; color: #2b1208; background-image: linear-gradient(135deg, rgb(var(--c-accent)), rgb(var(--c-accent2))); box-shadow: 0 4px 14px -7px rgb(var(--c-accent) / 0.65); }
+  .btn-action:hover { filter: brightness(1.06); box-shadow: 0 6px 18px -7px rgb(var(--c-accent) / 0.7); }
+  .btn-dark { @apply btn text-poe-text-bright; background: rgb(var(--c-panel-light)); border: 1px solid rgb(var(--c-line)); }
+  .btn-dark:hover { border-color: rgb(var(--c-accent) / 0.55); color: rgb(var(--c-heading)); }
+  .btn-ghost { @apply btn text-poe-text; }
+  .btn-ghost:hover { background: rgb(var(--c-text) / 0.06); color: rgb(var(--c-heading)); }
 
-  .field { @apply border border-poe-line rounded px-2 h-7 text-[13px] text-poe-text-bright focus:outline-none focus:border-poe-gold-dim w-full; background-color: #000; }
+  .field { @apply rounded-lg px-2.5 h-7 text-[13px] text-poe-text-bright w-full transition-colors; background: rgb(var(--c-bg)); border: 1px solid rgb(var(--c-line)); }
+  .field:focus { outline: none; border-color: rgb(var(--c-accent) / 0.6); box-shadow: 0 0 0 3px rgb(var(--c-accent) / 0.12); }
 
-  /* Dropdown panels — always solid black, never translucent */
+  /* Dropdown panels — always solid, never translucent (components also set inline bg). */
   .dropdown-panel { background-color: #000; }
 
-  /* Tab nav item */
-  .tab { @apply inline-flex items-center gap-1.5 px-3 h-9 text-[13px] tracking-wide border-b-2 border-transparent text-poe-text hover:text-poe-heading transition-colors; font-family: 'FontinSmallCaps', Verdana, sans-serif; }
-  .tab-active { @apply text-poe-gold border-poe-gold-dim bg-white/[0.03]; }
+  /* Legacy tab class (TabNav now uses MUI Tabs) — kept as a modern pill for any residual use. */
+  .tab { @apply inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-[13px] text-poe-text transition-colors; font-family: 'Sora Variable', Sora, system-ui, sans-serif; }
+  .tab:hover { color: rgb(var(--c-heading)); background: rgb(var(--c-text) / 0.05); }
+  .tab-active { color: rgb(var(--c-accent)); background: rgb(var(--c-accent) / 0.1); }
 
   /* Checkbox-style square toggle — checked shows an accent checkmark, not a solid fill. */
-  .sqtoggle { @apply inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[2px] border border-poe-line bg-black/40 cursor-pointer; }
-  .sqtoggle-on { @apply border-poe-gold bg-poe-gold/10; }
+  .sqtoggle { @apply inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[2px] border cursor-pointer transition-colors; border-color: rgb(var(--c-line)); background: rgb(var(--c-bg)); }
+  .sqtoggle-on { border-color: rgb(var(--c-accent)); background: rgb(var(--c-accent) / 0.14); }
 
-  /* Elegant syntax highlighting for the Filter Output (PoE .filter syntax) */
-  .filter-comment { color: #64748b; }
+  /* Syntax highlighting for the Filter Output (PoE .filter syntax) */
+  .filter-comment { color: #7c7368; }
   .filter-string  { color: #bef575; }
   .filter-action  { color: #f472b6; font-weight: 600; }
   .filter-cond    { color: #67e8f9; }

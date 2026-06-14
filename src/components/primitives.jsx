@@ -1,7 +1,6 @@
 import React from 'react'
-import { createPortal } from 'react-dom'
+import { Tooltip } from '@mui/material'
 import { Check } from 'lucide-react'
-import { useTooltipPortal } from '../lib/useTooltipPortal.js'
 
 // Square checkbox toggle + label, matching the site's "■ Label (?)" rows.
 export function Toggle({ checked, onChange, label, help, className = '' }) {
@@ -17,45 +16,19 @@ export function Toggle({ checked, onChange, label, help, className = '' }) {
   )
 }
 
-// Inline help marker — shows a hover popover with the explanation (no native tooltip).
+// Inline help marker — MUI tooltip showing the explanation on hover/focus.
 export function Help({ text }) {
-  const [open, setOpen] = React.useState(false)
-  const triggerRef = React.useRef(null)
-  const { tooltipRef, tooltipStyle, arrowLeft, openUp } = useTooltipPortal({ open, anchorRef: triggerRef })
-
   if (!text) return null
-
-  const tooltip = open && tooltipStyle && createPortal(
-    <span
-      ref={tooltipRef}
-      role="tooltip"
-      className="relative rounded border border-poe-line p-2.5 text-poe-text-bright text-[11.5px] leading-[1.45] shadow-panel text-left"
-      style={{ ...tooltipStyle, backgroundColor: '#000', pointerEvents: 'none' }}
-    >
-      <span className="block text-left">{text}</span>
-      <span
-        aria-hidden
-        className={`absolute w-2 h-2 rotate-45 border-poe-line ${openUp ? 'border-r border-b -bottom-1' : 'border-l border-t -top-1'}`}
-        style={{ left: arrowLeft, backgroundColor: '#000' }}
-      />
-    </span>,
-    document.body,
-  )
-
   return (
-    <span
-      ref={triggerRef}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-      onFocus={() => setOpen(true)}
-      onBlur={() => setOpen(false)}
-      tabIndex={0}
-      className="inline-flex items-center text-[11px] text-poe-gold-dim hover:text-poe-gold cursor-help select-none focus:outline-none"
-      aria-label="More info"
-    >
-      (?)
-      {tooltip}
-    </span>
+    <Tooltip title={text} arrow placement="top">
+      <span
+        tabIndex={0}
+        className="inline-flex items-center text-[11px] text-poe-gold-dim hover:text-poe-gold cursor-help select-none focus:outline-none"
+        aria-label="More info"
+      >
+        (?)
+      </span>
+    </Tooltip>
   )
 }
 

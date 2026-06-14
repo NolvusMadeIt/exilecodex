@@ -1,7 +1,11 @@
-// Quick Filters — dropdown-driven, mimicking poe2filter.com (consolidated controls
-// instead of a wall of checkboxes). Every row is wired to the generator.
+// Quick Filters — dropdown-driven, consolidated controls instead of a wall of
+// checkboxes. Every row is wired to the generator.
 // control: 'toggle' | 'number' | 'select' | 'multi' | 'classItems'
-import { CATEGORY_ICON } from './items.js'
+import { CATEGORY_ICON, IMG } from './items.js'
+
+// Real per-category currency icons (verified on the item-art CDN). These art slugs are not
+// derivable from item names, so they're pinned explicitly.
+const CUR = (p) => `${IMG}/${p}`
 
 // Rarity threshold options (shown in the rarity's colour). "Show items with rarity ≥ X".
 export const RARITY_THRESHOLDS = [
@@ -13,11 +17,11 @@ export const RARITY_THRESHOLDS = [
 
 // Category multiselect option sets (value = stable key the generator reads).
 const CURRENCY_TYPES = [
-  { value: 'shards', label: 'Currency Shards', icon: CATEGORY_ICON.currency },
-  { value: 'runes', label: 'Runes & Soul Cores', icon: CATEGORY_ICON.currency },
-  { value: 'catalysts', label: 'Catalysts', icon: CATEGORY_ICON.currency },
-  { value: 'essences', label: 'Essences', icon: CATEGORY_ICON.currency },
-  { value: 'omens', label: 'Omens', icon: CATEGORY_ICON.currency },
+  { value: 'shards', label: 'Currency Shards', icon: CUR('currency/currencyupgradetomagicshard.webp') },
+  { value: 'runes', label: 'Runes & Soul Cores', icon: CUR('all-runes.png') },
+  { value: 'catalysts', label: 'Catalysts', icon: CUR('currency/breach/breachcatalystfire.webp') },
+  { value: 'essences', label: 'Essences', icon: CUR('currency/essence/attributeessence.webp') },
+  { value: 'omens', label: 'Omens', icon: CUR('currency/omens/omengamblenogoldcost.webp') },
 ]
 const GEM_TYPES = [
   { value: 'uncut', label: 'Uncut Gems', icon: CATEGORY_ICON.gems },

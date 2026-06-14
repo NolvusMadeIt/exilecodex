@@ -1,4 +1,4 @@
-// Item icon system — reverse-engineered from poe2filter's CDN + JS bundle.
+// Item icon system — representative per-category art served from the item-art CDN.
 // Representative per-category icons (all confirmed 200 via HEAD probes). Weapons/armour
 // reuse generic icons on the real site too, so a category icon next to each base name is
 // faithful. Per-name overrides exist for rings/amulets/jewels/uniques.

@@ -1,4 +1,4 @@
-// Shared PoE2 item-filter syntax helpers. Matches NeverSink / poe2filter conventions.
+// Shared PoE2 item-filter syntax helpers. Follows standard NeverSink conventions.
 
 export const quote = (value) => `"${String(value)}"`
 

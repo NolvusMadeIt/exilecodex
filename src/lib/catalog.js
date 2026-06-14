@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { classifyName, iconFor, IMG } from '../data/items.js'
 
-// Loads the real poe2filter catalogs (downloaded to /public/data/poe2/) and builds a flat,
+// Loads the bundled item catalogs (in /public/data/poe2/) and builds a flat,
 // searchable list of base types with representative icons. Cached after first load.
 let _cache = null
 let _promise = null

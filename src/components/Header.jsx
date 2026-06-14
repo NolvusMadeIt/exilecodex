@@ -7,23 +7,21 @@ export function Header() {
   const [selectorOpen, setSelectorOpen] = useState(false)
   return (
     <header className="relative">
-      <div className="app-shell pt-2 flex items-start justify-end text-[12px]">
+      <div className="app-shell pt-2.5 flex items-start justify-end text-[12px]">
         <div className="text-poe-text">
-          Active filter: <span className="text-poe-text-bright">{active?.name}</span>{' '}
-          {active?.version && <span className="font-mono text-poe-text/80">v{active.version}</span>}{' '}
-          (<button className="text-poe-steel-light hover:text-poe-text-bright" onClick={() => setSelectorOpen(true)}>Change</button>)
+          Active filter: <span className="text-poe-text-bright font-medium">{active?.name}</span>{' '}
+          {active?.version && <span className="font-mono text-poe-text/70">v{active.version}</span>}{' '}
+          <button className="text-poe-gold hover:text-poe-steel-light underline-offset-2 hover:underline" onClick={() => setSelectorOpen(true)}>Change</button>
         </div>
       </div>
 
-      {/* Centered wordmark (PoE2-styled, NOT their logo) */}
-      <div className="flex flex-col items-center justify-center pt-3 pb-1 select-none">
-        <div className="flex items-center gap-2">
-          <span className="text-[15px] tracking-[0.3em] text-poe-text-bright font-smallcaps">PATH OF EXILE 2</span>
+      {/* Own wordmark — modern Sora type, no PoE chrome */}
+      <div className="flex flex-col items-center justify-center pt-2 pb-4 select-none">
+        <div className="flex items-baseline gap-2">
+          <span className="gold-heading text-[32px] leading-none">Nolvus’s</span>
+          <span className="heading text-[32px] leading-none">Filter</span>
         </div>
-        <div className="relative px-8 py-1 mt-0.5">
-          <span className="gold-heading text-[34px] leading-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">Nolvus’s</span>
-          <span className="heading text-[34px] leading-none ml-2 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">Filter</span>
-        </div>
+        <span className="mt-2 text-[10.5px] tracking-[0.24em] uppercase text-poe-text/65 font-display">PoE2 Loot Filter Editor</span>
       </div>
 
       {selectorOpen && <FilterSelector onClose={() => setSelectorOpen(false)} />}

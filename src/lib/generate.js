@@ -1,5 +1,5 @@
 // settings object -> .filter text. Produces valid, readable PoE2 filter syntax that
-// reflects the user's choices and loads in-game like NeverSink / poe2filter exports.
+// reflects the user's choices and loads in-game like any standard NeverSink export.
 import { DROP_TIERS, DEFAULT_TIER_CURRENCY } from '../data/dropTiers.js'
 import { PRESETS } from '../data/presets.js'
 import {
@@ -100,7 +100,7 @@ function customRuleBlock(rule, idx, cosmetic) {
 }
 
 function emitCustomRule(rule, idx, cosmetic) {
-  // Imported rules keep their original text so NeverSink / poe2filter syntax survives round-trips.
+  // Imported rules keep their original text so any standard filter syntax survives round-trips.
   if (rule.raw?.trim()) return rule.raw.trim().split('\n')
   return customRuleBlock(rule, idx, cosmetic)
 }

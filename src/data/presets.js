@@ -1,8 +1,8 @@
-// Presets, classes, and endgame-content options — mirrors poe2filter.com's Presets page.
-// Images hotlinked from their CDN (always-correct); slug rule confirmed live.
+// Presets, classes, and endgame-content options for the Presets page.
+// Item art is served from the item-art CDN.
 export const IMG = 'https://static.poe2filter.com/img'
 
-// The 6 game-stage presets. `blurb` for Early Endgame is verbatim from the live site;
+// The 6 game-stage presets. `blurb` for Early Endgame is fixed editorial copy;
 // the others describe the same stage (refine to verbatim in a later pass).
 export const PRESETS = [
   {

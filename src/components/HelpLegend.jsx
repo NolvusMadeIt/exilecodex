@@ -5,8 +5,8 @@ import { Modal } from './Modal.jsx'
 // Opened from the (?) icon in the top-right of the tab nav.
 export function HelpLegend({ onClose }) {
   return (
-    <Modal onClose={onClose} title="Filter Legend" width={780}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-[12.5px]">
+    <Modal onClose={onClose} title="Filter Legend" width={720}>
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 text-[12px]">
         {/* Comparators */}
         <Section title="Comparators">
           <Row k=">"  v="Greater than" />
@@ -63,8 +63,8 @@ export function HelpLegend({ onClose }) {
       </div>
 
       <div className="border-t border-poe-line mt-4 pt-3 space-y-1.5 text-[12px] text-poe-text">
-        <p><span className="text-poe-gold font-smallcaps tracking-wide">Rule Navigation:</span> Ctrl+Click a rule's title to jump to it in the Filter Output, and vice-versa.</p>
-        <p><span className="text-poe-gold font-smallcaps tracking-wide">Simulator:</span> In-game, Ctrl+C an item, then Ctrl+V anywhere in this tool to see if and how it would be displayed, and by which rule(s).</p>
+        <p><span className="text-poe-gold font-display font-semibold tracking-wide">Rule Navigation:</span> Ctrl+Click a rule's title to jump to it in the Filter Output, and vice-versa.</p>
+        <p><span className="text-poe-gold font-display font-semibold tracking-wide">Simulator:</span> In-game, Ctrl+C an item, then Ctrl+V anywhere in this tool to see if and how it would be displayed, and by which rule(s).</p>
       </div>
     </Modal>
   )
@@ -75,7 +75,7 @@ const Light = ({ children }) => <span className="text-poe-text/70 ml-1">{childre
 function Section({ title, children }) {
   return (
     <div className="space-y-1">
-      <div className="font-smallcaps tracking-wide text-poe-gold text-[13px] mt-1">{title}</div>
+      <div className="font-display font-semibold tracking-[0.08em] uppercase text-poe-gold text-[11px]">{title}</div>
       <div className="space-y-0.5">{children}</div>
     </div>
   )
@@ -99,7 +99,7 @@ function Dot({ color, label }) {
 function Tier({ color, children, muted }) {
   return (
     <div className="flex items-center gap-2">
-      <span className={`font-smallcaps tracking-wide ${muted ? 'opacity-50' : ''}`} style={{ color }}>{children}</span>
+      <span className={`font-display font-semibold tracking-wide ${muted ? 'opacity-50' : ''}`} style={{ color }}>{children}</span>
     </div>
   )
 }
@@ -120,7 +120,7 @@ function MinimapIcon({ shape, color, label }) {
 function Term({ name, def }) {
   return (
     <div className="grid grid-cols-[110px_1fr] gap-2">
-      <span className="font-smallcaps tracking-wide text-poe-gold">{name}</span>
+      <span className="font-display font-semibold tracking-wide text-poe-gold">{name}</span>
       <span className="text-poe-text">{def}</span>
     </div>
   )

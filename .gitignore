@@ -9,3 +9,6 @@ tmp-*.filter
 # Electron desktop build output
 release
 dist-electron
+
+# Playwright MCP scratch output
+.playwright-mcp

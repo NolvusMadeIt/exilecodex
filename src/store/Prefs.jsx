@@ -6,9 +6,9 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 const LS = 'nolvus-prefs'
 
 export const THEMES = [
-  { id: 'ember',  name: 'Ember',  swatch: '#ff6f5c', desc: 'True black with coral/ember accent.' },
-  { id: 'abyss',  name: 'Abyss',  swatch: '#5cafde', desc: 'Deep abyssal blue with cyan highlights.' },
-  { id: 'arcane', name: 'Arcane', swatch: '#b27cf0', desc: 'Midnight violet with arcane purple accent.' },
+  { id: 'ember',  name: 'Ember',  swatch: '#ff6b4a', desc: 'Warm charcoal with molten coral & amber accents.' },
+  { id: 'abyss',  name: 'Abyss',  swatch: '#38c8b0', desc: 'Cool slate with teal & cyan accents.' },
+  { id: 'arcane', name: 'Arcane', swatch: '#b27cf0', desc: 'Midnight violet with orchid accents.' },
 ]
 
 const DEFAULTS = {

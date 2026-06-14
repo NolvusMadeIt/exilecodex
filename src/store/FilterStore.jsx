@@ -2,15 +2,15 @@ import React, { createContext, useContext, useEffect, useMemo, useState, useCall
 import { defaultSettings } from './defaultSettings.js'
 
 // Single store ABOVE the router so tab navigation never resets the filter.
-// Only Reset clears it. Mirrors poe2filter's storage model.
+// Only Reset clears it — a single-store model keeps tab switches lossless.
 const LS_FILTERS = 'nolvus-filters'        // array of settings objects
 const LS_ACTIVE = 'nolvus-active-name'     // active filter name
 
 const FilterCtx = createContext(null)
 
 const DEFAULT_NAME = "Nolvus's Filter"
-// Rename the old default ('poe2filter') to our brand name.
-const migrateName = (n) => (!n || n === 'poe2filter') ? DEFAULT_NAME : n
+// Fall back to our brand name for any empty/legacy filter name.
+const migrateName = (n) => n || DEFAULT_NAME
 
 // Bump the patch component of a semver. 0.0.9 -> 0.0.10, 0.9.99 -> 0.9.100. We never
 // auto-bump minor/major — semantic upgrades are the user's call.

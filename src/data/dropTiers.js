@@ -1,5 +1,5 @@
-// Drop Tier definitions — the market-value buckets poe2filter uses for Currency/Uniques.
-// Beam color + minimap + default thresholds mirror the live Cosmetic page (S→F).
+// Drop Tier definitions — market-value buckets for Currency and Uniques.
+// Beam color + minimap + default thresholds drive the Cosmetic defaults (S→F).
 export const DROP_TIERS = [
   { id: 'S', name: 'S-Tier', label: 'Purple highlight', beam: 'purple', minimap: 'purple', threshold: '≥ 100', textColor: [182, 96, 224] },
   { id: 'A', name: 'A-Tier', label: 'Red highlight',    beam: 'red',    minimap: 'red',    threshold: '≥ 15',  textColor: [224, 64, 64] },
@@ -10,7 +10,7 @@ export const DROP_TIERS = [
   { id: 'F', name: 'F-Tier', label: 'Hidden',          beam: null,     minimap: null,     threshold: '< 0.01', hide: true, textColor: [120, 120, 120] },
 ]
 
-// Starting currency tiers (rough value buckets — like poe2filter's economy, but static).
+// Starting currency tiers (rough value buckets — a static, curated economy snapshot).
 // Drives the "Drop Tier Highlights" output out-of-the-box; users re-tier on the Tier List page.
 export const DEFAULT_TIER_CURRENCY = {
   S: ['Mirror of Kalandra'],
