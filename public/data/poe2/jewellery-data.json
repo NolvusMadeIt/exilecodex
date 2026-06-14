@@ -1,0 +1,476 @@
+[
+  {
+    "name": "Absent Amulet",
+    "implicits": [
+      "Grants Skill: Level 19 Random Spirit Skill",
+      "-1 Prefix Modifier allowed",
+      "-1 Suffix Modifier allowed"
+    ]
+  },
+  {
+    "implicits": [
+      "Inflict Abyssal Wasting on Hit"
+    ],
+    "name": "Abyssal Signet"
+  },
+  {
+    "implicits": [
+      "+(10-15) to Strength"
+    ],
+    "lvl": 8,
+    "name": "Amber Amulet"
+  },
+  {
+    "implicits": [
+      "Used when you take Chaos damage from a Hit"
+    ],
+    "lvl": 40,
+    "name": "Amethyst Charm"
+  },
+  {
+    "implicits": [
+      "+(7-13)% to Chaos Resistance"
+    ],
+    "lvl": 20,
+    "name": "Amethyst Ring"
+  },
+  {
+    "implicits": [
+      "Used when you become Poisoned"
+    ],
+    "lvl": 24,
+    "name": "Antidote Charm"
+  },
+  {
+    "implicits": [
+      "(20-30)% increased Mana Regeneration Rate"
+    ],
+    "name": "Azure Amulet"
+  },
+  {
+    "name": "Biostatic Ring",
+    "implicits": [
+      "+1% to all maximum Resistances"
+    ]
+  },
+  {
+    "implicits": [
+      "+(30-40) to maximum Life"
+    ],
+    "lvl": 18,
+    "name": "Bloodstone Amulet"
+  },
+  {
+    "implicits": [
+      "Maximum Quality is 40%"
+    ],
+    "lvl": 40,
+    "name": "Breach Ring"
+  },
+  {
+    "implicits": [
+      "Used when you become Cursed"
+    ],
+    "lvl": 40,
+    "name": "Cleansing Charm"
+  },
+  {
+    "name": "Corona Amulet",
+    "implicits": [
+      "Has 1 Rune Socket (Hidden)"
+    ]
+  },
+  {
+    "implicits": [
+      "(2-4) Life Regeneration per second"
+    ],
+    "name": "Crimson Amulet"
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "(20-30)% increased Charm Charges gained"
+    ],
+    "lvl": 44,
+    "name": "Double Belt"
+  },
+  {
+    "implicits": [
+      "Used when you become Ignited"
+    ],
+    "lvl": 32,
+    "name": "Dousing Charm"
+  },
+  {
+    "implicits": [
+      "+1 Prefix Modifier allowed",
+      "-1 Suffix Modifier allowed"
+    ],
+    "name": "Dusk Amulet"
+  },
+  {
+    "implicits": [
+      "+1 Prefix Modifier allowed",
+      "-1 Suffix Modifier allowed"
+    ],
+    "name": "Dusk Ring"
+  },
+  {
+    "implicits": [
+      "+(120-160) to Accuracy Rating"
+    ],
+    "lvl": 26,
+    "name": "Emerald Ring"
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "Flasks gain 0.17 charges per Second"
+    ],
+    "lvl": 62,
+    "name": "Fine Belt"
+  },
+  {
+    "name": "Forking Belt",
+    "implicits": [],
+    "lvl": 56
+  },
+  {
+    "implicits": [
+      "-1 Prefix Modifier allowed",
+      "+1 Suffix Modifier allowed"
+    ],
+    "name": "Gloam Amulet"
+  },
+  {
+    "implicits": [
+      "-1 Prefix Modifier allowed",
+      "+1 Suffix Modifier allowed"
+    ],
+    "name": "Gloam Ring"
+  },
+  {
+    "implicits": [
+      "(12-20)% increased Rarity of Items found"
+    ],
+    "lvl": 35,
+    "name": "Gold Amulet"
+  },
+  {
+    "implicits": [
+      "(6-15)% increased Rarity of Items found"
+    ],
+    "lvl": 40,
+    "name": "Gold Ring"
+  },
+  {
+    "implicits": [
+      "Used when you kill a Rare or Unique enemy"
+    ],
+    "lvl": 50,
+    "name": "Golden Charm"
+  },
+  {
+    "implicits": [
+      "+(8-12) to all Attributes"
+    ],
+    "lvl": 12,
+    "name": "Golden Hoop"
+  },
+  {
+    "name": "Grasping Ring",
+    "implicits": [
+      "Has 1 Rune Socket (Hidden)"
+    ]
+  },
+  {
+    "implicits": [
+      "Used when you become Shocked"
+    ],
+    "lvl": 32,
+    "name": "Grounding Charm"
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "(20-30)% increased Stun Threshold"
+    ],
+    "lvl": 50,
+    "name": "Heavy Belt"
+  },
+  {
+    "implicits": [
+      "Adds 1 to 4 Physical Damage to Attacks"
+    ],
+    "name": "Iron Ring"
+  },
+  {
+    "implicits": [
+      "+(10-15) to Dexterity"
+    ],
+    "lvl": 8,
+    "name": "Jade Amulet"
+  },
+  {
+    "name": "Kinetic Ring",
+    "implicits": [
+      "Adds 8 to 12 Physical Damage to Attacks"
+    ]
+  },
+  {
+    "implicits": [
+      "+(10-15) to Intelligence"
+    ],
+    "lvl": 8,
+    "name": "Lapis Amulet"
+  },
+  {
+    "implicits": [
+      "+(20-30) to maximum Mana"
+    ],
+    "name": "Lazuli Ring"
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "(20-30)% increased Mana Recovery from Flasks"
+    ],
+    "name": "Linen Belt"
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "(15-20)% increased Charm Effect Duration"
+    ],
+    "lvl": 20,
+    "name": "Long Belt"
+  },
+  {
+    "implicits": [
+      "+(20-30) to maximum Energy Shield"
+    ],
+    "lvl": 14,
+    "name": "Lunar Amulet"
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "(10-15)% reduced Flask Charges used"
+    ],
+    "lvl": 40,
+    "name": "Mail Belt"
+  },
+  {
+    "name": "Mnemonic Ring",
+    "implicits": [
+      "5% increased maximum Mana"
+    ]
+  },
+  {
+    "name": "Oneiric Ring",
+    "implicits": [
+      "17% increased Chaos Damage"
+    ]
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "(10-15)% reduced Charm Charges used"
+    ],
+    "lvl": 31,
+    "name": "Ornate Belt"
+  },
+  {
+    "implicits": [
+      "(7-10)% increased Cast Speed"
+    ],
+    "lvl": 32,
+    "name": "Pearl Ring"
+  },
+  {
+    "implicits": [
+      "+(7-10)% to all Elemental Resistances"
+    ],
+    "lvl": 8,
+    "name": "Pearlescent Amulet"
+  },
+  {
+    "implicits": [
+      "+2 Prefix Modifiers allowed",
+      "-2 Suffix Modifiers allowed"
+    ],
+    "name": "Penumbra Amulet"
+  },
+  {
+    "implicits": [
+      "+2 Prefix Modifiers allowed",
+      "-2 Suffix Modifiers allowed"
+    ],
+    "name": "Penumbra Ring"
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "+(100-140) to Armour"
+    ],
+    "lvl": 25,
+    "name": "Plate Belt"
+  },
+  {
+    "implicits": [
+      "+(7-10)% to all Elemental Resistances"
+    ],
+    "lvl": 35,
+    "name": "Prismatic Ring"
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "(20-30)% increased Life Recovery from Flasks"
+    ],
+    "name": "Rawhide Belt"
+  },
+  {
+    "implicits": [],
+    "name": "Ring"
+  },
+  {
+    "implicits": [
+      "Used when you take Fire damage from a Hit"
+    ],
+    "lvl": 5,
+    "name": "Ruby Charm"
+  },
+  {
+    "implicits": [
+      "+(20-30)% to Fire Resistance"
+    ],
+    "lvl": 8,
+    "name": "Ruby Ring"
+  },
+  {
+    "implicits": [
+      "Used when you take Cold damage from a Hit"
+    ],
+    "lvl": 5,
+    "name": "Sapphire Charm"
+  },
+  {
+    "implicits": [
+      "+(20-30)% to Cold Resistance"
+    ],
+    "lvl": 12,
+    "name": "Sapphire Ring"
+  },
+  {
+    "implicits": [
+      "Used when you are affected by a Slow"
+    ],
+    "lvl": 10,
+    "name": "Silver Charm"
+  },
+  {
+    "implicits": [
+      "+(10-15) to Spirit"
+    ],
+    "lvl": 30,
+    "name": "Solar Amulet"
+  },
+  {
+    "implicits": [
+      "Used when you start Bleeding"
+    ],
+    "lvl": 18,
+    "name": "Staunching Charm"
+  },
+  {
+    "implicits": [
+      "+(5-7) to all Attributes"
+    ],
+    "lvl": 25,
+    "name": "Stellar Amulet"
+  },
+  {
+    "implicits": [
+      "Used when you become Stunned"
+    ],
+    "lvl": 8,
+    "name": "Stone Charm"
+  },
+  {
+    "implicits": [
+      "-2 Prefix Modifiers allowed",
+      "+2 Suffix Modifiers allowed"
+    ],
+    "name": "Tenebrous Amulet"
+  },
+  {
+    "implicits": [
+      "-2 Prefix Modifiers allowed",
+      "+2 Suffix Modifiers allowed"
+    ],
+    "name": "Tenebrous Ring"
+  },
+  {
+    "implicits": [
+      "Used when you become Frozen"
+    ],
+    "lvl": 12,
+    "name": "Thawing Charm"
+  },
+  {
+    "implicits": [
+      "Used when you take Lightning damage from a Hit"
+    ],
+    "lvl": 5,
+    "name": "Topaz Charm"
+  },
+  {
+    "implicits": [
+      "+(20-30)% to Lightning Resistance"
+    ],
+    "lvl": 16,
+    "name": "Topaz Ring"
+  },
+  {
+    "implicits": [
+      "-1 Prefix Modifier allowed"
+    ],
+    "name": "Twisted Amulet"
+  },
+  {
+    "implicits": [
+      "-1 Suffix Modifier allowed"
+    ],
+    "name": "Distorted Amulet"
+  },
+  {
+    "implicits": [
+      "Grants 1 additional Skill Slot"
+    ],
+    "lvl": 44,
+    "name": "Unset Ring"
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "20% of Flask Recovery applied Instantly"
+    ],
+    "lvl": 55,
+    "name": "Utility Belt"
+  },
+  {
+    "name": "Vitalic Ring",
+    "implicits": [
+      "6% increased maximum Life"
+    ]
+  },
+  {
+    "implicits": [
+      "Has (1-3) Charm Slot",
+      "(20-30)% increased Flask Charges gained"
+    ],
+    "lvl": 14,
+    "name": "Wide Belt"
+  }
+]

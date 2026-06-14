@@ -1,0 +1,16 @@
+{
+  "_comment": "Bundled game version + league list. Update this when a new league or patch ships. The app will also try to fetch live data from api.pathofexile.com on load and prefer that if successful.",
+  "gameVersion": "0.5.2",
+  "gameVersionLabel": "Path of Exile 2 (0.5.2)",
+  "asOf": "2026-06-14",
+  "leagues": [
+    { "id": "Return of the Ancients", "name": "Return of the Ancients", "current": true },
+    { "id": "Hardcore Return of the Ancients", "name": "HC Return of the Ancients" },
+    { "id": "SSF Return of the Ancients", "name": "SSF Return of the Ancients" },
+    { "id": "HC SSF Return of the Ancients", "name": "HC SSF Return of the Ancients" },
+    { "id": "Standard", "name": "Standard" },
+    { "id": "Hardcore", "name": "Hardcore" },
+    { "id": "Solo Self-Found", "name": "SSF (Standard)" },
+    { "id": "Hardcore SSF", "name": "HC SSF (Standard)" }
+  ]
+}

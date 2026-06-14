@@ -1,0 +1,128 @@
+/* Real Path of Exile fonts (downloaded from poe2filter.com → public/font/) */
+@font-face { font-family: 'FontinSmallCaps'; src: url('/font/fontin-smallcaps-webfont.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
+@font-face { font-family: 'FontinRegular'; src: url('/font/fontin-regular-webfont.woff') format('woff'); font-weight: normal; font-style: normal; font-display: swap; }
+@font-face { font-family: 'FontinItalic'; src: url('/font/fontin-italic-webfont.woff') format('woff'); font-weight: normal; font-style: italic; font-display: swap; }
+@font-face { font-family: 'FontinBold'; src: url('/font/fontin-bold-webfont.woff') format('woff'); font-weight: bold; font-style: normal; font-display: swap; }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Themes — RGB triplets (no rgb() wrapper) so Tailwind utilities w/ opacity work. */
+:root, [data-theme="ember"] {
+  color-scheme: dark;
+  --c-bg: 10 10 12;
+  --c-panel: 20 19 24;
+  --c-panel-light: 28 27 33;
+  --c-line: 44 42 50;
+  --c-text: 183 177 168;
+  --c-text-bright: 236 230 220;
+  --c-heading: 244 239 232;
+  --c-accent: 255 111 92;          /* ember/coral */
+  --c-accent-light: 255 140 121;
+  --c-accent-dim: 196 80 61;
+  --c-danger: 184 70 63;
+  --bg-glow-1: rgba(255,111,92,0.05);
+  --bg-glow-2: rgba(255,255,255,0.015);
+}
+[data-theme="abyss"] {
+  color-scheme: dark;
+  --c-bg: 8 11 16;
+  --c-panel: 16 21 30;
+  --c-panel-light: 22 28 40;
+  --c-line: 38 46 60;
+  --c-text: 168 184 200;
+  --c-text-bright: 216 226 240;
+  --c-heading: 236 244 252;
+  --c-accent: 92 175 230;          /* abyssal cyan */
+  --c-accent-light: 138 198 240;
+  --c-accent-dim: 56 128 184;
+  --c-danger: 200 76 76;
+  --bg-glow-1: rgba(92,175,230,0.07);
+  --bg-glow-2: rgba(255,255,255,0.02);
+}
+[data-theme="arcane"] {
+  color-scheme: dark;
+  --c-bg: 12 9 18;
+  --c-panel: 22 18 32;
+  --c-panel-light: 30 24 42;
+  --c-line: 50 40 70;
+  --c-text: 184 168 210;
+  --c-text-bright: 230 218 248;
+  --c-heading: 244 236 255;
+  --c-accent: 178 124 240;         /* arcane violet */
+  --c-accent-light: 204 158 250;
+  --c-accent-dim: 132 84 188;
+  --c-danger: 200 76 76;
+  --bg-glow-1: rgba(178,124,240,0.07);
+  --bg-glow-2: rgba(255,255,255,0.015);
+}
+
+html, body, #root { min-height: 100%; }
+
+body {
+  @apply bg-poe-bg text-poe-text font-body antialiased;
+  background-image:
+    radial-gradient(1200px 700px at 50% -10%, var(--bg-glow-1), transparent 60%),
+    radial-gradient(900px 600px at 50% 110%, var(--bg-glow-2), transparent 60%);
+  background-repeat: no-repeat;
+}
+
+* { scrollbar-width: thin; scrollbar-color: #2a2f37 transparent; }
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-thumb { background: #2a2f37; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #3a4150; }
+
+@layer components {
+  /* Shared page container — wide but capped so it's never too wide or too skinny. */
+  .app-shell { @apply mx-auto w-full px-4; max-width: 1680px; }
+
+  /* Smallcaps heading, the iconic PoE look */
+  .heading { font-family: 'FontinSmallCaps', Verdana, sans-serif; color: var(--poe-heading); letter-spacing: .02em; }
+  .gold-heading { font-family: 'FontinSmallCaps', Verdana, sans-serif; color: var(--poe-gold); letter-spacing: .03em; }
+
+  /* Accent-tinted section divider bars used across Quick Filters / Cosmetic */
+  .section-bar {
+    @apply relative text-center py-1.5 my-2;
+    font-family: 'FontinSmallCaps', Verdana, sans-serif;
+    color: rgb(var(--c-accent));
+    letter-spacing: .04em;
+    background: linear-gradient(90deg, transparent 0%, rgb(var(--c-accent) / 0) 8%, rgb(var(--c-accent) / 0.16) 50%, rgb(var(--c-accent) / 0) 92%, transparent 100%);
+    border-top: 1px solid rgb(var(--c-accent) / 0.18);
+    border-bottom: 1px solid rgb(var(--c-accent) / 0.18);
+  }
+
+  .panel { @apply rounded border border-poe-line bg-poe-panel/85 backdrop-blur-sm; }
+
+  /* Buttons */
+  .btn { @apply inline-flex items-center justify-center gap-1.5 px-3 h-8 rounded text-[13px] font-medium transition-colors select-none cursor-pointer whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed; }
+  .btn-action { @apply btn bg-poe-gold text-[#1a0d0a] font-semibold border border-poe-steel-light/50 hover:bg-poe-steel-light; } /* accent Save/primary */
+  .btn-dark { @apply btn bg-poe-panel text-poe-text-bright border border-poe-line hover:border-poe-gold-dim/60 hover:text-poe-heading; }
+  .btn-ghost { @apply btn text-poe-text hover:text-poe-heading hover:bg-white/5; }
+
+  .field { @apply border border-poe-line rounded px-2 h-7 text-[13px] text-poe-text-bright focus:outline-none focus:border-poe-gold-dim w-full; background-color: #000; }
+
+  /* Dropdown panels — always solid black, never translucent */
+  .dropdown-panel { background-color: #000; }
+
+  /* Tab nav item */
+  .tab { @apply inline-flex items-center gap-1.5 px-3 h-9 text-[13px] tracking-wide border-b-2 border-transparent text-poe-text hover:text-poe-heading transition-colors; font-family: 'FontinSmallCaps', Verdana, sans-serif; }
+  .tab-active { @apply text-poe-gold border-poe-gold-dim bg-white/[0.03]; }
+
+  /* Checkbox-style square toggle — checked shows an accent checkmark, not a solid fill. */
+  .sqtoggle { @apply inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[2px] border border-poe-line bg-black/40 cursor-pointer; }
+  .sqtoggle-on { @apply border-poe-gold bg-poe-gold/10; }
+
+  /* Elegant syntax highlighting for the Filter Output (PoE .filter syntax) */
+  .filter-comment { color: #64748b; }
+  .filter-string  { color: #bef575; }
+  .filter-action  { color: #f472b6; font-weight: 600; }
+  .filter-cond    { color: #67e8f9; }
+  .filter-style   { color: #c084fc; }
+  .filter-number  { color: #93c5fd; }
+  .filter-op      { color: #fdba74; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

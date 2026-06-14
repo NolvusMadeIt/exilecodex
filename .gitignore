@@ -1,0 +1,11 @@
+node_modules
+dist
+
+# Local-only tooling / scratch
+.claude
+mcps
+tmp-*.filter
+
+# Electron desktop build output
+release
+dist-electron

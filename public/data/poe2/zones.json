@@ -1,0 +1,659 @@
+[
+  {
+    "name": "The Riverbank",
+    "act": 1,
+    "lvl": 1,
+    "boss": "The Bloated Miller"
+  },
+  {
+    "name": "Clearfell Encampment",
+    "act": 1,
+    "town": true
+  },
+  {
+    "name": "Clearfell",
+    "act": 1,
+    "lvl": 2,
+    "wp": true,
+    "boss": "Beira of the Rotten Pack"
+  },
+  {
+    "name": "Mud Burrow",
+    "act": 1,
+    "lvl": 3,
+    "boss": "The Devourer"
+  },
+  {
+    "name": "The Grelwood",
+    "act": 1,
+    "lvl": 4,
+    "wp": true,
+    "boss": "The Brambleghast"
+  },
+  {
+    "name": "The Red Vale",
+    "act": 1,
+    "lvl": 5,
+    "wp": true,
+    "boss": "The Rust King"
+  },
+  {
+    "name": "The Grim Tangle",
+    "act": 1,
+    "lvl": 6,
+    "wp": true,
+    "boss": "The Rotten Druid"
+  },
+  {
+    "name": "Cemetery of the Eternals",
+    "act": 1,
+    "lvl": 7,
+    "wp": true,
+    "boss": "Lachlann of Endless Lament"
+  },
+  {
+    "name": "Tomb of the Consort",
+    "act": 1,
+    "minLvl": 8,
+    "maxLvl": 9,
+    "wp": true,
+    "boss": "Asinia, the Praetor's Consort"
+  },
+  {
+    "name": "Mausoleum of the Praetor",
+    "act": 1,
+    "minLvl": 8,
+    "maxLvl": 9,
+    "wp": true,
+    "boss": "Draven, the Eternal Praetor"
+  },
+  {
+    "name": "Hunting Grounds",
+    "act": 1,
+    "lvl": 10,
+    "wp": true,
+    "boss": "The Crowbell"
+  },
+  {
+    "name": "Freythorn",
+    "act": 1,
+    "lvl": 11,
+    "wp": true,
+    "boss": "The King in the Mists"
+  },
+  {
+    "name": "Ogham Farmlands",
+    "act": 1,
+    "lvl": 12,
+    "wp": true
+  },
+  {
+    "name": "Ogham Village",
+    "act": 1,
+    "lvl": 13,
+    "wp": true,
+    "boss": "The Executioner"
+  },
+  {
+    "name": "The Manor Ramparts",
+    "act": 1,
+    "lvl": 14,
+    "wp": true
+  },
+  {
+    "name": "Ogham Manor",
+    "act": 1,
+    "lvl": 15,
+    "wp": true,
+    "boss": "Candlemass, the Living Rite; Count Geonor"
+  },
+  {
+    "name": "Vastiri Outskirts",
+    "act": 2,
+    "lvl": 16,
+    "wp": true,
+    "boss": "Rathbreaker"
+  },
+  {
+    "name": "Mawdun Mine",
+    "act": 2,
+    "lvl": 18,
+    "wp": true,
+    "boss": "Rudja, the Dread Engineer"
+  },
+  {
+    "name": "Mawdun Quarry",
+    "act": 2,
+    "lvl": 17,
+    "wp": true
+  },
+  {
+    "name": "The Ardura Caravan",
+    "act": 2,
+    "town": true
+  },
+  {
+    "name": "Trial of the Sekhemas",
+    "act": 2,
+    "wp": true
+  },
+  {
+    "name": "The Halani Gates",
+    "act": 2,
+    "lvl": 20,
+    "wp": true,
+    "boss": "Jamanra, the Risen King"
+  },
+  {
+    "name": "Traitor's Passage",
+    "act": 2,
+    "lvl": 19,
+    "wp": true,
+    "boss": "Balbala, the Traitor"
+  },
+  {
+    "name": "The Dreadnought",
+    "act": 2,
+    "lvl": 31,
+    "wp": true,
+    "boss": "Jamanra, the Abomination"
+  },
+  {
+    "name": "Lightless Passage",
+    "act": 2,
+    "lvl": 22,
+    "wp": true
+  },
+  {
+    "name": "Mastodon Badlands",
+    "act": 2,
+    "minLvl": 21,
+    "maxLvl": 26,
+    "wp": true
+  },
+  {
+    "name": "Valley of the Titans",
+    "act": 2,
+    "minLvl": 21,
+    "maxLvl": 26,
+    "wp": true
+  },
+  {
+    "name": "Keth",
+    "act": 2,
+    "minLvl": 21,
+    "maxLvl": 25,
+    "wp": true,
+    "boss": "Kabala, Constrictor Queen"
+  },
+  {
+    "name": "Deshar",
+    "act": 2,
+    "lvl": 28,
+    "wp": true
+  },
+  {
+    "name": "The Well of Souls",
+    "act": 2,
+    "lvl": 22,
+    "wp": true
+  },
+  {
+    "name": "The Bone Pits",
+    "act": 2,
+    "minLvl": 22,
+    "maxLvl": 27,
+    "wp": true,
+    "boss": "Iktab, the Deathlord; Ekbab, Ancient Steed"
+  },
+  {
+    "name": "The Titan Grotto",
+    "act": 2,
+    "minLvl": 22,
+    "maxLvl": 27,
+    "wp": true,
+    "boss": "Zalmarath, the Colossus"
+  },
+  {
+    "name": "The Lost City",
+    "act": 2,
+    "minLvl": 22,
+    "maxLvl": 26,
+    "wp": true
+  },
+  {
+    "name": "Path of Mourning",
+    "act": 2,
+    "lvl": 29,
+    "wp": true
+  },
+  {
+    "name": "The Black Cathedral",
+    "act": 2,
+    "lvl": 80
+  },
+  {
+    "name": "Buried Shrines",
+    "act": 2,
+    "minLvl": 23,
+    "maxLvl": 27,
+    "wp": true,
+    "boss": "Azarian, the Forsaken Son"
+  },
+  {
+    "name": "The Spires of Deshar",
+    "act": 2,
+    "lvl": 30,
+    "wp": true,
+    "boss": "Tor Gul, the Defiler"
+  },
+  {
+    "name": "Sandswept Marsh",
+    "act": 3,
+    "lvl": 33,
+    "wp": true,
+    "boss": "Rootdredge"
+  },
+  {
+    "name": "The Venom Crypts",
+    "act": 3,
+    "lvl": 34
+  },
+  {
+    "name": "Jungle Ruins",
+    "act": 3,
+    "lvl": 34,
+    "wp": true,
+    "boss": "Mighty Silverfist"
+  },
+  {
+    "name": "Ziggurat Encampment",
+    "act": 3,
+    "town": true
+  },
+  {
+    "name": "The Drowned City",
+    "act": 3,
+    "lvl": 40,
+    "wp": true
+  },
+  {
+    "name": "Apex of Filth",
+    "act": 3,
+    "lvl": 41,
+    "wp": true,
+    "boss": "The Queen of Filth"
+  },
+  {
+    "name": "The Azak Bog",
+    "act": 3,
+    "lvl": 36,
+    "wp": true,
+    "boss": "Ignagduk, the Bog Witch"
+  },
+  {
+    "name": "Infested Barrens",
+    "act": 3,
+    "lvl": 35,
+    "wp": true
+  },
+  {
+    "name": "Ziggurat Encampment (Past)",
+    "act": 3,
+    "town": true
+  },
+  {
+    "name": "Temple of Kopec",
+    "act": 3,
+    "lvl": 42,
+    "boss": "Ketzuli, High Priest of the Sun"
+  },
+  {
+    "name": "The Molten Vault",
+    "act": 3,
+    "lvl": 41,
+    "wp": true,
+    "boss": "Mektul, the Forgemaster"
+  },
+  {
+    "name": "The Matlan Waterways",
+    "act": 3,
+    "lvl": 39
+  },
+  {
+    "name": "Chimeral Wetlands",
+    "act": 3,
+    "lvl": 36,
+    "wp": true,
+    "boss": "Xyclucian, the Chimeral"
+  },
+  {
+    "name": "Utzaal",
+    "act": 3,
+    "lvl": 43,
+    "wp": true,
+    "boss": "Viper Napuatzi"
+  },
+  {
+    "name": "The Temple of Chaos",
+    "act": 3,
+    "lvl": 40,
+    "wp": true
+  },
+  {
+    "name": "Jiquani's Machinarium",
+    "act": 3,
+    "lvl": 37,
+    "wp": true,
+    "boss": "Blackjaw, the Remnant"
+  },
+  {
+    "name": "Aggorat",
+    "act": 3,
+    "lvl": 44,
+    "wp": true
+  },
+  {
+    "name": "Jiquani's Sanctum",
+    "act": 3,
+    "lvl": 38,
+    "wp": true,
+    "boss": "Zicoatl, Warden of the Core"
+  },
+  {
+    "name": "The Black Chambers",
+    "act": 3,
+    "lvl": 45,
+    "wp": true,
+    "boss": "Doryani, Royal Thaumaturge"
+  },
+  {
+    "name": "Solitary Confinement",
+    "act": 4,
+    "minLvl": 47,
+    "maxLvl": 52,
+    "wp": true,
+    "boss": "The Prisoner"
+  },
+  {
+    "name": "Abandoned Prison",
+    "act": 4,
+    "minLvl": 46,
+    "maxLvl": 51,
+    "wp": true
+  },
+  {
+    "name": "Kingsmarch",
+    "act": 4,
+    "town": true
+  },
+  {
+    "name": "Isle of Kin",
+    "act": 4,
+    "minLvl": 46,
+    "maxLvl": 51,
+    "wp": true,
+    "boss": "The Blind Beast"
+  },
+  {
+    "name": "Volcanic Warrens",
+    "act": 4,
+    "minLvl": 47,
+    "maxLvl": 52,
+    "wp": true,
+    "boss": "Krutog, Lord of Kin"
+  },
+  {
+    "name": "Shrike Island",
+    "act": 4,
+    "minLvl": 46,
+    "maxLvl": 51,
+    "wp": true,
+    "boss": "Scourge of the Skies"
+  },
+  {
+    "name": "Kedge Bay",
+    "act": 4,
+    "minLvl": 46,
+    "maxLvl": 51,
+    "wp": true
+  },
+  {
+    "name": "Journey's End",
+    "act": 4,
+    "minLvl": 47,
+    "maxLvl": 52,
+    "wp": true,
+    "boss": "Captain Hartlin"
+  },
+  {
+    "name": "Plunder's Point",
+    "act": 4,
+    "lvl": 53,
+    "wp": true
+  },
+  {
+    "name": "Whakapanu Island",
+    "act": 4,
+    "minLvl": 46,
+    "maxLvl": 51,
+    "wp": true,
+    "boss": "Great White One"
+  },
+  {
+    "name": "Singing Caverns",
+    "act": 4,
+    "minLvl": 47,
+    "maxLvl": 52,
+    "wp": true,
+    "boss": "Diamora, Song of Death"
+  },
+  {
+    "name": "Halls of the Dead",
+    "act": 4,
+    "minLvl": 47,
+    "maxLvl": 52,
+    "wp": true,
+    "boss": "Yama The White"
+  },
+  {
+    "name": "Eye of Hinekora",
+    "act": 4,
+    "minLvl": 46,
+    "maxLvl": 51,
+    "wp": true
+  },
+  {
+    "name": "Arastas",
+    "act": 4,
+    "lvl": 52,
+    "wp": true,
+    "boss": "Torvian, Hand of the Saviour"
+  },
+  {
+    "name": "The Excavation",
+    "act": 4,
+    "lvl": 52,
+    "wp": true,
+    "boss": "Benedictus, First Herald of Utopia"
+  },
+  {
+    "name": "Trial of the Ancestors",
+    "act": 4,
+    "minLvl": 46,
+    "maxLvl": 51,
+    "wp": true
+  },
+  {
+    "name": "Ngakanu",
+    "act": 4,
+    "lvl": 53,
+    "wp": true
+  },
+  {
+    "name": "Heart of the Tribe",
+    "act": 4,
+    "lvl": 53,
+    "wp": true,
+    "boss": "Tavakai, the Chieftain"
+  },
+  {
+    "name": "The Refuge",
+    "act": 5,
+    "town": true
+  },
+  {
+    "name": "Scorched Farmlands",
+    "act": 5,
+    "minLvl": 54,
+    "maxLvl": 62,
+    "boss": "Isolde of the White Shroud; Heldra of the Black Pyre"
+  },
+  {
+    "name": "The Blackwood",
+    "act": 5,
+    "minLvl": 55,
+    "maxLvl": 63,
+    "wp": true
+  },
+  {
+    "name": "Holten",
+    "act": 5,
+    "minLvl": 55,
+    "maxLvl": 63,
+    "wp": true,
+    "boss": "Sigbert of the Sullied Oath; Godwin of the Shattered Creed"
+  },
+  {
+    "name": "Holten Estate",
+    "act": 5,
+    "minLvl": 56,
+    "maxLvl": 64,
+    "wp": true,
+    "boss": "Thane Wulfric; Lady Elswyth"
+  },
+  {
+    "name": "Stones of Serle",
+    "act": 5,
+    "minLvl": 54,
+    "maxLvl": 62,
+    "wp": true,
+    "boss": "Siora, Blade of the Mists"
+  },
+  {
+    "name": "Wolvenhold",
+    "act": 5,
+    "minLvl": 56,
+    "maxLvl": 64,
+    "wp": true,
+    "boss": "Oswin, the Dread Warden"
+  },
+  {
+    "name": "The Khari Bazaar",
+    "act": 5,
+    "town": true
+  },
+  {
+    "name": "The Khari Crossing",
+    "act": 5,
+    "minLvl": 54,
+    "maxLvl": 62,
+    "boss": "Akthi, the Final Sting; Anundr, the Sandworm"
+  },
+  {
+    "name": "The Galai Gates",
+    "act": 5,
+    "minLvl": 56,
+    "maxLvl": 64,
+    "wp": true,
+    "boss": "Vornas, the Fell Flame"
+  },
+  {
+    "name": "Qimah",
+    "act": 5,
+    "minLvl": 56,
+    "maxLvl": 64,
+    "wp": true
+  },
+  {
+    "name": "Qimah Reservoir",
+    "act": 5,
+    "minLvl": 56,
+    "maxLvl": 64,
+    "wp": true,
+    "boss": "Azmadi, the Faridun Prince"
+  },
+  {
+    "name": "Pools of Khatal",
+    "act": 5,
+    "minLvl": 55,
+    "maxLvl": 63,
+    "wp": true
+  },
+  {
+    "name": "Sel Khari Sanctuary",
+    "act": 5,
+    "minLvl": 55,
+    "maxLvl": 63,
+    "wp": true,
+    "boss": "Elzarah, the Cobra Lord"
+  },
+  {
+    "name": "The Glade",
+    "act": 5,
+    "town": true
+  },
+  {
+    "name": "Ashen Forest",
+    "act": 5,
+    "minLvl": 54,
+    "maxLvl": 62
+  },
+  {
+    "name": "Kriar Village",
+    "act": 5,
+    "minLvl": 54,
+    "maxLvl": 62,
+    "wp": true,
+    "boss": "Lythara, the Wayward Spear"
+  },
+  {
+    "name": "Glacial Tarn",
+    "act": 5,
+    "minLvl": 55,
+    "maxLvl": 63,
+    "wp": true,
+    "boss": "Rakkar, the Frozen Talon"
+  },
+  {
+    "name": "Kriar Peaks",
+    "act": 5,
+    "minLvl": 56,
+    "maxLvl": 64,
+    "wp": true
+  },
+  {
+    "name": "Etched Ravine",
+    "act": 5,
+    "minLvl": 56,
+    "maxLvl": 64,
+    "wp": true,
+    "boss": "Stormgore, the Guardian"
+  },
+  {
+    "name": "The Cuachic Vault",
+    "act": 5,
+    "minLvl": 56,
+    "maxLvl": 64,
+    "wp": true,
+    "boss": "Zelina, Blood Priestess; Zolin, Blood Priest"
+  },
+  {
+    "name": "Howling Caves",
+    "act": 5,
+    "minLvl": 55,
+    "maxLvl": 63,
+    "wp": true,
+    "boss": "The Abominable Yeti"
+  }
+]
