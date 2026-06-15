@@ -214,7 +214,7 @@ export function ActionBar() {
             sub="Editor state backup (re-importable here)" />
           <MenuItem onClick={() => {}} disabled icon={Cloud}
             label="Save to PoE2 account"
-            sub="Coming soon — needs pathofexile.com login" />
+            sub="Coming soon — needs a Path of Exile account" />
         </PortalMenu>
       </div>
 

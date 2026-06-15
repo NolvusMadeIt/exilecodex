@@ -6,7 +6,7 @@ import { useFilter } from '../store/FilterStore.jsx'
 import { Help, Toggle } from '../components/primitives.jsx'
 import { SimpleSelect } from '../components/SimpleSelect.jsx'
 
-const SOURCE_LABEL = { default: 'fallback', bundled: 'bundled with app', live: 'live from pathofexile.com' }
+const SOURCE_LABEL = { default: 'fallback', bundled: 'bundled with app' }
 
 export function SettingsPage() {
   const { prefs, update } = usePrefs()
@@ -79,7 +79,7 @@ export function SettingsPage() {
           {/* League — dropdown, auto-populated from version.json (+ live API if reachable) */}
           <div>
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-poe-text mb-1">
-              League <Help text="The PoE2 league this filter targets. Pulled from the bundled league list and refreshed from pathofexile.com when reachable. Just like NeverSink's Filterblade keeps one filter per league, this name gets stamped at the top of your .filter so you can keep separate filters per league." />
+              League <Help text="The PoE2 league this filter targets, taken from the bundled league list. The name is stamped at the top of your .filter so you can keep separate filters per league." />
             </div>
             <SimpleSelect
               value={prefs.league || ''}

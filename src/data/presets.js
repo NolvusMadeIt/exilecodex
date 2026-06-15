@@ -1,6 +1,6 @@
 // Presets, classes, and endgame-content options for the Presets page.
-// Item art is served from the item-art CDN.
-export const IMG = 'https://static.poe2filter.com/img'
+// Item art is bundled locally under /public/img.
+export const IMG = '/img'
 
 // The 6 game-stage presets. `blurb` for Early Endgame is fixed editorial copy;
 // the others describe the same stage (refine to verbatim in a later pass).

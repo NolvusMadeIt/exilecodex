@@ -1,5 +1,5 @@
 // settings object -> .filter text. Produces valid, readable PoE2 filter syntax that
-// reflects the user's choices and loads in-game like any standard NeverSink export.
+// reflects the user's choices and loads in-game like any standard .filter export.
 import { DROP_TIERS, DEFAULT_TIER_CURRENCY } from '../data/dropTiers.js'
 import { PRESETS } from '../data/presets.js'
 import {

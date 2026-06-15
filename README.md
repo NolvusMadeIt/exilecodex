@@ -13,7 +13,7 @@ Nolvus Filter turns loot-filter creation into a workstation experience: pick a s
 - **Instant, honest output.** The right-hand panel regenerates valid PoE2 filter syntax on every change. What you see is exactly what loads in-game.
 - **Yours to theme.** Three hand-tuned dark themes (Ember, Abyss, Arcane) with a sharp, angular, game-native look.
 - **Two ways to run it.** Use it on the web, or install the standalone **Windows desktop app** — same studio, offline-capable.
-- **Plays well with others.** Import any standard `.filter` (NeverSink / Filterblade exports included) and keep editing; unknown directives are preserved on round-trip.
+- **Plays well with others.** Import any standard PoE2 `.filter` file and keep editing; unknown directives are preserved on round-trip.
 
 ## The studio
 

@@ -3,7 +3,7 @@
 // control: 'toggle' | 'number' | 'select' | 'multi' | 'classItems'
 import { CATEGORY_ICON, IMG } from './items.js'
 
-// Real per-category currency icons (verified on the item-art CDN). These art slugs are not
+// Real per-category currency icons (bundled locally under /public/img). These art slugs are not
 // derivable from item names, so they're pinned explicitly.
 const CUR = (p) => `${IMG}/${p}`
 

@@ -1,4 +1,4 @@
-// Parse any .filter file (ours, NeverSink, Filterblade) into editable customRules +
+// Parse any standard PoE2 .filter file into editable customRules +
 // raw "freeText" buckets for sections we don't model as structured rules.
 //
 // The PoE filter format is simple: Show/Hide block, then indented condition + style

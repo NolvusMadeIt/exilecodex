@@ -4,6 +4,15 @@ export const CHANGELOG = [
   {
     date: '2026-06-14',
     tag: 'Release',
+    title: 'Nolvus Filter v0.7.1 — fully self-contained',
+    body: [
+      'Every icon and image is now bundled with the app — quicker to load and works completely offline.',
+      'No external calls anywhere: league and version data ship with the build.',
+    ],
+  },
+  {
+    date: '2026-06-14',
+    tag: 'Release',
     title: 'Nolvus Filter v0.7 — the Filter Studio',
     body: [
       'Rebuilt as a workstation: a left navigation rail, a slim top action bar, and a docked live-output panel that stays in view while you edit.',
@@ -35,9 +44,9 @@ export const CHANGELOG = [
   {
     date: '2026-06-13',
     tag: 'Imports',
-    title: 'NeverSink / Filterblade compatibility',
+    title: 'Import compatibility',
     body: [
-      'The Import button now parses any standard .filter file — including NeverSink and Filterblade exports — into editable custom rules.',
+      'The Import button now parses any standard PoE2 .filter file into editable custom rules.',
       'Unknown directives are preserved verbatim so round-tripping never silently drops data.',
     ],
   },

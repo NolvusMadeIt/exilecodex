@@ -71,7 +71,7 @@ function createWindow() {
     },
   })
 
-  // External links (CDN images, pathofexile.com, GGG, etc.) open in the system browser.
+  // Any external http(s) links open in the system browser, not in-app.
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:/.test(url)) shell.openExternal(url)
     return { action: 'deny' }

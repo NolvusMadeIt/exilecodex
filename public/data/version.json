@@ -1,5 +1,5 @@
 {
-  "_comment": "Bundled game version + league list. Update this when a new league or patch ships. The app will also try to fetch live data from api.pathofexile.com on load and prefer that if successful.",
+  "_comment": "Bundled game version + league list. Update this when a new league or patch ships.",
   "gameVersion": "0.5.2",
   "gameVersionLabel": "Path of Exile 2 (0.5.2)",
   "asOf": "2026-06-14",
