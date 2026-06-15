@@ -8,7 +8,7 @@
 // "Always-latest" mode: set NOLVUS_APP_URL (env var) or REMOTE_URL below to your deployed
 // site URL and the shell will load the live site instead of the bundled build.
 
-const { app, BrowserWindow, protocol, shell } = require('electron')
+const { app, BrowserWindow, protocol, shell, ipcMain } = require('electron')
 const path = require('node:path')
 const fs = require('node:fs')
 
@@ -64,12 +64,20 @@ function createWindow() {
     backgroundColor: '#000000',
     autoHideMenuBar: true,
     title: "Nolvus's Filter",
+    // Frameless: no native Windows title bar. The app draws its own (TitleBar.jsx) and the
+    // window stays movable (CSS drag region) and resizable (frameless keeps edge resize).
+    frame: false,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
       preload: path.join(__dirname, 'preload.cjs'),
     },
   })
+
+  // Tell the renderer when the window's maximized state changes so the button icon can flip.
+  const sendMax = () => { if (!win.isDestroyed()) win.webContents.send('win:maximized', win.isMaximized()) }
+  win.on('maximize', sendMax)
+  win.on('unmaximize', sendMax)
 
   // Any external http(s) links open in the system browser, not in-app.
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -90,6 +98,17 @@ function createWindow() {
     win.loadURL('app://bundle/index.html')
   }
 }
+
+// Window controls for the custom title bar. Resolve the calling window from the sender so
+// this works no matter how many windows exist.
+const senderWin = (e) => BrowserWindow.fromWebContents(e.sender)
+ipcMain.on('win:minimize', (e) => senderWin(e)?.minimize())
+ipcMain.on('win:maximize', (e) => {
+  const w = senderWin(e); if (!w) return
+  w.isMaximized() ? w.unmaximize() : w.maximize()
+})
+ipcMain.on('win:close', (e) => senderWin(e)?.close())
+ipcMain.handle('win:isMaximized', (e) => !!senderWin(e)?.isMaximized())
 
 app.whenReady().then(() => {
   protocol.handle('app', serveBundle)

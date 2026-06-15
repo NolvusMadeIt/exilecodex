@@ -1,5 +1,6 @@
 import React from 'react'
 import { ChevronRight, ChevronLeft } from 'lucide-react'
+import { TitleBar } from './TitleBar.jsx'
 import { TopBar } from './TopBar.jsx'
 import { SideNav } from './SideNav.jsx'
 import { FilterOutput } from './FilterOutput.jsx'
@@ -14,6 +15,7 @@ export function Layout({ children }) {
   const setDockOpen = (v) => update({ dockOpen: v })
   return (
     <div className="h-screen flex flex-col overflow-hidden">
+      <TitleBar />
       <TopBar />
       <div className="flex flex-1 min-h-0">
         <SideNav />
