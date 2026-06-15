@@ -3,6 +3,7 @@ import { Eye } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { PRESETS, CLASSES, ENDGAME_CONTENT, GAME_MODES } from '../data/presets.js'
 import { Toggle, Help, ItemIcon } from '../components/primitives.jsx'
+import { StartFilterChoices } from '../components/StartFilterChoices.jsx'
 
 export function PresetsPage() {
   const { active, update, updateSlice } = useFilter()
@@ -23,7 +24,25 @@ export function PresetsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Select your class — first step */}
+      {/* How do you want to start? */}
+      <div>
+        <div className="text-center mb-3">
+          <h1 className="gold-heading text-[22px]">Start your filter</h1>
+          <p className="text-[12px] text-poe-text mt-0.5">Start from a clean slate, or bring in a filter you already have.</p>
+        </div>
+        <div className="max-w-[560px] mx-auto">
+          <StartFilterChoices mode="current" showPreset={false} />
+        </div>
+      </div>
+
+      {/* OR — the preset path below */}
+      <div className="flex items-center gap-4 max-w-[760px] mx-auto py-1">
+        <div className="flex-1 h-px bg-gradient-to-r from-transparent to-poe-line" />
+        <span className="font-smallcaps text-poe-gold text-[34px] leading-none tracking-[0.06em] select-none">Or</span>
+        <div className="flex-1 h-px bg-gradient-to-l from-transparent to-poe-line" />
+      </div>
+
+      {/* Select your class — the preset path */}
       <div>
         <div className="text-center mb-3">
           <h1 className="gold-heading text-[22px]">Select your class</h1>

@@ -3,11 +3,13 @@ import { Plus, Copy, Trash2, X, Pencil, Check } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { Modal } from './Modal.jsx'
+import { NewFilterModal } from './NewFilterModal.jsx'
 
 export function FilterSelector({ onClose }) {
-  const { filters, activeName, setActiveName, createFilter, cloneActive, deleteFilter, renameActive } = useFilter()
+  const { filters, activeName, setActiveName, cloneActive, deleteFilter, renameActive } = useFilter()
   const toast = useToast()
   const [editing, setEditing] = useState(null) // { name, draft }
+  const [choosing, setChoosing] = useState(false)
 
   const startRename = (f) => {
     setActiveName(f.name)
@@ -40,7 +42,7 @@ export function FilterSelector({ onClose }) {
       <div className="mb-3 text-[12px] text-poe-text">
         Stored filters in this browser. Click a row to switch. Names must be unique.
       </div>
-      <button className="btn-dark w-full mb-3" onClick={() => createFilter('new filter')}>
+      <button className="btn-dark w-full mb-3" onClick={() => setChoosing(true)}>
         <Plus size={14} /> Create New
       </button>
       <div className="max-h-[320px] overflow-auto space-y-1">
@@ -97,6 +99,8 @@ export function FilterSelector({ onClose }) {
       <div className="mt-3 text-right">
         <button className="btn-ghost" onClick={onClose}><X size={14} /> Close</button>
       </div>
+
+      {choosing && <NewFilterModal onClose={() => setChoosing(false)} onChosen={onClose} />}
     </Modal>
   )
 }

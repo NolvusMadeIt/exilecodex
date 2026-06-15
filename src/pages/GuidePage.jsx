@@ -1,5 +1,5 @@
 import React from 'react'
-import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Check, Volume2, ChevronDown } from 'lucide-react'
+import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Check, Volume2, ChevronDown, Users, Download, Clipboard, FolderInput, FilePlus2, Upload } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
 import { ItemLabel } from '../components/ItemLabel.jsx'
 import { ItemIcon } from '../components/primitives.jsx'
@@ -24,11 +24,11 @@ const cur = (slug) => asset(`gear/${slug}`)
 const GUIDE = [
   {
     id: 'presets', to: '/presets', icon: Star, title: 'Presets', tag: 'Start here',
-    what: 'The fastest way to a working filter. Tell it your class and where you are in the game, and it sets sensible defaults across every other tab.',
+    what: 'Your starting point. Begin from a blank slate, import a filter you already have, or — the fast path — pick your class and game stage and it sets sensible defaults across every other tab.',
     steps: [
+      'Start your filter: choose Blank, Import an existing .filter / .json, or use a preset below.',
       'Pick your class so the filter shows your weapon & armour types.',
-      'Choose your game stage (Campaign → Very Late Endgame).',
-      'Toggle the endgame content you actually run.',
+      'Choose your game stage (Campaign → Very Late Endgame), then toggle the endgame content you run.',
     ],
     visual: (
       <div className="space-y-2">
@@ -146,6 +146,32 @@ const GUIDE = [
       </div>
     ),
   },
+  {
+    id: 'community', to: '/community', icon: Users, title: 'Community Filters', tag: 'Share',
+    what: "Share the filter you've built, or grab one from another exile. Publish your current filter (with its editable settings so others can load it), or paste / upload a raw .filter — drag-and-drop works too.",
+    steps: [
+      'Share your current filter, or switch to “Paste / upload” to drop in a .filter file or paste its text.',
+      'Add a filter name, your name, and a short description — all three are required.',
+      'Browse what others shared: Download the .filter, Copy it, or Load it straight into the editor.',
+    ],
+    visual: (
+      <div className="panel p-3 w-full max-w-[320px]">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <div className="text-poe-text-bright text-[13px] font-medium truncate">Endgame Strict</div>
+            <div className="text-[11px] text-poe-text/70">by Exile · Path of Exile 2</div>
+          </div>
+          <span className="inline-flex items-center gap-1 text-[11px] text-poe-text/70"><Download size={12} /> 42</span>
+        </div>
+        <p className="text-[11.5px] text-poe-text mt-1.5">Tuned for very late maps — hides clutter, highlights chase items.</p>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          <span className="btn-dark h-7 text-[11px]"><Download size={12} /> Download</span>
+          <span className="btn-dark h-7 text-[11px]"><Clipboard size={12} /> Copy</span>
+          <span className="btn-dark h-7 text-[11px]"><FolderInput size={12} /> Load</span>
+        </div>
+      </div>
+    ),
+  },
 ]
 
 export function GuidePage() {
@@ -154,8 +180,8 @@ export function GuidePage() {
     <div className="space-y-6">
       <header className="text-center">
         <h1 className="gold-heading text-[22px]">How to Use Nolvus's Filter</h1>
-        <p className="text-[12.5px] text-poe-text mt-1 max-w-[680px] mx-auto">
-          New here? Each tab does one job. Work left to right: start with a <span className="text-poe-text-bright">Preset</span>, fine-tune in <span className="text-poe-text-bright">Quick Filters</span>, then <span className="text-poe-text-bright">Preview</span> and save. Here's what each tab is for.
+        <p className="text-[12.5px] text-poe-text mt-1 max-w-[700px] mx-auto">
+          New here? Each tab does one job. On <span className="text-poe-text-bright">Presets</span> you start blank, import an existing filter, or pick a preset — then fine-tune in <span className="text-poe-text-bright">Quick Filters</span>, <span className="text-poe-text-bright">Preview</span>, and save. You can also share or grab filters on the <span className="text-poe-text-bright">Community</span> page. Here's what each tab is for.
         </p>
       </header>
 
@@ -194,10 +220,14 @@ export function GuidePage() {
         })}
       </ol>
 
-      <div className="panel p-4 text-center">
+      <div className="panel p-4 space-y-2.5 text-center">
         <p className="text-[12.5px] text-poe-text">
-          When you're done, the bottom bar saves your filter: <span className="text-poe-text-bright">Save to new file</span> downloads a <code className="font-mono">.filter</code> for your
-          <span className="text-poe-text-bright"> Documents\My Games\Path of Exile 2</span> folder. The legend <span className="text-poe-gold">(?)</span> in the top-right explains every symbol.
+          <span className="inline-flex items-center gap-1 text-poe-text-bright"><FilePlus2 size={13} className="text-poe-gold" /> Save to new file</span> (top bar) downloads a <code className="font-mono">.filter</code> for your
+          <span className="text-poe-text-bright"> Documents\My Games\Path of Exile 2</span> folder, bumping the version each time.
+          <span className="inline-flex items-center gap-1 text-poe-text-bright ml-1"><Upload size={13} className="text-poe-gold" /> Import</span> loads an existing <code className="font-mono">.filter</code> or <code className="font-mono">.json</code> back in — or open one for editing to overwrite it later.
+        </p>
+        <p className="text-[12px] text-poe-text/85">
+          Use the filter name up top to keep several filters and switch between them (<span className="text-poe-text-bright">Create New</span> offers the same blank / preset / import start). Pick your look — theme, typeface and text size — in <span className="text-poe-text-bright">Settings</span>. The legend <span className="text-poe-gold">(?)</span> in the top-right explains every symbol.
         </p>
       </div>
     </div>

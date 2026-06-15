@@ -90,6 +90,19 @@ export function FilterProvider({ children }) {
     setActiveName(n)
   }, [filters])
 
+  // Add a fully-formed filter (from an import or a template) as a NEW entry: normalized
+  // onto current defaults, given a unique name, and activated by default. Returns the name.
+  const addFilter = useCallback((settings, { activate = true } = {}) => {
+    const incoming = normalizeFilter(settings || {})
+    let n = incoming.name, i = 1
+    const taken = new Set(filters.map(f => f.name))
+    while (taken.has(n)) n = `${incoming.name} ${++i}`
+    const f = { ...incoming, name: n }
+    setFilters(prev => [...prev, f])
+    if (activate) setActiveName(n)
+    return n
+  }, [filters])
+
   const cloneActive = useCallback(() => {
     const base = JSON.parse(JSON.stringify(active))
     let n = `${active.name} copy`, i = 1
@@ -141,7 +154,7 @@ export function FilterProvider({ children }) {
 
   const value = {
     filters, active, activeName, setActiveName,
-    update, updateSlice, renameActive, createFilter, cloneActive, deleteFilter,
+    update, updateSlice, renameActive, createFilter, addFilter, cloneActive, deleteFilter,
     resetActive, importSettings, importCustomRules, bumpVersion,
   }
   return <FilterCtx.Provider value={value}>{children}</FilterCtx.Provider>

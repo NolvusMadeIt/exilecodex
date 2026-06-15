@@ -4,6 +4,18 @@ export const CHANGELOG = [
   {
     date: '2026-06-15',
     tag: 'Release',
+    title: 'Nolvus Filter v0.8 — Community & a smarter start',
+    body: [
+      'New Community page: share the filter you’ve built, or browse, download, copy, and load filters from other exiles.',
+      'Share two ways — publish your live filter with its editable settings, or paste / drag-and-drop a raw .filter file. Name, author and description required.',
+      'Start your filter your way: begin from a blank slate, import an existing .filter / .json, or pick a preset. The same choices appear from “Create New”.',
+      'Your look now follows you — theme, typeface and text size are saved, with new font and text-size options in Settings.',
+      'Refreshed the How to Use guide for the Community page and the new start options, and added a themed Path of Exile 2 404 page.',
+    ],
+  },
+  {
+    date: '2026-06-15',
+    tag: 'Release',
     title: 'Nolvus Filter v0.7.2 — fresh type & polish',
     body: [
       'New typography across the whole app for a cleaner, friendlier feel.',

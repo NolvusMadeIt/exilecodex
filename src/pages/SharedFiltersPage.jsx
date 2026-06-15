@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { Download, Clipboard, Send, FolderInput, RefreshCw, Users, Loader2 } from 'lucide-react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
+import { Download, Clipboard, Send, FolderInput, RefreshCw, Users, Loader2, Upload, FileText, Wand2 } from 'lucide-react'
 import { supabase } from '../lib/supabase.js'
 import { useFilter } from '../store/FilterStore.jsx'
 import { usePrefs } from '../store/Prefs.jsx'
@@ -28,6 +28,10 @@ export function SharedFiltersPage() {
   const [busy, setBusy] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [form, setForm] = useState({ name: '', author: '', description: '' })
+  const [mode, setMode] = useState('current') // 'current' | 'paste'
+  const [pasteText, setPasteText] = useState('')
+  const [dragOver, setDragOver] = useState(false)
+  const fileRef = useRef(null)
 
   const fetchList = useCallback(async () => {
     setLoading(true); setErr('')
@@ -47,22 +51,64 @@ export function SharedFiltersPage() {
     ...prefs, gameVersion: gameInfo.gameVersion, gameVersionLabel: gameInfo.gameVersionLabel, _generatedAt: stampNow(),
   })
 
+  // Read a dropped/selected .filter file into the paste box.
+  const readFile = (file) => {
+    if (!file) return
+    if (!/\.filter$/i.test(file.name)) { toast.warn('That needs to be a .filter file.'); return }
+    if (file.size > 200000) { toast.warn('That file is too large (200 KB max).'); return }
+    const reader = new FileReader()
+    reader.onload = () => {
+      setPasteText(String(reader.result || ''))
+      setMode('paste')
+      setForm((f) => (f.name.trim() ? f : { ...f, name: file.name.replace(/\.filter$/i, '') }))
+      toast.success(`Loaded "${file.name}".`)
+    }
+    reader.onerror = () => toast.error('Could not read that file.')
+    reader.readAsText(file)
+  }
+
+  const onDrop = (e) => { e.preventDefault(); setDragOver(false); readFile(e.dataTransfer?.files?.[0]) }
+  const onDragOver = (e) => { e.preventDefault(); if (!dragOver) setDragOver(true) }
+  const onDragLeave = (e) => { e.preventDefault(); setDragOver(false) }
+
+  const pasteReady = mode === 'current' || pasteText.trim().length >= 10
+  const canSubmit = !!form.name.trim() && !!form.author.trim() && !!form.description.trim() && pasteReady
+
   const submit = async () => {
     const name = form.name.trim()
-    if (!name) { toast.warn('Give your filter a name first.'); return }
+    const author = form.author.trim()
+    const description = form.description.trim()
+    if (!name) { toast.warn('Give your filter a name.'); return }
+    if (!author) { toast.warn('Add your name so people know who made it.'); return }
+    if (!description) { toast.warn('Add a short description of your filter.'); return }
+
+    let filter_text, settings
+    if (mode === 'paste') {
+      filter_text = pasteText.trim()
+      if (filter_text.length < 10) { toast.warn('Paste your filter, or upload a .filter file.'); return }
+      if (!/(^|\n)\s*(Show|Hide)\b/.test(filter_text)) {
+        toast.warn("That doesn't look like a PoE2 filter — no Show / Hide blocks found."); return
+      }
+      settings = null // raw paste: no editable settings to attach
+    } else {
+      filter_text = buildText()
+      settings = active
+    }
+
     setSubmitting(true)
     try {
       const { error } = await supabase.from('shared_filters').insert({
         name: name.slice(0, 120),
-        author: form.author.trim().slice(0, 60) || null,
-        description: form.description.trim().slice(0, 2000) || null,
+        author: author.slice(0, 60),
+        description: description.slice(0, 2000),
         game_version: gameInfo.gameVersionLabel,
-        filter_text: buildText(),
-        settings: active,
+        filter_text: filter_text.slice(0, 200000),
+        settings,
       })
       if (error) throw error
       toast.success(`"${name}" shared with the community.`, { title: 'Submitted' })
       setForm({ name: '', author: '', description: '' })
+      setPasteText(''); setMode('current')
       fetchList()
     } catch (e) {
       toast.error('Could not submit: ' + (e?.message || 'unknown error'), { title: 'Submit failed' })
@@ -117,26 +163,67 @@ export function SharedFiltersPage() {
       <header className="text-center">
         <h1 className="gold-heading text-[22px] flex items-center justify-center gap-2"><Users size={20} /> Community Filters</h1>
         <p className="text-[12.5px] text-poe-text mt-1 max-w-[640px] mx-auto">
-          Share the filter you've built, or grab one from another exile. Download the <code className="font-mono">.filter</code>, copy it, or load it straight into the editor.
+          Share the filter you've built here — or paste / upload your own <code className="font-mono">.filter</code>. Grab one from another exile by downloading, copying, or loading it straight into the editor.
         </p>
       </header>
 
       {/* Submit */}
-      <section className="panel p-4">
-        <div className="gold-heading text-[14px] mb-2">Share your current filter</div>
-        <p className="text-[11.5px] text-poe-text/80 mb-3">
-          Publishing <span className="text-poe-text-bright">{active?.name}</span> as it is right now (its full settings + the generated <code className="font-mono">.filter</code>).
-        </p>
+      <section className={`panel p-4 transition-colors ${dragOver ? 'ring-1 ring-poe-gold border-poe-gold' : ''}`}
+        onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave}>
+        <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+          <div className="gold-heading text-[14px]">Share a filter</div>
+          <div className="flex rounded overflow-hidden border border-poe-line shrink-0">
+            {[['current', 'My current filter'], ['paste', 'Paste / upload']].map(([v, label]) => (
+              <button key={v} onClick={() => setMode(v)}
+                className={`px-3 h-8 text-[12px] ${mode === v ? 'bg-[#1a2a1a] text-poe-text-bright' : 'bg-black text-poe-text hover:text-poe-heading hover:bg-[#1a1a1c]'}`}>
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {mode === 'current' ? (
+          <p className="text-[11.5px] text-poe-text/80 mb-3">
+            Publishing <span className="text-poe-text-bright">{active?.name}</span> as it is right now — its full settings plus the generated <code className="font-mono">.filter</code>. Others can download, copy, or load it straight into their editor.
+          </p>
+        ) : (
+          <div className="mb-3">
+            <div
+              onClick={() => fileRef.current?.click()}
+              className={`rounded border border-dashed p-3 text-center cursor-pointer transition-colors ${dragOver ? 'border-poe-gold bg-poe-gold/5' : 'border-poe-line hover:border-poe-text/40'}`}>
+              <div className="flex items-center justify-center gap-2 text-[12px] text-poe-text-bright">
+                <Upload size={14} className="text-poe-gold" /> Drag &amp; drop a <code className="font-mono">.filter</code> file here, or click to browse
+              </div>
+              <div className="text-[11px] text-poe-text/70 mt-0.5">…or just paste the filter text below.</div>
+            </div>
+            <input ref={fileRef} type="file" accept=".filter" className="hidden"
+              onChange={(e) => { readFile(e.target.files?.[0]); e.target.value = '' }} />
+            <div className="relative mt-2">
+              <textarea className="field h-40 py-2 font-mono text-[11px] leading-snug" maxLength={200000}
+                placeholder={'Show\n  Class == "Currency"\n  SetFontSize 40\n  ...'}
+                value={pasteText} onChange={(e) => setPasteText(e.target.value)} />
+              {pasteText.trim() && (
+                <span className="absolute top-2 right-2 inline-flex items-center gap-1 text-[10px] text-poe-text/70 bg-black/70 rounded px-1.5 py-0.5">
+                  <FileText size={11} /> {pasteText.trim().length.toLocaleString()} chars
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <input className="field h-9" placeholder="Filter name (required)" maxLength={120}
             value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
-          <input className="field h-9" placeholder="Your name (optional)" maxLength={60}
+          <input className="field h-9" placeholder="Your name (required)" maxLength={60}
             value={form.author} onChange={(e) => setForm((f) => ({ ...f, author: e.target.value }))} />
         </div>
-        <textarea className="field h-20 mt-3 py-2 text-[12px]" placeholder="Short description (optional) — what's it tuned for?" maxLength={2000}
+        <textarea className="field h-20 mt-3 py-2 text-[12px]" placeholder="Description (required) — what's it tuned for? Class, game stage, strictness…" maxLength={2000}
           value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} />
-        <div className="mt-3 flex justify-end">
-          <button className="btn-action" onClick={submit} disabled={submitting || !form.name.trim()}>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <span className="text-[11px] text-poe-text/60 inline-flex items-center gap-1">
+            <Wand2 size={12} /> {mode === 'paste' ? 'Pasted filters are shared as-is (no editable settings).' : 'Shared with editable settings.'}
+          </span>
+          <button className="btn-action" onClick={submit} disabled={submitting || !canSubmit}>
             {submitting ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Share filter
           </button>
         </div>
