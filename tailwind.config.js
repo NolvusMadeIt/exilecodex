@@ -44,9 +44,9 @@ export default {
         },
       },
       fontFamily: {
-        // Poppins (Anthropic's brand font) across the whole UI, bundled locally.
-        display: ['Poppins', 'system-ui', 'sans-serif'],
-        body: ['Poppins', 'system-ui', 'Arial', 'sans-serif'],
+        // App font is a CSS var so it can be switched at runtime (Settings → Typography).
+        display: ['var(--app-font)'],
+        body: ['var(--app-font)'],
         mono: ['Consolas', 'ui-monospace', 'monospace'],
       },
       boxShadow: {

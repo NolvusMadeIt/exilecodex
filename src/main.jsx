@@ -5,6 +5,7 @@ import '@fontsource/poppins/400.css'
 import '@fontsource/poppins/500.css'
 import '@fontsource/poppins/600.css'
 import '@fontsource/poppins/700.css'
+import '@fontsource-variable/inter' // optional font choice (Settings → Typography)
 import App from './App.jsx'
 import { muiTheme } from './theme/muiTheme.js'
 import './index.css'

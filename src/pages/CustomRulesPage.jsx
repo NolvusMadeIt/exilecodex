@@ -3,6 +3,7 @@ import { Plus, Trash2, ChevronUp, ChevronDown, GripVertical } from 'lucide-react
 import { useFilter } from '../store/FilterStore.jsx'
 import { useCatalog } from '../lib/catalog.js'
 import { CLASSES, iconFor } from '../data/items.js'
+import { asset } from '../data/assets.js'
 import { emptyCustomRule } from '../store/defaultSettings.js'
 import { DROP_TIERS } from '../data/dropTiers.js'
 import { ItemDropdown } from '../components/ItemDropdown.jsx'
@@ -97,7 +98,7 @@ function CustomRuleRow({ rule, idx, total, catalog, onPatch, onRemove, onMove })
 
         {/* Class picker */}
         <ItemDropdown options={CLASS_OPTS} value={rule.classes} onChange={v => onPatch(rule.id, { classes: v })}
-          allLabel="All Classes" icon={rule.classes.length === 1 ? CLASS_OPTS.find(c => c.name === rule.classes[0])?.icon : `/img/all-items.png`} width={190} />
+          allLabel="All Classes" icon={rule.classes.length === 1 ? CLASS_OPTS.find(c => c.name === rule.classes[0])?.icon : asset('all-items.png')} width={190} />
 
         {/* BaseType picker */}
         <ItemDropdown options={baseOptions} value={rule.baseTypes} onChange={v => onPatch(rule.id, { baseTypes: v })}

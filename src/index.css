@@ -8,6 +8,11 @@
 /* Themes — "Ember Forge" identity. RGB triplets (no rgb() wrapper) so Tailwind utilities
    + MUI overrides can apply opacity. Default = ember (coral). The other two share the same
    modern structure (Sora type, soft panels) with a complementary accent. */
+:root {
+  /* Default app font; overridden at runtime by Settings → Typography (see Prefs.jsx). */
+  --app-font: 'Poppins', system-ui, sans-serif;
+}
+
 :root, [data-theme="ember"] {
   color-scheme: dark;
   --c-bg: 15 14 13;
@@ -81,13 +86,13 @@ body {
   .app-shell { @apply mx-auto w-full px-4; max-width: 1680px; }
 
   /* Headings now use Sora (modern), not the medieval smallcaps. */
-  .heading { font-family: 'Poppins', system-ui, sans-serif; color: rgb(var(--c-heading)); font-weight: 600; letter-spacing: -0.01em; }
-  .gold-heading { font-family: 'Poppins', system-ui, sans-serif; color: rgb(var(--c-accent)); font-weight: 600; letter-spacing: -0.01em; }
+  .heading { font-family: var(--app-font); color: rgb(var(--c-heading)); font-weight: 600; letter-spacing: -0.01em; }
+  .gold-heading { font-family: var(--app-font); color: rgb(var(--c-accent)); font-weight: 600; letter-spacing: -0.01em; }
 
   /* Section label + trailing hairline (replaces the fantasy gradient bar). */
   .section-bar {
     @apply relative flex items-center gap-3 py-1.5 my-2 text-[12.5px];
-    font-family: 'Poppins', system-ui, sans-serif;
+    font-family: var(--app-font);
     color: rgb(var(--c-accent)); font-weight: 600; letter-spacing: 0.02em;
   }
   .section-bar::after {
@@ -102,7 +107,7 @@ body {
   }
 
   /* Buttons */
-  .btn { @apply inline-flex items-center justify-center gap-1.5 px-3.5 h-9 rounded-lg text-[13px] font-semibold transition-all select-none cursor-pointer whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed; font-family: 'Poppins', system-ui, sans-serif; }
+  .btn { @apply inline-flex items-center justify-center gap-1.5 px-3.5 h-9 rounded-lg text-[13px] font-semibold transition-all select-none cursor-pointer whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed; font-family: var(--app-font); }
   .btn-action { @apply btn; color: #2b1208; background-image: linear-gradient(135deg, rgb(var(--c-accent)), rgb(var(--c-accent2))); box-shadow: 0 4px 14px -7px rgb(var(--c-accent) / 0.65); }
   .btn-action:hover { filter: brightness(1.06); box-shadow: 0 6px 18px -7px rgb(var(--c-accent) / 0.7); }
   .btn-dark { @apply btn text-poe-text-bright; background: rgb(var(--c-panel-light)); border: 1px solid rgb(var(--c-line)); }
@@ -117,7 +122,7 @@ body {
   .dropdown-panel { background-color: #000; }
 
   /* Legacy tab class (TabNav now uses MUI Tabs) — kept as a modern pill for any residual use. */
-  .tab { @apply inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-[13px] text-poe-text transition-colors; font-family: 'Poppins', system-ui, sans-serif; }
+  .tab { @apply inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-[13px] text-poe-text transition-colors; font-family: var(--app-font); }
   .tab:hover { color: rgb(var(--c-heading)); background: rgb(var(--c-text) / 0.05); }
   .tab-active { color: rgb(var(--c-accent)); background: rgb(var(--c-accent) / 0.1); }
 

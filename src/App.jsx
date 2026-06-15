@@ -19,6 +19,8 @@ const PreviewPage      = lazy(() => import('./pages/PreviewPage.jsx').then(m => 
 const SettingsPage     = lazy(() => import('./pages/SettingsPage.jsx').then(m => ({ default: m.SettingsPage })))
 const ChangelogPage    = lazy(() => import('./pages/ChangelogPage.jsx').then(m => ({ default: m.ChangelogPage })))
 const GuidePage        = lazy(() => import('./pages/GuidePage.jsx').then(m => ({ default: m.GuidePage })))
+const SharedFiltersPage = lazy(() => import('./pages/SharedFiltersPage.jsx').then(m => ({ default: m.SharedFiltersPage })))
+const NotFoundPage     = lazy(() => import('./pages/NotFoundPage.jsx').then(m => ({ default: m.NotFoundPage })))
 
 const Loading = () => (
   <div className="text-center py-12 text-poe-text text-[12px]">Loading…</div>
@@ -35,9 +37,10 @@ function Routes() {
     case '/cosmetic':      return <CosmeticPage />
     case '/preview':       return <PreviewPage />
     case '/guide':         return <GuidePage />
+    case '/community':     return <SharedFiltersPage />
     case '/settings':      return <SettingsPage />
     case '/changelog':     return <ChangelogPage />
-    default:               return <PresetsPage />
+    default:               return <NotFoundPage />
   }
 }
 

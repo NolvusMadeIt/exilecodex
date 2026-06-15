@@ -12,3 +12,8 @@ dist-electron
 
 # Playwright MCP scratch output
 .playwright-mcp
+
+# Local env (Supabase publishable key is public, but keep env files out of git)
+.env
+.env.local
+.env.*.local

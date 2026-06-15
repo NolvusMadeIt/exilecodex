@@ -44,6 +44,45 @@ export function SettingsPage() {
         </div>
       </section>
 
+      {/* Typography */}
+      <section>
+        <div className="section-bar">Typography</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+          <div>
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-poe-text mb-1">
+              Font <Help text="The typeface used throughout the app. Poppins is the default; every option is bundled with the app (works offline)." />
+            </div>
+            <SimpleSelect
+              value={prefs.fontFamily || 'poppins'}
+              onChange={v => update({ fontFamily: v })}
+              className="h-8"
+              options={[
+                { value: 'poppins', label: 'Poppins (default)' },
+                { value: 'inter', label: 'Inter' },
+                { value: 'system', label: 'System UI' },
+              ]}
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-poe-text mb-1">
+              Font size <Help text="Scales the whole app. Capped at Extra Large (120%) so the layout always stays usable." />
+            </div>
+            <SimpleSelect
+              value={String(prefs.fontScale ?? 1)}
+              onChange={v => update({ fontScale: Number(v) })}
+              className="h-8"
+              options={[
+                { value: '0.9', label: 'Compact (90%)' },
+                { value: '1', label: 'Default (100%)' },
+                { value: '1.1', label: 'Large (110%)' },
+                { value: '1.2', label: 'Extra Large (120%)' },
+              ]}
+            />
+          </div>
+        </div>
+        <p className="text-[11px] text-poe-text/70 mt-2">Applies instantly across the whole app and is saved with your settings.</p>
+      </section>
+
       {/* Filter Output display options */}
       <section>
         <div className="section-bar">Filter Output</div>

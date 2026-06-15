@@ -1,11 +1,12 @@
 // Quick Filters — dropdown-driven, consolidated controls instead of a wall of
 // checkboxes. Every row is wired to the generator.
 // control: 'toggle' | 'number' | 'select' | 'multi' | 'classItems'
-import { CATEGORY_ICON, IMG } from './items.js'
+import { CATEGORY_ICON } from './items.js'
+import { asset } from './assets.js'
 
 // Real per-category currency icons (bundled locally under /public/img). These art slugs are not
 // derivable from item names, so they're pinned explicitly.
-const CUR = (p) => `${IMG}/${p}`
+const CUR = (p) => asset(p)
 
 // Rarity threshold options (shown in the rarity's colour). "Show items with rarity ≥ X".
 export const RARITY_THRESHOLDS = [

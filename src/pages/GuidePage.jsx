@@ -3,7 +3,7 @@ import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Check, Volume
 import { useRouter } from '../lib/router.jsx'
 import { ItemLabel } from '../components/ItemLabel.jsx'
 import { ItemIcon } from '../components/primitives.jsx'
-import { IMG } from '../data/presets.js'
+import { asset } from '../data/assets.js'
 import { CATEGORY_ICON } from '../data/items.js'
 
 // ---------- small reusable mock pieces (built from real styles, not screenshots) ----------
@@ -18,7 +18,7 @@ const MockCheck = ({ on, label }) => (
     <span className={on ? 'text-poe-text-bright' : 'text-poe-text'}>{label}</span>
   </span>
 )
-const cur = (slug) => `${IMG}/gear/${slug}`
+const cur = (slug) => asset(`gear/${slug}`)
 
 // ---------- per-tab guide content ----------
 const GUIDE = [
@@ -34,12 +34,12 @@ const GUIDE = [
       <div className="space-y-2">
         <div className="flex gap-2">
           {['presetEarlyCampaign1', 'presetProgressingMaps70', 'presetVeryStrict95'].map(p => (
-            <img key={p} src={`${IMG}/presets/${p}.webp`} className="w-16 h-16 rounded border border-poe-line object-cover" alt="" />
+            <img key={p} src={asset(`presets/${p}.webp`)} className="w-16 h-16 rounded border border-poe-line object-cover" alt="" />
           ))}
         </div>
         <div className="flex gap-1.5">
           {['warrior', 'witch', 'ranger', 'monk'].map(c => (
-            <img key={c} src={`${IMG}/presets/${c}.webp`} className="w-10 h-10 rounded border border-poe-line object-cover" alt="" />
+            <img key={c} src={asset(`presets/${c}.webp`)} className="w-10 h-10 rounded border border-poe-line object-cover" alt="" />
           ))}
         </div>
       </div>
@@ -84,7 +84,7 @@ const GUIDE = [
             <div className="flex-1 flex flex-wrap gap-1 p-1.5">
               {icons.map(i => (
                 <span key={i} className="inline-flex items-center gap-1 bg-black border border-poe-line rounded px-1.5 py-0.5 text-[10px]">
-                  <ItemIcon src={`${IMG}/gear/${i}`} size={14} /> item
+                  <ItemIcon src={asset(`gear/${i}`)} size={14} /> item
                 </span>
               ))}
             </div>

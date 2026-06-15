@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tabs, Tab, Button } from '@mui/material'
-import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked, GraduationCap } from 'lucide-react'
+import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked, GraduationCap, Users } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
 
 const MAIN = [
@@ -12,6 +12,7 @@ const MAIN = [
   { to: '/preview', label: 'Preview', icon: Eye },
 ]
 const SECONDARY = [
+  { to: '/community', label: 'Community', icon: Users },
   { to: '/guide', label: 'How to Use', icon: GraduationCap },
   { to: '/settings', label: 'Settings', icon: Settings },
   { to: '/changelog', label: 'Changelog', icon: BookMarked },

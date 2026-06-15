@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { classifyName, iconFor, IMG } from '../data/items.js'
+import { classifyName, iconFor } from '../data/items.js'
+import { asset } from '../data/assets.js'
 
 // Loads the bundled item catalogs (in /public/data/poe2/) and builds a flat,
 // searchable list of base types with representative icons. Cached after first load.
@@ -37,7 +38,7 @@ async function buildCatalog() {
   const uniqueItems = uniques
     .filter(u => u.name)
     .map(u => ({ name: u.name, baseType: u.baseType, category: u.category || 'items',
-      icon: u.image ? `${IMG}/uniques/${u.image}` : iconFor(classifyName(u.baseType || u.name)),
+      icon: u.image ? asset(`uniques/${u.image}`) : iconFor(classifyName(u.baseType || u.name)),
       flavor: u.flavorText, mods: u.explicitMods }))
 
   baseTypes.sort((a, b) => a.name.localeCompare(b.name))

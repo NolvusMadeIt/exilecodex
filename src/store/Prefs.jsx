@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import { supabase, clientId } from '../lib/supabase.js'
 
 // App-wide prefs (NOT per-filter): theme, league/version meta, free-text comments
 // that are emitted at the top/bottom of every filter the user exports.
@@ -18,6 +19,15 @@ const DEFAULTS = {
   bottomComment: '',                   // free text appended at the bottom
   syntaxHighlight: true,               // colorize the Filter Output pane (comments, keywords, strings, etc.)
   accordionsOpen: true,                // Quick Filter sections start expanded
+  fontFamily: 'poppins',               // app typeface: 'poppins' | 'inter' | 'system'
+  fontScale: 1,                        // app zoom: 0.9 | 1 | 1.1 | 1.2 (capped so it never gets too big)
+}
+
+// Bundled font stacks for the fontFamily pref.
+const FONT_STACKS = {
+  poppins: "'Poppins', system-ui, sans-serif",
+  inter: "'Inter Variable', Inter, system-ui, sans-serif",
+  system: "system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
 }
 
 const PrefsCtx = createContext(null)
@@ -35,6 +45,33 @@ export function PrefsProvider({ children }) {
 
   useEffect(() => { try { localStorage.setItem(LS, JSON.stringify(prefs)) } catch {} }, [prefs])
   useEffect(() => { document.documentElement.setAttribute('data-theme', prefs.theme || 'ember') }, [prefs.theme])
+  useEffect(() => {
+    const el = document.documentElement
+    el.style.setProperty('--app-font', FONT_STACKS[prefs.fontFamily] || FONT_STACKS.poppins)
+    // Whole-app scale, hard-capped at 1.2 so it can never get too big to use.
+    const scale = Math.min(1.2, Math.max(0.85, Number(prefs.fontScale) || 1))
+    el.style.zoom = String(scale)
+  }, [prefs.fontFamily, prefs.fontScale])
+
+  // --- Supabase sync (localStorage stays as the instant/offline cache) ---
+  // Pull this device's saved settings once on mount, merging over local state.
+  useEffect(() => {
+    let alive = true
+    supabase.rpc('get_app_settings', { p_client_id: clientId() })
+      .then(({ data, error }) => {
+        if (!alive || error || !data || typeof data !== 'object') return
+        setPrefs(p => ({ ...p, ...data }))
+      })
+      .catch(() => {})
+    return () => { alive = false }
+  }, [])
+  // Push (debounced) whenever prefs change. Fails silently when offline.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      supabase.rpc('upsert_app_settings', { p_client_id: clientId(), p_prefs: prefs }).then(() => {}, () => {})
+    }, 800)
+    return () => clearTimeout(t)
+  }, [prefs])
 
   const update = useCallback((patch) => {
     setPrefs(p => ({ ...p, ...(typeof patch === 'function' ? patch(p) : patch) }))
