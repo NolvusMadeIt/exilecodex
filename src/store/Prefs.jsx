@@ -18,9 +18,15 @@ const DEFAULTS = {
   topComment: '',                      // free text inserted at the very top of .filter
   bottomComment: '',                   // free text appended at the bottom
   syntaxHighlight: true,               // colorize the Filter Output pane (comments, keywords, strings, etc.)
-  accordionsOpen: true,                // Quick Filter sections start expanded
+  accordionsOpen: true,                // Quick Filter sections start expanded (first run only)
   fontFamily: 'poppins',               // app typeface: 'poppins' | 'inter' | 'system'
   fontScale: 1,                        // app zoom: 0.9 | 1 | 1.1 | 1.2 (capped so it never gets too big)
+  // --- Remembered view state (QoL: the app looks how you left it) ---
+  lastRoute: '/presets',               // last tab you were on
+  dockOpen: true,                      // output panel expanded/collapsed
+  qfOpenSections: null,                // Quick Filter open sections (array; null = use accordionsOpen)
+  previewBg: 'Woods',                  // Preview scene background
+  previewBeams: true,                  // Preview beams toggle
 }
 
 // Bundled font stacks for the fontFamily pref.

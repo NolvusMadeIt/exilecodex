@@ -1,22 +1,33 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import { usePrefs } from '../store/Prefs.jsx'
 
 // Minimal hash router (no dependency). Keeps filter state intact across tab switches.
 const RouterCtx = createContext(null)
 
-function currentPath() {
+function currentPath(fallback) {
   const h = window.location.hash.replace(/^#/, '')
-  return h || '/presets'
+  return h || fallback || '/presets'
 }
 
 export function RouterProvider({ children }) {
-  const [path, setPath] = useState(currentPath)
+  const { prefs, update } = usePrefs()
+  // Restore the last tab on a fresh load (QoL), but never override a deep link in the URL.
+  const [path, setPath] = useState(() => currentPath(prefs.lastRoute))
 
   useEffect(() => {
-    const onHash = () => setPath(currentPath())
+    const onHash = () => setPath(currentPath(prefs.lastRoute))
     window.addEventListener('hashchange', onHash)
-    if (!window.location.hash) window.location.hash = '/presets'
+    if (!window.location.hash) window.location.hash = prefs.lastRoute || '/presets'
     return () => window.removeEventListener('hashchange', onHash)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Remember the current tab so the next visit opens where you left off. Also depends on
+  // prefs.lastRoute so it re-corrects if the Supabase prefs-pull merges a stale value back in.
+  useEffect(() => {
+    if (path && path !== prefs.lastRoute) update({ lastRoute: path })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [path, prefs.lastRoute])
 
   const navigate = useCallback((to) => {
     if (to !== currentPath()) window.location.hash = to

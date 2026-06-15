@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { ChevronRight, ChevronLeft } from 'lucide-react'
 import { TopBar } from './TopBar.jsx'
 import { SideNav } from './SideNav.jsx'
 import { FilterOutput } from './FilterOutput.jsx'
+import { usePrefs } from '../store/Prefs.jsx'
 
 // Filter Studio shell: fixed-viewport workstation — top action bar, left nav rail, scrolling
 // main work area, and a docked live output on the right (collapsible). Below xl the dock
 // hides and the output stacks under the main content so it's never lost.
 export function Layout({ children }) {
-  const [dockOpen, setDockOpen] = useState(true)
+  const { prefs, update } = usePrefs()
+  const dockOpen = prefs.dockOpen !== false // remembered across visits
+  const setDockOpen = (v) => update({ dockOpen: v })
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <TopBar />

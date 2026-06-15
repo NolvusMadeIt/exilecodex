@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { usePrefs } from '../store/Prefs.jsx'
@@ -87,9 +87,15 @@ function Section({ section, open, count, onToggle, qf, setQF }) {
 
 export function QuickFiltersPage() {
   const { active, updateSlice } = useFilter()
-  const { prefs } = usePrefs()
+  const { prefs, update } = usePrefs()
   const qf = active.quickFilters
-  const [openIds, setOpenIds] = useState(() => prefs.accordionsOpen ? new Set(SECTIONS.map(s => s.id)) : new Set())
+  // Remember which sections you left open, falling back to the accordionsOpen default first run.
+  const [openIds, setOpenIds] = useState(() =>
+    Array.isArray(prefs.qfOpenSections)
+      ? new Set(prefs.qfOpenSections)
+      : (prefs.accordionsOpen ? new Set(SECTIONS.map(s => s.id)) : new Set())
+  )
+  useEffect(() => { update({ qfOpenSections: [...openIds] }) }, [openIds]) // eslint-disable-line react-hooks/exhaustive-deps
   const toggleOpen = (id) => setOpenIds(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
   const expandAll = () => setOpenIds(new Set(SECTIONS.map(s => s.id)))
   const collapseAll = () => setOpenIds(new Set())

@@ -1,14 +1,18 @@
 import React, { useMemo, useState } from 'react'
-import { Plus, Trash2, ChevronUp, ChevronDown, GripVertical } from 'lucide-react'
+import { Plus, Trash2, ChevronUp, ChevronDown, GripVertical, ClipboardPaste, Upload } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { useCatalog } from '../lib/catalog.js'
+import { useToast } from '../store/Toast.jsx'
 import { CLASSES, iconFor } from '../data/items.js'
 import { asset } from '../data/assets.js'
 import { emptyCustomRule } from '../store/defaultSettings.js'
 import { DROP_TIERS } from '../data/dropTiers.js'
+import { parseGameItem } from '../lib/parseGameItem.js'
 import { ItemDropdown } from '../components/ItemDropdown.jsx'
 import { SimpleSelect } from '../components/SimpleSelect.jsx'
 import { Toggle, Help } from '../components/primitives.jsx'
+
+const GEAR_RARITIES = ['Normal', 'Magic', 'Rare', 'Unique']
 
 const RARITIES = [
   { v: 'Normal', color: '#c8c8c8' },
@@ -26,6 +30,7 @@ export function CustomRulesPage() {
 
   const setRules = (next) => update({ customRules: next })
   const addRule = () => setRules([...rules, emptyCustomRule(rules.length + 1)])
+  const addFromItem = (data) => setRules([...rules, { ...emptyCustomRule(rules.length + 1), ...data }])
   const patch = (id, p) => setRules(rules.map(r => r.id === id ? { ...r, ...p } : r))
   const remove = (id) => setRules(rules.filter(r => r.id !== id))
   const move = (id, dir) => {
@@ -58,6 +63,8 @@ export function CustomRulesPage() {
       <button onClick={addRule} className="btn-dark w-full"><Plus size={14} /> Add Custom Rule</button>
 
       <FreeText />
+
+      <PasteItemRule catalog={catalog} onAdd={addFromItem} />
     </div>
   )
 }
@@ -171,5 +178,121 @@ function FreeText() {
         </div>
       )}
     </div>
+  )
+}
+
+// Paste a copied in-game item (Ctrl+C) and turn its filterable header fields into a
+// pre-filled Custom Rule. Reuses the catalog to resolve the base type reliably.
+function PasteItemRule({ catalog, onAdd }) {
+  const toast = useToast()
+  const [open, setOpen] = useState(false)
+  const [text, setText] = useState('')
+  const [action, setAction] = useState('Show')
+  const [dropTier, setDropTier] = useState('A')
+  const [drag, setDrag] = useState(false)
+
+  const parsed = useMemo(() => (text.trim() ? parseGameItem(text, catalog) : null), [text, catalog])
+  const target = parsed && (parsed.baseType || parsed.itemClass)
+  const dt = DROP_TIERS.find(t => t.id === dropTier) || DROP_TIERS[5]
+
+  const readFile = (file) => {
+    if (!file) return
+    if (!/\.(txt|filter)$/i.test(file.name)) { toast.warn('Drop a .txt with a copied item.'); return }
+    const r = new FileReader()
+    r.onload = () => setText(String(r.result || ''))
+    r.readAsText(file)
+  }
+  const onDrop = (e) => { e.preventDefault(); setDrag(false); readFile(e.dataTransfer?.files?.[0]) }
+
+  const add = () => {
+    if (!target) { toast.warn('Paste a copied item first (hover an item in-game and press Ctrl+C).'); return }
+    const hasRarity = GEAR_RARITIES.includes(parsed.rarity)
+    onAdd({
+      action,
+      classes: parsed.itemClass ? [parsed.itemClass] : [],
+      baseTypes: parsed.baseType ? [parsed.baseType] : [],
+      rarity: hasRarity ? parsed.rarity : 'Normal',
+      rarityOp: hasRarity ? '==' : '>=', // ">= Normal" matches everything — i.e. no rarity gate
+      dropTier,
+      itemLevel: 0,
+      comment: parsed.name || parsed.baseType || 'Pasted item',
+    })
+    toast.success(`Added a ${action} rule for “${parsed.name || parsed.baseType}”.`, { title: 'Item rule' })
+    setText('')
+  }
+
+  return (
+    <div>
+      <button onClick={() => setOpen(o => !o)} className="section-bar w-full">
+        Add from a pasted item {open ? '▾' : '▸'}
+      </button>
+      {open && (
+        <div className={`panel p-3 mt-2 space-y-2.5 transition-colors ${drag ? 'ring-1 ring-poe-gold border-poe-gold' : ''}`}
+          onDragOver={e => { e.preventDefault(); if (!drag) setDrag(true) }}
+          onDragLeave={e => { e.preventDefault(); setDrag(false) }}
+          onDrop={onDrop}>
+          <p className="text-[11.5px] text-poe-text">
+            Hover an item in-game and press <span className="font-mono text-poe-text-bright">Ctrl+C</span>, then paste it here.
+            We build a rule from its <span className="text-poe-text-bright">Class · Base Type · Rarity</span> — then style it (colour, beam, minimap, sound) like any rule above.
+          </p>
+
+          <textarea value={text} onChange={e => setText(e.target.value)}
+            className="field h-28 font-mono text-[11px] py-1.5" placeholder={'Item Class: Sceptres\nRarity: Unique\nGuiding Palm of the Mind\nShrine Sceptre\n--------\n…'} />
+
+          {text.trim() && (
+            target ? (
+              <div className="rounded border border-poe-line bg-black p-2 space-y-1">
+                <div className="text-[12px] text-poe-text-bright">{parsed.name || parsed.baseType}</div>
+                <div className="flex flex-wrap gap-1">
+                  <Chip>{parsed.itemClass || 'Any class'}</Chip>
+                  {parsed.baseType ? <Chip>{parsed.baseType}</Chip> : <Chip warn>no base type detected</Chip>}
+                  {parsed.rarity ? <Chip>{parsed.rarity}</Chip> : null}
+                  {parsed.itemLevel ? <Chip>iLvl {parsed.itemLevel}</Chip> : null}
+                  {parsed.corrupted ? <Chip>Corrupted</Chip> : null}
+                </div>
+                {parsed.rarity === 'Unique' && parsed.baseType && (
+                  <div className="text-[11px] text-poe-gold/90">
+                    Filters match the base type, not the unique’s name — this targets all “{parsed.baseType}” uniques.
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-[11.5px] text-poe-danger">
+                Couldn’t read that as an item. Copy a whole item in-game with Ctrl+C and paste it all.
+              </div>
+            )
+          )}
+
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Show / Hide */}
+            <div className="flex rounded overflow-hidden border border-poe-line">
+              {['Show', 'Hide'].map(a => (
+                <button key={a} onClick={() => setAction(a)}
+                  className={`px-2 h-7 text-[12px] bg-black ${action === a ? (a === 'Show' ? 'bg-[#1a2a1a] text-poe-text-bright' : 'bg-[#2a1a1a] text-poe-text-bright') : 'text-poe-text hover:text-poe-heading hover:bg-[#1a1a1c]'}`}>{a}</button>
+              ))}
+            </div>
+            {/* Drop tier (style + sound) */}
+            <SimpleSelect value={dropTier} onChange={setDropTier} className="w-24"
+              style={{ color: `rgb(${dt.textColor.join(',')})` }} title="Drop-tier styling (colour, beam, minimap, sound)"
+              options={DROP_TIERS.map(t => ({ value: t.id, label: `${t.id}-Tier`, color: `rgb(${t.textColor.join(',')})` }))} />
+            <span className="text-[11px] text-poe-text/70 inline-flex items-center gap-1">
+              <Upload size={12} /> …or drop a .txt
+            </span>
+            <button onClick={add} disabled={!target} className="btn-dark h-8 ml-auto disabled:opacity-40">
+              <ClipboardPaste size={14} /> Add as Custom Rule
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function Chip({ children, warn }) {
+  return (
+    <span className={`inline-flex items-center rounded px-1.5 py-0.5 text-[10.5px] border ${warn ? 'border-poe-danger/50 text-poe-danger' : 'border-poe-line text-poe-text-bright'}`}
+      style={{ backgroundColor: '#000' }}>
+      {children}
+    </span>
   )
 }

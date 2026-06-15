@@ -4,6 +4,18 @@ export const CHANGELOG = [
   {
     date: '2026-06-15',
     tag: 'Release',
+    title: 'Nolvus Filter v0.9 — test it before you play',
+    body: [
+      'New “Will this drop show?” tester on the Preview page: paste any in-game item (Ctrl+C) and see exactly what your filter does with it — Shown or Hidden, the real in-game label, which rule decided it, and a “Why?” breakdown of every rule it matched.',
+      'One-click “Check valuable drops” confirms the chase items (Mirror, Divine, Exalted…) can’t slip past your filter.',
+      'Custom Rules: paste a copied item to build a rule straight from its Class, Base Type & Rarity — no typing, drag-and-drop a .filter works too.',
+      'More Quick Filters: hide small gold piles, highlight Rare jewellery, and always show high-item-level rare crafting bases.',
+      'The app now remembers your last tab, output-panel layout, open sections and Preview settings — it looks the way you left it.',
+    ],
+  },
+  {
+    date: '2026-06-15',
+    tag: 'Release',
     title: 'Nolvus Filter v0.8 — Community & a smarter start',
     body: [
       'New Community page: share the filter you’ve built, or browse, download, copy, and load filters from other exiles.',

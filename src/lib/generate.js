@@ -130,6 +130,7 @@ function quickFilterBlocks(qf, cosmetic) {
   L.push(...banner('Currency'), '')
   if (qf.hideScrolls) hide('Hide Scrolls of Wisdom', `BaseType == ${quote('Scroll of Wisdom')}`)
   if (qf.hideGold) hide('Hide Gold', `BaseType == ${quote('Gold')}`)
+  else if (qf.minGoldPile > 0) hide('Hide small gold piles', join(`BaseType == ${quote('Gold')}`, `StackSize < ${qf.minGoldPile}`))
   if (has(qf.currencyShow, 'shards')) show('Show Currency Shards', btHas(['Shard']), 'D')
   if (has(qf.currencyShow, 'runes')) show('Show Runes & Soul Cores', btHas(['Rune', 'Soul Core']), 'C')
   if (has(qf.currencyShow, 'catalysts')) show('Show Catalysts', btHas(['Catalyst']), 'C')
@@ -173,12 +174,14 @@ function quickFilterBlocks(qf, cosmetic) {
   eq('My Armour', qf.myArmour)
   eq('My Jewellery', qf.myJewellery)
   if (qf.showJewels) show('Show Jewels', cls('Jewels'), 'C')
+  if (qf.highlightJewellery) show('Highlight rare jewellery', join(cls(['Rings', 'Amulets', 'Belts']), 'Rarity >= Rare'), 'B')
 
   // ---- Equipment Filtering (rarity threshold + always-show quality/sockets) ----
   L.push(...banner('Equipment Filtering'), '')
   // Always-show overrides FIRST (first-match wins, so good gear survives the rarity hide).
   if (qf.gearMinQuality) show(`Always show ${qf.gearMinQuality}%+ quality gear`, join(cls(GEAR_CLASSES), `Quality >= ${qf.gearMinQuality}`), 'C')
   if (qf.gearMinSockets) show(`Always show gear with ${qf.gearMinSockets}+ sockets`, join(cls(GEAR_CLASSES), `Sockets >= ${qf.gearMinSockets}`), 'C')
+  if (qf.alwaysShowRareIlvl) show(`Always show rare crafting bases (iLvl ${qf.alwaysShowRareIlvl}+)`, join(cls(GEAR_CLASSES), 'Rarity Rare', `ItemLevel >= ${qf.alwaysShowRareIlvl}`), 'C')
   const minR = qf.gearMinRarity || 'all'
   if (minR === 'all') {
     show('Show all equipment', join(cls(GEAR_CLASSES), lvl(qf.gearMinItemLevel)), 'D')

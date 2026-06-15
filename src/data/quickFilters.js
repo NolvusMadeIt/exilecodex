@@ -59,6 +59,7 @@ export const SECTIONS = [
     { key: 'currencyShow', label: 'Show Currency Types', help: 'Pick which currency groups to show. (Orbs are always shown and tiered on the Tier List.)', control: 'multi', options: CURRENCY_TYPES, allLabel: 'Orbs only' },
     { key: 'hideScrolls', label: 'Hide Scrolls of Wisdom', help: 'Hide identify scrolls.', control: 'toggle' },
     { key: 'hideGold', label: 'Hide Gold', help: 'Hide gold piles entirely.', control: 'toggle' },
+    { key: 'minGoldPile', label: 'Min Gold Pile', help: 'Hide gold piles smaller than this — kills the constant small-gold spam while keeping the big piles. 0 = show all. (Ignored if Hide Gold is on.)', control: 'number', min: 0, max: 50000 },
     { key: 'showWaystones', label: 'Show Waystones', help: 'Show waystones / map devices.', control: 'toggle' },
     { key: 'minWaystoneTier', label: 'Min Waystone Tier', help: 'Only show waystones at/above this tier.', control: 'number', min: 1, max: 16 },
   ]},
@@ -90,6 +91,7 @@ export const SECTIONS = [
     { key: 'myArmour', label: 'My Armour', help: 'Show only your armour types.', control: 'classItems', group: 'armour' },
     { key: 'myJewellery', label: 'My Jewellery', help: 'Rings, amulets, belts you care about.', control: 'classItems', group: 'jewellery' },
     { key: 'showJewels', label: 'Show Jewels', help: 'Show jewels.', control: 'toggle' },
+    { key: 'highlightJewellery', label: 'Highlight Rare Jewellery', help: 'Make Rare+ Rings, Amulets & Belts stand out with a brighter highlight — they’re often your most valuable drops, so don’t walk past them.', control: 'toggle' },
   ]},
 
   { id: 'gear', title: 'Equipment Filtering', col: 'right', rows: [
@@ -97,6 +99,7 @@ export const SECTIONS = [
     { key: 'gearMinItemLevel', label: 'Min Item Level', help: 'Hide equipment below this item level.', control: 'number', min: 0, max: 100 },
     { key: 'gearMinQuality', label: 'Always Show Quality ≥', help: 'Always show any gear at/above this quality, regardless of rarity. 0 = off.', control: 'number', min: 0, max: 20, suffix: '%' },
     { key: 'gearMinSockets', label: 'Always Show Sockets ≥', help: 'Always show gear with at least this many sockets. 0 = off.', control: 'number', min: 0, max: 6 },
+    { key: 'alwaysShowRareIlvl', label: 'Always Show Rares ≥ iLvl', help: 'Always show Rare bases at/above this item level — high-item-level rares are the good crafting bases — even if you raised the rarity filter. 0 = off.', control: 'number', min: 0, max: 100 },
   ]},
 ]
 
@@ -108,7 +111,7 @@ export const QF_DEFAULTS = {
   levelingShow: ['weaponsArmour', 'jewellery', 'flasks'], disenchantRares: false,
   // currency
   currencyShow: ['shards', 'runes', 'catalysts', 'essences', 'omens'],
-  hideScrolls: true, hideGold: false, showWaystones: true, minWaystoneTier: 1,
+  hideScrolls: true, hideGold: false, minGoldPile: 0, showWaystones: true, minWaystoneTier: 1,
   // gems
   gemsShow: ['uncut', 'skill', 'support'], minGemLevel: 0,
   // flasks
@@ -118,9 +121,9 @@ export const QF_DEFAULTS = {
   // other & endgame
   endgameShow: ['quest', 'relics', 'trials', 'tablets', 'fragments', 'expedition'],
   // my equipment
-  myWeapons: [], myArmour: [], myJewellery: [], showJewels: true,
+  myWeapons: [], myArmour: [], myJewellery: [], showJewels: true, highlightJewellery: false,
   // equipment filtering
-  gearMinRarity: 'Rare', gearMinItemLevel: 0, gearMinQuality: 0, gearMinSockets: 0,
+  gearMinRarity: 'Rare', gearMinItemLevel: 0, gearMinQuality: 0, gearMinSockets: 0, alwaysShowRareIlvl: 0,
 }
 
 // Class option groups for the 'classItems' control.
