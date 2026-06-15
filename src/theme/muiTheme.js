@@ -6,8 +6,8 @@ import { createTheme } from '@mui/material/styles'
 // hex palette below is only a fallback for MUI's internal computations (ripples, focus).
 // Component overrides are intentionally un-Material: flat, no uppercase, custom radius.
 const V = (name, a) => (a == null ? `rgb(var(${name}))` : `rgb(var(${name}) / ${a})`)
-const SORA = "'Sora Variable', Sora, system-ui, sans-serif"
-const INTER = "'Inter Variable', Inter, system-ui, Arial, sans-serif"
+const SORA = "'Poppins', system-ui, sans-serif"
+const INTER = "'Poppins', system-ui, Arial, sans-serif"
 
 export const muiTheme = createTheme({
   palette: {

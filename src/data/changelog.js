@@ -2,6 +2,16 @@
 // Newest first. Edit this file to publish a new entry.
 export const CHANGELOG = [
   {
+    date: '2026-06-15',
+    tag: 'Release',
+    title: 'Nolvus Filter v0.7.2 — fresh type & polish',
+    body: [
+      'New typography across the whole app for a cleaner, friendlier feel.',
+      'Fixed the Mana Flask icon in Quick Filters (it was showing the life-flask art).',
+      'Added anonymous usage analytics on the web app.',
+    ],
+  },
+  {
     date: '2026-06-14',
     tag: 'Release',
     title: 'Nolvus Filter v0.7.1 — fully self-contained',
@@ -27,7 +37,7 @@ export const CHANGELOG = [
     body: [
       "New \"How to Use\" tab: an illustrated, step-by-step walkthrough of every tab so first-timers know exactly what to do.",
       "Checkboxes now show a proper checkmark instead of a solid colour fill — clearer at a glance across every dropdown.",
-      "Now available two ways: the web app (hosted on Netlify) and a Windows desktop app that wraps the same build.",
+      "Now available two ways: the web app (hosted on Vercel) and a Windows desktop app that wraps the same build.",
     ],
   },
   {

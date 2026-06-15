@@ -6,13 +6,13 @@
 // /sounds), which a custom secure origin resolves correctly (a bare file:// origin would not).
 //
 // "Always-latest" mode: set NOLVUS_APP_URL (env var) or REMOTE_URL below to your deployed
-// Netlify URL and the shell will load the live site instead of the bundled build.
+// site URL and the shell will load the live site instead of the bundled build.
 
 const { app, BrowserWindow, protocol, shell } = require('electron')
 const path = require('node:path')
 const fs = require('node:fs')
 
-// Point this at your Netlify URL (e.g. 'https://nolvusfilter.netlify.app') to load the live
+// Point this at your deployed URL (e.g. 'https://nolvusfiltereditor.vercel.app') to load the live
 // site instead of the bundled build. Leave empty to use the offline bundle.
 const REMOTE_URL = process.env.NOLVUS_APP_URL || ''
 

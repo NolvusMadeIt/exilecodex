@@ -10,12 +10,12 @@ That gives it a real, secure web origin, so the app's absolute paths (`/assets`,
 `/sounds`) resolve correctly and everything works **offline / self-contained**. A bare
 `file://` origin would break those absolute paths — hence the custom protocol.
 
-### "Always-latest" mode (load the live Netlify site)
+### "Always-latest" mode (load the live site)
 
 If you'd rather the desktop app always show the deployed web version, point it at your
-Netlify URL — either:
+deployed URL — either:
 
-- set an environment variable: `NOLVUS_APP_URL=https://your-site.netlify.app`, or
+- set an environment variable: `NOLVUS_APP_URL=https://nolvusfiltereditor.vercel.app`, or
 - edit `REMOTE_URL` near the top of `main.cjs`.
 
 When set, the shell loads the live site instead of the bundle (requires internet).

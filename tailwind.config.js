@@ -44,12 +44,9 @@ export default {
         },
       },
       fontFamily: {
-        // Fontin kept ONLY for the in-game item-label preview (ItemLabel uses font-smallcaps).
-        smallcaps: ['FontinSmallCaps', 'Verdana', 'sans-serif'],
-        fontin: ['FontinRegular', 'Verdana', 'sans-serif'],
-        // App UI fonts — Ember Forge identity.
-        display: ['Sora Variable', 'Sora', 'system-ui', 'sans-serif'],
-        body: ['Inter Variable', 'Inter', 'system-ui', 'Arial', 'sans-serif'],
+        // Poppins (Anthropic's brand font) across the whole UI, bundled locally.
+        display: ['Poppins', 'system-ui', 'sans-serif'],
+        body: ['Poppins', 'system-ui', 'Arial', 'sans-serif'],
         mono: ['Consolas', 'ui-monospace', 'monospace'],
       },
       boxShadow: {

@@ -30,7 +30,7 @@ const GEM_TYPES = [
 ]
 const FLASK_TYPES = [
   { value: 'life', label: 'Life Flasks', icon: CATEGORY_ICON.flasks },
-  { value: 'mana', label: 'Mana Flasks', icon: CATEGORY_ICON.flasks },
+  { value: 'mana', label: 'Mana Flasks', icon: CUR('gear/flasks/flaskmana01.webp') },
   { value: 'charms', label: 'Charms', icon: CATEGORY_ICON.charms },
 ]
 const ENDGAME_TYPES = [

@@ -1,4 +1,5 @@
 import React, { lazy, Suspense } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import { FilterProvider } from './store/FilterStore.jsx'
 import { PrefsProvider } from './store/Prefs.jsx'
 import { GameInfoProvider } from './store/GameInfo.jsx'
@@ -58,6 +59,7 @@ export default function App() {
           </FilterProvider>
         </PrefsProvider>
       </GameInfoProvider>
+      <Analytics />
     </ErrorBoundary>
   )
 }

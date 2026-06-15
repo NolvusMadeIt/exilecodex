@@ -15,7 +15,7 @@ export function ItemLabel({ text, textColor, bgColor, borderColor, fontSize = 32
         <span aria-hidden className="absolute left-1/2 -translate-x-1/2 bottom-full"
           style={{ width: 8, height: 46, background: `linear-gradient(to top, ${beamCss}, transparent)`, filter: 'blur(2px)', opacity: 0.85 }} />
       )}
-      <span className="inline-flex items-center gap-1 font-smallcaps leading-none whitespace-nowrap"
+      <span className="inline-flex items-center gap-1 leading-none whitespace-nowrap"
         style={{
           color: rgb(textColor, '#c8c8c8'),
           background: bgColor ? rgb(bgColor, 'transparent') : 'rgba(0,0,0,0.55)',
