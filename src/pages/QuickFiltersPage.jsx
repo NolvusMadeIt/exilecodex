@@ -8,6 +8,7 @@ import { Toggle, Help } from '../components/primitives.jsx'
 import { ItemDropdown } from '../components/ItemDropdown.jsx'
 import { MultiSelect } from '../components/MultiSelect.jsx'
 import { SimpleSelect } from '../components/SimpleSelect.jsx'
+import { useT } from '../i18n/index.js'
 
 const classOptions = (group) => CLASS_GROUPS[group].map(name => {
   const c = CLASSES.find(c => c.name === name)
@@ -69,12 +70,13 @@ function Row({ row, qf, setQF }) {
 }
 
 function Section({ section, open, count, onToggle, qf, setQF }) {
+  const t = useT()
   return (
     <div className="panel">
       <button onClick={() => onToggle(section.id)} className="w-full flex items-center gap-2 px-3 py-2 hover:bg-white/[0.03]">
         {open ? <ChevronDown size={15} className="text-poe-gold-dim" /> : <ChevronRight size={15} className="text-poe-gold-dim" />}
-        <span className="gold-heading text-[15px] flex-1 text-left">{section.title}</span>
-        <span className="text-[11px] text-poe-text">{count} active</span>
+        <span className="gold-heading text-[15px] flex-1 text-left">{t(section.title)}</span>
+        <span className="text-[11px] text-poe-text">{count} {t('active')}</span>
       </button>
       {open && (
         <div className="px-3 pb-2 pt-1 border-t border-poe-line space-y-1.5">
@@ -88,6 +90,7 @@ function Section({ section, open, count, onToggle, qf, setQF }) {
 export function QuickFiltersPage() {
   const { active, updateSlice } = useFilter()
   const { prefs, update } = usePrefs()
+  const t = useT()
   const qf = active.quickFilters
   // Remember which sections you left open, falling back to the accordionsOpen default first run.
   const [openIds, setOpenIds] = useState(() =>
@@ -118,11 +121,11 @@ export function QuickFiltersPage() {
     <div>
       <div className="flex items-center justify-between mb-3 gap-3">
         <p className="text-[12.5px] text-poe-text">
-          Adjust the filter to your preference. Toggle rows or pick item types from the image dropdowns — no syntax to type.
+          {t('Adjust the filter to your preference. Toggle rows or pick item types from the image dropdowns — no syntax to type.')}
         </p>
         <div className="flex items-center gap-1 shrink-0">
-          <button onClick={expandAll} className="btn-dark h-7 text-[11px]"><ChevronsUpDown size={12} /> Expand all</button>
-          <button onClick={collapseAll} className="btn-dark h-7 text-[11px]"><ChevronsDownUp size={12} /> Collapse all</button>
+          <button onClick={expandAll} className="btn-dark h-7 text-[11px]"><ChevronsUpDown size={12} /> {t('Expand all')}</button>
+          <button onClick={collapseAll} className="btn-dark h-7 text-[11px]"><ChevronsDownUp size={12} /> {t('Collapse all')}</button>
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">

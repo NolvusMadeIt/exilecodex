@@ -6,6 +6,7 @@ import { usePrefs } from '../store/Prefs.jsx'
 import { useGameInfo } from '../store/GameInfo.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { useRouter } from '../lib/router.jsx'
+import { useT } from '../i18n/index.js'
 import { generateFilter } from '../lib/generate.js'
 
 const safe = (n) => ((n || 'filter').replace(/[^a-z0-9-_. ]/gi, '').trim() || 'filter')
@@ -21,6 +22,7 @@ export function SharedFiltersPage() {
   const gameInfo = useGameInfo()
   const toast = useToast()
   const { navigate } = useRouter()
+  const t = useT()
 
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(true)
@@ -161,7 +163,7 @@ export function SharedFiltersPage() {
   return (
     <div className="space-y-6 max-w-[920px] mx-auto">
       <header className="text-center">
-        <h1 className="gold-heading text-[22px] flex items-center justify-center gap-2"><Users size={20} /> Community Filters</h1>
+        <h1 className="gold-heading text-[22px] flex items-center justify-center gap-2"><Users size={20} /> {t('Community Filters')}</h1>
         <p className="text-[12.5px] text-poe-text mt-1 max-w-[640px] mx-auto">
           Share the filter you've built here — or paste / upload your own <code className="font-mono">.filter</code>. Grab one from another exile by downloading, copying, or loading it straight into the editor.
         </p>
@@ -171,12 +173,12 @@ export function SharedFiltersPage() {
       <section className={`panel p-4 transition-colors ${dragOver ? 'ring-1 ring-poe-gold border-poe-gold' : ''}`}
         onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave}>
         <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
-          <div className="gold-heading text-[14px]">Share a filter</div>
+          <div className="gold-heading text-[14px]">{t('Share a filter')}</div>
           <div className="flex rounded overflow-hidden border border-poe-line shrink-0">
             {[['current', 'My current filter'], ['paste', 'Paste / upload']].map(([v, label]) => (
               <button key={v} onClick={() => setMode(v)}
                 className={`px-3 h-8 text-[12px] ${mode === v ? 'bg-[#1a2a1a] text-poe-text-bright' : 'bg-black text-poe-text hover:text-poe-heading hover:bg-[#1a1a1c]'}`}>
-                {label}
+                {t(label)}
               </button>
             ))}
           </div>
@@ -212,9 +214,9 @@ export function SharedFiltersPage() {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <input className="field h-9" placeholder="Filter name (required)" maxLength={120}
+          <input className="field h-9" placeholder={t('Filter name (required)')} maxLength={120}
             value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
-          <input className="field h-9" placeholder="Your name (required)" maxLength={60}
+          <input className="field h-9" placeholder={t('Your name (required)')} maxLength={60}
             value={form.author} onChange={(e) => setForm((f) => ({ ...f, author: e.target.value }))} />
         </div>
         <textarea className="field h-20 mt-3 py-2 text-[12px]" placeholder="Description (required) — what's it tuned for? Class, game stage, strictness…" maxLength={2000}
@@ -224,7 +226,7 @@ export function SharedFiltersPage() {
             <Wand2 size={12} /> {mode === 'paste' ? 'Pasted filters are shared as-is (no editable settings).' : 'Shared with editable settings.'}
           </span>
           <button className="btn-action" onClick={submit} disabled={submitting || !canSubmit}>
-            {submitting ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Share filter
+            {submitting ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} {t('Share filter')}
           </button>
         </div>
       </section>
@@ -232,9 +234,9 @@ export function SharedFiltersPage() {
       {/* List */}
       <section>
         <div className="section-bar flex items-center justify-between">
-          <span>Shared by the community {list.length ? `(${list.length})` : ''}</span>
-          <button className="text-poe-text hover:text-poe-gold inline-flex items-center gap-1 text-[11px]" onClick={fetchList} title="Refresh">
-            <RefreshCw size={12} /> Refresh
+          <span>{t('Shared by the community')} {list.length ? `(${list.length})` : ''}</span>
+          <button className="text-poe-text hover:text-poe-gold inline-flex items-center gap-1 text-[11px]" onClick={fetchList} title={t('Refresh')}>
+            <RefreshCw size={12} /> {t('Refresh')}
           </button>
         </div>
 
@@ -263,13 +265,13 @@ export function SharedFiltersPage() {
                 {item.description && <p className="text-[12px] text-poe-text mt-1.5 line-clamp-3">{item.description}</p>}
                 <div className="mt-auto pt-3 flex flex-wrap gap-2">
                   <button className="btn-dark h-8" onClick={() => download(item)} disabled={busy === item.id}>
-                    {busy === item.id ? <Loader2 size={13} className="animate-spin" /> : <Download size={13} />} Download
+                    {busy === item.id ? <Loader2 size={13} className="animate-spin" /> : <Download size={13} />} {t('Download')}
                   </button>
                   <button className="btn-dark h-8" onClick={() => copy(item)} disabled={busy === item.id}>
-                    <Clipboard size={13} /> Copy
+                    <Clipboard size={13} /> {t('Copy')}
                   </button>
                   <button className="btn-dark h-8" onClick={() => loadIntoEditor(item)} disabled={busy === item.id} title="Load this filter's settings into the editor">
-                    <FolderInput size={13} /> Load
+                    <FolderInput size={13} /> {t('Load')}
                   </button>
                 </div>
               </div>

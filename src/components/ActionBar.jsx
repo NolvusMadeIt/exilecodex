@@ -8,6 +8,7 @@ import { usePrefs } from '../store/Prefs.jsx'
 import { useGameInfo } from '../store/GameInfo.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { useRouter } from '../lib/router.jsx'
+import { useT } from '../i18n/index.js'
 import { generateFilter } from '../lib/generate.js'
 import { parseFilterText } from '../lib/parseFilter.js'
 
@@ -27,6 +28,7 @@ export function ActionBar() {
   const gameInfo = useGameInfo()
   const toast = useToast()
   const { navigate } = useRouter()
+  const t = useT()
   const [copied, setCopied] = useState(false)
   const [saveMenu, setSaveMenu] = useState(false)
   const [importMenu, setImportMenu] = useState(false)
@@ -173,7 +175,7 @@ export function ActionBar() {
       {/* Import split */}
       <div className="relative" ref={importMenuRef}>
         <ButtonGroup variant="outlined" size="small" aria-label="Import">
-          <Button startIcon={<Upload size={14} />} onClick={() => fileRef.current?.click()}>Import</Button>
+          <Button startIcon={<Upload size={14} />} onClick={() => fileRef.current?.click()}>{t('Import')}</Button>
           <Button onClick={() => setImportMenu(o => !o)} aria-label="Import options" sx={{ px: 0.75, minWidth: 0 }}>
             <ChevronDown size={12} />
           </Button>
@@ -194,7 +196,7 @@ export function ActionBar() {
       {/* Save split-button */}
       <div className="relative" ref={saveMenuRef}>
         <ButtonGroup variant="contained" color="primary" size="small" aria-label="Save">
-          <Button startIcon={<Save size={14} />} onClick={saveToNewFile} sx={{ minWidth: 130 }}>Save to new file</Button>
+          <Button startIcon={<Save size={14} />} onClick={saveToNewFile} sx={{ minWidth: 130 }}>{t('Save to new file')}</Button>
           <Button onClick={() => setSaveMenu(o => !o)} aria-label="Save options" sx={{ px: 0.75, minWidth: 0 }}>
             <ChevronDown size={12} />
           </Button>
@@ -219,7 +221,7 @@ export function ActionBar() {
       </div>
 
       <Button variant="outlined" size="small" startIcon={<Clipboard size={14} />} onClick={copy}>
-        {copied ? 'Copied!' : 'Copy'}
+        {copied ? t('Copied!') : t('Copy')}
       </Button>
       <Button
         variant="outlined"
@@ -236,7 +238,7 @@ export function ActionBar() {
           }
         }}
       >
-        Reset
+        {t('Reset')}
       </Button>
     </div>
   )

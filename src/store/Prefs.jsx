@@ -21,12 +21,18 @@ const DEFAULTS = {
   accordionsOpen: true,                // Quick Filter sections start expanded (first run only)
   fontFamily: 'poppins',               // app typeface: 'poppins' | 'inter' | 'system'
   fontScale: 1,                        // app zoom: 0.9 | 1 | 1.1 | 1.2 (capped so it never gets too big)
+  lang: 'en',                          // UI language: en | ru | pt | de | zh (see src/i18n)
   // --- Remembered view state (QoL: the app looks how you left it) ---
   lastRoute: '/presets',               // last tab you were on
   dockOpen: true,                      // output panel expanded/collapsed
   qfOpenSections: null,                // Quick Filter open sections (array; null = use accordionsOpen)
   previewBg: 'Woods',                  // Preview scene background
   previewBeams: true,                  // Preview beams toggle
+  // --- Game overlay (desktop app only) ---
+  overlayEnabled: false,               // always-on-top + snap to a screen edge
+  overlaySide: 'right',                // 'left' | 'right'
+  overlayDisplay: 'auto',              // 'auto' (follow mouse / game screen) | 'primary' | display id
+  overlayHotkey: 'Shift+Alt+F',        // global show/hide hotkey (Electron accelerator)
 }
 
 // Bundled font stacks for the fontFamily pref.

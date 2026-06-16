@@ -5,6 +5,8 @@ import { useGameInfo } from '../store/GameInfo.jsx'
 import { useFilter } from '../store/FilterStore.jsx'
 import { Help, Toggle } from '../components/primitives.jsx'
 import { SimpleSelect } from '../components/SimpleSelect.jsx'
+import { OverlaySettings } from '../components/OverlaySettings.jsx'
+import { useT } from '../i18n/index.js'
 
 const SOURCE_LABEL = { default: 'fallback', bundled: 'bundled with app' }
 
@@ -12,17 +14,18 @@ export function SettingsPage() {
   const { prefs, update } = usePrefs()
   const gameInfo = useGameInfo()
   const { active } = useFilter()
+  const t = useT()
 
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="gold-heading text-[22px]">Settings</h1>
+        <h1 className="gold-heading text-[22px]">{t('Settings')}</h1>
         <p className="text-[12px] text-poe-text mt-1">Theme, filter meta, and custom comments. These apply across every filter you build.</p>
       </div>
 
       {/* Theme */}
       <section>
-        <div className="section-bar">Theme</div>
+        <div className="section-bar">{t('Theme')}</div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
           {THEMES.map(t => {
             const on = prefs.theme === t.id
@@ -46,11 +49,11 @@ export function SettingsPage() {
 
       {/* Typography */}
       <section>
-        <div className="section-bar">Typography</div>
+        <div className="section-bar">{t('Typography')}</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
           <div>
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-poe-text mb-1">
-              Font <Help text="The typeface used throughout the app. Poppins is the default; every option is bundled with the app (works offline)." />
+              {t('Font')} <Help text="The typeface used throughout the app. Poppins is the default; every option is bundled with the app (works offline)." />
             </div>
             <SimpleSelect
               value={prefs.fontFamily || 'poppins'}
@@ -65,7 +68,7 @@ export function SettingsPage() {
           </div>
           <div>
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-poe-text mb-1">
-              Font size <Help text="Scales the whole app. Capped at Extra Large (120%) so the layout always stays usable." />
+              {t('Font size')} <Help text="Scales the whole app. Capped at Extra Large (120%) so the layout always stays usable." />
             </div>
             <SimpleSelect
               value={String(prefs.fontScale ?? 1)}
@@ -80,12 +83,12 @@ export function SettingsPage() {
             />
           </div>
         </div>
-        <p className="text-[11px] text-poe-text/70 mt-2">Applies instantly across the whole app and is saved with your settings.</p>
+        <p className="text-[11px] text-poe-text/70 mt-2">{t('Applies instantly across the whole app and is saved with your settings.')}</p>
       </section>
 
       {/* Filter Output display options */}
       <section>
-        <div className="section-bar">Filter Output</div>
+        <div className="section-bar">{t('Filter Output')}</div>
         <div className="mt-2">
           <Toggle
             checked={prefs.syntaxHighlight ?? true}
@@ -99,7 +102,7 @@ export function SettingsPage() {
 
       {/* Interface options */}
       <section>
-        <div className="section-bar">Interface</div>
+        <div className="section-bar">{t('Interface')}</div>
         <div className="mt-2">
           <Toggle
             checked={prefs.accordionsOpen ?? true}
@@ -111,9 +114,12 @@ export function SettingsPage() {
         </div>
       </section>
 
+      {/* Game Overlay (desktop app) */}
+      <OverlaySettings />
+
       {/* Filter meta */}
       <section>
-        <div className="section-bar">Filter Meta <span className="text-[10px] opacity-70">(written at the top of every .filter)</span></div>
+        <div className="section-bar">{t('Filter Meta')} <span className="text-[10px] opacity-70">(written at the top of every .filter)</span></div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
           {/* League — dropdown, auto-populated from version.json (+ live API if reachable) */}
           <div>
@@ -167,7 +173,7 @@ export function SettingsPage() {
 
       {/* Custom comments */}
       <section>
-        <div className="section-bar">Custom Comments</div>
+        <div className="section-bar">{t('Custom Comments')}</div>
         <p className="text-[12px] text-poe-text">
           Free-text added to the top and bottom of every exported <code className="font-mono">.filter</code>. Each line is auto-prefixed with <code className="font-mono">#</code> (PoE filter comment syntax).
         </p>

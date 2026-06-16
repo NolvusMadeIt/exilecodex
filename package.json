@@ -1,7 +1,7 @@
 {
   "name": "nolvusfilter",
   "private": true,
-  "version": "0.9.0",
+  "version": "0.10.0",
   "type": "module",
   "description": "Visual loot-filter editor for Path of Exile 2.",
   "author": "Nolvus",
@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "electron": "electron .",
+    "make:icon": "electron scripts/make-ico.cjs",
     "dist:win": "npm run build && electron-builder --win"
   },
   "dependencies": {
@@ -56,6 +57,7 @@
       "package.json"
     ],
     "win": {
+      "icon": "build/icon.ico",
       "target": [
         "nsis",
         "portable"
@@ -67,6 +69,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "shortcutName": "Nolvus's Filter",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
       "artifactName": "NolvusFilter-Setup-${version}.${ext}"
     },
     "portable": {

@@ -4,9 +4,11 @@ import { useFilter } from '../store/FilterStore.jsx'
 import { PRESETS, CLASSES, ENDGAME_CONTENT, GAME_MODES } from '../data/presets.js'
 import { Toggle, Help, ItemIcon } from '../components/primitives.jsx'
 import { StartFilterChoices } from '../components/StartFilterChoices.jsx'
+import { useT } from '../i18n/index.js'
 
 export function PresetsPage() {
   const { active, update, updateSlice } = useFilter()
+  const t = useT()
   const selected = PRESETS.find(p => p.id === active.preset)
 
   const applyPreset = (p) => {
@@ -27,8 +29,8 @@ export function PresetsPage() {
       {/* How do you want to start? */}
       <div>
         <div className="text-center mb-3">
-          <h1 className="gold-heading text-[22px]">Start your filter</h1>
-          <p className="text-[12px] text-poe-text mt-0.5">Start from a clean slate, or bring in a filter you already have.</p>
+          <h1 className="gold-heading text-[22px]">{t('Start your filter')}</h1>
+          <p className="text-[12px] text-poe-text mt-0.5">{t('Start from a clean slate, or bring in a filter you already have.')}</p>
         </div>
         <div className="max-w-[560px] mx-auto">
           <StartFilterChoices mode="current" showPreset={false} />
@@ -38,15 +40,15 @@ export function PresetsPage() {
       {/* OR — the preset path below */}
       <div className="flex items-center gap-4 max-w-[760px] mx-auto py-1">
         <div className="flex-1 h-px bg-gradient-to-r from-transparent to-poe-line" />
-        <span className="font-smallcaps text-poe-gold text-[34px] leading-none tracking-[0.06em] select-none">Or</span>
+        <span className="font-smallcaps text-poe-gold text-[34px] leading-none tracking-[0.06em] select-none">{t('Or')}</span>
         <div className="flex-1 h-px bg-gradient-to-l from-transparent to-poe-line" />
       </div>
 
       {/* Select your class — the preset path */}
       <div>
         <div className="text-center mb-3">
-          <h1 className="gold-heading text-[22px]">Select your class</h1>
-          <p className="text-[12px] text-poe-text mt-0.5">Shows items relevant to your class, such as your main weapon and armour types.</p>
+          <h1 className="gold-heading text-[22px]">{t('Select your class')}</h1>
+          <p className="text-[12px] text-poe-text mt-0.5">{t('Shows items relevant to your class, such as your main weapon and armour types.')}</p>
         </div>
         <div className="grid grid-cols-4 sm:grid-cols-8 gap-3 max-w-[920px] mx-auto">
           {CLASSES.map(c => {
@@ -68,9 +70,9 @@ export function PresetsPage() {
 
       {/* Select where you are at in the game */}
       <div className="text-center border-t border-poe-line pt-5">
-        <h1 className="gold-heading text-[22px]">Select where you are at in the game</h1>
+        <h1 className="gold-heading text-[22px]">{t('Select where you are at in the game')}</h1>
         <p className="text-[12px] text-poe-text mt-1">
-          This will set several Quick Filters and an appropriate Tiering Mode for Currency and Uniques.
+          {t('This will set several Quick Filters and an appropriate Tiering Mode for Currency and Uniques.')}
         </p>
       </div>
 
@@ -109,7 +111,7 @@ export function PresetsPage() {
       {/* Game Mode & Economy */}
       <div className="border-t border-poe-line pt-4">
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-          <span className="text-[12px] text-poe-text font-smallcaps tracking-wide">Game Mode &amp; Economy <Help text="Choose league/economy, hardcore, or SSF tiering." /></span>
+          <span className="text-[12px] text-poe-text font-smallcaps tracking-wide">{t('Game Mode & Economy')} <Help text="Choose league/economy, hardcore, or SSF tiering." /></span>
           {GAME_MODES.map(m => (
             <Toggle key={m.id} checked={!!active.gameMode[m.id]} onChange={v => updateSlice('gameMode', { [m.id]: v })}
               label={<>{m.label}{m.sub && <span className="text-poe-gold-dim"> {m.sub}</span>}</>} help={m.help} />
@@ -127,7 +129,7 @@ export function PresetsPage() {
       {selected?.endgame && (
         <div className="border-t border-poe-line pt-4">
           <div className="text-center mb-3">
-            <h2 className="gold-heading text-[18px]">Endgame Content</h2>
+            <h2 className="gold-heading text-[18px]">{t('Endgame Content')}</h2>
             <p className="text-[12px] text-poe-text mt-0.5">
               Select which endgame content you are occasionally engaging with. Deselecting hides items that aren't relevant to you.
             </p>

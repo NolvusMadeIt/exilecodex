@@ -2,6 +2,7 @@ import React from 'react'
 import { Tabs, Tab, Button } from '@mui/material'
 import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked, GraduationCap, Users } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
+import { useT } from '../i18n/index.js'
 
 const MAIN = [
   { to: '/presets', label: 'Presets', icon: Star },
@@ -22,6 +23,7 @@ const SECONDARY = [
 // (accent bar on the active item's left edge), MUI Buttons for the secondary group.
 export function SideNav() {
   const { path, navigate } = useRouter()
+  const t = useT()
   const isActive = (to) => path === to || (to === '/presets' && path === '/')
   const mainValue = MAIN.find(t => isActive(t.to))?.to ?? false
 
@@ -44,9 +46,9 @@ export function SideNav() {
           '& .MuiTabs-indicator': { left: 0, right: 'auto', width: '2px', backgroundColor: 'rgb(var(--c-accent))' },
         }}
       >
-        {MAIN.map(t => {
-          const Icon = t.icon
-          return <Tab key={t.to} value={t.to} disableRipple label={t.label}
+        {MAIN.map(item => {
+          const Icon = item.icon
+          return <Tab key={item.to} value={item.to} disableRipple label={t(item.label)}
             icon={<Icon size={16} />} iconPosition="start" sx={tabSx} />
         })}
       </Tabs>
@@ -54,18 +56,18 @@ export function SideNav() {
       <div className="h-px bg-poe-line/70 mx-3 my-2.5" />
 
       <div className="flex flex-col gap-0.5 px-2">
-        {SECONDARY.map(t => {
-          const Icon = t.icon
-          const active = isActive(t.to)
+        {SECONDARY.map(item => {
+          const Icon = item.icon
+          const active = isActive(item.to)
           return (
-            <Button key={t.to} onClick={() => navigate(t.to)} startIcon={<Icon size={15} />}
+            <Button key={item.to} onClick={() => navigate(item.to)} startIcon={<Icon size={15} />}
               sx={{
                 justifyContent: 'flex-start', px: 1.5, py: 0.75, fontSize: 13,
                 color: active ? 'rgb(var(--c-accent))' : 'rgb(var(--c-text))',
                 backgroundColor: active ? 'rgb(var(--c-accent) / 0.10)' : 'transparent',
                 '&:hover': { backgroundColor: 'rgb(var(--c-text) / 0.05)', color: 'rgb(var(--c-heading))' },
               }}>
-              {t.label}
+              {t(item.label)}
             </Button>
           )
         })}

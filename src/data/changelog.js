@@ -2,6 +2,19 @@
 // Newest first. Edit this file to publish a new entry.
 export const CHANGELOG = [
   {
+    date: '2026-06-16',
+    tag: 'Release',
+    title: 'Nolvus Filter v0.10 — game overlay & a face of its own',
+    body: [
+      'New Nolvus logo across the app, the desktop window, the taskbar icon, the installer and a new system-tray icon.',
+      'Game overlay (desktop app): pin the studio on top of Path of Exile 2 in Borderless mode and slide it in/out with a hotkey — default Shift+Alt+F — without alt-tabbing. The panel docks to the left or right edge, ~38% of your screen wide and ~90% tall, so the game stays visible beside it.',
+      'Smooth slide-and-fade animation tuned to stay light, and to never bleed onto a second monitor.',
+      'Multi-monitor aware: pick which screen the overlay uses, or leave it on “Auto” and it appears on whichever screen your mouse — and your game — is on.',
+      'System-tray icon to show the window, toggle the overlay, or quit.',
+      'Web visitors get a slim banner pointing to the desktop app for the in-game overlay (dismissible).',
+    ],
+  },
+  {
     date: '2026-06-15',
     tag: 'Release',
     title: 'Nolvus Filter v0.9 — test it before you play',

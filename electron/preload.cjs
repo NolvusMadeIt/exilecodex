@@ -17,4 +17,9 @@ contextBridge.exposeInMainWorld('nolvusDesktop', {
     ipcRenderer.on('win:maximized', handler)
     return () => ipcRenderer.removeListener('win:maximized', handler)
   },
+  // --- Game overlay ---
+  overlayApply: (opts) => ipcRenderer.send('overlay:apply', opts),
+  overlayToggle: () => ipcRenderer.send('overlay:toggle'),
+  overlaySetHotkey: (accel) => ipcRenderer.invoke('overlay:setHotkey', accel),
+  overlayGetDisplays: () => ipcRenderer.invoke('overlay:getDisplays'),
 })

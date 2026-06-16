@@ -1,9 +1,12 @@
 import React from 'react'
 import { ChevronRight, ChevronLeft } from 'lucide-react'
 import { TitleBar } from './TitleBar.jsx'
+import { OrnateFrame } from './OrnateFrame.jsx'
 import { TopBar } from './TopBar.jsx'
 import { SideNav } from './SideNav.jsx'
 import { FilterOutput } from './FilterOutput.jsx'
+import { OverlayController } from './OverlayController.jsx'
+import { DesktopPromoBanner } from './DesktopPromoBanner.jsx'
 import { usePrefs } from '../store/Prefs.jsx'
 
 // Filter Studio shell: fixed-viewport workstation — top action bar, left nav rail, scrolling
@@ -20,7 +23,7 @@ export function Layout({ children }) {
       <div className="flex flex-1 min-h-0">
         <SideNav />
 
-        <main className="flex-1 min-w-0 overflow-y-auto">
+        <main className="flex-1 min-w-0 overflow-y-auto" style={{ scrollbarGutter: 'stable both-edges' }}>
           <div className="px-5 py-5 mx-auto" style={{ maxWidth: 1180 }}>
             {children}
             {/* Output stacks here on narrower screens (no room for the dock) */}
@@ -48,6 +51,9 @@ export function Layout({ children }) {
           </button>
         )}
       </div>
+      <DesktopPromoBanner />
+      <OverlayController />
+      <OrnateFrame />
     </div>
   )
 }

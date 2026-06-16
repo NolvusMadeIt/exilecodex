@@ -4,6 +4,7 @@ import { useRouter } from '../lib/router.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { parseFilterText } from '../lib/parseFilter.js'
 import { defaultSettings } from '../store/defaultSettings.js'
+import { useT } from '../i18n/index.js'
 
 const stripExt = (n) => (n || 'filter').replace(/\.(filter|json|txt)$/i, '').trim() || 'filter'
 
@@ -21,6 +22,7 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
   const { createFilter, addFilter, resetActive, importSettings, importCustomRules, renameActive, active } = useFilter()
   const { navigate } = useRouter()
   const toast = useToast()
+  const t = useT()
   const fileRef = useRef(null)
   const [drag, setDrag] = useState(false)
 
@@ -106,14 +108,14 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
   return (
     <>
       <div className={`grid grid-cols-1 gap-3 ${showPreset ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
-        <Card art={<BlankArt />} title="Blank filter"
-          desc="Start from a clean baseline and build it up yourself." onClick={startBlank} />
+        <Card art={<BlankArt />} title={t('Blank filter')}
+          desc={t('Start from a clean baseline and build it up yourself.')} onClick={startBlank} />
         {showPreset && (
-          <Card art={<PresetArt />} title="From a preset"
-            desc="Pick your class and game stage; we set sensible defaults." onClick={startPreset} />
+          <Card art={<PresetArt />} title={t('From a preset')}
+            desc={t('Pick your class and game stage; we set sensible defaults.')} onClick={startPreset} />
         )}
-        <Card art={<ImportArt />} title="Import existing"
-          desc="Load a .filter or .json — drop it here or click to browse."
+        <Card art={<ImportArt />} title={t('Import existing')}
+          desc={t('Load a .filter or .json — drop it here or click to browse.')}
           onClick={() => fileRef.current?.click()}
           drag={drag}
           onDragOver={(e) => { e.preventDefault(); if (!drag) setDrag(true) }}
