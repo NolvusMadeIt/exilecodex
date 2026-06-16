@@ -1,7 +1,7 @@
 {
   "name": "nolvusfilter",
   "private": true,
-  "version": "0.10.0",
+  "version": "0.10.1",
   "type": "module",
   "description": "Visual loot-filter editor for Path of Exile 2.",
   "author": "Nolvus",
@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "electron": "electron .",
+    "landing": "vite landing --port 4321",
     "make:icon": "electron scripts/make-ico.cjs",
     "dist:win": "npm run build && electron-builder --win"
   },

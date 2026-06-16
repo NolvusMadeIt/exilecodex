@@ -4,6 +4,15 @@ export const CHANGELOG = [
   {
     date: '2026-06-16',
     tag: 'Release',
+    title: 'Nolvus Filter v0.10.1 — join the Discord',
+    body: [
+      'Added a Discord button in the sidebar — come share filters, ask questions and suggest features.',
+      'New landing page for the project with screenshots and downloads.',
+    ],
+  },
+  {
+    date: '2026-06-16',
+    tag: 'Release',
     title: 'Nolvus Filter v0.10 — game overlay & a face of its own',
     body: [
       'New Nolvus logo across the app, the desktop window, the taskbar icon, the installer and a new system-tray icon.',

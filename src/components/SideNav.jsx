@@ -71,7 +71,24 @@ export function SideNav() {
             </Button>
           )
         })}
+
+        {/* Discord — opens the community invite (system browser in the desktop app) */}
+        <a href="https://discord.gg/4gueh3Kb3A" target="_blank" rel="noreferrer"
+          className="group mt-1.5 flex items-center gap-2 px-2.5 h-9 rounded-md text-[13px] font-medium
+            border border-[#5865F2]/40 text-poe-text bg-[#5865F2]/10
+            hover:bg-[#5865F2]/20 hover:text-white hover:border-[#5865F2]/70 transition-colors">
+          <DiscordIcon className="text-[#7782f6] group-hover:text-white transition-colors" />
+          <span>{t('Join our Discord')}</span>
+        </a>
       </div>
     </nav>
+  )
+}
+
+function DiscordIcon({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3c-.2.36-.43.84-.593 1.226a18.27 18.27 0 0 0-3.93 0A12.6 12.6 0 0 0 11.44 3a19.74 19.74 0 0 0-3.76 1.37C2.96 9.05 2.2 13.61 2.55 18.1a19.9 19.9 0 0 0 6.06 3.08c.49-.67.93-1.38 1.3-2.13-.71-.27-1.39-.6-2.03-.99.17-.13.34-.26.5-.4 3.92 1.83 8.16 1.83 12.03 0 .17.14.33.27.5.4-.65.39-1.33.72-2.04.99.38.75.81 1.46 1.3 2.13a19.86 19.86 0 0 0 6.07-3.08c.42-5.2-.78-9.72-3.22-13.73ZM9.68 15.33c-1.18 0-2.15-1.09-2.15-2.42 0-1.34.95-2.42 2.15-2.42 1.2 0 2.17 1.09 2.15 2.42 0 1.33-.95 2.42-2.15 2.42Zm4.64 0c-1.18 0-2.15-1.09-2.15-2.42 0-1.34.95-2.42 2.15-2.42 1.2 0 2.17 1.09 2.15 2.42 0 1.33-.94 2.42-2.15 2.42Z"/>
+    </svg>
   )
 }
