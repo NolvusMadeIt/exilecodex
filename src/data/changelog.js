@@ -3,6 +3,14 @@
 export const CHANGELOG = [
   {
     date: '2026-06-24',
+    tag: 'Release',
+    title: 'Nolvus Filter v0.12.2 — read patch notes in-app',
+    body: [
+      'Patch Notes are now read right inside the app — no more bouncing to the forum. Every patch from Early Access (0.1.0) to the current 0.5.3 has its notes bundled and loaded on demand, so it’s fast and works offline.',
+    ],
+  },
+  {
+    date: '2026-06-24',
     tag: 'Fix',
     title: 'Nolvus Filter v0.12.1 — Quick Editor dropdowns are back + much faster',
     body: [

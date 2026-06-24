@@ -1,31 +1,45 @@
-import React, { useState } from 'react'
-import { ExternalLink, ScrollText } from 'lucide-react'
-import { PATCHES, PATCH_NOTES_FORUM } from '../data/patchNotes.js'
+import React, { useEffect, useState } from 'react'
+import { ScrollText, Loader2, ExternalLink } from 'lucide-react'
+import { PATCHES } from '../data/patchNotes.js'
+import { Markdown } from '../components/Markdown.jsx'
 
 const fmtDate = (s) => {
   if (!s) return ''
   const [y, m, d] = String(s).split('-').map(Number)
   if (!y || !m || !d) return s
-  // Render in UTC so a plain YYYY-MM-DD never shifts a day in a behind-UTC timezone.
   return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' })
 }
 
-// Opens the official thread in the system browser (desktop) / a new tab (web).
-const Out = ({ href, children, className = '' }) => (
-  <a href={href} target="_blank" rel="noreferrer" className={className}>{children}</a>
-)
+// Per-patch notes are fetched once from our own /patchnotes/<version>.md (same-origin, cached) —
+// no external calls, works offline. Cached in-memory so re-selecting a patch is instant.
+const cache = new Map()
+function useNotes(version, hasNotes) {
+  const [state, setState] = useState({ loading: false, md: '', error: false })
+  useEffect(() => {
+    if (!hasNotes) { setState({ loading: false, md: '', error: false }); return }
+    if (cache.has(version)) { setState({ loading: false, md: cache.get(version), error: false }); return }
+    let alive = true
+    setState({ loading: true, md: '', error: false })
+    fetch(`/patchnotes/${version}.md`)
+      .then(r => r.ok ? r.text() : Promise.reject(new Error(String(r.status))))
+      .then(t => { cache.set(version, t); if (alive) setState({ loading: false, md: t, error: false }) })
+      .catch(() => { if (alive) setState({ loading: false, md: '', error: true }) })
+    return () => { alive = false }
+  }, [version, hasNotes])
+  return state
+}
 
 export function PatchNotesPage() {
   const [selected, setSelected] = useState(() => (PATCHES.find(p => p.current) || PATCHES[0])?.version)
   const patch = PATCHES.find(p => p.version === selected) || PATCHES[0]
+  const { loading, md, error } = useNotes(patch.version, !!patch.notes)
 
   return (
     <div className="space-y-4">
       <header className="text-center">
         <h1 className="gold-heading text-[22px]">Patch Notes</h1>
         <p className="text-[12px] text-poe-text mt-1 max-w-[680px] mx-auto">
-          Every Path of Exile 2 patch from Early Access to now. Pick a version on the left — notes open on the
-          <Out href={PATCH_NOTES_FORUM} className="text-poe-gold hover:underline"> official forum</Out>.
+          Every Path of Exile 2 patch from Early Access to now — read them right here. Pick a version on the left.
         </p>
       </header>
 
@@ -49,45 +63,49 @@ export function PatchNotesPage() {
         </div>
 
         {/* detail */}
-        <div className="panel p-4 min-h-[260px]">
-          <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="panel p-4 min-h-[300px]">
+          <div className="flex items-center gap-2 pb-3 border-b border-poe-line">
+            <span className="w-8 h-8 grid place-items-center rounded-lg bg-poe-gold/10 border border-poe-gold-dim/50 text-poe-gold shrink-0"><ScrollText size={16} /></span>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="w-8 h-8 grid place-items-center rounded-lg bg-poe-gold/10 border border-poe-gold-dim/50 text-poe-gold shrink-0"><ScrollText size={16} /></span>
-                <h2 className="gold-heading text-[19px]">Patch {patch.version}</h2>
-                {patch.current && <span className="text-[10px] uppercase tracking-wide bg-poe-gold/90 text-black px-1.5 py-0.5 rounded-sm">Current</span>}
-              </div>
-              <p className="text-[12.5px] text-poe-text mt-1.5">
-                {patch.codename ? <span className="text-poe-text-bright">{patch.codename}</span> : (patch.season ? <>Part of the <span className="text-poe-text-bright">{patch.season}</span> season</> : 'Patch notes')}
-                {patch.date ? ` · ${fmtDate(patch.date)}` : ''}
-              </p>
+              <h2 className="gold-heading text-[19px] leading-tight">Patch {patch.version}{patch.codename ? ` — ${patch.codename}` : ''}</h2>
+              <p className="text-[11.5px] text-poe-text">{patch.season && !patch.codename ? `${patch.season} season` : 'Path of Exile 2'}{patch.date ? ` · ${fmtDate(patch.date)}` : ''}</p>
             </div>
-            <Out href={patch.url} className="btn-action h-9 text-[12.5px] shrink-0">
-              Read full patch notes <ExternalLink size={14} />
-            </Out>
+            {patch.current && <span className="ml-auto text-[10px] uppercase tracking-wide bg-poe-gold/90 text-black px-1.5 py-0.5 rounded-sm self-start">Current</span>}
           </div>
 
+          {/* notes body */}
+          <div className="pt-3">
+            {!patch.notes ? (
+              <p className="text-[12.5px] text-poe-text/80">Full notes for this patch are being added. Check back soon.</p>
+            ) : loading ? (
+              <div className="flex items-center gap-2 text-[12px] text-poe-text py-6"><Loader2 size={15} className="animate-spin text-poe-gold" /> Loading notes…</div>
+            ) : error ? (
+              <p className="text-[12.5px] text-poe-danger">Couldn’t load these notes. Please try again.</p>
+            ) : (
+              <Markdown source={md} />
+            )}
+          </div>
+
+          {/* hotfixes (in-app list, no external links) */}
           {patch.hotfixes?.length > 0 && (
-            <div className="mt-4">
+            <div className="mt-5">
               <div className="section-bar">Hotfixes &amp; follow-ups</div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mt-1">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 mt-1">
                 {patch.hotfixes.map((h, i) => (
-                  <Out key={i} href={h.url}
-                    className="group flex items-center justify-between gap-2 rounded-lg border border-poe-line bg-black/30 px-3 py-1.5 hover:border-poe-gold-dim hover:bg-[#1a1a1c]">
+                  <li key={i} className="flex items-center justify-between gap-2 rounded-lg border border-poe-line bg-black/30 px-3 py-1.5">
                     <span className="text-[12.5px] text-poe-text-bright truncate">{h.label}</span>
-                    <span className="flex items-center gap-2 shrink-0">
-                      {h.date && <span className="text-[10.5px] text-poe-text/70 font-mono">{fmtDate(h.date)}</span>}
-                      <ExternalLink size={13} className="text-poe-text/50 group-hover:text-poe-gold" />
-                    </span>
-                  </Out>
+                    {h.date && <span className="text-[10.5px] text-poe-text/70 font-mono shrink-0">{fmtDate(h.date)}</span>}
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           )}
 
-          <p className="text-[11px] text-poe-text/60 mt-4">
-            Patch notes are hosted by Grinding Gear Games — each link opens the official thread on pathofexile.com.
-          </p>
+          {patch.url && (
+            <p className="text-[10.5px] text-poe-text/45 mt-5">
+              Source: official Path of Exile forum (<a href={patch.url} target="_blank" rel="noreferrer" className="hover:text-poe-text/70 underline-offset-2 hover:underline inline-flex items-center gap-0.5">{patch.version} thread <ExternalLink size={10} /></a>).
+            </p>
+          )}
         </div>
       </div>
     </div>

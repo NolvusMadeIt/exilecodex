@@ -8,7 +8,7 @@ export const PATCH_NOTES_FORUM = 'https://www.pathofexile.com/forum/view-forum/2
 
 export const PATCHES = [
   {
-    version: '0.5.3', season: 'Return of the Ancients', date: '2026-06-18', url: T('3968601'), current: true,
+    version: '0.5.3', season: 'Return of the Ancients', date: '2026-06-18', url: T('3968601'), current: true, notes: true,
     hotfixes: [
       { label: '0.5.3 Restart', date: '2026-06-23', url: T('3974332') },
       { label: 'Hotfix 9', date: '2026-06-23', url: T('3973617') },
@@ -23,7 +23,7 @@ export const PATCHES = [
     ],
   },
   {
-    version: '0.5.2', season: 'Return of the Ancients', date: '2026-06-11', url: T('3960375'),
+    version: '0.5.2', season: 'Return of the Ancients', date: '2026-06-11', url: T('3960375'), notes: true,
     hotfixes: [
       { label: 'Hotfix 4', date: '2026-06-17', url: T('3967062') },
       { label: 'Hotfix 3', date: '2026-06-14', url: T('3964950') },
@@ -32,7 +32,7 @@ export const PATCHES = [
     ],
   },
   {
-    version: '0.5.1', season: 'Return of the Ancients', date: '2026-06-04', url: T('3949197'),
+    version: '0.5.1', season: 'Return of the Ancients', date: '2026-06-04', url: T('3949197'), notes: true,
     hotfixes: [
       { label: 'Hotfix 9', date: '2026-06-09', url: T('3957958') },
       { label: 'Hotfix 8', date: '2026-06-09', url: T('3956720') },
@@ -47,7 +47,7 @@ export const PATCHES = [
   },
   {
     version: '0.5.0', season: 'Return of the Ancients', codename: 'Return of the Ancients',
-    date: '2026-05-21', url: T('3932540'), major: true,
+    date: '2026-05-21', url: T('3932540'), major: true, notes: true,
     hotfixes: [
       { label: '0.5.0b Hotfix 14 (rolled back)', date: '2026-06-03', url: T('3946948') },
       { label: '0.5.0b Hotfix 13', date: '2026-06-03', url: T('3945385') },
@@ -70,12 +70,12 @@ export const PATCHES = [
     ],
   },
   {
-    version: '0.4.0', codename: 'The Last of the Druids', url: T('3883495'), major: true,
+    version: '0.4.0', codename: 'The Last of the Druids', url: T('3883495'), major: true, notes: true,
     hotfixes: [
       { label: '0.4.0l Patch Notes', date: '2026-05-25', url: T('3933290') },
     ],
   },
-  { version: '0.3.0', codename: 'The Third Edict', url: T('3826682'), major: true },
-  { version: '0.2.0', codename: 'Dawn of the Hunt', url: T('3740562'), major: true },
-  { version: '0.1.0', codename: 'Early Access Launch', url: T('3595427'), major: true },
+  { version: '0.3.0', codename: 'The Third Edict', url: T('3826682'), major: true, notes: true },
+  { version: '0.2.0', codename: 'Dawn of the Hunt', url: T('3740562'), major: true, notes: true },
+  { version: '0.1.0', codename: 'Early Access Launch', url: T('3595427'), major: true, notes: true },
 ]
