@@ -4,9 +4,10 @@ export const CHANGELOG = [
   {
     date: '2026-06-24',
     tag: 'Fix',
-    title: 'Nolvus Filter v0.11.1 — update checks',
+    title: 'Nolvus Filter v0.11.2 — update checks',
     body: [
       'Checking for updates no longer shows a technical error when there’s nothing new — it now simply tells you you’re on the latest version.',
+      'Added a “Check for updates” button (with your current version) on the Settings page.',
       'Update downloads and the desktop download link now come from the public releases page.',
     ],
   },

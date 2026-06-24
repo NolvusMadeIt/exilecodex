@@ -1,11 +1,12 @@
-import React from 'react'
-import { Lock } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { Lock, RefreshCw } from 'lucide-react'
 import { usePrefs, THEMES } from '../store/Prefs.jsx'
 import { useGameInfo } from '../store/GameInfo.jsx'
 import { useFilter } from '../store/FilterStore.jsx'
 import { Help, Toggle } from '../components/primitives.jsx'
 import { SimpleSelect } from '../components/SimpleSelect.jsx'
 import { OverlaySettings } from '../components/OverlaySettings.jsx'
+import { desktopApi } from '../lib/desktop.js'
 import { useT } from '../i18n/index.js'
 
 const SOURCE_LABEL = { default: 'fallback', bundled: 'bundled with app' }
@@ -16,12 +17,42 @@ export function SettingsPage() {
   const { active } = useFilter()
   const t = useT()
 
+  // Desktop-only: current app version + a manual update check (results show as a dialog / the
+  // bottom-left banner, handled in the main process).
+  const [appVersion, setAppVersion] = useState('')
+  const [checking, setChecking] = useState(false)
+  useEffect(() => {
+    if (desktopApi?.getVersion) desktopApi.getVersion().then(setAppVersion).catch(() => {})
+  }, [])
+  const checkUpdates = () => {
+    if (!desktopApi?.checkForUpdate) return
+    setChecking(true)
+    desktopApi.checkForUpdate()
+    setTimeout(() => setChecking(false), 4000)
+  }
+
   return (
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="gold-heading text-[22px]">{t('Settings')}</h1>
         <p className="text-[12px] text-poe-text mt-1">Theme, filter meta, and custom comments. These apply across every filter you build.</p>
       </div>
+
+      {/* Updates (desktop app only) */}
+      {desktopApi && (
+        <section>
+          <div className="section-bar">{t('Updates')}</div>
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            <span className="text-[12.5px] text-poe-text">
+              Current version <span className="font-mono text-poe-text-bright">v{appVersion || '…'}</span>
+            </span>
+            <button onClick={checkUpdates} disabled={checking} className="btn-dark h-8 text-[12px] disabled:opacity-50">
+              <RefreshCw size={13} className={checking ? 'animate-spin' : ''} /> {checking ? 'Checking…' : 'Check for updates'}
+            </button>
+          </div>
+          <p className="text-[11px] text-poe-text/70 mt-1.5">When a newer version is published you’ll get a prompt in the bottom-left to update now or later.</p>
+        </section>
+      )}
 
       {/* Theme */}
       <section>
