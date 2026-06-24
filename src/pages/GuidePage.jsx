@@ -46,12 +46,12 @@ const GUIDE = [
     ),
   },
   {
-    id: 'quick', to: '/quick-filters', icon: SlidersHorizontal, title: 'Quick Filters', tag: 'Fine-tune',
-    what: 'Adjust what shows and hides without typing any syntax. Related options are grouped into dropdowns — pick from lists instead of guessing.',
+    id: 'quick', to: '/quick-editor', icon: SlidersHorizontal, title: 'Quick Editor', tag: 'Fine-tune',
+    what: 'Hide anything you don’t want to see and highlight the drops you care about. Your edits layer on top of the chosen preset and always win in-game.',
     steps: [
-      'Expand a section (or use Expand all).',
-      'Use the dropdowns to choose which item types to show.',
-      'Set the "Show Equipment ≥" rarity to hide low-rarity clutter.',
+      'Use Quick hides for one-click strictness (hide all Normal/Magic, hide small gold piles).',
+      'Pick your weapon & armour types under My equipment to hide off-build gear.',
+      'Add a hide or highlight rule and match by class, base type, rarity or item level.',
     ],
     visual: (
       <div className="panel p-2 w-full max-w-[300px] space-y-1.5">
@@ -181,7 +181,7 @@ export function GuidePage() {
       <header className="text-center">
         <h1 className="gold-heading text-[22px]">How to Use Nolvus's Filter</h1>
         <p className="text-[12.5px] text-poe-text mt-1 max-w-[700px] mx-auto">
-          New here? Each tab does one job. On <span className="text-poe-text-bright">Presets</span> you start blank, import an existing filter, or pick a preset — then fine-tune in <span className="text-poe-text-bright">Quick Filters</span>, <span className="text-poe-text-bright">Preview</span>, and save. You can also share or grab filters on the <span className="text-poe-text-bright">Community</span> page. Here's what each tab is for.
+          New here? Each tab does one job. On <span className="text-poe-text-bright">Presets</span> you start blank, import an existing filter, or pick a preset — then fine-tune in the <span className="text-poe-text-bright">Quick Editor</span>, <span className="text-poe-text-bright">Preview</span>, and save. You can also share or grab filters on the <span className="text-poe-text-bright">Community</span> page. Here's what each tab is for.
         </p>
       </header>
 

@@ -7,7 +7,7 @@ import { useGameInfo } from '../store/GameInfo.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { useT } from '../i18n/index.js'
-import { generateFilter } from '../lib/generate.js'
+import { buildFilter } from '../lib/buildFilter.js'
 
 const safe = (n) => ((n || 'filter').replace(/[^a-z0-9-_. ]/gi, '').trim() || 'filter')
 function stampNow() {
@@ -49,9 +49,7 @@ export function SharedFiltersPage() {
 
   useEffect(() => { fetchList() }, [fetchList])
 
-  const buildText = () => generateFilter(active, {
-    ...prefs, gameVersion: gameInfo.gameVersion, gameVersionLabel: gameInfo.gameVersionLabel, _generatedAt: stampNow(),
-  })
+  const buildText = () => buildFilter(active, { gameInfo, prefs, stamp: stampNow() })
 
   // Read a dropped/selected .filter file into the paste box.
   const readFile = (file) => {
@@ -93,7 +91,7 @@ export function SharedFiltersPage() {
       }
       settings = null // raw paste: no editable settings to attach
     } else {
-      filter_text = buildText()
+      filter_text = await buildText()
       settings = active
     }
 
@@ -155,7 +153,7 @@ export function SharedFiltersPage() {
       if (!settings) throw new Error('This shared filter has no editable settings.')
       importSettings(settings)
       toast.success(`Loaded "${item.name}" into the editor.`, { title: 'Loaded' })
-      navigate('/quick-filters')
+      navigate('/quick-editor')
     } catch (e) { toast.error('Could not load: ' + (e?.message || '')) }
     finally { setBusy(null) }
   }

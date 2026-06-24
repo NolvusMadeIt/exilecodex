@@ -10,7 +10,8 @@ const stripExt = (n) => (n || 'filter').replace(/\.(filter|json|txt)$/i, '').tri
 
 // A filter with nothing built on it yet — used to skip the "you'll lose work" confirm.
 const isPristine = (f) =>
-  !!f && !(f.customRules?.length) && !f.preset && !f.klass &&
+  !!f && !(f.customRules?.length) && !(f.overrides?.rules?.length) &&
+  !(f.tierOverrides && Object.keys(f.tierOverrides).length) &&
   !(f.freeText?.top) && !(f.freeText?.bottom)
 
 // The "how do you want to start a filter" cards, with self-contained SVG art.
@@ -42,7 +43,7 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
       resetActive()
     }
     toast.info('Started a blank filter — build it up however you like.')
-    navigate('/quick-filters'); done()
+    navigate('/quick-editor'); done()
   }
 
   const startPreset = () => {
@@ -72,7 +73,7 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
             importSettings(settings); renameActive(settings.name || base)
             toast.success(`Loaded settings from "${file.name}".`, { title: 'Imported' })
           }
-          navigate('/quick-filters'); done(); return
+          navigate('/quick-editor'); done(); return
         }
 
         // .filter — parse rules out of the raw filter text

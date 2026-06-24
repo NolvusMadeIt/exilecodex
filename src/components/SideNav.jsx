@@ -6,7 +6,7 @@ import { useT } from '../i18n/index.js'
 
 const MAIN = [
   { to: '/presets', label: 'Presets', icon: Star },
-  { to: '/quick-filters', label: 'Quick Filters', icon: SlidersHorizontal },
+  { to: '/quick-editor', label: 'Quick Editor', icon: SlidersHorizontal },
   { to: '/tier-lists', label: 'Tier Lists', icon: ListOrdered },
   { to: '/custom-rules', label: 'Custom Rules', icon: Pencil },
   { to: '/cosmetic', label: 'Cosmetic', icon: Shirt },

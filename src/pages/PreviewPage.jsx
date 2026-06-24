@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Eye, EyeOff, Volume2, VolumeX, ShieldCheck, FlaskConical, ChevronDown, ChevronRight } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { usePrefs } from '../store/Prefs.jsx'
@@ -7,7 +7,7 @@ import { useCatalog } from '../lib/catalog.js'
 import { DROP_TIERS } from '../data/dropTiers.js'
 import { ItemLabel } from '../components/ItemLabel.jsx'
 import { Toggle } from '../components/primitives.jsx'
-import { generateFilter } from '../lib/generate.js'
+import { buildFilter } from '../lib/buildFilter.js'
 import { parseFilterBlocks, evaluateItem, explainItem } from '../lib/filterEngine.js'
 import { parseGameItem } from '../lib/parseGameItem.js'
 
@@ -55,9 +55,14 @@ export function PreviewPage() {
   const ts = active.cosmetic?.tierStyles || {}
 
   // The actual filter the player would use — parsed into rule blocks for the tester.
-  const blocks = useMemo(() => {
-    const text = generateFilter(active, { ...prefs, gameVersion: gameInfo.gameVersion, gameVersionLabel: gameInfo.gameVersionLabel })
-    return parseFilterBlocks(text)
+  // Built async (the base core file is fetched at runtime), re-parsed on any change.
+  const [blocks, setBlocks] = useState([])
+  useEffect(() => {
+    let alive = true
+    buildFilter(active, { gameInfo, prefs })
+      .then(text => { if (alive) setBlocks(parseFilterBlocks(text)) })
+      .catch(() => { if (alive) setBlocks([]) })
+    return () => { alive = false }
   }, [active, prefs, gameInfo])
 
   const tierStyle = (id) => {
@@ -96,7 +101,7 @@ export function PreviewPage() {
       </div>
 
       <p className="text-[11.5px] text-poe-text text-center">
-        Live preview of how <span className="text-poe-text-bright">{active.name}</span> renders in-game. Tier colors, beams and minimap icons come from your Cosmetic settings.
+        Preview of your <span className="text-poe-text-bright">Cosmetic</span> drop-tier styles — colors, beams and minimap icons. For exactly what <span className="text-poe-text-bright">{active.name}</span> does with a specific drop, use the tester below.
       </p>
 
       <DropTester blocks={blocks} />

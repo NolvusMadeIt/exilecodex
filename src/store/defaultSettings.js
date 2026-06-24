@@ -1,29 +1,52 @@
 // The single filter settings object. Every page is a view/editor of this shape.
-// Generator (lib/generate.js) turns it into .filter text.
-import { QF_DEFAULTS } from '../data/quickFilters.js'
+// lib/buildFilter.js turns it into .filter text: a real core base file (strictness x style)
+// with the user's overrides spliced in.
+import { DEFAULT_STRICTNESS, DEFAULT_STYLE } from '../data/coreFilters.js'
 
 export function defaultSettings(name = "Nolvus's Filter") {
   return {
     name,
     version: '0.0.1',        // semver of this filter — auto-bumps on Save and Import
     sourceFile: null,        // { name, fromFileHandle } — set on import for "overwrite"
-    preset: null,            // one of PRESETS ids
-    klass: null,             // selected class id
+    // Base selection: which real core filter to build on.
+    strictness: DEFAULT_STRICTNESS, // '0-soft' … '6-uber-plus-strict'
+    style: DEFAULT_STYLE,           // 'default' | 'aura' | 'cobalt' | …
+    klass: null,             // selected class id (informational; gear filtering lives in overrides.gear)
     gameMode: { league: true, hardcore: false, ssf: false },
-    options: { transparentGold: false, customizeTopTier: true },
-    endgameContent: {
-      bossUniques: true, chanceBases: true, trialsOfChaos: true, trialsOfSekhemas: true,
-      showSupportGems: true, showJewels: true, showLowValueUniques: false, showAllIdentified: false,
+    // Quick Editor + customization, compiled to override blocks at the top of the base file.
+    overrides: {
+      rules: [],             // user-built hide / show / highlight rules (see emptyOverrideRule)
+      toggles: {},           // convenience toggles: hideNormal, hideMagic, minGoldPile, hideRaresBelowIlvl
+      gear: { weapons: [], armour: [] }, // class-aware gear: types to KEEP (others hidden)
     },
-    // Quick Filters: flat map of key -> value (schema in data/quickFilters.js).
-    quickFilters: { ...QF_DEFAULTS },
-    // Custom Rules: precedence-ordered Show/Hide/Highlight rules.
+    // Custom Rules: precedence-ordered Show/Hide rules (also compiled into overrides).
     customRules: [],
     freeText: { top: '', bottom: '' },
-    // Cosmetic: per drop-tier style overrides keyed by tier id.
+    // Cosmetic: per drop-tier style overrides keyed by tier id (used by Tier List highlights).
     cosmetic: { hiddenGearTransparent: true, hiddenFlasks: false, hiddenJewellery: false, tierStyles: {} },
-    // Tier list overrides: itemName -> tierId (drag/drop moves).
+    // Tier list overrides: itemName -> tierId (drag/drop moves) → compiled to overrides.
     tierOverrides: {},
+  }
+}
+
+// A blank Quick Editor override rule (hide / show / highlight anything).
+export function emptyOverrideRule(n = 1) {
+  return {
+    id: 'ov' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    enabled: true,
+    action: 'Hide',          // 'Hide' | 'Show'
+    label: `Rule ${n}`,
+    match: {                 // every field optional; only set fields constrain the rule
+      classes: [], baseType: '', baseMode: 'contains',
+      rarity: '', rarityOp: '<=',
+      itemLevel: '', itemLevelOp: '<',
+      quality: '', qualityOp: '>=',
+      sockets: '', socketsOp: '>=',
+      stackSize: '', stackSizeOp: '>=',
+      waystoneTier: '', waystoneTierOp: '>=',
+      areaLevel: '', areaLevelOp: '<=',
+    },
+    style: null,             // null → DEFAULT_HIGHLIGHT when action is Show
   }
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "nolvusfilter",
   "private": true,
-  "version": "0.10.1",
+  "version": "0.11.0",
   "type": "module",
   "description": "Visual loot-filter editor for Path of Exile 2.",
   "author": "Nolvus",
@@ -26,6 +26,7 @@
     "@mui/material": "^9.1.1",
     "@supabase/supabase-js": "^2.108.1",
     "@vercel/analytics": "^2.0.1",
+    "electron-updater": "^6.8.9",
     "lucide-react": "^0.453.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -49,6 +50,13 @@
     "appId": "com.nolvus.filter",
     "productName": "Nolvus's Filter",
     "executableName": "NolvusFilter",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "NolvusMadeIt",
+        "repo": "nolvusfiltereditor"
+      }
+    ],
     "directories": {
       "output": "release"
     },

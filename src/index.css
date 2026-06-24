@@ -140,6 +140,10 @@ body {
   .filter-op      { color: #fdba74; }
 }
 
+/* Bottom-left update banner — a single, subtle rise-in on mount (no looping motion). */
+@keyframes update-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.update-rise { animation: update-rise 0.28s ease-out; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }

@@ -28,10 +28,17 @@ function normalizeFilter(f) {
   return {
     ...d, ...f, name,
     version: f?.version || d.version,
+    strictness: f?.strictness || d.strictness,
+    style: f?.style || d.style,
     gameMode: { ...d.gameMode, ...f?.gameMode },
-    options: { ...d.options, ...f?.options },
-    endgameContent: { ...d.endgameContent, ...f?.endgameContent },
-    quickFilters: { ...d.quickFilters, ...f?.quickFilters },
+    overrides: {
+      rules: Array.isArray(f?.overrides?.rules) ? f.overrides.rules : d.overrides.rules,
+      toggles: { ...d.overrides.toggles, ...f?.overrides?.toggles },
+      gear: {
+        weapons: f?.overrides?.gear?.weapons || d.overrides.gear.weapons,
+        armour: f?.overrides?.gear?.armour || d.overrides.gear.armour,
+      },
+    },
     cosmetic: { ...d.cosmetic, ...f?.cosmetic },
     customRules: Array.isArray(f?.customRules) ? f.customRules : d.customRules,
     freeText: { ...d.freeText, ...f?.freeText },

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ChevronRight, ChevronLeft } from 'lucide-react'
 import { TitleBar } from './TitleBar.jsx'
 import { OrnateFrame } from './OrnateFrame.jsx'
@@ -7,15 +7,26 @@ import { SideNav } from './SideNav.jsx'
 import { FilterOutput } from './FilterOutput.jsx'
 import { OverlayController } from './OverlayController.jsx'
 import { DesktopPromoBanner } from './DesktopPromoBanner.jsx'
+import { UpdateBanner } from './UpdateBanner.jsx'
 import { usePrefs } from '../store/Prefs.jsx'
+import { useRouter } from '../lib/router.jsx'
+import { desktopApi } from '../lib/desktop.js'
 
 // Filter Studio shell: fixed-viewport workstation — top action bar, left nav rail, scrolling
 // main work area, and a docked live output on the right (collapsible). Below xl the dock
 // hides and the output stacks under the main content so it's never lost.
 export function Layout({ children }) {
   const { prefs, update } = usePrefs()
+  const { navigate } = useRouter()
   const dockOpen = prefs.dockOpen !== false // remembered across visits
   const setDockOpen = (v) => update({ dockOpen: v })
+
+  // Tray menu → renderer navigation (e.g. "Settings"). Desktop only; no-op on the web.
+  useEffect(() => {
+    if (!desktopApi?.onNavigate) return
+    return desktopApi.onNavigate((route) => navigate(route))
+  }, [navigate])
+
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <TitleBar />
@@ -52,6 +63,7 @@ export function Layout({ children }) {
         )}
       </div>
       <DesktopPromoBanner />
+      <UpdateBanner />
       <OverlayController />
       <OrnateFrame />
     </div>

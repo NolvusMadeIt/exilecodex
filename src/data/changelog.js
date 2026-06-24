@@ -2,6 +2,20 @@
 // Newest first. Edit this file to publish a new entry.
 export const CHANGELOG = [
   {
+    date: '2026-06-24',
+    tag: 'Release',
+    title: 'Nolvus Filter v0.11 — presets that actually work, a new Quick Editor & auto-updates',
+    body: [
+      'Rebuilt on complete, in-game-ready core filters. Strictness presets (Soft → Uber-Plus Strict) and styles now load a real, battle-tested ruleset — pick one and it just works.',
+      'New Style picker: Default, Aura, Cobalt, Dark Mode, Mythic, Vaal, Zen and Custom Sounds.',
+      '“Quick Filters” is now the Quick Editor — hide or highlight anything by class, base type, rarity, item level, quality, sockets, stack size and more. Your edits sit on top of the preset and always win in-game.',
+      'Class-aware gear: pick the weapon and armour types you use, and off-build drops get hidden automatically.',
+      'Tier List, Cosmetic and Custom Rules now layer cleanly on top of your chosen preset.',
+      'Auto-updates (desktop app): when a new version is ready you’ll get a prompt in the bottom-left showing the current and new version — update now, or later.',
+      'Expanded system-tray menu: open the app, jump to Settings, check for updates, open Discord, or quit.',
+    ],
+  },
+  {
     date: '2026-06-16',
     tag: 'Release',
     title: 'Nolvus Filter v0.10.1 — join the Discord',

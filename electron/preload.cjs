@@ -22,4 +22,20 @@ contextBridge.exposeInMainWorld('nolvusDesktop', {
   overlayToggle: () => ipcRenderer.send('overlay:toggle'),
   overlaySetHotkey: (accel) => ipcRenderer.invoke('overlay:setHotkey', accel),
   overlayGetDisplays: () => ipcRenderer.invoke('overlay:getDisplays'),
+  // --- App version + auto-update ---
+  getVersion: () => ipcRenderer.invoke('app:version'),
+  checkForUpdate: () => ipcRenderer.send('update:check'),
+  installUpdate: () => ipcRenderer.send('update:install'),
+  // Subscribe to update status: { state, current?, next?, percent?, message? }. Returns unsubscribe.
+  onUpdateStatus: (cb) => {
+    const handler = (_e, payload) => cb(payload)
+    ipcRenderer.on('update:status', handler)
+    return () => ipcRenderer.removeListener('update:status', handler)
+  },
+  // Tray-driven navigation (e.g. "Settings"). Returns unsubscribe.
+  onNavigate: (cb) => {
+    const handler = (_e, route) => cb(route)
+    ipcRenderer.on('app:navigate', handler)
+    return () => ipcRenderer.removeListener('app:navigate', handler)
+  },
 })

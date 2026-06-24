@@ -11,7 +11,7 @@ import { PresetsPage } from './pages/PresetsPage.jsx'
 
 // Lazy-loaded pages — keeps the initial bundle small (Presets ships immediately,
 // the rest stream in on first navigation).
-const QuickFiltersPage = lazy(() => import('./pages/QuickFiltersPage.jsx').then(m => ({ default: m.QuickFiltersPage })))
+const QuickEditorPage  = lazy(() => import('./pages/QuickEditorPage.jsx').then(m => ({ default: m.QuickEditorPage })))
 const TierListsPage    = lazy(() => import('./pages/TierListsPage.jsx').then(m => ({ default: m.TierListsPage })))
 const CustomRulesPage  = lazy(() => import('./pages/CustomRulesPage.jsx').then(m => ({ default: m.CustomRulesPage })))
 const CosmeticPage     = lazy(() => import('./pages/CosmeticPage.jsx').then(m => ({ default: m.CosmeticPage })))
@@ -31,7 +31,9 @@ function Routes() {
   switch (path) {
     case '/':
     case '/presets':       return <PresetsPage />
-    case '/quick-filters': return <QuickFiltersPage />
+    case '/quick-editor':  return <QuickEditorPage />
+    // alias: old deep links / saved lastRoute
+    case '/quick-filters': return <QuickEditorPage />
     case '/tier-lists':    return <TierListsPage />
     case '/custom-rules':  return <CustomRulesPage />
     case '/cosmetic':      return <CosmeticPage />

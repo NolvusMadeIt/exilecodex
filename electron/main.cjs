@@ -8,9 +8,13 @@
 // "Always-latest" mode: set NOLVUS_APP_URL (env var) or REMOTE_URL below to your deployed
 // site URL and the shell will load the live site instead of the bundled build.
 
-const { app, BrowserWindow, protocol, shell, ipcMain, globalShortcut, screen, Tray, Menu, nativeImage } = require('electron')
+const { app, BrowserWindow, protocol, shell, ipcMain, globalShortcut, screen, Tray, Menu, nativeImage, dialog } = require('electron')
+const { autoUpdater } = require('electron-updater')
 const path = require('node:path')
 const fs = require('node:fs')
+
+// Community invite — also used by the tray menu.
+const DISCORD_URL = 'https://discord.gg/4gueh3Kb3A'
 
 // The single main window + the currently-registered global hotkey (for the game overlay) +
 // the system-tray icon.
@@ -275,8 +279,55 @@ function restoreWindow() {
   w.focus()
 }
 
+// --- Auto-update (electron-updater + GitHub releases) ---
+// Downloads new versions in the background and tells the renderer so it can show the bottom-left
+// update banner. The user picks when to restart-and-install. Only active in the packaged app.
+autoUpdater.autoDownload = true
+autoUpdater.autoInstallOnAppQuit = true
+let manualCheck = false
+
+function sendUpdate(payload) {
+  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('update:status', payload)
+}
+
+function wireAutoUpdater() {
+  autoUpdater.on('checking-for-update', () => sendUpdate({ state: 'checking' }))
+  autoUpdater.on('update-available', (info) => sendUpdate({ state: 'available', current: app.getVersion(), next: info.version }))
+  autoUpdater.on('update-not-available', () => {
+    sendUpdate({ state: 'none', current: app.getVersion() })
+    if (manualCheck) dialog.showMessageBox(mainWindow, { type: 'info', title: 'Up to date', message: `You're on the latest version (v${app.getVersion()}).`, buttons: ['OK'] })
+    manualCheck = false
+  })
+  autoUpdater.on('download-progress', (p) => sendUpdate({ state: 'downloading', percent: Math.round(p.percent || 0) }))
+  autoUpdater.on('update-downloaded', (info) => sendUpdate({ state: 'downloaded', current: app.getVersion(), next: info.version }))
+  autoUpdater.on('error', (err) => {
+    sendUpdate({ state: 'error', message: String(err?.message || err) })
+    if (manualCheck) dialog.showMessageBox(mainWindow, { type: 'error', title: 'Update check failed', message: String(err?.message || err), buttons: ['OK'] })
+    manualCheck = false
+  })
+}
+
+function checkForUpdates(manual = false) {
+  manualCheck = manual
+  if (!app.isPackaged) {
+    if (manual) dialog.showMessageBox(mainWindow, { type: 'info', title: 'Updates', message: 'Update checks only run in the installed app.', buttons: ['OK'] })
+    return
+  }
+  autoUpdater.checkForUpdates().catch((err) => sendUpdate({ state: 'error', message: String(err?.message || err) }))
+}
+
+ipcMain.handle('app:version', () => app.getVersion())
+ipcMain.on('update:check', () => checkForUpdates(true))
+ipcMain.on('update:install', () => { try { autoUpdater.quitAndInstall() } catch (e) { sendUpdate({ state: 'error', message: String(e?.message || e) }) } })
+
+// Bring the window to the front and route the app to a page (used by the tray menu).
+function goToRoute(route) {
+  restoreWindow()
+  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('app:navigate', route)
+}
+
 // System-tray icon: the app logo, scaled to a crisp small size. Left-click shows the window;
-// the menu shows the window, toggles the overlay, or quits.
+// right-click opens a menu (open, settings, check for updates, Discord, quit).
 function createTray() {
   try {
     const base = nativeImage.createFromPath(ICON_PATH)
@@ -285,8 +336,12 @@ function createTray() {
     tray = new Tray(icon)
     tray.setToolTip("Nolvus's Filter")
     tray.setContextMenu(Menu.buildFromTemplate([
-      { label: "Show Nolvus's Filter", click: restoreWindow },
+      { label: "Open Nolvus's Filter", click: restoreWindow },
+      { label: 'Settings', click: () => goToRoute('/settings') },
+      { label: 'Check for updates…', click: () => checkForUpdates(true) },
       { label: 'Toggle game overlay', click: toggleOverlayVisibility },
+      { type: 'separator' },
+      { label: 'Join our Discord', click: () => shell.openExternal(DISCORD_URL) },
       { type: 'separator' },
       { label: 'Quit', click: () => app.quit() },
     ]))
@@ -298,6 +353,9 @@ app.whenReady().then(() => {
   protocol.handle('app', serveBundle)
   createWindow()
   createTray()
+  wireAutoUpdater()
+  // Check for updates shortly after launch (once the window can receive the banner event).
+  setTimeout(() => checkForUpdates(false), 5000)
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })

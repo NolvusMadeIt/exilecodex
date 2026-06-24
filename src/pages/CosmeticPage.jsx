@@ -15,7 +15,7 @@ const TABS = [
 const SOUNDS = ['None', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
 export function CosmeticPage() {
-  const { active, update, updateSlice } = useFilter()
+  const { active, update } = useFilter()
   const [tab, setTab] = useState('currency')
   const cosmetic = active.cosmetic
   const example = TABS.find(t => t.id === tab).example
@@ -27,10 +27,9 @@ export function CosmeticPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <p className="text-[12.5px] text-poe-text">These settings have no impact on which items are shown or hidden, but change <span className="text-poe-text-bright">how items are displayed</span>.</p>
-        <button className="btn-dark">Cosmetic Presets</button>
-      </div>
+      <p className="text-[12.5px] text-poe-text">
+        Style the drop tiers used by your <span className="text-poe-text-bright">Tier List</span>. These colors, beams, minimap shapes and sounds apply to any item you re-tier there — and the Hide toggle hides that tier.
+      </p>
 
       <div className="section-bar">Drop Tier Styles</div>
 
@@ -76,14 +75,6 @@ export function CosmeticPage() {
         })}
       </div>
 
-      {/* Hidden Items */}
-      <div className="section-bar">Hidden Items</div>
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-1">
-        <Toggle checked={!!cosmetic.hiddenGearTransparent} onChange={v => updateSlice('cosmetic', { hiddenGearTransparent: v })}
-          label="Hidden Gear Transparent" help="Use a transparent style for hidden gear." />
-        <Toggle checked={!!cosmetic.hiddenFlasks} onChange={v => updateSlice('cosmetic', { hiddenFlasks: v })} label="Flasks" help="Hide leftover flasks." />
-        <Toggle checked={!!cosmetic.hiddenJewellery} onChange={v => updateSlice('cosmetic', { hiddenJewellery: v })} label="Jewellery" help="Hide leftover jewellery." />
-      </div>
     </div>
   )
 }

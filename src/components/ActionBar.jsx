@@ -9,7 +9,7 @@ import { useGameInfo } from '../store/GameInfo.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { useT } from '../i18n/index.js'
-import { generateFilter } from '../lib/generate.js'
+import { buildFilter } from '../lib/buildFilter.js'
 import { parseFilterText } from '../lib/parseFilter.js'
 
 const safeName = (name) => (name || 'filter').replace(/[^a-z0-9-_. ]/gi, '')
@@ -39,11 +39,9 @@ export function ActionBar() {
   const handleRef = useRef(null)
 
   const buildText = (bumpedVersion) => {
-    const stamp = stampNow()
-    const ctx = { ...prefs, gameVersion: gameInfo.gameVersion, gameVersionLabel: gameInfo.gameVersionLabel, _generatedAt: stamp }
-    // Pass a synthetic next-version through so the output reflects the bump immediately
+    // Pass a synthetic next-version through so the output reflects the bump immediately.
     const snap = bumpedVersion ? { ...active, version: bumpedVersion } : active
-    return generateFilter(snap, ctx)
+    return buildFilter(snap, { gameInfo, prefs, stamp: stampNow() })
   }
 
   const downloadBlob = (text, name) => {
@@ -58,12 +56,12 @@ export function ActionBar() {
   // --- Save actions ---
 
   // Bump version, then download as a fresh file
-  const saveToNewFile = () => {
+  const saveToNewFile = async () => {
     setSaveMenu(false)
     const next = bumpPatchInline(active.version)
     bumpVersion()
     const fname = `${safeName(active.name)}.filter`
-    downloadBlob(buildText(next), fname)
+    downloadBlob(await buildText(next), fname)
     toast.success(`Downloaded "${fname}" · v${next}`, { title: 'Saved' })
   }
 
@@ -72,7 +70,7 @@ export function ActionBar() {
     setSaveMenu(false)
     const next = bumpPatchInline(active.version)
     bumpVersion()
-    const text = buildText(next)
+    const text = await buildText(next)
     if (handleRef.current && handleRef.current.createWritable) {
       try {
         const w = await handleRef.current.createWritable()
@@ -101,7 +99,7 @@ export function ActionBar() {
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(buildText())
+      await navigator.clipboard.writeText(await buildText())
       setCopied(true); setTimeout(() => setCopied(false), 1400)
       toast.success(`${active.name} copied to clipboard.`, { title: 'Copied', duration: 4000 })
     } catch (e) {
@@ -229,7 +227,7 @@ export function ActionBar() {
         startIcon={<RotateCcw size={14} />}
         onClick={async () => {
           const ok = await toast.confirm(
-            `Reset "${active.name}" to defaults?\nThis clears your Quick Filters, Custom Rules and Cosmetic edits.`,
+            `Reset "${active.name}" to defaults?\nThis clears your Quick Editor, Custom Rules and Cosmetic edits.`,
             { title: 'Reset filter', confirmLabel: 'Reset', cancelLabel: 'Keep' }
           )
           if (ok) {

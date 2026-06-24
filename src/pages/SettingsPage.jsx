@@ -100,20 +100,6 @@ export function SettingsPage() {
         </div>
       </section>
 
-      {/* Interface options */}
-      <section>
-        <div className="section-bar">{t('Interface')}</div>
-        <div className="mt-2">
-          <Toggle
-            checked={prefs.accordionsOpen ?? true}
-            onChange={v => update({ accordionsOpen: v })}
-            label="Expand Quick Filter sections by default"
-            help="When on, every Quick Filter section (Currency, Flasks, Equipment, etc.) starts expanded so you can see all options at once. When off, they start collapsed. On by default."
-          />
-          <p className="text-[11px] text-poe-text/70 mt-1.5 pl-6">You can still expand/collapse individual sections, or use the Expand all / Collapse all buttons on the Quick Filters page.</p>
-        </div>
-      </section>
-
       {/* Game Overlay (desktop app) */}
       <OverlaySettings />
 

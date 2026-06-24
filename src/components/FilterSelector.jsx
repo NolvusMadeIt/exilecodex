@@ -4,6 +4,7 @@ import { useFilter } from '../store/FilterStore.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { Modal } from './Modal.jsx'
 import { NewFilterModal } from './NewFilterModal.jsx'
+import { strictnessLevel, styleInfo } from '../data/coreFilters.js'
 
 export function FilterSelector({ onClose }) {
   const { filters, activeName, setActiveName, cloneActive, deleteFilter, renameActive } = useFilter()
@@ -66,7 +67,7 @@ export function FilterSelector({ onClose }) {
                 {f.name}
                 {f.version && <span className="ml-2 font-mono text-[10.5px] text-poe-text/70">v{f.version}</span>}
                 <span className="ml-2 text-[11px] text-poe-text">
-                  {f.preset ? f.preset : 'no preset'} · {(f.customRules?.length || 0)} custom
+                  {strictnessLevel(f.strictness).name}{f.style && f.style !== 'default' ? ` · ${styleInfo(f.style).name}` : ''} · {((f.overrides?.rules?.length || 0) + (f.customRules?.length || 0))} rules
                 </span>
               </button>
             )}

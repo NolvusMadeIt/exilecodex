@@ -43,7 +43,7 @@ export function CustomRulesPage() {
     <div className="space-y-4">
       <p className="text-[12.5px] text-poe-text max-w-[860px]">
         Create custom <span className="text-poe-text-bright">Show</span>, <span className="text-poe-text-bright">Hide</span> and Highlight rules based on Item Class, Base Type, Rarity, and Advanced Conditions.
-        These rules have a higher precedence than the Quick Filters, and are processed in the order they are listed. The higher the rule, the higher its precedence.
+        These rules are layered into your filter alongside the Quick Editor, and are processed in the order they are listed. The higher the rule, the higher its precedence.
       </p>
 
       <div className="section-bar">Custom Rules</div>
