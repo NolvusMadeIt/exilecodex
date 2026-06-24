@@ -2,6 +2,7 @@
 // lib/buildFilter.js turns it into .filter text: a real core base file (strictness x style)
 // with the user's overrides spliced in.
 import { DEFAULT_STRICTNESS, DEFAULT_STYLE } from '../data/coreFilters.js'
+import { QF_DEFAULTS } from '../data/quickFilters.js'
 
 export function defaultSettings(name = "Nolvus's Filter") {
   return {
@@ -11,15 +12,15 @@ export function defaultSettings(name = "Nolvus's Filter") {
     // Base selection: which real core filter to build on.
     strictness: DEFAULT_STRICTNESS, // '0-soft' … '6-uber-plus-strict'
     style: DEFAULT_STYLE,           // 'default' | 'aura' | 'cobalt' | …
-    klass: null,             // selected class id (informational; gear filtering lives in overrides.gear)
+    klass: null,             // selected class id (informational)
     gameMode: { league: true, hardcore: false, ssf: false },
-    // Quick Editor + customization, compiled to override blocks at the top of the base file.
+    // Quick Filters: the dropdown sections (schema in data/quickFilters.js) → override blocks.
+    quickFilters: { ...QF_DEFAULTS },
+    // Quick Editor custom rules: hide / show / highlight anything (also import target).
     overrides: {
-      rules: [],             // user-built hide / show / highlight rules (see emptyOverrideRule)
-      toggles: {},           // convenience toggles: hideNormal, hideMagic, minGoldPile, hideRaresBelowIlvl
-      gear: { weapons: [], armour: [] }, // class-aware gear: types to KEEP (others hidden)
+      rules: [],             // user-built rules (see emptyOverrideRule)
     },
-    // Custom Rules: precedence-ordered Show/Hide rules (also compiled into overrides).
+    // Custom Rules page: precedence-ordered Show/Hide rules (also compiled into overrides).
     customRules: [],
     freeText: { top: '', bottom: '' },
     // Cosmetic: per drop-tier style overrides keyed by tier id (used by Tier List highlights).

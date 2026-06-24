@@ -48,18 +48,25 @@ test('show/highlight rules are ordered before hide rules so pinpoints win', () =
   expect(joined.indexOf('keep this base')).toBeLessThan(joined.indexOf('hide rares'))
 })
 
-test('toggles and gear compile to real hide blocks', () => {
-  const blocks = compileOverrides({ overrides: {
-    toggles: { hideNormal: true, minGoldPile: 100 },
-    gear: { weapons: ['Wands'] },
+test('quick filters compile to real override blocks', () => {
+  const blocks = compileOverrides({ quickFilters: {
+    minGoldPile: 100, gearMinRarity: 'Rare', myWeapons: ['Wands'], hideScrolls: true,
   } })
   const text = blocks.join('\n\n')
-  expect(text).toContain('Rarity Normal')
   expect(text).toContain('StackSize < 100')
-  // keeping only Wands → every other weapon class is hidden
-  expect(text).toContain('Hide # Hide off-build weapon types')
+  expect(text).toContain('Hide equipment below Rare')
+  expect(text).toContain('Hide off-build weapon types')
   expect(text).toMatch(/Class == "Bows"/)
-  expect(text).not.toMatch(/Hide off-build weapon types[\s\S]*"Wands"/)
+  // the kept weapon type (Wands) is NOT in the off-build hide list
+  expect(text).not.toMatch(/off-build weapon types[\s\S]*?"Wands"/)
+})
+
+test('imported raw rules round-trip through the rule builder', () => {
+  const ovRule = { id: 'x', enabled: true, action: 'Show', label: 'kept', raw: 'Show # kept\n\tBaseType "Mirror"\n\tPlayEffect Red' }
+  const blocks = compileOverrides({ overrides: { rules: [ovRule] } })
+  const text = blocks.join('\n\n')
+  expect(text).toContain('Show # kept')
+  expect(text).toContain('PlayEffect Red')
 })
 
 test('injectOverrides places the block before the first rule and is idempotent', () => {

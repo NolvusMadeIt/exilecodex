@@ -24,7 +24,7 @@ const DEFAULTS = {
   lang: 'en',                          // UI language: en | ru | pt | de | zh (see src/i18n)
   // --- Remembered view state (QoL: the app looks how you left it) ---
   lastRoute: '/presets',               // last tab you were on
-  dockOpen: true,                      // output panel expanded/collapsed
+  dockOpen: false,                     // filter-output panel hidden until the user opens it (perf + focus)
   qfOpenSections: null,                // Quick Filter open sections (array; null = use accordionsOpen)
   previewBg: 'Woods',                  // Preview scene background
   previewBeams: true,                  // Preview beams toggle

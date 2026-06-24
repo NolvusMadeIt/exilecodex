@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react'
 import { defaultSettings } from './defaultSettings.js'
+import { rulesToOverrideRules } from '../lib/parseFilter.js'
 
 // Single store ABOVE the router so tab navigation never resets the filter.
 // Only Reset clears it — a single-store model keeps tab switches lossless.
@@ -31,13 +32,9 @@ function normalizeFilter(f) {
     strictness: f?.strictness || d.strictness,
     style: f?.style || d.style,
     gameMode: { ...d.gameMode, ...f?.gameMode },
+    quickFilters: { ...d.quickFilters, ...f?.quickFilters },
     overrides: {
       rules: Array.isArray(f?.overrides?.rules) ? f.overrides.rules : d.overrides.rules,
-      toggles: { ...d.overrides.toggles, ...f?.overrides?.toggles },
-      gear: {
-        weapons: f?.overrides?.gear?.weapons || d.overrides.gear.weapons,
-        armour: f?.overrides?.gear?.armour || d.overrides.gear.armour,
-      },
     },
     cosmetic: { ...d.cosmetic, ...f?.cosmetic },
     customRules: Array.isArray(f?.customRules) ? f.customRules : d.customRules,
@@ -146,7 +143,8 @@ export function FilterProvider({ children }) {
       const baseVer = parsedVer || f.version || '0.0.1'
       return {
         ...f,
-        customRules: [...(customRules || [])],
+        // Imported rules land in the Quick Editor's hide/highlight builder so they're visible + editable.
+        overrides: { ...f.overrides, rules: rulesToOverrideRules(customRules) },
         freeText: { top: freeTextTop || '', bottom: freeTextBottom || '' },
         version: bumpPatch(baseVer),
         sourceFile: sourceFile || null,

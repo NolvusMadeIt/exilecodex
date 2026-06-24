@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { ChevronRight, ChevronLeft } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { ChevronRight, ChevronLeft, Code2 } from 'lucide-react'
 import { TitleBar } from './TitleBar.jsx'
 import { OrnateFrame } from './OrnateFrame.jsx'
 import { TopBar } from './TopBar.jsx'
@@ -12,14 +12,28 @@ import { usePrefs } from '../store/Prefs.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { desktopApi } from '../lib/desktop.js'
 
+// Tracks the xl breakpoint so the output renders in exactly ONE place (dock on wide screens,
+// stacked under the content otherwise) — never both at once.
+function useIsXl() {
+  const [xl, setXl] = useState(() => typeof window !== 'undefined' && window.matchMedia('(min-width: 1280px)').matches)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1280px)')
+    const on = () => setXl(mq.matches)
+    mq.addEventListener('change', on)
+    return () => mq.removeEventListener('change', on)
+  }, [])
+  return xl
+}
+
 // Filter Studio shell: fixed-viewport workstation — top action bar, left nav rail, scrolling
-// main work area, and a docked live output on the right (collapsible). Below xl the dock
-// hides and the output stacks under the main content so it's never lost.
+// main work area, and an on-demand live output (hidden by default; mounted only when shown so it
+// never costs anything while you work).
 export function Layout({ children }) {
   const { prefs, update } = usePrefs()
   const { navigate } = useRouter()
-  const dockOpen = prefs.dockOpen !== false // remembered across visits
+  const dockOpen = !!prefs.dockOpen
   const setDockOpen = (v) => update({ dockOpen: v })
+  const isXl = useIsXl()
 
   // Tray menu → renderer navigation (e.g. "Settings"). Desktop only; no-op on the web.
   useEffect(() => {
@@ -37,30 +51,40 @@ export function Layout({ children }) {
         <main className="flex-1 min-w-0 overflow-y-auto" style={{ scrollbarGutter: 'stable both-edges' }}>
           <div className="px-5 py-5 mx-auto" style={{ maxWidth: 1180 }}>
             {children}
-            {/* Output stacks here on narrower screens (no room for the dock) */}
-            <div className="xl:hidden mt-8 h-[72vh] flex flex-col">
-              <FilterOutput />
-            </div>
+            {/* On narrow screens the output stacks here — only when opened, and only this copy. */}
+            {dockOpen && !isXl && (
+              <div className="mt-8 h-[72vh] flex flex-col">
+                <FilterOutput onClose={() => setDockOpen(false)} />
+              </div>
+            )}
+            {!dockOpen && !isXl && (
+              <div className="mt-8 flex justify-center">
+                <button onClick={() => setDockOpen(true)} className="btn-dark h-8 text-[12px]">
+                  <Code2 size={14} /> Show filter output
+                </button>
+              </div>
+            )}
           </div>
         </main>
 
-        {dockOpen ? (
-          <aside className="relative hidden xl:flex w-[600px] shrink-0 border-l border-poe-line bg-black/20 flex-col min-h-0">
-            <button onClick={() => setDockOpen(false)} title="Collapse output panel" aria-label="Collapse output panel"
+        {/* On wide screens the output is a right-hand dock — mounted only when opened. */}
+        {isXl && (dockOpen ? (
+          <aside className="relative flex w-[600px] shrink-0 border-l border-poe-line bg-black/20 flex-col min-h-0">
+            <button onClick={() => setDockOpen(false)} title="Hide output panel" aria-label="Hide output panel"
               className="absolute left-0 top-3 -translate-x-1/2 z-10 w-6 h-6 grid place-items-center rounded border border-poe-line bg-poe-panel text-poe-text hover:text-poe-gold hover:border-poe-gold-dim/60">
               <ChevronRight size={14} />
             </button>
             <div className="flex-1 min-h-0 flex flex-col p-3 pl-4">
-              <FilterOutput />
+              <FilterOutput onClose={() => setDockOpen(false)} />
             </div>
           </aside>
         ) : (
           <button onClick={() => setDockOpen(true)} title="Show output panel"
-            className="hidden xl:flex w-9 shrink-0 border-l border-poe-line bg-black/20 flex-col items-center pt-3 gap-2 text-poe-text hover:text-poe-gold">
+            className="flex w-9 shrink-0 border-l border-poe-line bg-black/20 flex-col items-center pt-3 gap-2 text-poe-text hover:text-poe-gold">
             <ChevronLeft size={14} />
             <span className="text-[11px] tracking-wide font-display [writing-mode:vertical-rl] rotate-180">Filter Output</span>
           </button>
-        )}
+        ))}
       </div>
       <DesktopPromoBanner />
       <UpdateBanner />

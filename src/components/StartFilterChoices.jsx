@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { useToast } from '../store/Toast.jsx'
-import { parseFilterText } from '../lib/parseFilter.js'
+import { parseFilterText, rulesToOverrideRules } from '../lib/parseFilter.js'
 import { defaultSettings } from '../store/defaultSettings.js'
 import { useT } from '../i18n/index.js'
 
@@ -85,7 +85,7 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
         if (mode === 'create') {
           const n = addFilter({
             ...defaultSettings(base),
-            customRules: parsed.customRules,
+            overrides: { rules: rulesToOverrideRules(parsed.customRules) },
             freeText: { top: parsed.freeTextTop || '', bottom: parsed.freeTextBottom || '' },
             version: ver || '0.0.1',
             sourceFile: { name: file.name, fromFileHandle: false },
@@ -96,7 +96,7 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
           renameActive(base)
           toast.success(`Imported ${parsed.customRules.length} rule(s) from "${file.name}".`, { title: 'Imported' })
         }
-        navigate('/custom-rules'); done()
+        navigate('/quick-editor'); done()
       } catch (err) {
         toast.error(`Could not import "${file.name}": ${err?.message || ''}`, { title: 'Import failed' })
       }

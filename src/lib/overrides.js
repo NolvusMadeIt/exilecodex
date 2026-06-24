@@ -87,11 +87,17 @@ function renderBlock(d) {
 
 // ----- descriptor sources -----
 
-// Quick Editor user rules: hide / show / highlight anything.
+const WEAPON_CLASSES = ['Bows', 'Crossbows', 'Quarterstaves', 'Spears', 'Sceptres', 'Wands', 'Staves', 'One Hand Maces', 'Two Hand Maces', 'Foci', 'Quivers']
+const ARMOUR_CLASSES = ['Body Armours', 'Helmets', 'Gloves', 'Boots', 'Shields', 'Bucklers']
+const JEWELLERY_CLASSES = ['Rings', 'Amulets', 'Belts']
+const GEAR_CLASSES = [...WEAPON_CLASSES, ...ARMOUR_CLASSES, ...JEWELLERY_CLASSES]
+
+// Quick Editor user rules: hide / show / highlight anything (incl. imported raw rules).
 function ruleDescriptors(rules = []) {
   const out = []
   for (const r of rules) {
     if (!r || r.enabled === false) continue
+    if (r.raw?.trim()) { out.push({ raw: r.raw.trim(), priority: r.action === 'Hide' ? 40 : 20 }); continue }
     const action = r.action === 'Hide' ? 'Hide' : 'Show'
     const conditions = matchConditions(r.match || {})
     if (!conditions.length) continue // a rule with no matcher would catch everything — skip
@@ -105,34 +111,72 @@ function ruleDescriptors(rules = []) {
   return out
 }
 
-// Convenience toggles → well-known hide rules.
-function toggleDescriptors(t = {}) {
+// Quick Filters (the dropdown sections) → Show/Hide overrides layered on the preset. Non-set
+// controls emit nothing (the preset decides). "Force-show" gets a clean tier style; "highlight"
+// gets the loud highlight; hides/strictness get Hide blocks. Shows are low-priority (run first).
+function quickFilterDescriptors(qf = {}, cosmetic = {}) {
   const out = []
-  const hide = (comment, conditions, priority = 50) => out.push({ action: 'Hide', comment, conditions, priority })
-  if (t.hideNormal) hide('Hide all Normal items', ['Rarity Normal'])
-  if (t.hideMagic) hide('Hide all Magic items', ['Rarity Magic'])
-  if (num(t.minGoldPile)) hide(`Hide gold piles under ${Number(t.minGoldPile)}`, [`BaseType == ${quote('Gold')}`, `StackSize < ${Number(t.minGoldPile)}`])
-  if (num(t.hideRaresBelowIlvl)) hide(`Hide Rares under item level ${Number(t.hideRaresBelowIlvl)}`, ['Rarity Rare', `ItemLevel < ${Number(t.hideRaresBelowIlvl)}`])
-  return out
-}
+  const has = (arr, v) => Array.isArray(arr) && arr.includes(v)
+  const showT = (comment, conditions, tier = 'C', priority = 22) => out.push({ action: 'Show', comment, conditions, style: tierStyle(tier, cosmetic), priority })
+  const highlight = (comment, conditions, priority = 16) => out.push({ action: 'Show', comment, conditions, style: DEFAULT_HIGHLIGHT, priority })
+  const hide = (comment, conditions, priority = 46) => out.push({ action: 'Hide', comment, conditions, priority })
+  const lvl = (n) => num(n) ? [`GemLevel >= ${Number(n)}`] : []
 
-const WEAPON_CLASSES = ['Bows', 'Crossbows', 'Quarterstaves', 'Spears', 'Sceptres', 'Wands', 'Staves', 'One Hand Maces', 'Two Hand Maces', 'Foci', 'Quivers']
-const ARMOUR_CLASSES = ['Body Armours', 'Helmets', 'Gloves', 'Boots', 'Shields', 'Bucklers']
+  // Currency
+  if (has(qf.currencyShow, 'shards')) showT('Show Currency Shards', [`BaseType ${quoteList(['Shard'])}`], 'D')
+  if (has(qf.currencyShow, 'runes')) showT('Show Runes & Soul Cores', [`BaseType ${quoteList(['Rune', 'Soul Core'])}`], 'C')
+  if (has(qf.currencyShow, 'catalysts')) showT('Show Catalysts', [`BaseType ${quoteList(['Catalyst'])}`], 'C')
+  if (has(qf.currencyShow, 'essences')) showT('Show Essences', [`BaseType ${quoteList(['Essence'])}`], 'C')
+  if (has(qf.currencyShow, 'omens')) showT('Show Omens', [`BaseType ${quoteList(['Omen'])}`], 'C')
+  if (qf.hideScrolls) hide('Hide Scrolls of Wisdom', [`BaseType == ${quote('Scroll of Wisdom')}`])
+  if (qf.hideGold) hide('Hide Gold', [`BaseType == ${quote('Gold')}`])
+  else if (num(qf.minGoldPile)) hide(`Hide small gold piles (< ${Number(qf.minGoldPile)})`, [`BaseType == ${quote('Gold')}`, `StackSize < ${Number(qf.minGoldPile)}`])
+  if (qf.showWaystones) showT('Show Waystones', [`Class == ${quoteList(['Waystones'])}`, ...(Number(qf.minWaystoneTier) > 1 ? [`WaystoneTier >= ${Number(qf.minWaystoneTier)}`] : [])], 'C')
 
-// Class-aware gear: user picks the weapon / armour types they use; the complementary types get
-// hidden (Normal/Magic/Rare only — never Unique). Empty selection = no hiding.
-function gearDescriptors(gear = {}) {
-  const out = []
-  const keepW = gear.weapons || []
-  const keepA = gear.armour || []
-  if (keepW.length) {
-    const drop = WEAPON_CLASSES.filter(c => !keepW.includes(c))
-    if (drop.length) out.push({ action: 'Hide', comment: 'Hide off-build weapon types', conditions: [`Class == ${quoteList(drop)}`, 'Rarity < Unique'], priority: 52 })
-  }
-  if (keepA.length) {
-    const drop = ARMOUR_CLASSES.filter(c => !keepA.includes(c))
-    if (drop.length) out.push({ action: 'Hide', comment: 'Hide off-build armour types', conditions: [`Class == ${quoteList(drop)}`, 'Rarity < Unique'], priority: 52 })
-  }
+  // Gems
+  if (has(qf.gemsShow, 'uncut')) showT('Show Uncut Gems', [`BaseType ${quoteList(['Uncut'])}`], 'C')
+  if (has(qf.gemsShow, 'skill')) showT('Show Skill Gems', [`Class == ${quoteList(['Skill Gems'])}`, ...lvl(qf.minGemLevel)], 'C')
+  if (has(qf.gemsShow, 'support')) showT('Show Support Gems', [`Class == ${quoteList(['Support Gems'])}`, ...lvl(qf.minGemLevel)], 'C')
+
+  // Flasks & charms
+  const flaskClasses = [has(qf.flasksShow, 'life') && 'Life Flasks', has(qf.flasksShow, 'mana') && 'Mana Flasks', has(qf.flasksShow, 'charms') && 'Charms'].filter(Boolean)
+  if (flaskClasses.length) showT('Show Flasks & Charms', [`Class == ${quoteList(flaskClasses)}`, ...(num(qf.qualityFlasksMin) ? [`Quality >= ${Number(qf.qualityFlasksMin)}`] : [])], 'D')
+  if (qf.hideNonUniqueFlasks) hide('Hide non-Unique Flasks & Charms', [`Class == ${quoteList(['Life Flasks', 'Mana Flasks', 'Charms'])}`, 'Rarity < Unique'])
+
+  // Uniques & chance
+  if (qf.showUniques) highlight('Highlight Uniques', ['Rarity Unique'])
+  if (qf.showChanceBases) showT('Show chance/craft bases', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES, 'Rings', 'Amulets'])}`, 'Rarity <= Magic', 'ItemLevel >= 82'], 'C', 18)
+
+  // Endgame / other
+  if (has(qf.endgameShow, 'quest')) showT('Show Quest Items', [`Class == ${quoteList(['Quest Items'])}`], 'C')
+  if (has(qf.endgameShow, 'relics')) showT('Show Relics', [`Class == ${quoteList(['Relics'])}`], 'C')
+  if (has(qf.endgameShow, 'trials')) showT('Show Trial Items', [`BaseType ${quoteList(['Barya', 'Ultimatum', 'Djinn'])}`], 'C')
+  if (has(qf.endgameShow, 'tablets')) showT('Show Precursor Tablets', [`BaseType ${quoteList(['Tablet'])}`], 'C')
+  if (has(qf.endgameShow, 'fragments')) showT('Show Fragments & Splinters', [`BaseType ${quoteList(['Splinter', 'Fragment', 'Crest'])}`], 'C')
+  if (has(qf.endgameShow, 'expedition')) showT('Show Expedition', [`BaseType ${quoteList(['Logbook', 'Artifact'])}`], 'C')
+
+  // Leveling
+  if (has(qf.levelingShow, 'weaponsArmour')) showT('Leveling weapons & armour', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES])}`, 'Rarity <= Rare'], 'D')
+  if (has(qf.levelingShow, 'jewellery')) showT('Leveling jewellery', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity <= Rare'], 'D')
+  if (has(qf.levelingShow, 'flasks')) showT('Leveling flasks', [`Class == ${quoteList(['Life Flasks', 'Mana Flasks'])}`], 'D')
+  if (qf.disenchantRares) showT('Low rares to salvage', ['Rarity Rare', 'ItemLevel < 65'], 'E')
+
+  // My equipment (class-aware): keep the selected types, hide the rest (below Unique)
+  const offBuild = (label, all, keep) => { const drop = all.filter(c => !keep.includes(c)); if (keep.length && drop.length) hide(label, [`Class == ${quoteList(drop)}`, 'Rarity < Unique'], 48) }
+  offBuild('Hide off-build weapon types', WEAPON_CLASSES, qf.myWeapons || [])
+  offBuild('Hide off-build armour types', ARMOUR_CLASSES, qf.myArmour || [])
+  offBuild('Hide off-build jewellery', JEWELLERY_CLASSES, qf.myJewellery || [])
+  if (qf.showJewels) showT('Show Jewels', [`Class == ${quoteList(['Jewels'])}`], 'C')
+  if (qf.highlightJewellery) highlight('Highlight Rare jewellery', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity >= Rare'])
+
+  // Equipment filtering — always-show overrides first (lower priority), then hides
+  if (num(qf.gearMinQuality)) showT(`Always show ${Number(qf.gearMinQuality)}%+ quality gear`, [`Class == ${quoteList(GEAR_CLASSES)}`, `Quality >= ${Number(qf.gearMinQuality)}`], 'C', 18)
+  if (num(qf.gearMinSockets)) showT(`Always show ${Number(qf.gearMinSockets)}+ socket gear`, [`Class == ${quoteList(GEAR_CLASSES)}`, `Sockets >= ${Number(qf.gearMinSockets)}`], 'C', 18)
+  if (num(qf.alwaysShowRareIlvl)) showT(`Always show Rare bases iLvl ${Number(qf.alwaysShowRareIlvl)}+`, [`Class == ${quoteList(GEAR_CLASSES)}`, 'Rarity Rare', `ItemLevel >= ${Number(qf.alwaysShowRareIlvl)}`], 'C', 18)
+  const minR = qf.gearMinRarity || 'all'
+  if (minR !== 'all') hide(`Hide equipment below ${minR}`, [`Class == ${quoteList(GEAR_CLASSES)}`, `Rarity < ${minR}`])
+  if (num(qf.gearMinItemLevel)) hide(`Hide equipment below item level ${Number(qf.gearMinItemLevel)}`, [`Class == ${quoteList(GEAR_CLASSES)}`, `ItemLevel < ${Number(qf.gearMinItemLevel)}`, 'Rarity < Unique'])
+
   return out
 }
 
@@ -179,10 +223,9 @@ export function compileOverrides(settings = {}) {
   const cosmetic = settings.cosmetic || {}
   const descriptors = [
     ...tierDescriptors(settings.tierOverrides, cosmetic),
+    ...quickFilterDescriptors(settings.quickFilters, cosmetic),
     ...ruleDescriptors(ov.rules),
     ...customRuleDescriptors(settings.customRules, cosmetic),
-    ...toggleDescriptors(ov.toggles),
-    ...gearDescriptors(ov.gear),
   ]
   // User free-text typed for the top of the filter stays functional in the override area.
   const top = settings.freeText?.top?.trim()

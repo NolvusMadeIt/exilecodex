@@ -12,11 +12,14 @@ export function useFilterText(settings, { gameInfo, prefs } = {}) {
   useEffect(() => {
     let alive = true
     setLoading(true)
-    buildFilter(settings, { gameInfo, prefs })
-      .then((t) => { if (alive) { setText(t); setError(null) } })
-      .catch((e) => { if (alive) { setError(e); setText('') } })
-      .finally(() => { if (alive) setLoading(false) })
-    return () => { alive = false }
+    // Debounce: rapid edits (typing, dragging a slider) only trigger one rebuild once they settle.
+    const id = setTimeout(() => {
+      buildFilter(settings, { gameInfo, prefs })
+        .then((t) => { if (alive) { setText(t); setError(null) } })
+        .catch((e) => { if (alive) { setError(e); setText('') } })
+        .finally(() => { if (alive) setLoading(false) })
+    }, 180)
+    return () => { alive = false; clearTimeout(id) }
   }, [settings, gameInfo, prefs])
 
   return { text, error, loading }

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import React, { useMemo } from 'react'
+import { X } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { usePrefs } from '../store/Prefs.jsx'
 import { useGameInfo } from '../store/GameInfo.jsx'
@@ -82,43 +82,48 @@ function renderHighlighted(text) {
   })
 }
 
-export function FilterOutput() {
+// Heavy output gets a plain <pre> by default (one text node — cheap). Syntax highlighting splits
+// the whole filter into thousands of nodes, so it's only used for short outputs / when on.
+const HIGHLIGHT_LINE_CAP = 1500
+
+export function FilterOutput({ onClose }) {
   const { active } = useFilter()
   const { prefs } = usePrefs()
   const gameInfo = useGameInfo()
-  const [open, setOpen] = useState(true)
 
-  // Real build of the active filter (core base + your overrides). Async because the base file is
-  // fetched at runtime; cached after first load so this stays snappy.
+  // This component only mounts when the panel is shown, so the (debounced) build runs only then.
   const { text, loading, error } = useFilterText(active, { gameInfo, prefs })
 
   const lineCount = text ? text.split('\n').length : 0
-  const syntaxOn = prefs.syntaxHighlight !== false
+  const syntaxOn = prefs.syntaxHighlight !== false && lineCount <= HIGHLIGHT_LINE_CAP
+  // Memoized so re-renders (tab switches, hovers) never re-tokenize the whole filter.
+  const highlighted = useMemo(() => (syntaxOn ? renderHighlighted(text) : null), [text, syntaxOn])
 
   return (
     <section className="flex w-full flex-1 min-h-0 flex-col">
       <div className="section-bar w-full flex items-center gap-2">
-        <button onClick={() => setOpen(o => !o)} className="flex items-center gap-2 flex-1 min-w-0 justify-center hover:opacity-90">
-          {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />} Filter Output
-          <span className="text-[11px] text-poe-text">
-            ({loading ? 'building…' : `${lineCount} lines`})
-          </span>
-        </button>
+        <span className="flex items-center gap-2 flex-1 min-w-0 justify-center">
+          Filter Output
+          <span className="text-[11px] text-poe-text">({loading ? 'building…' : `${lineCount} lines`})</span>
+        </span>
+        {onClose && (
+          <button onClick={onClose} title="Hide output" className="p-1 rounded hover:bg-white/10 text-poe-text/70 hover:text-poe-text-bright">
+            <X size={14} />
+          </button>
+        )}
       </div>
-      {open && (
-        error ? (
-          <div className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] text-poe-danger overflow-auto whitespace-pre-wrap">
-            Couldn’t build the filter: {error.message}
-          </div>
-        ) : syntaxOn ? (
-          <div className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] leading-relaxed text-poe-text-bright overflow-auto">
-            {renderHighlighted(text)}
-          </div>
-        ) : (
-          <pre className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] leading-relaxed text-poe-text-bright overflow-auto whitespace-pre-wrap">
-            {text}
-          </pre>
-        )
+      {error ? (
+        <div className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] text-poe-danger overflow-auto whitespace-pre-wrap">
+          Couldn’t build the filter: {error.message}
+        </div>
+      ) : highlighted ? (
+        <div className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] leading-relaxed text-poe-text-bright overflow-auto">
+          {highlighted}
+        </div>
+      ) : (
+        <pre className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] leading-relaxed text-poe-text-bright overflow-auto whitespace-pre-wrap">
+          {text}
+        </pre>
       )}
     </section>
   )

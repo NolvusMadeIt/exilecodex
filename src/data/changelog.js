@@ -3,6 +3,16 @@
 export const CHANGELOG = [
   {
     date: '2026-06-24',
+    tag: 'Fix',
+    title: 'Nolvus Filter v0.12.1 — Quick Editor dropdowns are back + much faster',
+    body: [
+      'Brought back the dropdown Quick Filters (Currency, Gems, Flasks, Equipment and more) — now wired to layer real Show/Hide rules on top of your preset.',
+      'Big performance pass: the live Filter Output is hidden until you open it and only builds while visible, so clicking tabs, controls and links is snappy again.',
+      'Importing a .filter now drops its rules straight into the Quick Editor’s hide/highlight builder, ready to edit.',
+    ],
+  },
+  {
+    date: '2026-06-24',
     tag: 'Release',
     title: 'Nolvus Filter v0.12 — Patch Notes',
     body: [
