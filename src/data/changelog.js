@@ -3,6 +3,15 @@
 export const CHANGELOG = [
   {
     date: '2026-06-24',
+    tag: 'Fix',
+    title: 'Nolvus Filter v0.11.1 — update checks',
+    body: [
+      'Checking for updates no longer shows a technical error when there’s nothing new — it now simply tells you you’re on the latest version.',
+      'Update downloads and the desktop download link now come from the public releases page.',
+    ],
+  },
+  {
+    date: '2026-06-24',
     tag: 'Release',
     title: 'Nolvus Filter v0.11 — presets that actually work, a new Quick Editor & auto-updates',
     body: [

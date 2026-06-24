@@ -301,8 +301,17 @@ function wireAutoUpdater() {
   autoUpdater.on('download-progress', (p) => sendUpdate({ state: 'downloading', percent: Math.round(p.percent || 0) }))
   autoUpdater.on('update-downloaded', (info) => sendUpdate({ state: 'downloaded', current: app.getVersion(), next: info.version }))
   autoUpdater.on('error', (err) => {
-    sendUpdate({ state: 'error', message: String(err?.message || err) })
-    if (manualCheck) dialog.showMessageBox(mainWindow, { type: 'error', title: 'Update check failed', message: String(err?.message || err), buttons: ['OK'] })
+    const msg = String(err?.message || err || '')
+    // A 404 / "no published version" just means there is no release to update to (private repo
+    // or none published yet) — surface that as "up to date", not a wall of HTTP headers.
+    const benign = /\b404\b|Unable to find latest version|No published versions|releases\.atom|ERR_UPDATER_CHANNEL_FILE_NOT_FOUND|latest\.yml/i.test(msg)
+    const network = /net::|ENOTFOUND|ETIMEDOUT|ECONNREFUSED|EAI_AGAIN|getaddrinfo/i.test(msg)
+    sendUpdate({ state: benign ? 'none' : 'error', message: benign ? '' : msg })
+    if (manualCheck) {
+      if (benign) dialog.showMessageBox(mainWindow, { type: 'info', title: 'Up to date', message: `You're on the latest version (v${app.getVersion()}).`, buttons: ['OK'] })
+      else if (network) dialog.showMessageBox(mainWindow, { type: 'warning', title: 'Updates', message: "Couldn't reach the update server. Check your internet connection and try again.", buttons: ['OK'] })
+      else dialog.showMessageBox(mainWindow, { type: 'warning', title: 'Updates', message: `Couldn't check for updates:\n${msg.split('\n')[0]}`, buttons: ['OK'] })
+    }
     manualCheck = false
   })
 }

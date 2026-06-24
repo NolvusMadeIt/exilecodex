@@ -1,7 +1,7 @@
 {
   "name": "nolvusfilter",
   "private": true,
-  "version": "0.11.0",
+  "version": "0.11.1",
   "type": "module",
   "description": "Visual loot-filter editor for Path of Exile 2.",
   "author": "Nolvus",
@@ -54,7 +54,7 @@
       {
         "provider": "github",
         "owner": "NolvusMadeIt",
-        "repo": "nolvusfiltereditor"
+        "repo": "nolvusfilter-releases"
       }
     ],
     "directories": {

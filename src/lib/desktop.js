@@ -3,10 +3,9 @@
 // A localStorage flag ('nolvus-chrome' = '1') lets us preview the chrome in a browser.
 export const desktopApi = typeof window !== 'undefined' ? window.nolvusDesktop : null
 
-// Where the "get the desktop app" buttons point. NOTE: the repo is currently private, so its
-// release assets aren't publicly downloadable — point this at a public host (a public release
-// mirror, the landing page, or a public repo) before shipping the web banner to real users.
-export const DOWNLOAD_URL = 'https://github.com/NolvusMadeIt/nolvusfiltereditor/releases/latest'
+// Where the "get the desktop app" buttons point — the PUBLIC releases repo (installers only).
+// The main code repo stays private; releases live here so downloads + auto-update are public.
+export const DOWNLOAD_URL = 'https://github.com/NolvusMadeIt/nolvusfilter-releases/releases/latest'
 
 export function isDesktopChrome() {
   if (desktopApi?.isDesktop) return true
