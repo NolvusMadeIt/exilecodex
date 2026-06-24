@@ -3,6 +3,15 @@
 export const CHANGELOG = [
   {
     date: '2026-06-24',
+    tag: 'Release',
+    title: 'Nolvus Filter v0.12 — Patch Notes',
+    body: [
+      'New Patch Notes page: browse every Path of Exile 2 patch from Early Access (0.1.0) to the current 0.5.3. Pick a version and jump straight to the official notes — with the full hotfix history for the current season.',
+      'Updated the tracked game version to Path of Exile 2 0.5.3.',
+    ],
+  },
+  {
+    date: '2026-06-24',
     tag: 'Fix',
     title: 'Nolvus Filter v0.11.2 — update checks',
     body: [

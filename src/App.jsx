@@ -18,6 +18,7 @@ const CosmeticPage     = lazy(() => import('./pages/CosmeticPage.jsx').then(m =>
 const PreviewPage      = lazy(() => import('./pages/PreviewPage.jsx').then(m => ({ default: m.PreviewPage })))
 const SettingsPage     = lazy(() => import('./pages/SettingsPage.jsx').then(m => ({ default: m.SettingsPage })))
 const ChangelogPage    = lazy(() => import('./pages/ChangelogPage.jsx').then(m => ({ default: m.ChangelogPage })))
+const PatchNotesPage   = lazy(() => import('./pages/PatchNotesPage.jsx').then(m => ({ default: m.PatchNotesPage })))
 const GuidePage        = lazy(() => import('./pages/GuidePage.jsx').then(m => ({ default: m.GuidePage })))
 const SharedFiltersPage = lazy(() => import('./pages/SharedFiltersPage.jsx').then(m => ({ default: m.SharedFiltersPage })))
 const NotFoundPage     = lazy(() => import('./pages/NotFoundPage.jsx').then(m => ({ default: m.NotFoundPage })))
@@ -41,6 +42,7 @@ function Routes() {
     case '/guide':         return <GuidePage />
     case '/community':     return <SharedFiltersPage />
     case '/settings':      return <SettingsPage />
+    case '/patch-notes':   return <PatchNotesPage />
     case '/changelog':     return <ChangelogPage />
     default:               return <NotFoundPage />
   }
