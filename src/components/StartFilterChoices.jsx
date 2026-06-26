@@ -3,6 +3,7 @@ import { useFilter } from '../store/FilterStore.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { parseFilterText, rulesToOverrideRules } from '../lib/parseFilter.js'
+import { looksLikeBuild, smartFilterFromBuild } from '../lib/buildImport.js'
 import { defaultSettings } from '../store/defaultSettings.js'
 import { useT } from '../i18n/index.js'
 
@@ -20,7 +21,7 @@ const isPristine = (f) =>
 // onPreset overrides the preset card (e.g. scroll to the picker instead of navigating).
 // showPreset=false drops the preset card (the Presets page already IS the preset path).
 export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPreset = true }) {
-  const { createFilter, addFilter, resetActive, importSettings, importCustomRules, renameActive, active } = useFilter()
+  const { createFilter, addFilter, resetActive, importSettings, importCustomRules, importBuild, renameActive, active } = useFilter()
   const { navigate } = useRouter()
   const toast = useToast()
   const t = useT()
@@ -31,7 +32,7 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
 
   const startBlank = async () => {
     if (mode === 'create') {
-      createFilter('new filter')
+      createFilter('MyNewFilter.filter')
     } else {
       if (!isPristine(active)) {
         const ok = await toast.confirm(
@@ -48,23 +49,30 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
 
   const startPreset = () => {
     if (onPreset) { onPreset(); return }
-    if (mode === 'create') createFilter('new filter')
+    if (mode === 'create') createFilter('MyNewFilter.filter')
     navigate('/presets'); done()
   }
 
   const ingest = (file) => {
     if (!file) return
-    if (!/\.(filter|json|txt)$/i.test(file.name)) { toast.warn('Choose a .filter or .json file.'); return }
+    if (!/\.(filter|json|txt|build)$/i.test(file.name)) { toast.warn('Choose a .filter, .json or .build file.'); return }
     if (file.size > 1_000_000) { toast.warn('That file is too large (1 MB max).'); return }
     const reader = new FileReader()
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const txt = String(reader.result || '')
         const base = stripExt(file.name)
+        const lower = file.name.toLowerCase()
 
-        // .json — a full editor-settings backup
-        if (file.name.toLowerCase().endsWith('.json')) {
+        // .json / .build — a build export (→ smart filter) or an editor-settings backup
+        if (lower.endsWith('.json') || lower.endsWith('.build')) {
           const j = JSON.parse(txt)
+          if (looksLikeBuild(j)) {
+            const { build: b, patch } = await smartFilterFromBuild(j)
+            if (mode === 'create') { const n = addFilter({ ...defaultSettings(b.name), ...patch }); toast.success(`Smart filter "${n}" built for ${b.className || 'your build'} — tune it below.`, { title: 'Build imported' }) }
+            else { importBuild(patch); toast.success(`Smart filter built for "${b.name}"${b.className ? ` (${b.className})` : ''} — tune it below.`, { title: 'Build imported' }) }
+            navigate('/quick-editor'); done(); return
+          }
           const settings = j.filter || j
           if (mode === 'create') {
             const n = addFilter({ ...settings, name: settings.name || base })
@@ -115,15 +123,15 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
           <Card art={<PresetArt />} title={t('From a preset')}
             desc={t('Pick your class and game stage; we set sensible defaults.')} onClick={startPreset} />
         )}
-        <Card art={<ImportArt />} title={t('Import existing')}
-          desc={t('Load a .filter or .json — drop it here or click to browse.')}
+        <Card art={<ImportArt />} title={t('Import filter or build')}
+          desc={t('Load a .filter, .json, or a .build export — drop it here or click to browse. A build becomes a smart filter automatically.')}
           onClick={() => fileRef.current?.click()}
           drag={drag}
           onDragOver={(e) => { e.preventDefault(); if (!drag) setDrag(true) }}
           onDragLeave={(e) => { e.preventDefault(); setDrag(false) }}
           onDrop={onDrop} />
       </div>
-      <input ref={fileRef} type="file" accept=".filter,.json,text/plain" className="hidden"
+      <input ref={fileRef} type="file" accept=".filter,.json,.build,text/plain" className="hidden"
         onChange={(e) => { ingest(e.target.files?.[0]); e.target.value = '' }} />
     </>
   )

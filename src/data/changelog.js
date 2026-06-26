@@ -2,6 +2,18 @@
 // Newest first. Edit this file to publish a new entry.
 export const CHANGELOG = [
   {
+    date: '2026-06-26',
+    tag: 'Release',
+    title: 'Nolvus Filter v0.13.0 — Nolvus PoE Filter IDE, smarter build import & a rebuilt Quick Editor',
+    body: [
+      'New Editor tab — the Nolvus PoE Filter IDE: edit your filter directly with full syntax highlighting and smart autocomplete that suggests filter keywords, values and real item names as you type. It has its own toolbar and a settings panel (word wrap, minimap, line numbers, font size, indentation, cursor, render whitespace and more) plus an editor-size/fullscreen control and a status bar showing line, column and character counts.',
+      'Manual edits in the editor become your exported filter, with one-click "Regenerate from builder" to drop them and return to the live, builder-generated filter.',
+      'Quick Editor rebuilt much deeper: full nested categories and groups — Campaign (auto-scaling leveling + disenchant/salvage), Flasks & Charms, Currency, Uniques & Chance Bases, Other Items, My Equipment and Other Equipment — with dozens of new controls, each wired to real Show/Hide rules.',
+      'Smart build import: load a Path of Exile 2 .build and the app auto-creates a tailored, fully editable filter from it — your class weapons, attribute-matched armour, gems and more — ready to tweak and export.',
+      'Balanced two-column Quick Editor layout, long base-type lists now collapse neatly, and new filters start as "MyNewFilter.filter".',
+    ],
+  },
+  {
     date: '2026-06-24',
     tag: 'Release',
     title: 'Nolvus Filter v0.12.2 — read patch notes in-app',

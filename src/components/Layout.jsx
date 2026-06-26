@@ -28,12 +28,17 @@ function useIsXl() {
 // Filter Studio shell: fixed-viewport workstation — top action bar, left nav rail, scrolling
 // main work area, and an on-demand live output (hidden by default; mounted only when shown so it
 // never costs anything while you work).
+// The live filter output only belongs on the pages where you build/preview the filter — not on
+// Patch Notes, Community, Guide, Settings or Changelog.
+const OUTPUT_ROUTES = new Set(['/', '/presets', '/quick-editor', '/quick-filters', '/tier-lists', '/custom-rules', '/cosmetic', '/preview'])
+
 export function Layout({ children }) {
   const { prefs, update } = usePrefs()
-  const { navigate } = useRouter()
+  const { path, navigate } = useRouter()
   const dockOpen = !!prefs.dockOpen
   const setDockOpen = (v) => update({ dockOpen: v })
   const isXl = useIsXl()
+  const outputHere = OUTPUT_ROUTES.has(path)
 
   // Tray menu → renderer navigation (e.g. "Settings"). Desktop only; no-op on the web.
   useEffect(() => {
@@ -52,12 +57,12 @@ export function Layout({ children }) {
           <div className="px-5 py-5 mx-auto" style={{ maxWidth: 1180 }}>
             {children}
             {/* On narrow screens the output stacks here — only when opened, and only this copy. */}
-            {dockOpen && !isXl && (
+            {outputHere && dockOpen && !isXl && (
               <div className="mt-8 h-[72vh] flex flex-col">
                 <FilterOutput onClose={() => setDockOpen(false)} />
               </div>
             )}
-            {!dockOpen && !isXl && (
+            {outputHere && !dockOpen && !isXl && (
               <div className="mt-8 flex justify-center">
                 <button onClick={() => setDockOpen(true)} className="btn-dark h-8 text-[12px]">
                   <Code2 size={14} /> Show filter output
@@ -68,7 +73,7 @@ export function Layout({ children }) {
         </main>
 
         {/* On wide screens the output is a right-hand dock — mounted only when opened. */}
-        {isXl && (dockOpen ? (
+        {outputHere && isXl && (dockOpen ? (
           <aside className="relative flex w-[600px] shrink-0 border-l border-poe-line bg-black/20 flex-col min-h-0">
             <button onClick={() => setDockOpen(false)} title="Hide output panel" aria-label="Hide output panel"
               className="absolute left-0 top-3 -translate-x-1/2 z-10 w-6 h-6 grid place-items-center rounded border border-poe-line bg-poe-panel text-poe-text hover:text-poe-gold hover:border-poe-gold-dim/60">

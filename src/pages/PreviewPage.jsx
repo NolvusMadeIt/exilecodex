@@ -7,7 +7,7 @@ import { useCatalog } from '../lib/catalog.js'
 import { DROP_TIERS } from '../data/dropTiers.js'
 import { ItemLabel } from '../components/ItemLabel.jsx'
 import { Toggle } from '../components/primitives.jsx'
-import { buildFilter } from '../lib/buildFilter.js'
+import { resolveFilter } from '../lib/buildFilter.js'
 import { parseFilterBlocks, evaluateItem, explainItem } from '../lib/filterEngine.js'
 import { parseGameItem } from '../lib/parseGameItem.js'
 
@@ -59,7 +59,7 @@ export function PreviewPage() {
   const [blocks, setBlocks] = useState([])
   useEffect(() => {
     let alive = true
-    buildFilter(active, { gameInfo, prefs })
+    resolveFilter(active, { gameInfo, prefs })
       .then(text => { if (alive) setBlocks(parseFilterBlocks(text)) })
       .catch(() => { if (alive) setBlocks([]) })
     return () => { alive = false }

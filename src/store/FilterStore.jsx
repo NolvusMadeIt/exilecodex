@@ -85,7 +85,7 @@ export function FilterProvider({ children }) {
     setActiveName(newName)
   }, [active])
 
-  const createFilter = useCallback((name = 'new filter') => {
+  const createFilter = useCallback((name = 'MyNewFilter.filter') => {
     let n = name, i = 1
     const taken = new Set(filters.map(f => f.name))
     while (taken.has(n)) n = `${name} ${++i}`
@@ -152,15 +152,48 @@ export function FilterProvider({ children }) {
     })
   }, [update])
 
+  // Apply a build-derived smart filter (from a .build import) to the active filter. The patch is
+  // ordinary settings (strictness + full quickFilters + an editable armour-highlight rule) plus a
+  // name; nothing build-specific is stored. The build's rule is prepended to any existing rules,
+  // the filter is renamed after the build (deduped), and the version auto-bumps.
+  const importBuild = useCallback((patch = {}) => {
+    const { name: wantName, overrides: patchOv, ...rest } = patch
+    let n = (wantName || active.name).trim() || active.name
+    const taken = new Set(filters.filter(f => f.name !== active.name).map(f => f.name))
+    const baseN = n; let i = 1
+    while (taken.has(n)) n = `${baseN} ${++i}`
+    setFilters(prev => prev.map(f => {
+      if (f.name !== active.name) return f
+      const buildRules = patchOv?.rules || []
+      return {
+        ...f, ...rest, name: n,
+        overrides: { ...f.overrides, rules: [...buildRules, ...(f.overrides?.rules || [])] },
+        version: bumpPatch(f.version || '0.0.1'),
+        sourceFile: null,
+      }
+    }))
+    setActiveName(n)
+  }, [active, filters])
+
   // Increment the active filter's patch version. Called when the user "ships" a save.
   const bumpVersion = useCallback(() => {
     update(f => ({ ...f, version: bumpPatch(f.version || '0.0.1') }))
   }, [update])
 
+  // Editor tab: store/clear the manually-edited filter text. When set, it overrides the generated
+  // filter for all output/export (see lib/buildFilter.js → resolveFilter). null = back to live.
+  const setManualFilter = useCallback((text) => {
+    update(f => ({ ...f, manualFilter: text }))
+  }, [update])
+  const clearManualFilter = useCallback(() => {
+    update(f => ({ ...f, manualFilter: null }))
+  }, [update])
+
   const value = {
     filters, active, activeName, setActiveName,
     update, updateSlice, renameActive, createFilter, addFilter, cloneActive, deleteFilter,
-    resetActive, importSettings, importCustomRules, bumpVersion,
+    resetActive, importSettings, importCustomRules, importBuild, bumpVersion,
+    setManualFilter, clearManualFilter,
   }
   return <FilterCtx.Provider value={value}>{children}</FilterCtx.Provider>
 }

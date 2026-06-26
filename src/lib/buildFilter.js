@@ -1,8 +1,13 @@
-// The primary filter build path: take the user's settings, load the REAL core filter for their
-// chosen strictness/style, splice in their override customizations, and stamp the header. This
-// replaces the old synthetic generator (which produced rules that didn't behave in-game).
-import { loadCoreFilter, strictnessLevel, styleInfo, DEFAULT_STRICTNESS, DEFAULT_STYLE } from '../data/coreFilters.js'
-import { compileOverrides, injectOverrides } from './overrides.js'
+// The filter generator. The whole .filter is BUILT from the user's settings (Quick Filters,
+// rules, tier list, cosmetic) — like poe2filter.com — so the controls always reflect the filter.
+// Order is deliberate (PoE2 is first-match-wins): your highlights/hides + quick-filter category
+// rules first (already sorted shows-before-hides), then tiered currency, then a final catch-all.
+import { compileOverrides, emitStyle, tierStyle } from './overrides.js'
+import { DROP_TIERS, DEFAULT_TIER_CURRENCY } from '../data/dropTiers.js'
+import { quoteList, chunkList } from './filterSyntax.js'
+import { strictnessLevel, styleInfo } from '../data/coreFilters.js'
+
+const BAR = '#'.repeat(64)
 
 function stampNow() {
   const d = new Date()
@@ -10,41 +15,88 @@ function stampNow() {
   return `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())} ${p(d.getUTCHours())}:${p(d.getUTCMinutes())} UTC`
 }
 
-// Rewrite the core file's (already de-branded) header title + build line to reflect THIS filter.
-// Graceful: if the anchor strings aren't present the header is simply left as-is.
-function applyHeader(text, settings, ctx) {
-  const name = (settings.name || "Nolvus's Filter").trim()
-  const ver = settings.version || '0.0.1'
-  const sName = strictnessLevel(ctx.strictness).name
-  const stName = styleInfo(ctx.style).name
-  const gv = ctx.gameInfo?.gameVersionLabel || ctx.gameInfo?.gameVersion || ''
-  const built = `# Built with Nolvus's Filter Editor  -  Base: ${sName} / ${stName}  -  Filter v${ver}`
-    + (gv ? `  -  ${gv}` : '') + (ctx.stamp ? `  -  ${ctx.stamp}` : '')
-  let out = text
-    .replace('# Nolvus Loot Filter - for Path of Exile 2', `# ${name} - Path of Exile 2 loot filter`)
-    .replace("# Built with Nolvus's Filter Editor.", built)
-  if (ctx.topComment) {
-    const block = ctx.topComment.split('\n').map(l => `# ${l}`).join('\n')
-    out = out.replace(built, `${built}\n#\n${block}`)
+function banner(title) { return [BAR, `# ${title}`, BAR, ''] }
+
+function block(action, comment, conditions, style) {
+  const lines = [`${action} # ${comment}`]
+  for (const c of conditions || []) if (c) lines.push('\t' + c)
+  if (action === 'Show' && style) for (const s of emitStyle(style)) lines.push('\t' + s)
+  return lines.join('\n')
+}
+
+// Currency, tiered by market value (S→E) from your Tier List, with the long tail handled by the
+// catch-all setting. Named valuable currency gets loud styling; the rest a baseline.
+function currencyBlocks(settings) {
+  const cosmetic = settings.cosmetic || {}
+  const byTier = {}
+  for (const t of DROP_TIERS) byTier[t.id] = new Set(DEFAULT_TIER_CURRENCY[t.id] || [])
+  for (const [name, tid] of Object.entries(settings.tierOverrides || {})) {
+    for (const set of Object.values(byTier)) set.delete(name)
+    ;(byTier[tid] = byTier[tid] || new Set()).add(name)
   }
+  const out = []
+  for (const id of ['S', 'A', 'B', 'C', 'D']) {
+    const items = [...(byTier[id] || [])]
+    for (const chunk of chunkList(items)) out.push(block('Show', `${id}-tier currency`, [`BaseType == ${quoteList(chunk)}`], tierStyle(id, cosmetic)))
+  }
+  for (const chunk of chunkList([...(byTier.F || [])])) out.push(block('Hide', 'Hidden currency (F-tier)', [`BaseType == ${quoteList(chunk)}`]))
+  // Everything else in the currency class: show dim, or hide it at strict levels.
+  if (settings.quickFilters?.catchAll === 'hide') out.push(block('Hide', 'Remaining low-value currency', [`Class == ${quoteList(['Stackable Currency'])}`]))
+  else out.push(block('Show', 'Remaining currency', [`Class == ${quoteList(['Stackable Currency'])}`], tierStyle('E', cosmetic)))
   return out
 }
 
-// Build the final .filter text. Async because the base file is a real runtime fetch.
-export async function buildFilter(settings = {}, opts = {}) {
-  const strictness = settings.strictness || DEFAULT_STRICTNESS
-  const style = settings.style || DEFAULT_STYLE
-  const base = await loadCoreFilter(strictness, style)
-  const headed = applyHeader(base, settings, {
-    strictness, style,
-    stamp: opts.stamp || stampNow(),
-    gameInfo: opts.gameInfo,
-    topComment: opts.prefs?.topComment?.trim() || '',
-  })
-  let out = injectOverrides(headed, compileOverrides(settings))
+// The final rule: everything not matched above. Show it dimly, or hide it (true strictness).
+function catchAll(settings) {
+  if ((settings.quickFilters?.catchAll || 'show') === 'hide') return block('Hide', 'Everything else', [])
+  return block('Show', 'Everything else', [], { textColor: [140, 140, 140, 255], fontSize: 18 })
+}
 
-  // User free-text / pref comment that belongs at the very bottom of the file.
+function header(settings, opts) {
+  const name = (settings.name || "Nolvus's Filter").trim()
+  const ver = settings.version || '0.0.1'
+  const sName = strictnessLevel(settings.strictness).name
+  const stName = styleInfo(settings.style).name
+  const gv = opts.gameInfo?.gameVersionLabel || ''
+  const lines = [
+    BAR,
+    `# ${name} - Path of Exile 2 loot filter`,
+    BAR,
+    `# Built with Nolvus's Filter Editor  -  ${sName}${stName && stName !== 'Default' ? ` / ${stName}` : ''}  -  v${ver}`
+      + (gv ? `  -  ${gv}` : '') + `  -  ${opts.stamp || stampNow()}`,
+    BAR,
+  ]
+  if (opts.prefs?.topComment?.trim()) { lines.push('#'); opts.prefs.topComment.split('\n').forEach(l => lines.push(`# ${l}`)) }
+  return lines
+}
+
+function generate(settings, opts) {
+  const out = [...header(settings, opts), '']
+
+  const blocks = compileOverrides(settings) // your rules + quick-filter category rules (sorted)
+  if (blocks.length) { out.push(...banner('Your filter')); for (const b of blocks) out.push(b, '') }
+
+  out.push(...banner('Currency'))
+  for (const b of currencyBlocks(settings)) out.push(b, '')
+
+  out.push(...banner('Everything else'))
+  out.push(catchAll(settings), '')
+
   const tail = [settings.freeText?.bottom?.trim(), opts.prefs?.bottomComment?.trim()].filter(Boolean)
-  if (tail.length) out = out.replace(/\n*$/, '\n\n') + tail.join('\n\n') + '\n'
-  return out
+  if (tail.length) out.push('', ...tail)
+
+  return out.join('\n').replace(/\n{3,}/g, '\n\n') + '\n'
+}
+
+// Async only so existing callers (which await) don't change; generation itself is synchronous
+// and fast (no network, far fewer lines than a full vendored filter).
+export async function buildFilter(settings = {}, opts = {}) {
+  return generate(settings, opts)
+}
+
+// The authoritative filter text for output/export: the user's manual edits (Editor tab) when
+// present, otherwise the freshly generated filter. Used everywhere a filter is shown or exported.
+export async function resolveFilter(settings = {}, opts = {}) {
+  if (typeof settings.manualFilter === 'string') return settings.manualFilter
+  return buildFilter(settings, opts)
 }

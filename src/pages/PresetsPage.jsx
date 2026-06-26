@@ -2,6 +2,7 @@ import React from 'react'
 import { Check } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { STRICTNESS_LEVELS, STYLES } from '../data/coreFilters.js'
+import { strictnessProfile } from '../data/strictness.js'
 import { StartFilterChoices } from '../components/StartFilterChoices.jsx'
 import { useT } from '../i18n/index.js'
 
@@ -36,7 +37,7 @@ export function PresetsPage() {
           {STRICTNESS_LEVELS.map(s => {
             const on = s.id === strictness
             return (
-              <button key={s.id} onClick={() => update({ strictness: s.id })}
+              <button key={s.id} onClick={() => update({ strictness: s.id, quickFilters: { ...strictnessProfile(s.id) } })}
                 title={s.blurb}
                 className={`relative group rounded border text-left p-2.5 h-full flex flex-col transition-colors ${on ? 'border-poe-gold shadow-glow bg-poe-gold/5' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
                 <div className="flex items-center justify-between">

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tabs, Tab, Button } from '@mui/material'
-import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked, GraduationCap, Users, ScrollText } from 'lucide-react'
+import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked, GraduationCap, Users, ScrollText, Code2 } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
 import { useT } from '../i18n/index.js'
 
@@ -10,6 +10,7 @@ const MAIN = [
   { to: '/tier-lists', label: 'Tier Lists', icon: ListOrdered },
   { to: '/custom-rules', label: 'Custom Rules', icon: Pencil },
   { to: '/cosmetic', label: 'Cosmetic', icon: Shirt },
+  { to: '/editor', label: 'Editor', icon: Code2 },
   { to: '/preview', label: 'Preview', icon: Eye },
 ]
 const SECONDARY = [

@@ -9,10 +9,13 @@ import { useGameInfo } from '../store/GameInfo.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { useT } from '../i18n/index.js'
-import { buildFilter } from '../lib/buildFilter.js'
+import { resolveFilter } from '../lib/buildFilter.js'
 import { parseFilterText } from '../lib/parseFilter.js'
+import { looksLikeBuild, smartFilterFromBuild } from '../lib/buildImport.js'
 
-const safeName = (name) => (name || 'filter').replace(/[^a-z0-9-_. ]/gi, '')
+// Sanitize a filter name into a base filename. Strips a trailing ".filter" first so a filter
+// literally named "MyNewFilter.filter" exports as "MyNewFilter.filter", not "...filter.filter".
+const safeName = (name) => ((name || 'filter').replace(/\.filter$/i, '').replace(/[^a-z0-9-_. ]/gi, '').trim() || 'filter')
 
 // File System Access API is Chromium-only. We fall back to <input type=file> + download.
 const HAS_FS_ACCESS = typeof window !== 'undefined' && 'showOpenFilePicker' in window
@@ -23,7 +26,7 @@ function stampNow() {
 }
 
 export function ActionBar() {
-  const { active, resetActive, importSettings, importCustomRules, bumpVersion } = useFilter()
+  const { active, resetActive, importSettings, importCustomRules, importBuild, bumpVersion } = useFilter()
   const { prefs } = usePrefs()
   const gameInfo = useGameInfo()
   const toast = useToast()
@@ -41,7 +44,7 @@ export function ActionBar() {
   const buildText = (bumpedVersion) => {
     // Pass a synthetic next-version through so the output reflects the bump immediately.
     const snap = bumpedVersion ? { ...active, version: bumpedVersion } : active
-    return buildFilter(snap, { gameInfo, prefs, stamp: stampNow() })
+    return resolveFilter(snap, { gameInfo, prefs, stamp: stampNow() })
   }
 
   const downloadBlob = (text, name) => {
@@ -132,12 +135,21 @@ export function ActionBar() {
 
   const ingestFile = (f, { fromHandle }) => {
     const reader = new FileReader()
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const txt = String(reader.result)
-        if (f.name.toLowerCase().endsWith('.json')) {
+        const lower = f.name.toLowerCase()
+        if (lower.endsWith('.json') || lower.endsWith('.build')) {
           const j = JSON.parse(txt)
-          // Accept either { filter, prefs } or a raw filter settings object
+          // A PoE2 build export → generate a smart filter from it.
+          if (looksLikeBuild(j)) {
+            const { build, patch } = await smartFilterFromBuild(j)
+            importBuild(patch)
+            toast.success(`Smart filter built for "${build.name}"${build.className ? ` (${build.className})` : ''} — tune it anytime in the Quick Editor.`, { title: 'Build imported' })
+            navigate('/quick-editor')
+            return
+          }
+          // Otherwise it's an editor-settings backup ({ filter, prefs } or a raw settings object).
           importSettings(j.filter || j)
           toast.success(`Loaded editor settings from "${f.name}".`, { title: 'Imported' })
           return
@@ -178,7 +190,7 @@ export function ActionBar() {
             <ChevronDown size={12} />
           </Button>
         </ButtonGroup>
-        <input ref={fileRef} type="file" accept=".filter,.json,text/plain" className="hidden" onChange={onImport} />
+        <input ref={fileRef} type="file" accept=".filter,.json,.build,text/plain" className="hidden" onChange={onImport} />
         <PortalMenu open={importMenu} onClose={() => setImportMenu(false)} anchorRef={importMenuRef}>
           <MenuItem onClick={() => { setImportMenu(false); fileRef.current?.click() }} icon={Upload} label="Import .filter / .json" sub="Browse and load a file" />
           <MenuItem

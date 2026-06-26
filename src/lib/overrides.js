@@ -20,10 +20,21 @@ export function splitNames(s) {
   return String(s || '').split(/[\n,]/).map(x => x.trim()).filter(Boolean)
 }
 
-// A single rarity condition. exact → `Rarity Magic`; with op → `Rarity <= Magic`.
+const RARITY_ORDER = ['Normal', 'Magic', 'Rare', 'Unique']
+// Emit rarity conditions in the proven LIST form (e.g. `Rarity Normal Magic Rare`) the core
+// filters use — never `Rarity < X`. PoE2 always accepts the list form, so a rarity condition can
+// never be the thing that makes the whole filter fail to load. Returns null for an empty range.
 function rarityCond(rarity, op) {
   if (!rarity) return null
-  return (!op || op === '=' || op === '==') ? `Rarity ${rarity}` : `Rarity ${op} ${rarity}`
+  const i = RARITY_ORDER.indexOf(rarity)
+  if (i < 0) return `Rarity ${rarity}`
+  let keep
+  if (op === '>=') keep = RARITY_ORDER.slice(i)
+  else if (op === '>') keep = RARITY_ORDER.slice(i + 1)
+  else if (op === '<=') keep = RARITY_ORDER.slice(0, i + 1)
+  else if (op === '<') keep = RARITY_ORDER.slice(0, i)
+  else keep = [rarity] // '=' / '==' / unset → exact
+  return keep.length ? `Rarity ${keep.join(' ')}` : null
 }
 
 // Matcher → condition lines. Every field is optional; only set fields emit a condition.
@@ -63,9 +74,9 @@ export const DEFAULT_HIGHLIGHT = {
   fontSize: 40, beam: 'Red', minimap: 'Red', minimapShape: 'Star', sound: 1, volume: 300,
 }
 
-// Style for an item bumped to a drop tier on the Tier List. Starts from the tier's defaults
-// (color/beam) and applies the user's Cosmetic overrides for that tier (beam/shape/sound).
-function tierStyle(tierId, cosmetic = {}) {
+// Style for a drop tier (used by the Tier List + the currency tiering in the generator). Starts
+// from the tier's defaults (color/beam) and applies the user's Cosmetic overrides for that tier.
+export function tierStyle(tierId, cosmetic = {}) {
   const t = TIER_BY_ID[tierId] || TIER_BY_ID.E
   const ov = cosmetic.tierStyles?.[tierId] || {}
   const cap = (s) => s ? s[0].toUpperCase() + s.slice(1) : s
@@ -91,6 +102,8 @@ const WEAPON_CLASSES = ['Bows', 'Crossbows', 'Quarterstaves', 'Spears', 'Sceptre
 const ARMOUR_CLASSES = ['Body Armours', 'Helmets', 'Gloves', 'Boots', 'Shields', 'Bucklers']
 const JEWELLERY_CLASSES = ['Rings', 'Amulets', 'Belts']
 const GEAR_CLASSES = [...WEAPON_CLASSES, ...ARMOUR_CLASSES, ...JEWELLERY_CLASSES]
+const MARTIAL_WEAPONS = ['One Hand Maces', 'Two Hand Maces', 'Spears', 'Quarterstaves', 'Bows', 'Crossbows']
+const CASTER_WEAPONS = ['Wands', 'Sceptres', 'Staves', 'Foci']
 
 // Quick Editor user rules: hide / show / highlight anything (incl. imported raw rules).
 function ruleDescriptors(rules = []) {
@@ -132,6 +145,7 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}) {
   if (qf.hideGold) hide('Hide Gold', [`BaseType == ${quote('Gold')}`])
   else if (num(qf.minGoldPile)) hide(`Hide small gold piles (< ${Number(qf.minGoldPile)})`, [`BaseType == ${quote('Gold')}`, `StackSize < ${Number(qf.minGoldPile)}`])
   if (qf.showWaystones) showT('Show Waystones', [`Class == ${quoteList(['Waystones'])}`, ...(Number(qf.minWaystoneTier) > 1 ? [`WaystoneTier >= ${Number(qf.minWaystoneTier)}`] : [])], 'C')
+  if (qf.highlightRareWaystones) highlight('Highlight Rare Waystones', [`Class == ${quoteList(['Waystones'])}`, 'Rarity Rare Unique'])
 
   // Gems
   if (has(qf.gemsShow, 'uncut')) showT('Show Uncut Gems', [`BaseType ${quoteList(['Uncut'])}`], 'C')
@@ -141,11 +155,11 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}) {
   // Flasks & charms
   const flaskClasses = [has(qf.flasksShow, 'life') && 'Life Flasks', has(qf.flasksShow, 'mana') && 'Mana Flasks', has(qf.flasksShow, 'charms') && 'Charms'].filter(Boolean)
   if (flaskClasses.length) showT('Show Flasks & Charms', [`Class == ${quoteList(flaskClasses)}`, ...(num(qf.qualityFlasksMin) ? [`Quality >= ${Number(qf.qualityFlasksMin)}`] : [])], 'D')
-  if (qf.hideNonUniqueFlasks) hide('Hide non-Unique Flasks & Charms', [`Class == ${quoteList(['Life Flasks', 'Mana Flasks', 'Charms'])}`, 'Rarity < Unique'])
+  if (qf.hideNonUniqueFlasks) hide('Hide non-Unique Flasks & Charms', [`Class == ${quoteList(['Life Flasks', 'Mana Flasks', 'Charms'])}`, 'Rarity Normal Magic Rare'])
 
   // Uniques & chance
   if (qf.showUniques) highlight('Highlight Uniques', ['Rarity Unique'])
-  if (qf.showChanceBases) showT('Show chance/craft bases', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES, 'Rings', 'Amulets'])}`, 'Rarity <= Magic', 'ItemLevel >= 82'], 'C', 18)
+  if (qf.showChanceBases) showT('Show chance/craft bases', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES, 'Rings', 'Amulets'])}`, 'Rarity Normal Magic', 'ItemLevel >= 82'], 'C', 18)
 
   // Endgame / other
   if (has(qf.endgameShow, 'quest')) showT('Show Quest Items', [`Class == ${quoteList(['Quest Items'])}`], 'C')
@@ -155,27 +169,100 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}) {
   if (has(qf.endgameShow, 'fragments')) showT('Show Fragments & Splinters', [`BaseType ${quoteList(['Splinter', 'Fragment', 'Crest'])}`], 'C')
   if (has(qf.endgameShow, 'expedition')) showT('Show Expedition', [`BaseType ${quoteList(['Logbook', 'Artifact'])}`], 'C')
 
-  // Leveling
-  if (has(qf.levelingShow, 'weaponsArmour')) showT('Leveling weapons & armour', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES])}`, 'Rarity <= Rare'], 'D')
-  if (has(qf.levelingShow, 'jewellery')) showT('Leveling jewellery', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity <= Rare'], 'D')
-  if (has(qf.levelingShow, 'flasks')) showT('Leveling flasks', [`Class == ${quoteList(['Life Flasks', 'Mana Flasks'])}`], 'D')
+  // Leveling — optionally only while you're below a given area level (keeps maps clean later)
+  const areaCap = num(qf.levelingMaxAreaLevel) ? [`AreaLevel <= ${Number(qf.levelingMaxAreaLevel)}`] : []
+  if (has(qf.levelingShow, 'weaponsArmour')) showT('Leveling weapons & armour', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES])}`, 'Rarity Normal Magic Rare', ...areaCap], 'D')
+  if (has(qf.levelingShow, 'jewellery')) showT('Leveling jewellery', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity Normal Magic Rare', ...areaCap], 'D')
+  if (has(qf.levelingShow, 'flasks')) showT('Leveling flasks', [`Class == ${quoteList(['Life Flasks', 'Mana Flasks'])}`, ...areaCap], 'D')
   if (qf.disenchantRares) showT('Low rares to salvage', ['Rarity Rare', 'ItemLevel < 65'], 'E')
 
+  // ---- Campaign clone: Auto-Scaling Leveling Items ----
+  const lvlArea = [...(num(qf.lvlGearAreaMin) ? [`AreaLevel >= ${Number(qf.lvlGearAreaMin)}`] : []), ...(num(qf.lvlGearAreaMax) ? [`AreaLevel <= ${Number(qf.lvlGearAreaMax)}`] : [])]
+  if (qf.lvlGear) showT('Leveling gear', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES])}`, 'Rarity Normal Magic Rare', ...lvlArea], 'D')
+  if (qf.lvlWeapons) showT('Leveling weapons', [`Class == ${quoteList(qf.lvlWeaponTypes?.length ? qf.lvlWeaponTypes : WEAPON_CLASSES)}`, 'Rarity Normal Magic Rare'], 'D')
+  if (qf.lvlArmour) showT('Leveling armour', [`Class == ${quoteList(qf.lvlArmourTypes?.length ? qf.lvlArmourTypes : ARMOUR_CLASSES)}`, 'Rarity Normal Magic Rare'], 'D')
+  if (qf.lvlFlasks) showT('Leveling flasks', [`Class == ${quoteList(['Life Flasks', 'Mana Flasks'])}`], 'D')
+  if (qf.lvlGold) showT('Leveling gold', [`BaseType == ${quote('Gold')}`], 'E')
+  if (qf.lvlVerisium) showT('Leveling Verisium', [`BaseType == ${quote('Verisium')}`], 'D')
+
+  // ---- Campaign clone: Disenchanting / Selling / Salvaging ----
+  if (qf.disRares) {
+    const rar = qf.disRaresMagic ? 'Rarity Magic Rare' : 'Rarity Rare'
+    const size = []
+    if (qf.disRaresMaxSize) { const [w, h] = String(qf.disRaresMaxSize).split('x').map(Number); if (w) size.push(`Width <= ${w}`); if (h) size.push(`Height <= ${h}`) }
+    showT('Rares to disenchant/salvage', [`Class == ${quoteList(GEAR_CLASSES)}`, rar, ...size], 'E')
+  }
+  if (qf.socketedGear && num(qf.socketedGearMin)) showT(`Socketed gear (${Number(qf.socketedGearMin)}+)`, [`Class == ${quoteList(GEAR_CLASSES)}`, `Sockets >= ${Number(qf.socketedGearMin)}`], 'C', 18)
+  const upTo = (val) => (val && val !== 'all') ? rarityCond(val, '<=') : null
+  const qualityGear = (on, min, rarity, classes, label) => { if (on && num(min)) { const conds = [`Class == ${quoteList(classes)}`, `Quality >= ${Number(min)}`]; const rc = upTo(rarity); if (rc) conds.push(rc); showT(label, conds, 'C', 18) } }
+  qualityGear(qf.qMartial, qf.qMartialMin, qf.qMartialRarity, MARTIAL_WEAPONS, 'Quality martial weapons')
+  qualityGear(qf.qCaster, qf.qCasterMin, qf.qCasterRarity, CASTER_WEAPONS, 'Quality caster weapons')
+  qualityGear(qf.qArmour, qf.qArmourMin, qf.qArmourRarity, ARMOUR_CLASSES, 'Quality shields & armour')
+
   // My equipment (class-aware): keep the selected types, hide the rest (below Unique)
-  const offBuild = (label, all, keep) => { const drop = all.filter(c => !keep.includes(c)); if (keep.length && drop.length) hide(label, [`Class == ${quoteList(drop)}`, 'Rarity < Unique'], 48) }
+  const offBuild = (label, all, keep) => { const drop = all.filter(c => !keep.includes(c)); if (keep.length && drop.length) hide(label, [`Class == ${quoteList(drop)}`, 'Rarity Normal Magic Rare'], 48) }
   offBuild('Hide off-build weapon types', WEAPON_CLASSES, qf.myWeapons || [])
   offBuild('Hide off-build armour types', ARMOUR_CLASSES, qf.myArmour || [])
   offBuild('Hide off-build jewellery', JEWELLERY_CLASSES, qf.myJewellery || [])
   if (qf.showJewels) showT('Show Jewels', [`Class == ${quoteList(['Jewels'])}`], 'C')
-  if (qf.highlightJewellery) highlight('Highlight Rare jewellery', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity >= Rare'])
+  if (qf.highlightJewellery) highlight('Highlight Rare jewellery', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity Rare Unique'])
 
   // Equipment filtering — always-show overrides first (lower priority), then hides
   if (num(qf.gearMinQuality)) showT(`Always show ${Number(qf.gearMinQuality)}%+ quality gear`, [`Class == ${quoteList(GEAR_CLASSES)}`, `Quality >= ${Number(qf.gearMinQuality)}`], 'C', 18)
   if (num(qf.gearMinSockets)) showT(`Always show ${Number(qf.gearMinSockets)}+ socket gear`, [`Class == ${quoteList(GEAR_CLASSES)}`, `Sockets >= ${Number(qf.gearMinSockets)}`], 'C', 18)
   if (num(qf.alwaysShowRareIlvl)) showT(`Always show Rare bases iLvl ${Number(qf.alwaysShowRareIlvl)}+`, [`Class == ${quoteList(GEAR_CLASSES)}`, 'Rarity Rare', `ItemLevel >= ${Number(qf.alwaysShowRareIlvl)}`], 'C', 18)
   const minR = qf.gearMinRarity || 'all'
-  if (minR !== 'all') hide(`Hide equipment below ${minR}`, [`Class == ${quoteList(GEAR_CLASSES)}`, `Rarity < ${minR}`])
-  if (num(qf.gearMinItemLevel)) hide(`Hide equipment below item level ${Number(qf.gearMinItemLevel)}`, [`Class == ${quoteList(GEAR_CLASSES)}`, `ItemLevel < ${Number(qf.gearMinItemLevel)}`, 'Rarity < Unique'])
+  // Explicitly SHOW the gear you keep, so it survives a catch-all hide (the poe2filter.com model).
+  const gearShow = [`Class == ${quoteList(GEAR_CLASSES)}`]
+  if (minR !== 'all') gearShow.push(rarityCond(minR, '>='))
+  if (num(qf.gearMinItemLevel)) gearShow.push(`ItemLevel >= ${Number(qf.gearMinItemLevel)}`)
+  if (minR !== 'all' || num(qf.gearMinItemLevel) || qf.catchAll === 'hide') showT('Show equipment you keep', gearShow, 'D', 26)
+  if (minR !== 'all') hide(`Hide equipment below ${minR}`, [`Class == ${quoteList(GEAR_CLASSES)}`, rarityCond(minR, '<')])
+  if (num(qf.gearMinItemLevel)) hide(`Hide equipment below item level ${Number(qf.gearMinItemLevel)}`, [`Class == ${quoteList(GEAR_CLASSES)}`, `ItemLevel < ${Number(qf.gearMinItemLevel)}`, 'Rarity Normal Magic Rare'])
+
+  // Crafting & cleanup — highlight high-iLvl white crafting bases; hide low-rarity jewellery per slot
+  if (qf.showCraftingBases) showT('Highlight crafting bases', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES])}`, 'Rarity Normal', `ItemLevel >= ${num(qf.craftingBaseIlvl) ? Number(qf.craftingBaseIlvl) : 82}`], 'B', 18)
+  const hideBelow = (label, classes, val) => { if (val && val !== 'all') { const rc = rarityCond(val, '<'); if (rc) hide(label, [`Class == ${quoteList(classes)}`, rc]) } }
+  hideBelow('Hide low-rarity Rings', ['Rings'], qf.hideRingsBelow)
+  hideBelow('Hide low-rarity Amulets', ['Amulets'], qf.hideAmuletsBelow)
+  hideBelow('Hide low-rarity Belts', ['Belts'], qf.hideBeltsBelow)
+  hideBelow('Hide low-rarity Jewels', ['Jewels'], qf.hideJewelsBelow)
+
+  // ===== Flasks & Charms (cloned groups) =====
+  if (qf.charmsHighIlvl) showT('High iLvl normal charms', [`Class == ${quoteList(['Charms'])}`, 'Rarity Normal', 'ItemLevel >= 80'], 'D')
+  if (qf.qCharms && num(qf.qCharmsMin)) showT('Quality charms', [`Class == ${quoteList(['Charms'])}`, `Quality >= ${Number(qf.qCharmsMin)}`], 'C', 18)
+  if (qf.qFlasks && num(qf.qFlasksMin)) showT('Quality flasks', [`Class == ${quoteList(['Life Flasks', 'Mana Flasks'])}`, `Quality >= ${Number(qf.qFlasksMin)}`], 'C', 18)
+  if (qf.hideLifeFlasks) hide('Hide non-unique Life Flasks', [`Class == ${quoteList(['Life Flasks'])}`, 'Rarity Normal Magic Rare'])
+  if (qf.hideManaFlasks) hide('Hide non-unique Mana Flasks', [`Class == ${quoteList(['Mana Flasks'])}`, 'Rarity Normal Magic Rare'])
+  if (qf.hideCharms) hide('Hide non-unique Charms', [`Class == ${quoteList(['Charms'])}`, 'Rarity Normal Magic Rare'])
+
+  // ===== Currency: hide groups =====
+  const curHide = (v) => has(qf.currencyHide, v)
+  if (curHide('shards')) hide('Hide Currency Shards', [`BaseType ${quoteList(['Shard'])}`])
+  if (curHide('runes')) hide('Hide Runes & Soul Cores', [`BaseType ${quoteList(['Rune', 'Soul Core'])}`])
+  if (curHide('catalysts')) hide('Hide Catalysts', [`BaseType ${quoteList(['Catalyst'])}`])
+  if (curHide('essences')) hide('Hide Essences', [`BaseType ${quoteList(['Essence'])}`])
+  if (curHide('omens')) hide('Hide Omens', [`BaseType ${quoteList(['Omen'])}`])
+  if (qf.hideVerisium) hide('Hide Verisium', num(qf.minVerisium) ? [`BaseType == ${quote('Verisium')}`, `StackSize < ${Number(qf.minVerisium)}`] : [`BaseType == ${quote('Verisium')}`])
+  if (qf.hideRegularRunes) hide('Hide regular runes', [`BaseType ${quoteList(['Rune'])}`, 'Rarity Normal'])
+  if (num(qf.hideUncutBelow)) hide('Hide low uncut gems', [`BaseType ${quoteList(['Uncut'])}`, `ItemLevel < ${Number(qf.hideUncutBelow)}`])
+
+  // ===== Uniques (cloned groups) =====
+  if (qf.exceptionalUniques && num(qf.exceptionalUniquesMin)) highlight('Exceptional uniques', ['Rarity Unique', `Quality >= ${Number(qf.exceptionalUniquesMin)}`])
+  if (qf.vaalUniques) highlight('Vaal (corrupted) uniques', ['Rarity Unique', 'Corrupted True'])
+  if (qf.smallDisenchantUniques && qf.smallDisenchantMaxSize) { const [w, h] = String(qf.smallDisenchantMaxSize).split('x').map(Number); const s = []; if (w) s.push(`Width <= ${w}`); if (h) s.push(`Height <= ${h}`); showT('Small uniques to disenchant', ['Rarity Unique', ...s], 'D') }
+  if (qf.hideAllUniques) hide('Hide remaining uniques', ['Rarity Unique'], 50)
+
+  // ===== Other Items (cloned toggles) =====
+  if (qf.showQuest) showT('Quest items', [`Class == ${quoteList(['Quest Items'])}`], 'C')
+  if (qf.showRelics) showT('Relics', [`Class == ${quoteList(['Relics'])}`], 'C')
+  if (qf.showTrials) showT('Trial keys', [`BaseType ${quoteList(['Barya', 'Ultimatum', 'Djinn'])}`], 'C')
+  if (qf.showTablets) showT('Precursor tablets', [`BaseType ${quoteList(['Tablet'])}`], 'C')
+  if (qf.showFragments) showT('Fragments & splinters', [`BaseType ${quoteList(['Splinter', 'Fragment', 'Crest'])}`], 'C')
+  if (qf.showExpedition) showT('Expedition', [`BaseType ${quoteList(['Logbook', 'Artifact'])}`], 'C')
+
+  // ===== Remaining equipment =====
+  if (qf.hideAllRemainingGear) hide('Hide remaining non-unique gear', [`Class == ${quoteList(GEAR_CLASSES)}`, 'Rarity Normal Magic Rare'], 49)
 
   return out
 }

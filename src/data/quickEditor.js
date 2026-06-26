@@ -18,8 +18,22 @@ export const CLASS_OPTION_GROUPS = [
 export const ALL_CLASSES = CLASS_OPTION_GROUPS.flatMap(g => g.options)
 
 export const RARITIES = ['Normal', 'Magic', 'Rare', 'Unique']
-export const RARITY_OPS = ['<=', '<', '=', '>', '>=']
-export const NUM_OPS = ['>=', '>', '=', '<', '<=']
+// Human-readable operator labels. The `value` is the real PoE2 operator the filter still emits
+// (so "at least" → ">="), the label is just what the user reads in the dropdown.
+export const NUM_OPS = [
+  { value: '>=', label: 'at least' },
+  { value: '>', label: 'more than' },
+  { value: '=', label: 'exactly' },
+  { value: '<', label: 'less than' },
+  { value: '<=', label: 'at most' },
+]
+export const RARITY_OPS = [
+  { value: '>=', label: 'at least' },
+  { value: '>', label: 'higher than' },
+  { value: '=', label: 'exactly' },
+  { value: '<', label: 'lower than' },
+  { value: '<=', label: 'at most' },
+]
 
 // Quick highlight presets for Show rules — each is a complete, valid style.
 export const HIGHLIGHT_PRESETS = [

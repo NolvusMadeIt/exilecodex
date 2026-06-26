@@ -7,7 +7,7 @@ import { useGameInfo } from '../store/GameInfo.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { useT } from '../i18n/index.js'
-import { buildFilter } from '../lib/buildFilter.js'
+import { resolveFilter } from '../lib/buildFilter.js'
 
 const safe = (n) => ((n || 'filter').replace(/[^a-z0-9-_. ]/gi, '').trim() || 'filter')
 function stampNow() {
@@ -49,7 +49,7 @@ export function SharedFiltersPage() {
 
   useEffect(() => { fetchList() }, [fetchList])
 
-  const buildText = () => buildFilter(active, { gameInfo, prefs, stamp: stampNow() })
+  const buildText = () => resolveFilter(active, { gameInfo, prefs, stamp: stampNow() })
 
   // Read a dropped/selected .filter file into the paste box.
   const readFile = (file) => {

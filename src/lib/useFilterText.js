@@ -2,7 +2,7 @@
 // fetch) and re-builds whenever the settings / game info / prefs change. Base files are cached,
 // so rebuilds after the first are effectively instant.
 import { useEffect, useState } from 'react'
-import { buildFilter } from './buildFilter.js'
+import { resolveFilter } from './buildFilter.js'
 
 export function useFilterText(settings, { gameInfo, prefs } = {}) {
   const [text, setText] = useState('')
@@ -14,7 +14,7 @@ export function useFilterText(settings, { gameInfo, prefs } = {}) {
     setLoading(true)
     // Debounce: rapid edits (typing, dragging a slider) only trigger one rebuild once they settle.
     const id = setTimeout(() => {
-      buildFilter(settings, { gameInfo, prefs })
+      resolveFilter(settings, { gameInfo, prefs })
         .then((t) => { if (alive) { setText(t); setError(null) } })
         .catch((e) => { if (alive) { setError(e); setText('') } })
         .finally(() => { if (alive) setLoading(false) })

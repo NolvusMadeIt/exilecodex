@@ -2,7 +2,7 @@
 // lib/buildFilter.js turns it into .filter text: a real core base file (strictness x style)
 // with the user's overrides spliced in.
 import { DEFAULT_STRICTNESS, DEFAULT_STYLE } from '../data/coreFilters.js'
-import { QF_DEFAULTS } from '../data/quickFilters.js'
+import { strictnessProfile } from '../data/strictness.js'
 
 export function defaultSettings(name = "Nolvus's Filter") {
   return {
@@ -14,8 +14,9 @@ export function defaultSettings(name = "Nolvus's Filter") {
     style: DEFAULT_STYLE,           // 'default' | 'aura' | 'cobalt' | …
     klass: null,             // selected class id (informational)
     gameMode: { league: true, hardcore: false, ssf: false },
-    // Quick Filters: the dropdown sections (schema in data/quickFilters.js) → override blocks.
-    quickFilters: { ...QF_DEFAULTS },
+    // Quick Filters: the dropdown sections that GENERATE the filter. Seeded from the default
+    // strictness profile so a fresh filter is a real, working filter the dropdowns reflect.
+    quickFilters: { ...strictnessProfile(DEFAULT_STRICTNESS) },
     // Quick Editor custom rules: hide / show / highlight anything (also import target).
     overrides: {
       rules: [],             // user-built rules (see emptyOverrideRule)
@@ -27,6 +28,9 @@ export function defaultSettings(name = "Nolvus's Filter") {
     cosmetic: { hiddenGearTransparent: true, hiddenFlasks: false, hiddenJewellery: false, tierStyles: {} },
     // Tier list overrides: itemName -> tierId (drag/drop moves) → compiled to overrides.
     tierOverrides: {},
+    // Manual filter text (from the Editor tab). When a string, it OVERRIDES the generated filter
+    // for all output/export; null = live (generated from the builder above).
+    manualFilter: null,
   }
 }
 
