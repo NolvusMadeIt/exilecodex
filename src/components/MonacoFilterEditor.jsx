@@ -36,6 +36,11 @@ export function MonacoFilterEditor({ value, onChange, options = {}, onCursor }) 
   const edRef = useRef(null)
   const onChangeRef = useRef(onChange); onChangeRef.current = onChange
   const onCursorRef = useRef(onCursor); onCursorRef.current = onCursor
+  // True while WE push an external value in (ed.setValue). setValue fires onDidChangeModelContent
+  // synchronously, so without this guard a programmatic update (e.g. the live filter arriving) would
+  // be reported as a "user edit" — which silently flips the filter into manual mode and freezes the
+  // live output. Only real keystrokes should call onChange.
+  const applyingRef = useRef(false)
 
   const report = () => {
     const ed = edRef.current; if (!ed || !onCursorRef.current) return
@@ -50,7 +55,7 @@ export function MonacoFilterEditor({ value, onChange, options = {}, onCursor }) 
     const ed = monaco.editor.create(hostRef.current, { ...BASE, ...options, value: value ?? '' })
     edRef.current = ed
     const subs = [
-      ed.onDidChangeModelContent(() => onChangeRef.current?.(ed.getValue())),
+      ed.onDidChangeModelContent(() => { if (applyingRef.current) return; onChangeRef.current?.(ed.getValue()) }),
       ed.onDidChangeCursorPosition(report),
       ed.onDidChangeCursorSelection(report),
     ]
@@ -62,7 +67,9 @@ export function MonacoFilterEditor({ value, onChange, options = {}, onCursor }) 
   useEffect(() => {
     const ed = edRef.current
     if (ed && typeof value === 'string' && value !== ed.getValue()) {
+      applyingRef.current = true
       const pos = ed.getPosition(); ed.setValue(value); if (pos) ed.setPosition(pos)
+      applyingRef.current = false
     }
   }, [value])
 

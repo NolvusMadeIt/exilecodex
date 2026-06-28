@@ -26,9 +26,13 @@ let tray = null
 // whether the web build has been copied into dist/ yet.
 const ICON_PATH = path.join(__dirname, 'icon.png')
 
-// Point this at your deployed URL (e.g. 'https://nolvusfiltereditor.vercel.app') to load the live
-// site instead of the bundled build. Leave empty to use the offline bundle.
-const REMOTE_URL = process.env.NOLVUS_APP_URL || ''
+// The desktop shell loads the LIVE web app by default, so it always reflects the latest web deploy
+// without needing an app update — the in-app auto-updater is then only for shell (native) changes.
+// If the live site can't be reached (offline / down), we fall back to the bundled build (see the
+// did-fail-load handler in createWindow), so the app still works. Override with NOLVUS_APP_URL, or
+// set it to '' to force the offline bundle.
+const REMOTE_URL = process.env.NOLVUS_APP_URL ?? 'https://nolvusfiltereditor.vercel.app'
+const BUNDLE_URL = 'app://bundle/index.html'
 
 const DIST = path.join(__dirname, '..', 'dist')
 
@@ -111,9 +115,19 @@ function createWindow() {
   })
 
   if (REMOTE_URL) {
+    // Load the live site; if it fails to load (no network / site down), fall back to the offline
+    // bundle exactly once so the app is never left blank.
+    let fellBack = false
+    win.webContents.on('did-fail-load', (e, errorCode, errorDesc, validatedURL, isMainFrame) => {
+      if (!isMainFrame || fellBack) return
+      // -3 (ABORTED) is a benign in-app navigation, not a real failure.
+      if (errorCode === -3) return
+      fellBack = true
+      win.loadURL(BUNDLE_URL)
+    })
     win.loadURL(REMOTE_URL)
   } else {
-    win.loadURL('app://bundle/index.html')
+    win.loadURL(BUNDLE_URL)
   }
 }
 

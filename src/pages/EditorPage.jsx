@@ -137,8 +137,11 @@ export function EditorPage() {
 
   useEffect(() => {
     if (nameRef.current !== active.name) { nameRef.current = active.name; setDraft(active.manualFilter ?? output); return }
+    // Self-heal: a "manual" filter whose text is identical to the freshly-built live filter is an
+    // inadvertent lock (e.g. from an older build) — drop it so the live output flows again.
+    if (isManual && output && active.manualFilter === output) { clearManualFilter(); setDraft(output); return }
     if (!isManual) setDraft(output)
-  }, [output, isManual, active.name, active.manualFilter])
+  }, [output, isManual, active.name, active.manualFilter, clearManualFilter])
 
   const onEdit = (val) => { setDraft(val); setManualFilter(val) }
   const regenerate = async () => {

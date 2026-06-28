@@ -3,6 +3,17 @@
 export const CHANGELOG = [
   {
     date: '2026-06-28',
+    tag: 'Fix',
+    title: 'Nolvus Filter v0.14.1 — live output fixes, cleaner top bar & always-latest desktop app',
+    body: [
+      'Fixed the live Filter Output not updating: opening the Editor tab could quietly switch the filter into “manual” mode and freeze the output. Now only your own edits do that, and any filter stuck that way unsticks itself.',
+      'Removed the theme swatches from the top bar (themes still live in Settings) and tidied the bar.',
+      'Fixed the latest patch notes (0.5.4) failing to load — the full notes are now bundled and read in-app like every other patch.',
+      'Desktop app now shows the latest version automatically: it loads the live site so web updates appear without reinstalling, and falls back to the built-in offline copy if you’re not connected. An app update is now only needed when the desktop shell itself changes.',
+    ],
+  },
+  {
+    date: '2026-06-28',
     tag: 'Release',
     title: 'Nolvus Filter v0.14.0 — Quick Editor rebuilt for parity, and one home for everything you hide',
     body: [
