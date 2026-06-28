@@ -87,9 +87,10 @@ function renderHighlighted(text) {
 const HIGHLIGHT_LINE_CAP = 1500
 
 export function FilterOutput({ onClose }) {
-  const { active } = useFilter()
+  const { active, clearManualFilter } = useFilter()
   const { prefs } = usePrefs()
   const gameInfo = useGameInfo()
+  const isManual = typeof active.manualFilter === 'string'
 
   // This component only mounts when the panel is shown, so the (debounced) build runs only then.
   const { text, loading, error } = useFilterText(active, { gameInfo, prefs })
@@ -105,6 +106,12 @@ export function FilterOutput({ onClose }) {
         <span className="flex items-center gap-2 flex-1 min-w-0 justify-center">
           Filter Output
           <span className="text-[11px] text-poe-text">({loading ? 'building…' : `${lineCount} lines`})</span>
+          {isManual && (
+            <span className="inline-flex items-center gap-1.5 text-[10.5px] text-poe-gold" title="Showing your manually-edited filter — builder changes won't apply until you switch back to live.">
+              · Manual
+              <button onClick={clearManualFilter} className="underline underline-offset-2 hover:text-poe-heading">Use live</button>
+            </span>
+          )}
         </span>
         {onClose && (
           <button onClick={onClose} title="Hide output" className="p-1 rounded hover:bg-white/10 text-poe-text/70 hover:text-poe-text-bright">

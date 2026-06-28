@@ -4,6 +4,15 @@ export const CHANGELOG = [
   {
     date: '2026-06-28',
     tag: 'Fix',
+    title: 'Nolvus Filter v0.14.2 — Filter Output reliably syncs again',
+    body: [
+      'Fixed the Filter Output staying frozen no matter what you changed: a leftover “manual edit” lock from an earlier version was overriding the live filter on every page. That lock is now cleared automatically, so the output rebuilds the moment you change anything in the Quick Editor, Tier List, Cosmetic or rules.',
+      'The output panel now shows a small “Manual” badge with a one-click “Use live” whenever you’re viewing a hand-edited filter — so it can never silently freeze on you again.',
+    ],
+  },
+  {
+    date: '2026-06-28',
+    tag: 'Fix',
     title: 'Nolvus Filter v0.14.1 — live output fixes, cleaner top bar & always-latest desktop app',
     body: [
       'Fixed the live Filter Output not updating: opening the Editor tab could quietly switch the filter into “manual” mode and freeze the output. Now only your own edits do that, and any filter stuck that way unsticks itself.',

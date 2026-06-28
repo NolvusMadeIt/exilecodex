@@ -6,6 +6,10 @@ import { rulesToOverrideRules } from '../lib/parseFilter.js'
 // Only Reset clears it — a single-store model keeps tab switches lossless.
 const LS_FILTERS = 'nolvus-filters'        // array of settings objects
 const LS_ACTIVE = 'nolvus-active-name'     // active filter name
+// One-time migration flag. The v0.13–0.14.0 Editor could inadvertently set `manualFilter` (Monaco
+// fired its change event on a programmatic value update), which freezes the live Filter Output. We
+// clear any stored manualFilter ONCE so the output flows again; genuine future edits are unaffected.
+const LS_MF_RESET = 'nolvus-manualfilter-reset-v1'
 
 const FilterCtx = createContext(null)
 
@@ -45,7 +49,19 @@ function normalizeFilter(f) {
 function loadFilters() {
   try {
     const raw = JSON.parse(localStorage.getItem(LS_FILTERS) || 'null')
-    if (Array.isArray(raw) && raw.length) return raw.map(normalizeFilter)
+    if (Array.isArray(raw) && raw.length) {
+      const filters = raw.map(normalizeFilter)
+      // One-time clear of inadvertent manual-filter locks (see LS_MF_RESET above).
+      if (!localStorage.getItem(LS_MF_RESET)) {
+        let cleared = false
+        for (const f of filters) if (typeof f.manualFilter === 'string') { delete f.manualFilter; cleared = true }
+        try {
+          localStorage.setItem(LS_MF_RESET, '1')
+          if (cleared) localStorage.setItem(LS_FILTERS, JSON.stringify(filters))
+        } catch {}
+      }
+      return filters
+    }
   } catch {}
   return [defaultSettings()]
 }
