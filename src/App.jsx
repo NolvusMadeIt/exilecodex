@@ -4,6 +4,8 @@ import { FilterProvider } from './store/FilterStore.jsx'
 import { PrefsProvider } from './store/Prefs.jsx'
 import { GameInfoProvider } from './store/GameInfo.jsx'
 import { ToastProvider } from './store/Toast.jsx'
+import { PluginProvider, usePlugins, usePluginHost } from './store/Plugins.jsx'
+import { MarketProvider } from './store/Market.jsx'
 import { RouterProvider, useRouter } from './lib/router.jsx'
 import { Layout } from './components/Layout.jsx'
 import { ErrorBoundary } from './components/ui.jsx'
@@ -12,7 +14,6 @@ import { PresetsPage } from './pages/PresetsPage.jsx'
 // Lazy-loaded pages — keeps the initial bundle small (Presets ships immediately,
 // the rest stream in on first navigation).
 const QuickEditorPage  = lazy(() => import('./pages/QuickEditorPage.jsx').then(m => ({ default: m.QuickEditorPage })))
-const EditorPage       = lazy(() => import('./pages/EditorPage.jsx').then(m => ({ default: m.EditorPage })))
 const TierListsPage    = lazy(() => import('./pages/TierListsPage.jsx').then(m => ({ default: m.TierListsPage })))
 const CustomRulesPage  = lazy(() => import('./pages/CustomRulesPage.jsx').then(m => ({ default: m.CustomRulesPage })))
 const CosmeticPage     = lazy(() => import('./pages/CosmeticPage.jsx').then(m => ({ default: m.CosmeticPage })))
@@ -28,8 +29,25 @@ const Loading = () => (
   <div className="text-center py-12 text-poe-text text-[12px]">Loading…</div>
 )
 
+// Renders a host-aware plugin page with its assembled `host` prop.
+function HostBoundary({ pluginId, Comp }) {
+  const host = usePluginHost(pluginId)
+  return <Comp host={host} />
+}
+
 function Routes() {
   const { path } = useRouter()
+  const { enabledPlugins } = usePlugins()
+
+  // Plugin-contributed routes win for their own paths — but only while the plugin is enabled.
+  // (Disabled plugins contribute nothing, so their path falls through to NotFound below.)
+  const plugin = enabledPlugins.find(p => p.contributes?.route?.path === path)
+  if (plugin) {
+    const route = plugin.contributes.route
+    const C = route.component
+    return route.host ? <HostBoundary pluginId={plugin.id} Comp={C} /> : <C />
+  }
+
   switch (path) {
     case '/':
     case '/presets':       return <PresetsPage />
@@ -40,7 +58,6 @@ function Routes() {
     case '/custom-rules':  return <CustomRulesPage />
     case '/cosmetic':      return <CosmeticPage />
     case '/preview':       return <PreviewPage />
-    case '/editor':        return <EditorPage />
     case '/guide':         return <GuidePage />
     case '/community':     return <SharedFiltersPage />
     case '/settings':      return <SettingsPage />
@@ -57,13 +74,17 @@ export default function App() {
         <PrefsProvider>
           <FilterProvider>
             <ToastProvider>
-              <RouterProvider>
-                <Layout>
-                  <Suspense fallback={<Loading />}>
-                    <Routes />
-                  </Suspense>
-                </Layout>
-              </RouterProvider>
+              <MarketProvider>
+                <PluginProvider>
+                  <RouterProvider>
+                    <Layout>
+                      <Suspense fallback={<Loading />}>
+                        <Routes />
+                      </Suspense>
+                    </Layout>
+                  </RouterProvider>
+                </PluginProvider>
+              </MarketProvider>
             </ToastProvider>
           </FilterProvider>
         </PrefsProvider>

@@ -39,6 +39,9 @@ export function Layout({ children }) {
   const setDockOpen = (v) => update({ dockOpen: v })
   const isXl = useIsXl()
   const outputHere = OUTPUT_ROUTES.has(path)
+  // A few plugin pages (e.g. the Market terminal) are split/dense layouts that want the full width
+  // of the work area rather than the centered reading column.
+  const wide = path === '/market'
 
   // Tray menu → renderer navigation (e.g. "Settings"). Desktop only; no-op on the web.
   useEffect(() => {
@@ -54,7 +57,7 @@ export function Layout({ children }) {
         <SideNav />
 
         <main className="flex-1 min-w-0 overflow-y-auto" style={{ scrollbarGutter: 'stable both-edges' }}>
-          <div className="px-5 py-5 mx-auto" style={{ maxWidth: 1180 }}>
+          <div className={wide ? 'px-4 py-4' : 'px-5 py-5 mx-auto'} style={{ maxWidth: wide ? 'none' : 1180 }}>
             {children}
             {/* On narrow screens the output stacks here — only when opened, and only this copy. */}
             {outputHere && dockOpen && !isXl && (

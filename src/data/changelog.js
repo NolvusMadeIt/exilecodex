@@ -3,6 +3,18 @@
 export const CHANGELOG = [
   {
     date: '2026-06-28',
+    tag: 'Release',
+    title: 'Nolvus Filter v0.15.0 — plugins arrive, and a live PoE2 currency market',
+    body: [
+      'The app now has a plugin system. Add-ons can be turned on or off from Settings ▸ Plugins, each with its own info page and settings — so you only run what you want.',
+      'The Filter Editor is now a plugin (it’s the first one). It works exactly as before, but if you never touch the code editor you can switch it off and the rest of the app keeps working.',
+      'New plugin — Market: a live Path of Exile 2 currency market. Browse every currency by category, search and sort, and price everything in Exalted or Divine for your league.',
+      'Each currency opens a detailed view with an interactive price chart (24h / 7d / 30d / all), day open & latest, 24h high/low, 7- and 30-day moves, amount traded and amount listed.',
+      'New buy / sell signal: each currency gets a plain-English read of its recent price action — Strong Buy through Strong Sell — with the reasons spelled out, so it’s a transparent guide, not a black box. One-click links jump straight to buying or selling on the official Currency Exchange.',
+    ],
+  },
+  {
+    date: '2026-06-28',
     tag: 'Fix',
     title: 'Nolvus Filter v0.14.3 — never let a Unique break your filter',
     body: [

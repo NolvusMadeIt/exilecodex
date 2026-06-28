@@ -1,6 +1,7 @@
 import React from 'react'
 import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Check, Volume2, ChevronDown, Users, Download, Clipboard, FolderInput, FilePlus2, Upload, Code2, EyeOff } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
+import { usePlugins } from '../store/Plugins.jsx'
 import { ItemLabel } from '../components/ItemLabel.jsx'
 import { ItemIcon } from '../components/primitives.jsx'
 import { asset } from '../data/assets.js'
@@ -194,6 +195,9 @@ const GUIDE = [
 
 export function GuidePage() {
   const { navigate } = useRouter()
+  const { isEnabled } = usePlugins()
+  // The Editor is a plugin — only show its guide card while that plugin is enabled.
+  const guide = GUIDE.filter(g => g.id !== 'editor' || isEnabled('filter-editor'))
   return (
     <div className="space-y-6">
       <header className="text-center">
@@ -204,7 +208,7 @@ export function GuidePage() {
       </header>
 
       <ol className="space-y-4">
-        {GUIDE.map((g, i) => {
+        {guide.map((g, i) => {
           const Icon = g.icon
           return (
             <li key={g.id} className="panel p-4">

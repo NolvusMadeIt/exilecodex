@@ -1,17 +1,20 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Tabs, Tab, Button } from '@mui/material'
-import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked, GraduationCap, Users, ScrollText, Code2 } from 'lucide-react'
+import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked, GraduationCap, Users, ScrollText } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
+import { usePlugins } from '../store/Plugins.jsx'
 import { useT } from '../i18n/index.js'
 
+// Core (non-plugin) main sections, each with an explicit order so plugin nav items can slot in
+// between them. The Filter Editor is no longer hard-coded here — it's contributed by its plugin
+// (order 60) and only appears while that plugin is enabled.
 const MAIN = [
-  { to: '/presets', label: 'Presets', icon: Star },
-  { to: '/quick-editor', label: 'Quick Editor', icon: SlidersHorizontal },
-  { to: '/tier-lists', label: 'Tier Lists', icon: ListOrdered },
-  { to: '/custom-rules', label: 'Custom Rules', icon: Pencil },
-  { to: '/cosmetic', label: 'Cosmetic', icon: Shirt },
-  { to: '/editor', label: 'Editor', icon: Code2 },
-  { to: '/preview', label: 'Preview', icon: Eye },
+  { to: '/presets', label: 'Presets', icon: Star, order: 10 },
+  { to: '/quick-editor', label: 'Quick Editor', icon: SlidersHorizontal, order: 20 },
+  { to: '/tier-lists', label: 'Tier Lists', icon: ListOrdered, order: 30 },
+  { to: '/custom-rules', label: 'Custom Rules', icon: Pencil, order: 40 },
+  { to: '/cosmetic', label: 'Cosmetic', icon: Shirt, order: 50 },
+  { to: '/preview', label: 'Preview', icon: Eye, order: 70 },
 ]
 const SECONDARY = [
   { to: '/community', label: 'Community', icon: Users },
@@ -25,9 +28,19 @@ const SECONDARY = [
 // (accent bar on the active item's left edge), MUI Buttons for the secondary group.
 export function SideNav() {
   const { path, navigate } = useRouter()
+  const { enabledPlugins } = usePlugins()
   const t = useT()
   const isActive = (to) => path === to || (to === '/presets' && path === '/')
-  const mainValue = MAIN.find(t => isActive(t.to))?.to ?? false
+
+  // Core sections + nav items contributed by enabled plugins (group 'main'), ordered together.
+  const mainItems = useMemo(() => {
+    const pluginItems = enabledPlugins
+      .filter(p => p.contributes?.nav?.group === 'main' && p.contributes?.route?.path)
+      .map(p => ({ to: p.contributes.route.path, label: p.contributes.nav.label, icon: p.icon, order: p.contributes.nav.order ?? 100 }))
+    return [...MAIN, ...pluginItems].sort((a, b) => a.order - b.order)
+  }, [enabledPlugins])
+
+  const mainValue = mainItems.find(t => isActive(t.to))?.to ?? false
 
   const tabSx = {
     minHeight: 38, justifyContent: 'flex-start', textAlign: 'left', px: 2, gap: 1,
@@ -48,7 +61,7 @@ export function SideNav() {
           '& .MuiTabs-indicator': { left: 0, right: 'auto', width: '2px', backgroundColor: 'rgb(var(--c-accent))' },
         }}
       >
-        {MAIN.map(item => {
+        {mainItems.map(item => {
           const Icon = item.icon
           return <Tab key={item.to} value={item.to} disableRipple label={t(item.label)}
             icon={<Icon size={16} />} iconPosition="start" sx={tabSx} />

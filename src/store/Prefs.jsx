@@ -33,6 +33,13 @@ const DEFAULTS = {
   overlaySide: 'right',                // 'left' | 'right'
   overlayDisplay: 'auto',              // 'auto' (follow mouse / game screen) | 'primary' | display id
   overlayHotkey: 'Shift+Alt+F',        // global show/hide hotkey (Electron accelerator)
+  // --- Plugins (add-ons) --- per-plugin state, e.g. { 'filter-editor': { enabled: true } }.
+  // Empty = every plugin uses its manifest default. Synced to Supabase with the rest of prefs.
+  plugins: {},
+  // Per-plugin settings values, e.g. { 'spot-price-check': { defaultUnit: 'exalted' } }.
+  pluginSettings: {},
+  // Market plugins (Market Companion / Spot Price Check) shared state: chosen league + base currency.
+  market: { league: null, base: 'exalted' },
 }
 
 // Bundled font stacks for the fontFamily pref.

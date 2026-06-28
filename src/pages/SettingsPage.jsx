@@ -6,6 +6,7 @@ import { useFilter } from '../store/FilterStore.jsx'
 import { Help, Toggle } from '../components/primitives.jsx'
 import { SimpleSelect } from '../components/SimpleSelect.jsx'
 import { OverlaySettings } from '../components/OverlaySettings.jsx'
+import { PluginsTab } from './PluginsTab.jsx'
 import { desktopApi } from '../lib/desktop.js'
 import { useT } from '../i18n/index.js'
 
@@ -16,6 +17,7 @@ export function SettingsPage() {
   const gameInfo = useGameInfo()
   const { active } = useFilter()
   const t = useT()
+  const [tab, setTab] = useState('general')
 
   // Desktop-only: current app version + a manual update check (results show as a dialog / the
   // bottom-left banner, handled in the main process).
@@ -35,9 +37,23 @@ export function SettingsPage() {
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="gold-heading text-[22px]">{t('Settings')}</h1>
-        <p className="text-[12px] text-poe-text mt-1">Theme, filter meta, and custom comments. These apply across every filter you build.</p>
+        <p className="text-[12px] text-poe-text mt-1">Theme, filter meta, plugins, and custom comments. These apply across every filter you build.</p>
       </div>
 
+      {/* Settings tabs */}
+      <div className="flex gap-1 justify-center border-b border-poe-line/60">
+        {[['general', 'General'], ['plugins', 'Plugins']].map(([id, label]) => (
+          <button key={id} onClick={() => setTab(id)}
+            className={`px-4 h-8 text-[12.5px] border-b-2 -mb-px ${tab === id ? 'border-poe-gold text-poe-gold' : 'border-transparent text-poe-text hover:text-poe-heading'}`}>
+            {t(label)}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'plugins' && <PluginsTab />}
+
+      {tab === 'general' && (
+      <div className="space-y-6">
       {/* Updates (desktop app only) */}
       {desktopApi && (
         <section>
@@ -218,6 +234,8 @@ export function SettingsPage() {
           </div>
         </div>
       </section>
+      </div>
+      )}
     </div>
   )
 }
