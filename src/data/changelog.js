@@ -4,6 +4,15 @@ export const CHANGELOG = [
   {
     date: '2026-06-28',
     tag: 'Desktop',
+    title: 'Nolvus Filter v0.15.2 — the window remembers your size, and opens wider',
+    body: [
+      'The desktop window now remembers exactly the size and position you leave it at — resize it once to your liking and it reopens that way every time (including maximized).',
+      'On a fresh install it now opens wide by default (about 92% of your screen), instead of the narrower fixed size in the previous build.',
+    ],
+  },
+  {
+    date: '2026-06-28',
+    tag: 'Desktop',
     title: 'Nolvus Filter v0.15.1 — comfier window size & a smoother minimize',
     body: [
       'The desktop app now opens at a more comfortable, slightly taller window size (and stays centered on your screen) instead of the old extra-wide default.',

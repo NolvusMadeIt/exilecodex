@@ -73,19 +73,54 @@ function serveBundle(req) {
   }
 }
 
+// --- "Remember my size": persist the window's bounds + maximized state and restore them next
+// launch, so it always reopens exactly where/how the user left it (no more guessing a default). ---
+const stateFile = () => path.join(app.getPath('userData'), 'window-state.json')
+let saveStateTimer = null
+
+function loadWindowState() {
+  try { return JSON.parse(fs.readFileSync(stateFile(), 'utf8')) } catch { return null }
+}
+function saveWindowState(win) {
+  try {
+    if (!win || win.isDestroyed() || win.isMinimized()) return
+    const b = win.getNormalBounds()                 // un-maximized bounds, so a restore lands right
+    fs.writeFileSync(stateFile(), JSON.stringify({ ...b, maximized: win.isMaximized() }))
+  } catch { /* a write failure must never block the app */ }
+}
+const queueSaveState = (win) => { if (saveStateTimer) clearTimeout(saveStateTimer); saveStateTimer = setTimeout(() => saveWindowState(win), 400) }
+
+// A saved rectangle is only usable if it's still substantially on a connected display (a monitor
+// could have been unplugged / resolution changed). Returns the bounds, or null to use the default.
+function visibleBounds(saved) {
+  if (!saved || !Number.isFinite(saved.width) || !Number.isFinite(saved.height) || !Number.isFinite(saved.x) || !Number.isFinite(saved.y)) return null
+  const onScreen = screen.getAllDisplays().some(d => {
+    const a = d.workArea
+    const ix = Math.min(saved.x + saved.width, a.x + a.width) - Math.max(saved.x, a.x)
+    const iy = Math.min(saved.y + saved.height, a.y + a.height) - Math.max(saved.y, a.y)
+    return ix > 120 && iy > 80                       // at least a grabbable corner is reachable
+  })
+  return onScreen ? saved : null
+}
+
 function createWindow() {
-  // Open at a comfortable, slightly tall default (mirrors the in-app market view's proportions),
-  // clamped to the primary display's work area and centered. Was a fixed 1800×1000, which felt
-  // too wide and short.
+  // "Remember my size": reopen at the bounds the user last left. On first launch (no saved state),
+  // open at a generous wide default — ~92% of the screen — centered on the primary display.
   const { workArea } = screen.getPrimaryDisplay()
-  const width = Math.min(1720, workArea.width - 60)
-  const height = Math.min(1180, workArea.height - 60)
+  const defW = Math.max(1100, Math.min(2400, Math.round(workArea.width * 0.92)))
+  const defH = Math.max(700, Math.min(1500, Math.round(workArea.height * 0.9)))
+  const saved = visibleBounds(loadWindowState())
+  const bounds = saved || {
+    width: defW, height: defH,
+    x: workArea.x + Math.round((workArea.width - defW) / 2),
+    y: workArea.y + Math.round((workArea.height - defH) / 2),
+  }
 
   const win = new BrowserWindow({
-    width,
-    height,
-    x: workArea.x + Math.round((workArea.width - width) / 2),
-    y: workArea.y + Math.round((workArea.height - height) / 2),
+    width: bounds.width,
+    height: bounds.height,
+    x: bounds.x,
+    y: bounds.y,
     minWidth: 1100,
     minHeight: 700,
     backgroundColor: '#000000',
@@ -103,12 +138,19 @@ function createWindow() {
   })
 
   mainWindow = win
+  if (saved?.maximized) win.maximize()
   win.on('closed', () => { if (mainWindow === win) mainWindow = null })
+
+  // Persist size/position whenever the user resizes, moves, maximizes or closes, so the window
+  // reopens exactly here next launch (debounced; close saves synchronously).
+  win.on('resize', () => queueSaveState(win))
+  win.on('move', () => queueSaveState(win))
+  win.on('close', () => saveWindowState(win))
 
   // Tell the renderer when the window's maximized state changes so the button icon can flip.
   const sendMax = () => { if (!win.isDestroyed()) win.webContents.send('win:maximized', win.isMaximized()) }
-  win.on('maximize', sendMax)
-  win.on('unmaximize', sendMax)
+  win.on('maximize', () => { sendMax(); queueSaveState(win) })
+  win.on('unmaximize', () => { sendMax(); queueSaveState(win) })
 
   // Pairs with the "draw-in" minimize (which leaves the window at opacity 0): fade it back in
   // when it's un-minimized, so it never reappears invisible.

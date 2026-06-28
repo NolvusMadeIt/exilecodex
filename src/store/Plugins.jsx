@@ -3,7 +3,7 @@ import { usePrefs } from './Prefs.jsx'
 import { useMarket } from './Market.jsx'
 import { BUILTIN_PLUGINS } from '../plugins/registry.js'
 
-const APP = { name: "Nolvus's Filter", version: '0.15.1' }
+const APP = { name: "Nolvus's Filter", version: '0.15.2' }
 
 // Plugin core. Tracks which plugins are enabled (persisted in prefs.plugins, so it rides the
 // existing Supabase prefs sync) and exposes the contributed surfaces to the host. The host asks
