@@ -74,9 +74,18 @@ function serveBundle(req) {
 }
 
 function createWindow() {
+  // Open at a comfortable, slightly tall default (mirrors the in-app market view's proportions),
+  // clamped to the primary display's work area and centered. Was a fixed 1800×1000, which felt
+  // too wide and short.
+  const { workArea } = screen.getPrimaryDisplay()
+  const width = Math.min(1720, workArea.width - 60)
+  const height = Math.min(1180, workArea.height - 60)
+
   const win = new BrowserWindow({
-    width: 1800,
-    height: 1000,
+    width,
+    height,
+    x: workArea.x + Math.round((workArea.width - width) / 2),
+    y: workArea.y + Math.round((workArea.height - height) / 2),
     minWidth: 1100,
     minHeight: 700,
     backgroundColor: '#000000',
@@ -100,6 +109,10 @@ function createWindow() {
   const sendMax = () => { if (!win.isDestroyed()) win.webContents.send('win:maximized', win.isMaximized()) }
   win.on('maximize', sendMax)
   win.on('unmaximize', sendMax)
+
+  // Pairs with the "draw-in" minimize (which leaves the window at opacity 0): fade it back in
+  // when it's un-minimized, so it never reappears invisible.
+  win.on('restore', () => { if (!win.isDestroyed()) fadeWindow(win, 0, 1, 170) })
 
   // Any external http(s) links open in the system browser, not in-app.
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -131,10 +144,37 @@ function createWindow() {
   }
 }
 
+// Smoothly fade the window's opacity (easeOutCubic, matching the overlay's motion). Used by the
+// "draw-in" minimize/restore so the window dissolves in place instead of the OS sliding it down
+// to the taskbar.
+let fadeTimer = null
+function fadeWindow(win, from, to, dur, onDone) {
+  if (!win || win.isDestroyed()) return
+  if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null }
+  win.setOpacity(from)
+  const start = Date.now()
+  fadeTimer = setInterval(() => {
+    if (!win || win.isDestroyed()) { clearInterval(fadeTimer); fadeTimer = null; return }
+    const t = Math.min(1, (Date.now() - start) / dur)
+    const e = 1 - Math.pow(1 - t, 3) // easeOutCubic
+    win.setOpacity(from + (to - from) * e)
+    if (t >= 1) {
+      clearInterval(fadeTimer); fadeTimer = null
+      win.setOpacity(to)
+      if (onDone) onDone()
+    }
+  }, 16)
+}
+
 // Window controls for the custom title bar. Resolve the calling window from the sender so
 // this works no matter how many windows exist.
 const senderWin = (e) => BrowserWindow.fromWebContents(e.sender)
-ipcMain.on('win:minimize', (e) => senderWin(e)?.minimize())
+ipcMain.on('win:minimize', (e) => {
+  const w = senderWin(e); if (!w || w.isMinimized()) return
+  // "Draw in" minimize: fade the window out, then minimize while it's invisible so the OS never
+  // plays its slide-down-to-taskbar animation. The 'restore' handler fades it back in.
+  fadeWindow(w, 1, 0, 150, () => { if (!w.isDestroyed()) w.minimize() })
+})
 ipcMain.on('win:maximize', (e) => {
   const w = senderWin(e); if (!w) return
   w.isMaximized() ? w.unmaximize() : w.maximize()
@@ -287,9 +327,12 @@ ipcMain.handle('overlay:getDisplays', () => listDisplays())
 // Bring the window back into a normal, visible, focused state (from the tray or after hiding).
 function restoreWindow() {
   const w = mainWindow; if (!w || w.isDestroyed()) return
-  w.setOpacity(1)
-  if (!w.isVisible()) w.show()
-  if (w.isMinimized()) w.restore()
+  if (w.isMinimized()) {
+    w.restore() // the 'restore' handler fades it back in (draw-in)
+  } else {
+    w.setOpacity(1)
+    if (!w.isVisible()) w.show()
+  }
   w.focus()
 }
 

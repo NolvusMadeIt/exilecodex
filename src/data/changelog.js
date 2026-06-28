@@ -3,6 +3,15 @@
 export const CHANGELOG = [
   {
     date: '2026-06-28',
+    tag: 'Desktop',
+    title: 'Nolvus Filter v0.15.1 — comfier window size & a smoother minimize',
+    body: [
+      'The desktop app now opens at a more comfortable, slightly taller window size (and stays centered on your screen) instead of the old extra-wide default.',
+      'Minimizing now “draws in” — the window fades away in place and fades back when you reopen it, rather than dropping down to the taskbar.',
+    ],
+  },
+  {
+    date: '2026-06-28',
     tag: 'Release',
     title: 'Nolvus Filter v0.15.0 — plugins arrive, and a live PoE2 currency market',
     body: [
