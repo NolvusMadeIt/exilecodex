@@ -54,6 +54,18 @@ export function loadCatalog() {
   return _promise
 }
 
+// Map of unique item NAME -> its BASE TYPE. PoE2 filters can't match a unique by name, so anything
+// that targets a unique (e.g. the Tier List) must resolve to the base type + `Rarity Unique`.
+let _uniqueBases = null
+export async function loadUniqueBases() {
+  if (_uniqueBases) return _uniqueBases
+  const c = await loadCatalog()
+  const m = {}
+  for (const u of c.uniques || []) if (u.name && u.baseType) m[u.name] = u.baseType
+  _uniqueBases = m
+  return m
+}
+
 // React hook
 export function useCatalog() {
   const [cat, setCat] = useState(_cache)

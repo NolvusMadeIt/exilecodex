@@ -8,26 +8,25 @@ import { QF_DEFAULTS } from './quickFilters.js'
 const ALL_CURRENCY = ['shards', 'runes', 'catalysts', 'essences', 'omens']
 const ALL_GEMS = ['uncut', 'skill', 'support']
 const ALL_FLASKS = ['life', 'mana', 'charms']
-const ALL_LEVELING = ['weaponsArmour', 'jewellery', 'flasks']
 const ALL_ENDGAME = ['quest', 'relics', 'trials', 'tablets', 'fragments', 'expedition']
 
 const profile = (over) => ({ ...QF_DEFAULTS, ...over })
 
 export const STRICTNESS_PROFILES = {
   '0-soft': profile({
-    levelingShow: ALL_LEVELING, currencyShow: ALL_CURRENCY, gemsShow: ALL_GEMS, flasksShow: ALL_FLASKS,
+    currencyShow: ALL_CURRENCY, gemsShow: ALL_GEMS, flasksShow: ALL_FLASKS,
     endgameShow: ALL_ENDGAME, showWaystones: true, showJewels: true, showUniques: true,
     hideScrolls: false, hideGold: false, minGoldPile: 0, hideNonUniqueFlasks: false,
     gearMinRarity: 'all', catchAll: 'show',
   }),
   '1-regular': profile({
-    levelingShow: ALL_LEVELING, currencyShow: ALL_CURRENCY, gemsShow: ALL_GEMS, flasksShow: ALL_FLASKS,
+    currencyShow: ALL_CURRENCY, gemsShow: ALL_GEMS, flasksShow: ALL_FLASKS,
     endgameShow: ALL_ENDGAME, showWaystones: true, showJewels: true, showUniques: true,
     hideScrolls: true, minGoldPile: 200, hideNonUniqueFlasks: false,
     gearMinRarity: 'all', catchAll: 'show',
   }),
   '2-semi-strict': profile({
-    levelingShow: ['weaponsArmour', 'flasks'], currencyShow: ALL_CURRENCY, gemsShow: ALL_GEMS, flasksShow: ALL_FLASKS,
+    currencyShow: ALL_CURRENCY, gemsShow: ALL_GEMS, flasksShow: ALL_FLASKS,
     endgameShow: ALL_ENDGAME, showWaystones: true, showJewels: true, showUniques: true,
     hideScrolls: true, minGoldPile: 400, hideNonUniqueFlasks: true,
     gearMinRarity: 'Magic', catchAll: 'show',

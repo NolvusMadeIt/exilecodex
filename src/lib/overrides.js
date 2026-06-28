@@ -3,7 +3,7 @@
 // OVERRIDE AREA — before every base rule. Because PoE2 is first-match-wins, anything here wins
 // in-game. This is what makes "hide / show / highlight anything" actually work.
 import { quote, quoteList } from './filterSyntax.js'
-import { DROP_TIERS } from '../data/dropTiers.js'
+import { DROP_TIERS, DEFAULT_TIER_UNIQUES } from '../data/dropTiers.js'
 
 const TIER_BY_ID = Object.fromEntries(DROP_TIERS.map(t => [t.id, t]))
 
@@ -127,13 +127,15 @@ function ruleDescriptors(rules = []) {
 // Quick Filters (the dropdown sections) → Show/Hide overrides layered on the preset. Non-set
 // controls emit nothing (the preset decides). "Force-show" gets a clean tier style; "highlight"
 // gets the loud highlight; hides/strictness get Hide blocks. Shows are low-priority (run first).
-function quickFilterDescriptors(qf = {}, cosmetic = {}) {
+function quickFilterDescriptors(qf = {}, cosmetic = {}, uniqueBases = {}) {
   const out = []
   const has = (arr, v) => Array.isArray(arr) && arr.includes(v)
   const showT = (comment, conditions, tier = 'C', priority = 22) => out.push({ action: 'Show', comment, conditions, style: tierStyle(tier, cosmetic), priority })
   const highlight = (comment, conditions, priority = 16) => out.push({ action: 'Show', comment, conditions, style: DEFAULT_HIGHLIGHT, priority })
   const hide = (comment, conditions, priority = 46) => out.push({ action: 'Hide', comment, conditions, priority })
   const lvl = (n) => num(n) ? [`GemLevel >= ${Number(n)}`] : []
+  // poe2filter's "≥ Tn" market tier → an item-level floor we can actually express in a filter.
+  const tierIlvl = (t) => ({ 1: 82, 2: 75, 3: 68, 4: 60, 5: 50 })[Number(t)] ?? 50
 
   // Currency
   if (has(qf.currencyShow, 'shards')) showT('Show Currency Shards', [`BaseType ${quoteList(['Shard'])}`], 'D')
@@ -204,6 +206,11 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}) {
   offBuild('Hide off-build weapon types', WEAPON_CLASSES, qf.myWeapons || [])
   offBuild('Hide off-build armour types', ARMOUR_CLASSES, qf.myArmour || [])
   offBuild('Hide off-build jewellery', JEWELLERY_CLASSES, qf.myJewellery || [])
+  // My Jewels — keep the chosen jewel base types (Show runs first), hide the rest below Unique.
+  if (qf.myJewels?.length) {
+    showT('My jewels', [`BaseType == ${quoteList(qf.myJewels)}`, 'Rarity Normal Magic Rare'], 'C', 20)
+    hide('Hide off-build jewels', [`Class == ${quoteList(['Jewels'])}`, 'Rarity Normal Magic Rare'], 48)
+  }
   if (qf.showJewels) showT('Show Jewels', [`Class == ${quoteList(['Jewels'])}`], 'C')
   if (qf.highlightJewellery) highlight('Highlight Rare jewellery', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity Rare Unique'])
 
@@ -220,8 +227,38 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}) {
   if (minR !== 'all') hide(`Hide equipment below ${minR}`, [`Class == ${quoteList(GEAR_CLASSES)}`, rarityCond(minR, '<')])
   if (num(qf.gearMinItemLevel)) hide(`Hide equipment below item level ${Number(qf.gearMinItemLevel)}`, [`Class == ${quoteList(GEAR_CLASSES)}`, `ItemLevel < ${Number(qf.gearMinItemLevel)}`, 'Rarity Normal Magic Rare'])
 
-  // Crafting & cleanup — highlight high-iLvl white crafting bases; hide low-rarity jewellery per slot
-  if (qf.showCraftingBases) showT('Highlight crafting bases', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES])}`, 'Rarity Normal', `ItemLevel >= ${num(qf.craftingBaseIlvl) ? Number(qf.craftingBaseIlvl) : 82}`], 'B', 18)
+  // ===== Other Equipment: Unidentified =====
+  const GEAR_WA = [...WEAPON_CLASSES, ...ARMOUR_CLASSES]
+  if (qf.unidRareGear) showT(`Unidentified Rare gear (≥ T${Number(qf.unidRareGearTier) || 3})`, [`Class == ${quoteList(GEAR_WA)}`, 'Rarity Rare', 'Identified False', `ItemLevel >= ${tierIlvl(qf.unidRareGearTier)}`], 'C', 20)
+  if (qf.unidMagicGear) showT(`Unidentified Magic gear (≥ T${Number(qf.unidMagicGearTier) || 4})`, [`Class == ${quoteList(GEAR_WA)}`, 'Rarity Magic', 'Identified False', `ItemLevel >= ${tierIlvl(qf.unidMagicGearTier)}`], 'D', 22)
+  if (qf.unidRareJewellery) showT(`Unidentified Rare jewellery (≥ T${Number(qf.unidRareJewelleryTier) || 3})`, [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity Rare', 'Identified False', `ItemLevel >= ${tierIlvl(qf.unidRareJewelleryTier)}`], 'C', 20)
+  if (qf.unidMagicJewellery) showT(`Unidentified Magic jewellery (≥ T${Number(qf.unidMagicJewelleryTier) || 3})`, [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity Magic', 'Identified False', `ItemLevel >= ${tierIlvl(qf.unidMagicJewelleryTier)}`], 'D', 22)
+
+  // ===== Other Equipment: Identified categories =====
+  if (qf.idShowAll) showT('Show all identified items', [`Class == ${quoteList(GEAR_CLASSES)}`, 'Identified True'], 'D', 23)
+  if (qf.idGear) showT('Identified gear', [`Class == ${quoteList(GEAR_WA)}`, 'Identified True'], 'D', 23)
+  if (qf.idJewellery) showT('Identified jewellery', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Identified True'], 'D', 23)
+  if (qf.idJewels) showT('Identified jewels', [`Class == ${quoteList(['Jewels'])}`, 'Identified True'], 'D', 23)
+  const myGearClasses = [...(qf.myWeapons || []), ...(qf.myArmour || []), ...(qf.myJewellery || [])]
+  if (qf.idCustom && myGearClasses.length) showT('Identified items on my classes', [`Class == ${quoteList(myGearClasses)}`, 'Identified True'], 'C', 19)
+  if (qf.idHideRest) hide('Hide other identified equipment', [`Class == ${quoteList(GEAR_CLASSES)}`, 'Rarity Normal Magic Rare', 'Identified True', ...(qf.idHideRestCorrupted ? [] : ['Corrupted False'])], 47)
+  // Identified Item Configurations (item level as the value proxy for "Excellent / Good").
+  if (qf.idExcellent) highlight('Excellent identified items', [`Class == ${quoteList(GEAR_WA)}`, 'Rarity Rare', 'Identified True', 'ItemLevel >= 82'], 15)
+  if (qf.idGood) showT('Good identified items', [`Class == ${quoteList(GEAR_WA)}`, 'Rarity Rare', 'Identified True', 'ItemLevel >= 75'], 'C', 21)
+
+  // ===== Other Equipment: Crafting Bases (white/quality bases worth keeping) =====
+  if (qf.showCraftingBases) showT('Highlight crafting bases', [`Class == ${quoteList(GEAR_WA)}`, 'Rarity Normal', `ItemLevel >= ${num(qf.craftingBaseIlvl) ? Number(qf.craftingBaseIlvl) : 82}`], 'B', 18)
+  if (qf.craftQualityGear && num(qf.craftQualityMin)) showT('Excellent quality gear', [`Class == ${quoteList(GEAR_WA)}`, 'Rarity Normal Magic', `Quality >= ${Number(qf.craftQualityMin)}`], 'C', 18)
+  if (qf.craftSocketGear && num(qf.craftSocketMin)) showT('Excellent socketed gear', [`Class == ${quoteList(GEAR_WA)}`, 'Rarity Normal', `Sockets >= ${Number(qf.craftSocketMin)}`], 'C', 18)
+  if (qf.craftJewellery) showT('Excellent jewellery bases', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity Normal Magic', `ItemLevel >= ${num(qf.craftJewelleryIlvl) ? Number(qf.craftJewelleryIlvl) : 82}`], 'C', 18)
+
+  // ===== Other Equipment: Special Equipment (high-end rare bases & jewellery) =====
+  if (qf.specialGear) highlight('Special gear (top-tier rare bases)', [`Class == ${quoteList(GEAR_WA)}`, 'Rarity Rare', 'ItemLevel >= 82'], 16)
+  if (qf.doubleAnointAmulets) highlight('Double-anointed amulets', [`Class == ${quoteList(['Amulets'])}`, 'Rarity Rare', 'ItemLevel >= 75'], 16)
+  if (qf.specialJewellery) highlight('Excellent special jewellery', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity Rare', `ItemLevel >= ${num(qf.specialJewelleryIlvl) ? Number(qf.specialJewelleryIlvl) : 82}`], 16)
+  if (qf.specialJewelleryRemaining) showT('Remaining special jewellery', [`Class == ${quoteList(JEWELLERY_CLASSES)}`, 'Rarity Rare'], 'E', 25)
+
+  // Per-slot cleanup — hide low-rarity jewellery / jewels per slot.
   const hideBelow = (label, classes, val) => { if (val && val !== 'all') { const rc = rarityCond(val, '<'); if (rc) hide(label, [`Class == ${quoteList(classes)}`, rc]) } }
   hideBelow('Hide low-rarity Rings', ['Rings'], qf.hideRingsBelow)
   hideBelow('Hide low-rarity Amulets', ['Amulets'], qf.hideAmuletsBelow)
@@ -245,17 +282,43 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}) {
   if (curHide('omens')) hide('Hide Omens', [`BaseType ${quoteList(['Omen'])}`])
   if (qf.hideVerisium) hide('Hide Verisium', num(qf.minVerisium) ? [`BaseType == ${quote('Verisium')}`, `StackSize < ${Number(qf.minVerisium)}`] : [`BaseType == ${quote('Verisium')}`])
   if (qf.hideRegularRunes) hide('Hide regular runes', [`BaseType ${quoteList(['Rune'])}`, 'Rarity Normal'])
-  if (num(qf.hideUncutBelow)) hide('Hide low uncut gems', [`BaseType ${quoteList(['Uncut'])}`, `ItemLevel < ${Number(qf.hideUncutBelow)}`])
+  if (qf.hideUncutGems && num(qf.hideUncutBelow)) hide('Hide low uncut gems', [`BaseType ${quoteList(['Uncut'])}`, `ItemLevel < ${Number(qf.hideUncutBelow)}`])
 
-  // ===== Uniques (cloned groups) =====
+  // ===== Currency: My Flasks & Charms + Economy =====
+  if (qf.myFlasks?.length) showT('My flasks & charms', [`Class == ${quoteList(qf.myFlasks)}`], 'D')
+  if (qf.econTieringMode === 'strict') hide('Currency tiering: hide low-tier shards', [`BaseType == ${quoteList(['Transmutation Shard', 'Regal Shard', 'Scroll of Wisdom'])}`])
+  else if (qf.econTieringMode === 'off') hide('Currency tiering off: hide low-value currency', [`BaseType == ${quoteList(['Transmutation Shard', 'Regal Shard', 'Scroll of Wisdom', 'Orb of Transmutation', 'Orb of Augmentation'])}`])
+  if (qf.econBigStacks) highlight('Highlight large currency stacks', [`Class == ${quoteList(['Stackable Currency', 'Currency'])}`, `StackSize >= ${num(qf.econBigStackSize) ? Number(qf.econBigStackSize) : 10}`], 14)
+
+  // ===== Uniques & Chance Bases (cloned groups) =====
+  // Value-tier highlights — resolve the curated unique NAMES to their base types (PoE2 can't match a
+  // unique by name), then highlight by base type + Rarity Unique. Disabled when Tiering Mode = Off.
+  const uniqTier = (names, comment, tier, priority) => {
+    const bases = [...new Set((names || []).map(n => uniqueBases[n]).filter(Boolean))]
+    if (bases.length) out.push({ action: 'Show', comment, conditions: [`BaseType == ${quoteList(bases)}`, 'Rarity Unique'], style: tierStyle(tier, cosmetic), priority })
+  }
+  if (qf.uTieringMode !== 'off') {
+    if (qf.uExcellent) uniqTier(DEFAULT_TIER_UNIQUES.S, 'Excellent (S-tier) uniques', 'S', 10)
+    if (qf.uGood) uniqTier(DEFAULT_TIER_UNIQUES.A, 'Good (A-tier) uniques', 'A', 11)
+    if (qf.uPotential) uniqTier(DEFAULT_TIER_UNIQUES.B, 'Potential (B-tier) uniques', 'B', 12)
+  }
+  if (qf.uDropRestricted) showT('Show every remaining unique (drop-restricted safety)', ['Rarity Unique'], 'D', 27)
+  if (qf.uClassSpecific?.length) highlight('Class-specific uniques', [`Class == ${quoteList(qf.uClassSpecific)}`, 'Rarity Unique'], 15)
   if (qf.exceptionalUniques && num(qf.exceptionalUniquesMin)) highlight('Exceptional uniques', ['Rarity Unique', `Quality >= ${Number(qf.exceptionalUniquesMin)}`])
-  if (qf.vaalUniques) highlight('Vaal (corrupted) uniques', ['Rarity Unique', 'Corrupted True'])
-  if (qf.smallDisenchantUniques && qf.smallDisenchantMaxSize) { const [w, h] = String(qf.smallDisenchantMaxSize).split('x').map(Number); const s = []; if (w) s.push(`Width <= ${w}`); if (h) s.push(`Height <= ${h}`); showT('Small uniques to disenchant', ['Rarity Unique', ...s], 'D') }
+  if (qf.vaalModUniques) highlight('Vaal mod (corrupted) uniques', ['Rarity Unique', 'Corrupted True'])
+  if (qf.vaalUniques) highlight('Vaal base uniques', [`BaseType ${quoteList(['Vaal'])}`, 'Rarity Unique'])
+  if (qf.smallDisenchantUniques && qf.smallDisenchantMaxSize) { const [w, h] = String(qf.smallDisenchantMaxSize).split('x').map(Number); const s = []; if (w) s.push(`Width <= ${w}`); if (h) s.push(`Height <= ${h}`); showT('Small uniques to disenchant', ['Rarity Unique', ...s], 'D', 26) }
+  if (qf.uOther) showT('Other uniques', ['Rarity Unique'], 'E', 28)
   if (qf.hideAllUniques) hide('Hide remaining uniques', ['Rarity Unique'], 50)
+  // Chance bases — high-iLvl white bases worth an Orb of Chance.
+  const CHANCE_CLASSES = ['Body Armours', 'Helmets', 'Gloves', 'Boots', 'Sceptres', 'Foci', 'Amulets', 'Rings']
+  if (qf.chanceWanted) highlight('Wanted chance bases', [`Class == ${quoteList(CHANCE_CLASSES)}`, 'Rarity Normal', 'ItemLevel >= 82'], 17)
+  if (qf.chancePotential) showT('Potential chance bases', [`Class == ${quoteList(CHANCE_CLASSES)}`, 'Rarity Normal', 'ItemLevel >= 75'], 'D', 25)
 
   // ===== Other Items (cloned toggles) =====
   if (qf.showQuest) showT('Quest items', [`Class == ${quoteList(['Quest Items'])}`], 'C')
   if (qf.showRelics) showT('Relics', [`Class == ${quoteList(['Relics'])}`], 'C')
+  if (qf.showRelics && qf.relicsHideOther) hide('Hide basic (Normal) relics', [`Class == ${quoteList(['Relics'])}`, 'Rarity Normal'])
   if (qf.showTrials) showT('Trial keys', [`BaseType ${quoteList(['Barya', 'Ultimatum', 'Djinn'])}`], 'C')
   if (qf.showTablets) showT('Precursor tablets', [`BaseType ${quoteList(['Tablet'])}`], 'C')
   if (qf.showFragments) showT('Fragments & splinters', [`BaseType ${quoteList(['Splinter', 'Fragment', 'Crest'])}`], 'C')
@@ -268,16 +331,24 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}) {
 }
 
 // Tier List moves: itemName → tierId. F (or a tier set to Hide in Cosmetic) = hide; everything
-// else = Show with that tier's (cosmetic-adjusted) style.
-function tierDescriptors(tierOverrides = {}, cosmetic = {}) {
+// else = Show with that tier's (cosmetic-adjusted) style. Uniques can't be matched by name in PoE2
+// — `uniqueBases` (name → base type) lets us emit their BASE TYPE + `Rarity Unique` instead, so the
+// game accepts the rule. Plain names (currency / real base types) stay exact BaseType matches.
+function tierDescriptors(tierOverrides = {}, cosmetic = {}, uniqueBases = {}) {
   const out = []
   const byTier = {}
   for (const [name, tid] of Object.entries(tierOverrides)) (byTier[tid] ||= []).push(name)
   for (const [tid, names] of Object.entries(byTier)) {
     if (!names.length) continue
     const hide = tid === 'F' || (cosmetic.tierStyles?.[tid]?.hide ?? !!(TIER_BY_ID[tid]?.hide))
-    if (hide) out.push({ action: 'Hide', comment: `Hidden (tier ${tid}, your settings)`, conditions: [`BaseType == ${quoteList(names)}`], priority: 41 })
-    else out.push({ action: 'Show', comment: `Tier ${tid} (your Tier List)`, conditions: [`BaseType == ${quoteList(names)}`], style: tierStyle(tid, cosmetic), priority: 12 })
+    const uniqueBaseList = [...new Set(names.map(n => uniqueBases[n]).filter(Boolean))]
+    const plain = names.filter(n => !uniqueBases[n])
+    const add = (conditions, label) => {
+      if (hide) out.push({ action: 'Hide', comment: `Hidden — ${label}`, conditions, priority: 41 })
+      else out.push({ action: 'Show', comment: label, conditions, style: tierStyle(tid, cosmetic), priority: 12 })
+    }
+    if (plain.length) add([`BaseType == ${quoteList(plain)}`], `Tier ${tid} (your Tier List)`)
+    if (uniqueBaseList.length) add([`BaseType == ${quoteList(uniqueBaseList)}`, 'Rarity Unique'], `Tier ${tid} uniques (your Tier List)`)
   }
   return out
 }
@@ -305,12 +376,12 @@ function customRuleDescriptors(customRules = [], cosmetic = {}) {
 }
 
 // Gather every descriptor, order them (all Shows before all Hides so pinpoints win), render.
-export function compileOverrides(settings = {}) {
+export function compileOverrides(settings = {}, uniqueBases = {}) {
   const ov = settings.overrides || {}
   const cosmetic = settings.cosmetic || {}
   const descriptors = [
-    ...tierDescriptors(settings.tierOverrides, cosmetic),
-    ...quickFilterDescriptors(settings.quickFilters, cosmetic),
+    ...tierDescriptors(settings.tierOverrides, cosmetic, uniqueBases),
+    ...quickFilterDescriptors(settings.quickFilters, cosmetic, uniqueBases),
     ...ruleDescriptors(ov.rules),
     ...customRuleDescriptors(settings.customRules, cosmetic),
   ]

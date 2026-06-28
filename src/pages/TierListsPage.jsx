@@ -1,13 +1,14 @@
 import React, { useMemo, useState } from 'react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { useCatalog } from '../lib/catalog.js'
-import { DROP_TIERS, DEFAULT_TIER_CURRENCY } from '../data/dropTiers.js'
+import { DROP_TIERS, DEFAULT_TIER_CURRENCY, DEFAULT_TIER_UNIQUES } from '../data/dropTiers.js'
 import { ItemIcon } from '../components/primitives.jsx'
 
 const VISIBLE_TIERS = DROP_TIERS.filter(t => !t.hide) // S..E
-// name -> default tier, matching the generator's starting currency tiers
+// name -> default tier, matching the generator's starting currency + unique tiers (auto-seeded).
 const DEFAULT_LOOKUP = {}
 for (const [tid, names] of Object.entries(DEFAULT_TIER_CURRENCY)) for (const n of names) DEFAULT_LOOKUP[n] = tid
+for (const [tid, names] of Object.entries(DEFAULT_TIER_UNIQUES)) for (const n of names) DEFAULT_LOOKUP[n] = tid
 
 export function TierListsPage() {
   const { active, update } = useFilter()
@@ -17,9 +18,14 @@ export function TierListsPage() {
 
   const items = useMemo(() => {
     if (!catalog) return []
-    if (tab === 'uniques') return catalog.uniques.slice(0, 80)
+    if (tab === 'uniques') {
+      // Surface the tiered / auto-seeded uniques first so they're visible (not buried by data order).
+      const ov = active?.tierOverrides || {}
+      const ranked = (name) => (ov[name] || DEFAULT_LOOKUP[name]) ? 0 : 1
+      return [...catalog.uniques].sort((a, b) => ranked(a.name) - ranked(b.name)).slice(0, 120)
+    }
     return catalog.baseTypes.filter(b => b.category === 'currency').slice(0, 90)
-  }, [catalog, tab])
+  }, [catalog, tab, active?.tierOverrides])
 
   const overrides = active.tierOverrides || {}
   // Default tier matches the generator: curated currency in its tier, everything else in E.

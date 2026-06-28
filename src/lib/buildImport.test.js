@@ -43,12 +43,11 @@ test('armourBasesForAttribute picks bases by defence type, skips weapons', () =>
 
 test('buildToFilterPatch builds an editable smart filter (no build blob)', () => {
   const patch = buildToFilterPatch(parseBuild(BUILD), GEAR) // Warrior · Strength · two-handed
-  // weapons refined by style (2H drops the one-hander), plus the "every build wants these" shows
+  // weapons refined by style (2H drops the one-hander), plus highlight valuable uniques (visible keys)
   expect(patch.quickFilters.myWeapons).toEqual(['Two Hand Maces'])
-  expect(patch.quickFilters.gemsShow).toEqual(['uncut', 'skill', 'support'])
-  expect(patch.quickFilters.showJewels).toBe(true)
-  expect(patch.quickFilters.highlightJewellery).toBe(true)
-  expect(patch.quickFilters.showUniques).toBe(true)
+  expect(patch.quickFilters.uExcellent).toBe(true)
+  expect(patch.quickFilters.uGood).toBe(true)
+  expect(patch.quickFilters.uPotential).toBe(true)
   expect(patch.strictness).toBe('1-regular')
   expect(patch.klass).toBe('Warrior')
   expect(patch.name).toBe('Philmer')

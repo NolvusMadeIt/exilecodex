@@ -2,6 +2,29 @@
 // Newest first. Edit this file to publish a new entry.
 export const CHANGELOG = [
   {
+    date: '2026-06-28',
+    tag: 'Release',
+    title: 'Nolvus Filter v0.14.0 — Quick Editor rebuilt for parity, and one home for everything you hide',
+    body: [
+      'Quick Editor rebuilt to match the layout exiles already know from the most popular quick-filter tool — the same categories and groups: Campaign, Flasks & Charms, Currency, Uniques & Chance Bases, Other Items, My Equipment (Weapons / Armour / Jewellery / Jewels) and Other Equipment (Unidentified, Identified, Crafting Bases, Special). Every control is wired to a real Show/Hide rule.',
+      'New dedicated “Hide” category: everything you want gone now lives in one place — currency, gems, flasks & charms, and leftover jewellery/jewels by rarity — so it’s finally obvious what’s being hidden and what isn’t. Hide controls no longer sit scattered through the show-oriented categories.',
+      'Removed the blunt “Hide All Remaining …” sweeps in favour of clear, specific hides you choose.',
+      'Uniques highlight by value tier (Excellent / Good / Potential) straight from your Uniques Tier List, resolved to the correct base type so the game always accepts them.',
+      'Smarter build import: importing a .build now switches on the valuable-unique highlights too, and every choice it makes stays visible and editable in the Quick Editor.',
+      'Includes the v0.13.x fixes: the Tier List unique parse fix, auto-seeded unique tiers, the wider desktop window, the Nolvus PoE Filter IDE (direct filter editing with highlighting & autocomplete), and tracking Path of Exile 2 0.5.4.',
+    ],
+  },
+  {
+    date: '2026-06-26',
+    tag: 'Release',
+    title: 'Nolvus Filter v0.13.2 — Tier List unique fix, auto-tiered uniques & a wider window',
+    body: [
+      'Fixed a filter that could fail to load in-game ("No base types found exactly matching…") when a Unique was placed on the Tier List — uniques now match correctly by their base type plus Rarity Unique, since the game can’t match a unique by name.',
+      'The Uniques Tier List now auto-seeds sensible starting tiers for well-known valuable uniques, so it’s useful out of the box without manual setup — and it’s still fully editable, your moves always win.',
+      'Made the desktop window a bit wider.',
+    ],
+  },
+  {
     date: '2026-06-26',
     tag: 'Release',
     title: 'Nolvus Filter v0.13.1 — now tracking Path of Exile 2 0.5.4',

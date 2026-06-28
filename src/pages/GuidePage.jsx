@@ -1,5 +1,5 @@
 import React from 'react'
-import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Check, Volume2, ChevronDown, Users, Download, Clipboard, FolderInput, FilePlus2, Upload } from 'lucide-react'
+import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Check, Volume2, ChevronDown, Users, Download, Clipboard, FolderInput, FilePlus2, Upload, Code2, EyeOff } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
 import { ItemLabel } from '../components/ItemLabel.jsx'
 import { ItemIcon } from '../components/primitives.jsx'
@@ -47,24 +47,42 @@ const GUIDE = [
   },
   {
     id: 'quick', to: '/quick-editor', icon: SlidersHorizontal, title: 'Quick Editor', tag: 'Fine-tune',
-    what: 'Hide anything you don’t want to see and highlight the drops you care about. Your edits layer on top of the chosen preset and always win in-game.',
+    what: 'The show-and-highlight control centre. Tune leveling, currency, uniques, your equipment and crafting bases across organised categories — then send everything you want gone to one dedicated Hide category. Every row layers a real rule on top of your preset and wins in-game.',
     steps: [
-      'Use Quick hides for one-click strictness (hide all Normal/Magic, hide small gold piles).',
-      'Pick your weapon & armour types under My equipment to hide off-build gear.',
-      'Add a hide or highlight rule and match by class, base type, rarity or item level.',
+      'Turn on what you want to see — Campaign leveling, Valuable Uniques, Crafting Bases and more.',
+      'Pick your Weapon / Armour / Jewellery / Jewel types under My Equipment so off-build gear drops away.',
+      'Send anything you don’t want to the Hide category — currency, flasks, leftover jewellery by rarity — all in one place.',
+      'Need something specific? Add a hide or highlight rule at the bottom, matched by class, base type, rarity or item level.',
     ],
     visual: (
       <div className="panel p-2 w-full max-w-[300px] space-y-1.5">
-        <div className="gold-heading text-[12px]">Currency</div>
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-[11px] text-poe-text-bright">Show Currency Types</span>
-          <MockField w={110}>3 selected</MockField>
+        <div className="gold-heading text-[12px] flex items-center gap-1.5"><EyeOff size={12} /> Hide</div>
+        <div className="rounded border border-poe-line p-1.5 space-y-1.5" style={{ backgroundColor: '#000' }}>
+          <div className="text-[10px] uppercase tracking-wide text-poe-text/60">Currency &amp; Gems</div>
+          <MockCheck on label="Scrolls of Wisdom" />
+          <MockCheck on label="Regular Runes" />
+          <div className="flex items-center justify-between gap-2 pt-0.5">
+            <span className="text-[11px] text-poe-text-bright">Jewels</span>
+            <MockField w={110}>≤ Magic</MockField>
+          </div>
         </div>
-        <div className="rounded border border-poe-line p-1.5 space-y-1" style={{ backgroundColor: '#000' }}>
-          <MockCheck on label="Currency Shards" />
-          <MockCheck on label="Catalysts" />
-          <MockCheck label="Omens" />
-        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'editor', to: '/editor', icon: Code2, title: 'Editor', tag: 'Advanced',
+    what: 'Edit your filter directly in a full code editor — syntax highlighting plus smart autocomplete for filter keywords, values and real item names. Your manual edits become the exported filter, with one click to drop them and go back to the builder.',
+    steps: [
+      'Type and edit the filter like a code editor; press Ctrl+Space to bring up suggestions.',
+      'Use the toolbar for word-wrap, minimap, line numbers, font size and editor size — the cog opens more options.',
+      'Manual edits override the builder for every export; hit “Regenerate from builder” to clear them.',
+    ],
+    visual: (
+      <div className="panel p-2.5 w-full max-w-[320px] font-mono text-[11px] leading-relaxed" style={{ backgroundColor: '#0c0c0c' }}>
+        <div><span style={{ color: '#56a2e0' }}>Show</span> <span className="text-poe-text/50"># Mirror of Kalandra</span></div>
+        <div className="pl-3"><span style={{ color: '#e6d24a' }}>BaseType</span> == <span style={{ color: '#9cc98a' }}>"Mirror of Kalandra"</span></div>
+        <div className="pl-3"><span style={{ color: '#e6d24a' }}>PlayEffect</span> <span style={{ color: '#e0902a' }}>Purple</span></div>
+        <div><span style={{ color: '#e04040' }}>Hide</span> <span className="text-poe-text/50"># clutter</span></div>
       </div>
     ),
   },

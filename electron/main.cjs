@@ -71,9 +71,9 @@ function serveBundle(req) {
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1600,
+    width: 1800,
     height: 1000,
-    minWidth: 1024,
+    minWidth: 1100,
     minHeight: 700,
     backgroundColor: '#000000',
     autoHideMenuBar: true,
@@ -225,7 +225,7 @@ function applyOverlay({ enabled, side, display } = {}) {
     w.setOpacity(1)
     // Restore a comfortable centered window when leaving overlay mode.
     const { workArea } = resolveDisplay()
-    const ww = Math.min(1600, workArea.width - 80)
+    const ww = Math.min(1800, workArea.width - 80)
     const hh = Math.min(1000, workArea.height - 80)
     w.setBounds({
       x: workArea.x + Math.round((workArea.width - ww) / 2),

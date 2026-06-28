@@ -144,10 +144,10 @@ export function buildToFilterPatch(build, gear = []) {
   const quickFilters = {
     ...strictnessProfile('1-regular'),
     myWeapons: weapons,
-    gemsShow: ['uncut', 'skill', 'support'],
-    showJewels: true,
-    highlightJewellery: true,
-    showUniques: true,
+    // Highlight valuable uniques — these map to VISIBLE rows in the Quick Editor's "Valuable
+    // Uniques" group, so the imported build stays fully editable (gems/jewels show via the base
+    // filter already). Conservative: highlights only, hides nothing.
+    uExcellent: true, uGood: true, uPotential: true,
   }
   const armourRule = armourHighlightRule(build.attribute, gear)
   return {
