@@ -8,7 +8,15 @@ export const PATCH_NOTES_FORUM = 'https://www.pathofexile.com/forum/view-forum/2
 
 export const PATCHES = [
   {
-    version: '0.5.3', season: 'Return of the Ancients', date: '2026-06-18', url: T('3968601'), current: true, notes: true,
+    version: '0.5.4', season: 'Return of the Ancients', date: '2026-06-24', url: T('3975218'), current: true, notes: true,
+    hotfixes: [
+      { label: 'Hotfix 3', date: '2026-06-25', url: T('3976271') },
+      { label: 'Hotfix 2', date: '2026-06-25', url: T('3976201') },
+      { label: 'Hotfix 1', date: '2026-06-25', url: T('3975342') },
+    ],
+  },
+  {
+    version: '0.5.3', season: 'Return of the Ancients', date: '2026-06-18', url: T('3968601'), notes: true,
     hotfixes: [
       { label: '0.5.3 Restart', date: '2026-06-23', url: T('3974332') },
       { label: 'Hotfix 9', date: '2026-06-23', url: T('3973617') },

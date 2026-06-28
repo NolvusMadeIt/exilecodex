@@ -4,6 +4,16 @@ export const CHANGELOG = [
   {
     date: '2026-06-26',
     tag: 'Release',
+    title: 'Nolvus Filter v0.13.1 — now tracking Path of Exile 2 0.5.4',
+    body: [
+      'Updated the tracked game version to Path of Exile 2 0.5.4 (Return of the Ancients) — it was a patch behind.',
+      'Added the 0.5.4 patch notes and its hotfixes to the Patch Notes page, and marked it as the current patch.',
+      'Tidied the game-version display in Settings.',
+    ],
+  },
+  {
+    date: '2026-06-26',
+    tag: 'Release',
     title: 'Nolvus Filter v0.13.0 — Nolvus PoE Filter IDE, smarter build import & a rebuilt Quick Editor',
     body: [
       'New Editor tab — the Nolvus PoE Filter IDE: edit your filter directly with full syntax highlighting and smart autocomplete that suggests filter keywords, values and real item names as you type. It has its own toolbar and a settings panel (word wrap, minimap, line numbers, font size, indentation, cursor, render whitespace and more) plus an editor-size/fullscreen control and a status bar showing line, column and character counts.',

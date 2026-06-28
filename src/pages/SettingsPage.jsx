@@ -181,7 +181,6 @@ export function SettingsPage() {
             <div className="field h-8 flex items-center gap-2 cursor-not-allowed select-none">
               <Lock size={12} className="text-poe-text/60 shrink-0" />
               <span className="font-mono text-poe-text-bright">{gameInfo.gameVersionLabel}</span>
-              <span className="text-[10px] text-poe-text/70 ml-auto">auto</span>
             </div>
             <p className="text-[10.5px] text-poe-text/70 mt-1">Source: {SOURCE_LABEL[gameInfo.source]}{gameInfo.asOf ? ` · as of ${gameInfo.asOf}` : ''}</p>
           </div>

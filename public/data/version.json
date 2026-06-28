@@ -1,8 +1,8 @@
 {
   "_comment": "Bundled game version + league list. Update this when a new league or patch ships.",
-  "gameVersion": "0.5.3",
-  "gameVersionLabel": "Path of Exile 2 (0.5.3)",
-  "asOf": "2026-06-24",
+  "gameVersion": "0.5.4",
+  "gameVersionLabel": "Path of Exile 2 (0.5.4)",
+  "asOf": "2026-06-26",
   "leagues": [
     { "id": "Return of the Ancients", "name": "Return of the Ancients", "current": true },
     { "id": "Hardcore Return of the Ancients", "name": "HC Return of the Ancients" },
