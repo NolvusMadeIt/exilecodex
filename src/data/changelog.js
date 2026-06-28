@@ -4,6 +4,16 @@ export const CHANGELOG = [
   {
     date: '2026-06-28',
     tag: 'Fix',
+    title: 'Nolvus Filter v0.14.3 — never let a Unique break your filter',
+    body: [
+      'Fixed a filter that could fail to load in-game ("No base types found exactly matching…") when Uniques were placed on the Tier List and their base types hadn’t finished loading — every tiered Unique would get written as a raw name the game can’t match, which rejects the whole filter.',
+      'The generator is now hardened so this can never happen: a name is only ever written as a BaseType rule if it’s a confirmed base type, or a Unique that resolves to its base type plus Rarity Unique. Anything it can’t confirm is skipped instead of breaking the file.',
+      'Result: your tiered Uniques highlight correctly by base type + Rarity Unique, and even in the worst case the filter always loads.',
+    ],
+  },
+  {
+    date: '2026-06-28',
+    tag: 'Fix',
     title: 'Nolvus Filter v0.14.2 — Filter Output reliably syncs again',
     body: [
       'Fixed the Filter Output staying frozen no matter what you changed: a leftover “manual edit” lock from an earlier version was overriding the live filter on every page. That lock is now cleared automatically, so the output rebuilds the moment you change anything in the Quick Editor, Tier List, Cosmetic or rules.',

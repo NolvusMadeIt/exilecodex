@@ -3,7 +3,7 @@
 // Order is deliberate (PoE2 is first-match-wins): your highlights/hides + quick-filter category
 // rules first (already sorted shows-before-hides), then tiered currency, then a final catch-all.
 import { compileOverrides, emitStyle, tierStyle } from './overrides.js'
-import { loadUniqueBases } from './catalog.js'
+import { loadUniqueBases, loadBaseNames } from './catalog.js'
 import { DROP_TIERS, DEFAULT_TIER_CURRENCY, DEFAULT_TIER_UNIQUES } from '../data/dropTiers.js'
 import { quoteList, chunkList } from './filterSyntax.js'
 import { strictnessLevel, styleInfo } from '../data/coreFilters.js'
@@ -27,12 +27,15 @@ function block(action, comment, conditions, style) {
 
 // Currency, tiered by market value (S→E) from your Tier List, with the long tail handled by the
 // catch-all setting. Named valuable currency gets loud styling; the rest a baseline.
-function currencyBlocks(settings, uniqueBases = {}) {
+function currencyBlocks(settings, uniqueBases = {}, baseNames = null) {
   const cosmetic = settings.cosmetic || {}
   const byTier = {}
   for (const t of DROP_TIERS) byTier[t.id] = new Set(DEFAULT_TIER_CURRENCY[t.id] || [])
   for (const [name, tid] of Object.entries(settings.tierOverrides || {})) {
     if (uniqueBases[name]) continue // uniques aren't currency — emitted as base type + Rarity Unique in the override area
+    // Only tier a user-named item as currency if it's a CONFIRMED base type. Otherwise (a unique we
+    // couldn't resolve, or an unknown name) skip it — never emit a raw BaseType that breaks the filter.
+    if (baseNames && !baseNames.has(name)) continue
     for (const set of Object.values(byTier)) set.delete(name)
     ;(byTier[tid] = byTier[tid] || new Set()).add(name)
   }
@@ -82,11 +85,11 @@ function generate(settings, opts) {
   for (const [tid, names] of Object.entries(DEFAULT_TIER_UNIQUES))
     for (const n of names) if (ub[n] && !(n in tierOverrides)) tierOverrides[n] = tid
 
-  const blocks = compileOverrides({ ...settings, tierOverrides }, ub) // rules + quick-filter + tier rules (sorted)
+  const blocks = compileOverrides({ ...settings, tierOverrides }, ub, opts.baseNames) // rules + quick-filter + tier rules (sorted)
   if (blocks.length) { out.push(...banner('Your filter')); for (const b of blocks) out.push(b, '') }
 
   out.push(...banner('Currency'))
-  for (const b of currencyBlocks(settings, ub)) out.push(b, '')
+  for (const b of currencyBlocks(settings, ub, opts.baseNames)) out.push(b, '')
 
   out.push(...banner('Everything else'))
   out.push(catchAll(settings), '')
@@ -101,8 +104,10 @@ function generate(settings, opts) {
 // and fast (no network, far fewer lines than a full vendored filter).
 export async function buildFilter(settings = {}, opts = {}) {
   let uniqueBases = opts.uniqueBases
+  let baseNames = opts.baseNames
   if (!uniqueBases) { try { uniqueBases = await loadUniqueBases() } catch { uniqueBases = {} } }
-  return generate(settings, { ...opts, uniqueBases })
+  if (!baseNames) { try { baseNames = await loadBaseNames() } catch { baseNames = new Set() } }
+  return generate(settings, { ...opts, uniqueBases, baseNames })
 }
 
 // The authoritative filter text for output/export: the user's manual edits (Editor tab) when

@@ -66,6 +66,19 @@ export async function loadUniqueBases() {
   return m
 }
 
+// The set of every REAL base-type name (currency, gear, jewellery, flask bases). The filter
+// generator uses this to guarantee it never emits a name as `BaseType ==` unless it's a verified
+// base type — so a unique name (or any unknown/typo) can never slip into a BaseType rule and break
+// the whole filter in-game ("No base types found exactly matching …"). Empty only if data fails to
+// load, in which case the generator safely emits nothing rather than something invalid.
+let _baseNames = null
+export async function loadBaseNames() {
+  if (_baseNames) return _baseNames
+  const c = await loadCatalog()
+  _baseNames = new Set((c.baseTypes || []).map(b => b.name))
+  return _baseNames
+}
+
 // React hook
 export function useCatalog() {
   const [cat, setCat] = useState(_cache)

@@ -131,6 +131,34 @@ test('tiered uniques resolve to base type + Rarity Unique (never the unique name
   expect(text).toMatch(/BaseType == "Chaos Orb"/)
 })
 
+test('a tier-list name is NEVER emitted as a raw BaseType unless confirmed (no filter-breaking leak when uniqueBases is empty)', () => {
+  // Reproduces the bug that broke the user's filter: uniqueBases came back EMPTY at build time, so a
+  // tiered unique ("Ab Aeterno") fell through to `BaseType == "Ab Aeterno"` and PoE2 rejected the
+  // whole filter. With the base-name gate, an unresolved unique is DROPPED, never emitted as BaseType.
+  const baseNames = new Set(['Chaos Orb', 'Divine Orb'])
+  const blocks = compileOverrides(
+    { tierOverrides: { 'Ab Aeterno': 'B', 'Carrion Call': 'A', 'Chaos Orb': 'B' } },
+    {},          // uniqueBases EMPTY — the data-load failure
+    baseNames,
+  )
+  const text = blocks.join('\n')
+  expect(text).not.toContain('"Ab Aeterno"')        // the unique is dropped, not leaked
+  expect(text).not.toContain('"Carrion Call"')
+  expect(text).toMatch(/BaseType == "Chaos Orb"/)   // a confirmed base type still tiers fine
+  expect(text).not.toMatch(/Rarity\s*(<=|>=|<|>)\s/)
+})
+
+test('when uniqueBases is available, the same uniques resolve to base type + Rarity Unique', () => {
+  const blocks = compileOverrides(
+    { tierOverrides: { 'Ab Aeterno': 'B' } },
+    { 'Ab Aeterno': 'Grand Cuisses' },
+    new Set(['Chaos Orb']),
+  )
+  const text = blocks.join('\n')
+  expect(text).toMatch(/BaseType == "Grand Cuisses"[\s\S]*?Rarity Unique/)
+  expect(text).not.toContain('"Ab Aeterno"')
+})
+
 test('compiled rarity conditions use in-game-safe list form, never operators', () => {
   const blocks = compileOverrides({
     quickFilters: { gearMinRarity: 'Rare', hideNonUniqueFlasks: true, showChanceBases: true, highlightJewellery: true, levelingShow: ['weaponsArmour'] },

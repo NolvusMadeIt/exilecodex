@@ -1,7 +1,7 @@
 {
   "name": "nolvusfilter",
   "private": true,
-  "version": "0.14.2",
+  "version": "0.14.3",
   "type": "module",
   "description": "Visual loot-filter editor for Path of Exile 2.",
   "author": "Nolvus",

@@ -334,7 +334,7 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}, uniqueBases = {}) {
 // else = Show with that tier's (cosmetic-adjusted) style. Uniques can't be matched by name in PoE2
 // — `uniqueBases` (name → base type) lets us emit their BASE TYPE + `Rarity Unique` instead, so the
 // game accepts the rule. Plain names (currency / real base types) stay exact BaseType matches.
-function tierDescriptors(tierOverrides = {}, cosmetic = {}, uniqueBases = {}) {
+function tierDescriptors(tierOverrides = {}, cosmetic = {}, uniqueBases = {}, baseNames = null) {
   const out = []
   const byTier = {}
   for (const [name, tid] of Object.entries(tierOverrides)) (byTier[tid] ||= []).push(name)
@@ -342,7 +342,11 @@ function tierDescriptors(tierOverrides = {}, cosmetic = {}, uniqueBases = {}) {
     if (!names.length) continue
     const hide = tid === 'F' || (cosmetic.tierStyles?.[tid]?.hide ?? !!(TIER_BY_ID[tid]?.hide))
     const uniqueBaseList = [...new Set(names.map(n => uniqueBases[n]).filter(Boolean))]
-    const plain = names.filter(n => !uniqueBases[n])
+    // `plain` = names safe to emit as a raw `BaseType ==`: confirmed base types only. When baseNames
+    // is available, any name that's neither a resolvable unique nor a known base type (e.g. a unique
+    // we couldn't resolve, or a typo) is DROPPED — emitting it would make PoE2 reject the whole
+    // filter ("No base types found exactly matching …").
+    const plain = names.filter(n => !uniqueBases[n] && (baseNames ? baseNames.has(n) : true))
     const add = (conditions, label) => {
       if (hide) out.push({ action: 'Hide', comment: `Hidden — ${label}`, conditions, priority: 41 })
       else out.push({ action: 'Show', comment: label, conditions, style: tierStyle(tid, cosmetic), priority: 12 })
@@ -376,11 +380,11 @@ function customRuleDescriptors(customRules = [], cosmetic = {}) {
 }
 
 // Gather every descriptor, order them (all Shows before all Hides so pinpoints win), render.
-export function compileOverrides(settings = {}, uniqueBases = {}) {
+export function compileOverrides(settings = {}, uniqueBases = {}, baseNames = null) {
   const ov = settings.overrides || {}
   const cosmetic = settings.cosmetic || {}
   const descriptors = [
-    ...tierDescriptors(settings.tierOverrides, cosmetic, uniqueBases),
+    ...tierDescriptors(settings.tierOverrides, cosmetic, uniqueBases, baseNames),
     ...quickFilterDescriptors(settings.quickFilters, cosmetic, uniqueBases),
     ...ruleDescriptors(ov.rules),
     ...customRuleDescriptors(settings.customRules, cosmetic),
