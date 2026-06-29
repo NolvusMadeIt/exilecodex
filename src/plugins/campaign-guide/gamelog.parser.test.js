@@ -82,4 +82,10 @@ describe('gamelog processLines — real PoE2 lines', () => {
     const zones = processLines(lines, fresh()).filter((e) => e.type === 'zone').map((e) => e.zone)
     expect(zones).toEqual(['Vastiri Outskirts', 'Mawdun Quarry'])
   })
+
+  test('AFK on/off lines emit afk events (for the speedrun timer)', () => {
+    const ctx = fresh()
+    expect(processLines(['2025/01/01 00:00:00 1 a1 [INFO Client 1] : AFK mode is now ON. Autoreply "I am away"'], ctx)).toEqual([{ type: 'afk', on: true }])
+    expect(processLines(['2025/01/01 00:00:00 1 a1 [INFO Client 1] : AFK mode is now OFF'], ctx)).toEqual([{ type: 'afk', on: false }])
+  })
 })

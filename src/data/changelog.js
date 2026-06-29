@@ -4,6 +4,17 @@ export const CHANGELOG = [
   {
     date: '2026-06-29',
     tag: 'Plugins',
+    title: 'Nolvus Filter v0.17.0 — Campaign Mode + Speedrun Mode, pop-out overlays & downloadable plugins',
+    body: [
+      'The Campaign Guide is now Campaign Mode: a zone-by-zone walkthrough with a real layout map for nearly every zone (Acts 1–4 plus the Interlude). Hover any zone name to preview its map, and on desktop it auto-detects the zone you’re in from the game log, follows you as you play, and remembers your Client.txt location.',
+      'New Speedrun Mode: a lean, do-this-only critical-path route (optional steps and loot hidden) with a pre-run Prep checklist, plus a live run timer that runs while you’re in a zone and pauses in town/hideout or when you’re idle — completed runs are saved with splits, deaths and your time. Start, Pause, Stop and Reset are rebindable global hotkeys.',
+      'Any plugin can now pop out as a separate always-on-top overlay window over the game, with an adjustable transparency slider and a global toggle hotkey.',
+      'Plugins can now be downloaded as packages from Settings ▸ Plugins.',
+    ],
+  },
+  {
+    date: '2026-06-29',
+    tag: 'Plugins',
     title: 'Nolvus Filter v0.16.0 — Price Check & Campaign Guide plugins',
     body: [
       'New plugin — Price Check: paste an item from Path of Exile 2 and get its live sell price straight from the official trade site, with values shown as the real currency orb icons. On desktop the prices come through your own logged-in trade session.',

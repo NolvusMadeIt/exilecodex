@@ -1,5 +1,9 @@
 import React, { Suspense, useState } from 'react'
-import { ArrowLeft, Puzzle, Lock, ImageOff } from 'lucide-react'
+import { ArrowLeft, Puzzle, Lock, ImageOff, Download } from 'lucide-react'
+
+// Each built-in plugin is also packaged as a downloadable .zip under /public/plugins, so users can
+// grab it from the app (or the repo's /public/plugins folder) to inspect, back up or share.
+const pluginZipUrl = (id) => `/plugins/${id}.zip`
 import { usePlugins, usePluginHost } from '../store/Plugins.jsx'
 import { Toggle } from '../components/primitives.jsx'
 import { SimpleSelect } from '../components/SimpleSelect.jsx'
@@ -165,6 +169,9 @@ function PluginDetail({ p, onBack, onToggle }) {
           <Meta label="Category" value={p.category} />
           <Meta label="Status" value={p.enabled ? 'Active' : 'Inactive'} />
           <Meta label="Type" value={p.core ? 'Core (built-in)' : 'Optional add-on'} />
+          <a href={pluginZipUrl(p.id)} download={`${p.id}.zip`}
+            className="btn-dark h-8 text-[12px] inline-flex items-center justify-center gap-1.5 w-full mt-2"><Download size={13} /> Download .zip</a>
+          <p className="text-[10.5px] text-poe-text/60 leading-snug">Built-in plugins are already installed — toggle to enable. The package is for backup or sharing; installing community plugins from a file is coming soon.</p>
         </aside>
       </div>
     </div>
@@ -195,6 +202,8 @@ function PluginRow({ p, onOpen, onToggle }) {
         <div className="text-[10.5px] text-poe-text/60 mt-0.5">v{p.version} · by {p.author} · {p.category}</div>
       </div>
       <div className="flex items-center gap-3 shrink-0">
+        <a href={pluginZipUrl(p.id)} download={`${p.id}.zip`} title="Download plugin package (.zip)"
+          className="btn-dark h-7 text-[11px] inline-flex items-center gap-1"><Download size={12} /> Download</a>
         <button onClick={onOpen} className="btn-dark h-7 text-[11px]">View details</button>
         <EnableControl p={p} onToggle={onToggle} />
       </div>
@@ -215,7 +224,7 @@ export function PluginsTab() {
     <div className="space-y-4">
       <p className="text-[12px] text-poe-text">
         Plugins are optional add-ons. Turn one off and it disappears from the app — the rest keeps working exactly as before.
-        The <span className="text-poe-text-bright">Filter & Build Editor</span> is the first; more are on the way.
+        Each one can be <span className="text-poe-text-bright">downloaded as a package</span> to back up or share.
       </p>
 
       <div className="space-y-2">

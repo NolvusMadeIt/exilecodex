@@ -50,6 +50,30 @@ contextBridge.exposeInMainWorld('nolvusTrade', {
   hasSession: () => ipcRenderer.invoke('trade:hasSession'),
 })
 
+// --- Plugin overlay window (pop a single plugin out as an always-on-top widget) ---
+// The renderer checks for `window.nolvusOverlay` to know it can pop a plugin out (desktop only).
+contextBridge.exposeInMainWorld('nolvusOverlay', {
+  isDesktop: true,
+  open: (pluginId) => ipcRenderer.invoke('pluginOverlay:open', pluginId),
+  close: () => ipcRenderer.invoke('pluginOverlay:close'),
+  toggle: (pluginId) => ipcRenderer.invoke('pluginOverlay:toggle', pluginId),
+  isOpen: () => ipcRenderer.invoke('pluginOverlay:isOpen'),
+  setHotkey: (pluginId, accel) => ipcRenderer.invoke('pluginOverlay:setHotkey', { pluginId, accel }),
+})
+
+// --- Speedrun timer global hotkeys ---
+// Settings calls setHotkeys({start,pause,stop,reset}); the run timer subscribes via onAction so a
+// global key press (even while the game is focused) starts/pauses/stops/resets the run.
+contextBridge.exposeInMainWorld('nolvusTimer', {
+  isDesktop: true,
+  setHotkeys: (map) => ipcRenderer.invoke('timer:setHotkeys', map),
+  onAction: (cb) => {
+    const handler = (_e, action) => cb(action)
+    ipcRenderer.on('timer:action', handler)
+    return () => ipcRenderer.removeListener('timer:action', handler)
+  },
+})
+
 // --- Game-log watcher (Campaign Guide auto-tracking) ---
 // The renderer checks for `window.nolvusGameLog` to know it can auto-detect the live zone by tailing
 // PoE2's Client.txt (desktop only, read-only). `onEvent` streams {type:'zone'|'level'|'death', …}.
@@ -59,6 +83,10 @@ contextBridge.exposeInMainWorld('nolvusGameLog', {
   stop: () => ipcRenderer.invoke('gamelog:stop'),
   status: () => ipcRenderer.invoke('gamelog:status'),
   pickPath: () => ipcRenderer.invoke('gamelog:pickPath'),
+  // Speedrun run history (device-local).
+  listRuns: () => ipcRenderer.invoke('runs:list'),
+  saveRun: (run) => ipcRenderer.invoke('runs:save', run),
+  clearRuns: () => ipcRenderer.invoke('runs:clear'),
   onEvent: (cb) => {
     const handler = (_e, payload) => cb(payload)
     ipcRenderer.on('gamelog:event', handler)

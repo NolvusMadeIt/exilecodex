@@ -8,6 +8,7 @@ import { PluginProvider, usePlugins, usePluginHost } from './store/Plugins.jsx'
 import { MarketProvider } from './store/Market.jsx'
 import { RouterProvider, useRouter } from './lib/router.jsx'
 import { Layout } from './components/Layout.jsx'
+import { OverlayShell } from './components/OverlayShell.jsx'
 import { ErrorBoundary } from './components/ui.jsx'
 import { PresetsPage } from './pages/PresetsPage.jsx'
 
@@ -67,6 +68,22 @@ function Routes() {
   }
 }
 
+// Chooses the shell based on the route: the pop-out overlay window loads #/overlay/<pluginId> and
+// renders only that plugin (no app chrome); everything else gets the normal Layout.
+function AppShell() {
+  const { path } = useRouter()
+  if (path.startsWith('/overlay/')) {
+    return <OverlayShell pluginId={path.slice('/overlay/'.length)} />
+  }
+  return (
+    <Layout>
+      <Suspense fallback={<Loading />}>
+        <Routes />
+      </Suspense>
+    </Layout>
+  )
+}
+
 export default function App() {
   return (
     <ErrorBoundary>
@@ -77,11 +94,7 @@ export default function App() {
               <MarketProvider>
                 <PluginProvider>
                   <RouterProvider>
-                    <Layout>
-                      <Suspense fallback={<Loading />}>
-                        <Routes />
-                      </Suspense>
-                    </Layout>
+                    <AppShell />
                   </RouterProvider>
                 </PluginProvider>
               </MarketProvider>

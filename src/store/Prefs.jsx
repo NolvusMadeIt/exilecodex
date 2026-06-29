@@ -63,6 +63,25 @@ export function PrefsProvider({ children }) {
   const [prefs, setPrefs] = useState(load)
 
   useEffect(() => { try { localStorage.setItem(LS, JSON.stringify(prefs)) } catch {} }, [prefs])
+
+  // Cross-window sync, intentionally NARROW: only the overlay transparency is shared live between the
+  // main window and a pop-out overlay. We must NOT blanket-merge prefs here — pluginSettings (e.g. the
+  // campaign guide's live-tracked zone) is mutated independently in each window from the same game-log
+  // event stream, so a full merge would let a stale window clobber the other's current selection.
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key !== LS || !e.newValue) return
+      try {
+        const next = JSON.parse(e.newValue)
+        if (next && typeof next === 'object' && 'overlayOpacity' in next) {
+          setPrefs((p) => (p.overlayOpacity === next.overlayOpacity ? p : { ...p, overlayOpacity: next.overlayOpacity }))
+        }
+      } catch {}
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
+
   useEffect(() => { document.documentElement.setAttribute('data-theme', prefs.theme || 'ember') }, [prefs.theme])
   useEffect(() => {
     const el = document.documentElement

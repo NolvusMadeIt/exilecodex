@@ -25,7 +25,8 @@ export function RouterProvider({ children }) {
   // Remember the current tab so the next visit opens where you left off. Also depends on
   // prefs.lastRoute so it re-corrects if the Supabase prefs-pull merges a stale value back in.
   useEffect(() => {
-    if (path && path !== prefs.lastRoute) update({ lastRoute: path })
+    // Never remember the pop-out overlay route as the main app's last tab (it's a separate window).
+    if (path && path !== prefs.lastRoute && !path.startsWith('/overlay/')) update({ lastRoute: path })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path, prefs.lastRoute])
 

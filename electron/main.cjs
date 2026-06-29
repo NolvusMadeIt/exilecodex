@@ -8,12 +8,13 @@
 // "Always-latest" mode: set NOLVUS_APP_URL (env var) or REMOTE_URL below to your deployed
 // site URL and the shell will load the live site instead of the bundled build.
 
-const { app, BrowserWindow, protocol, shell, ipcMain, globalShortcut, screen, Tray, Menu, nativeImage, dialog } = require('electron')
+const { app, BrowserWindow, protocol, shell, ipcMain, globalShortcut, screen, Tray, Menu, nativeImage, dialog, powerMonitor } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const path = require('node:path')
 const fs = require('node:fs')
 const { registerTrade } = require('./trade.cjs')
-const { registerGameLog, stop: stopGameLog } = require('./gamelog.cjs')
+const { registerGameLog, stop: stopGameLog, autostart: autostartGameLog } = require('./gamelog.cjs')
+const { registerOverlayWindow, closeOverlay } = require('./overlay-window.cjs')
 
 // Community invite — also used by the tray menu.
 const DISCORD_URL = 'https://discord.gg/4gueh3Kb3A'
@@ -35,6 +36,15 @@ const ICON_PATH = path.join(__dirname, 'icon.png')
 // set it to '' to force the offline bundle.
 const REMOTE_URL = process.env.NOLVUS_APP_URL ?? 'https://nolvusfiltereditor.vercel.app'
 const BUNDLE_URL = 'app://bundle/index.html'
+
+// The URL the plugin-overlay window loads for a given plugin: the same app the main window runs
+// (live site / dev server / offline bundle), at the hash route the renderer's OverlayShell handles.
+function overlayUrlFor(pluginId) {
+  // Hash route the renderer's OverlayShell handles. http(s) bases get a trailing slash before the
+  // hash (so the request hits the SPA root); the bundled file URL must keep its index.html as-is.
+  if (REMOTE_URL) return `${REMOTE_URL.replace(/\/$/, '')}/#/overlay/${pluginId}`
+  return `app://bundle/index.html#/overlay/${pluginId}`
+}
 
 const DIST = path.join(__dirname, '..', 'dist')
 
@@ -368,6 +378,30 @@ ipcMain.on('overlay:toggle', () => toggleOverlayVisibility())
 ipcMain.handle('overlay:setHotkey', (e, accel) => setOverlayHotkey(accel))
 ipcMain.handle('overlay:getDisplays', () => listDisplays())
 
+// --- Speedrun timer global hotkeys (start / pause / stop / reset) ---
+// Registered from Settings; each fires a 'timer:action' to every window so the run timer responds
+// even while the game has focus. One accelerator per action; falsy clears it.
+let timerHotkeys = {}
+function broadcastTimerAction(action) {
+  for (const w of BrowserWindow.getAllWindows()) if (w && !w.isDestroyed()) w.webContents.send('timer:action', action)
+}
+function setTimerHotkeys(map = {}) {
+  for (const accel of Object.values(timerHotkeys)) { try { if (accel) globalShortcut.unregister(accel) } catch {} }
+  timerHotkeys = {}
+  const result = {}
+  for (const action of ['start', 'pause', 'stop', 'reset']) {
+    const accel = map[action]
+    if (!accel) { result[action] = false; continue }
+    try {
+      const ok = globalShortcut.register(accel, () => broadcastTimerAction(action))
+      if (ok) timerHotkeys[action] = accel
+      result[action] = ok
+    } catch { result[action] = false }
+  }
+  return result
+}
+ipcMain.handle('timer:setHotkeys', (e, map) => setTimerHotkeys(map || {}))
+
 // Bring the window back into a normal, visible, focused state (from the tray or after hiding).
 function restoreWindow() {
   const w = mainWindow; if (!w || w.isDestroyed()) return
@@ -463,7 +497,21 @@ app.whenReady().then(() => {
   protocol.handle('app', serveBundle)
   registerTrade(ipcMain)
   registerGameLog(ipcMain, () => BrowserWindow.getAllWindows())
+  registerOverlayWindow(ipcMain, overlayUrlFor)
   createWindow()
+  // Begin zone tracking immediately using the remembered Client.txt (or auto-detect), so it works
+  // from launch and the saved location is never "forgotten".
+  try { autostartGameLog() } catch {}
+
+  // OS idle signal for the speedrun timer (the log has no fine-grained idle/movement). Broadcast
+  // system-wide seconds-since-input every 2s on the same gamelog event channel; the renderer's timer
+  // pauses when you've been idle past its threshold (you're not actively running).
+  setInterval(() => {
+    try {
+      const idleSec = powerMonitor.getSystemIdleTime()
+      for (const w of BrowserWindow.getAllWindows()) if (w && !w.isDestroyed()) w.webContents.send('gamelog:event', { type: 'idle', idleSec, at: Date.now() })
+    } catch { /* powerMonitor can throw very early; ignore */ }
+  }, 2000)
   createTray()
   wireAutoUpdater()
   // Check for updates shortly after launch (once the window can receive the banner event).
@@ -473,7 +521,7 @@ app.whenReady().then(() => {
   })
 })
 
-app.on('will-quit', () => { globalShortcut.unregisterAll(); try { stopGameLog() } catch {} })
+app.on('will-quit', () => { globalShortcut.unregisterAll(); try { stopGameLog() } catch {} try { closeOverlay() } catch {} })
 app.on('before-quit', () => { if (tray) { tray.destroy(); tray = null } })
 
 app.on('window-all-closed', () => {

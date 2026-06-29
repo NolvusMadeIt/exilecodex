@@ -33,6 +33,10 @@ const SLAIN_RE = /\] : (.+?) has been slain\.\s*$/
 // A Set Source name that means "no real zone": the loading screen and the main menu / logout.
 const NON_ZONE = new Set(['(null)', '(unknown)'])
 
+// AFK/DND toggle — the only "player is away" signal in the log (coarse; OS idle is the fine one,
+// wired separately in main.cjs). Fires on the /afk toggle and the game's auto-AFK.
+const AFK_RE = /\] : (?:AFK|DND) mode is now (?:(ON)\. Autoreply|(OFF))/
+
 // --- Locating Client.txt -----------------------------------------------------------------------
 
 // Pull extra Steam library roots out of libraryfolders.vdf (many players install on D:/E:). The VDF
@@ -99,6 +103,7 @@ function processLines(lines, ctx) {
     let m
     if ((m = LEVEL_RE.exec(line))) { events.push({ type: 'level', name: m[1].trim(), klass: m[2].trim(), level: Number(m[3]) }); continue }
     if ((m = SLAIN_RE.exec(line))) { events.push({ type: 'death', name: m[1].trim() }); continue }
+    if ((m = AFK_RE.exec(line))) { events.push({ type: 'afk', on: !!m[1] }); continue }
     if ((m = GEN_RE.exec(line))) { ctx.pending = { areaLevel: Number(m[1]), areaId: m[2] }; continue }
     if ((m = SETSRC_RE.exec(line))) {
       const name = m[1].trim()
@@ -165,12 +170,45 @@ function stop() {
   state.watching = false
 }
 
+// Remember the user's chosen Client.txt across launches — DEVICE-LOCAL (a small file in userData),
+// deliberately NOT synced, because the path differs per machine (like the POESESSID). `electron` is
+// required lazily so this module still imports under plain Node for the parser tests.
+function overrideFile() {
+  try { const { app } = require('electron'); return path.join(app.getPath('userData'), 'gamelog-path.json') } catch { return null }
+}
+function savedOverride() {
+  try { const f = overrideFile(); if (!f) return null; const p = JSON.parse(fs.readFileSync(f, 'utf8'))?.path; return p && fs.existsSync(p) ? p : null } catch { return null }
+}
+function saveOverride(p) { try { const f = overrideFile(); if (f) fs.writeFileSync(f, JSON.stringify({ path: p })) } catch {} }
+function clearOverride() { try { const f = overrideFile(); if (f) fs.unlinkSync(f) } catch {} }
+
+// Speedrun run history — DEVICE-LOCAL (per-machine telemetry, not synced; can grow large). Same
+// userData-file pattern as the Client.txt override above. Newest first, capped.
+function runsFile() {
+  try { const { app } = require('electron'); return path.join(app.getPath('userData'), 'speedrun-runs.json') } catch { return null }
+}
+function listRuns() {
+  try { const f = runsFile(); if (!f) return []; const r = JSON.parse(fs.readFileSync(f, 'utf8')); return Array.isArray(r) ? r : [] } catch { return [] }
+}
+function saveRun(run) {
+  try {
+    const f = runsFile(); if (!f || !run) return { ok: false }
+    const runs = [run, ...listRuns()].slice(0, 200)
+    fs.writeFileSync(f, JSON.stringify(runs))
+    return { ok: true, count: runs.length }
+  } catch { return { ok: false } }
+}
+function clearRuns() { try { const f = runsFile(); if (f) fs.unlinkSync(f) } catch {} return { ok: true } }
+
 function start(opts = {}) {
   stop()
-  const override = opts.path && fs.existsSync(opts.path) ? opts.path : null
-  const auto = override ? null : findClientTxt()
-  const target = override || auto
+  let override = null
+  if (opts.path && fs.existsSync(opts.path)) { override = opts.path; saveOverride(opts.path) } // explicit pick → remember it
+  else if (opts.auto) { clearOverride() }                                                       // forced re-detect → forget the saved one
+  else { override = savedOverride() }                                                            // default: reuse the remembered path
+  const target = override || findClientTxt()
   if (!target) {
+    state.path = null
     return { ok: false, error: 'not-found', tried: candidatePaths() }
   }
   state.path = target
@@ -186,8 +224,19 @@ function start(opts = {}) {
   return { ok: true, path: target, source: state.source, lastZone: state.lastZone }
 }
 
+// Start watching on app launch with the remembered path (or auto-detect), so tracking "just works"
+// and the saved location shows up immediately — the user never has to re-add it.
+function autostart() { try { return start({}) } catch { return { ok: false } } }
+
 function status() {
-  return { watching: state.watching, path: state.path, source: state.source, lastZone: state.lastZone }
+  // Surface the remembered path even before the watcher has started, so settings always shows it.
+  const saved = state.path ? null : savedOverride()
+  return {
+    watching: state.watching,
+    path: state.path || saved,
+    source: state.source || (saved ? 'override' : null),
+    lastZone: state.lastZone,
+  }
 }
 
 // IPC surface. `getWindows()` returns the live BrowserWindow list so events reach the main window
@@ -211,6 +260,10 @@ function registerGameLog(ipcMain, getWindows) {
     if (res.canceled || !res.filePaths?.[0]) return { canceled: true }
     return start({ path: res.filePaths[0] })
   })
+  // Speedrun run history (device-local).
+  ipcMain.handle('runs:list', () => listRuns())
+  ipcMain.handle('runs:save', (_e, run) => saveRun(run))
+  ipcMain.handle('runs:clear', () => clearRuns())
 }
 
-module.exports = { registerGameLog, start, stop, status, findClientTxt, processLines }
+module.exports = { registerGameLog, start, stop, status, findClientTxt, processLines, autostart }
