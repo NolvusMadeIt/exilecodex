@@ -12,6 +12,8 @@ const { app, BrowserWindow, protocol, shell, ipcMain, globalShortcut, screen, Tr
 const { autoUpdater } = require('electron-updater')
 const path = require('node:path')
 const fs = require('node:fs')
+const { registerTrade } = require('./trade.cjs')
+const { registerGameLog, stop: stopGameLog } = require('./gamelog.cjs')
 
 // Community invite — also used by the tray menu.
 const DISCORD_URL = 'https://discord.gg/4gueh3Kb3A'
@@ -459,6 +461,8 @@ function createTray() {
 
 app.whenReady().then(() => {
   protocol.handle('app', serveBundle)
+  registerTrade(ipcMain)
+  registerGameLog(ipcMain, () => BrowserWindow.getAllWindows())
   createWindow()
   createTray()
   wireAutoUpdater()
@@ -469,7 +473,7 @@ app.whenReady().then(() => {
   })
 })
 
-app.on('will-quit', () => globalShortcut.unregisterAll())
+app.on('will-quit', () => { globalShortcut.unregisterAll(); try { stopGameLog() } catch {} })
 app.on('before-quit', () => { if (tray) { tray.destroy(); tray = null } })
 
 app.on('window-all-closed', () => {

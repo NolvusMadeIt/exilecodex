@@ -41,7 +41,7 @@ export function Layout({ children }) {
   const outputHere = OUTPUT_ROUTES.has(path)
   // A few plugin pages (e.g. the Market terminal) are split/dense layouts that want the full width
   // of the work area rather than the centered reading column.
-  const wide = path === '/market'
+  const wide = path === '/market' || path === '/price-check' || path === '/campaign-guide'
 
   // Tray menu → renderer navigation (e.g. "Settings"). Desktop only; no-op on the web.
   useEffect(() => {

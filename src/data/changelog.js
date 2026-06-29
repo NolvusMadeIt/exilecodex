@@ -2,6 +2,16 @@
 // Newest first. Edit this file to publish a new entry.
 export const CHANGELOG = [
   {
+    date: '2026-06-29',
+    tag: 'Plugins',
+    title: 'Nolvus Filter v0.16.0 — Price Check & Campaign Guide plugins',
+    body: [
+      'New plugin — Price Check: paste an item from Path of Exile 2 and get its live sell price straight from the official trade site, with values shown as the real currency orb icons. On desktop the prices come through your own logged-in trade session.',
+      'New plugin — Campaign Guide: a zone-by-zone leveling route for every act (1–4) plus the Interlude — the ordered path between zones, each boss and quest objective, gem and passive rewards, optional pickups, and a checkbox on every step that’s remembered across sessions.',
+      'Campaign Guide auto-tracking (desktop): it reads your game log to detect the zone you’re in, jumps to the matching act, and ticks off the route as you play. Set it up under Settings ▸ Plugins ▸ Campaign Guide.',
+    ],
+  },
+  {
     date: '2026-06-28',
     tag: 'Desktop',
     title: 'Nolvus Filter v0.15.2 — the window remembers your size, and opens wider',

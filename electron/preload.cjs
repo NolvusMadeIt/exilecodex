@@ -39,3 +39,29 @@ contextBridge.exposeInMainWorld('nolvusDesktop', {
     return () => ipcRenderer.removeListener('app:navigate', handler)
   },
 })
+
+// --- Price Check live trade transport ---
+// The renderer checks for `window.nolvusTrade` to know it can pull live prices (desktop only). The
+// main process makes the calls from this machine with the user's POESESSID (passed per call).
+contextBridge.exposeInMainWorld('nolvusTrade', {
+  isDesktop: true,
+  price: (args) => ipcRenderer.invoke('trade:price', args),
+  login: () => ipcRenderer.invoke('trade:login'),
+  hasSession: () => ipcRenderer.invoke('trade:hasSession'),
+})
+
+// --- Game-log watcher (Campaign Guide auto-tracking) ---
+// The renderer checks for `window.nolvusGameLog` to know it can auto-detect the live zone by tailing
+// PoE2's Client.txt (desktop only, read-only). `onEvent` streams {type:'zone'|'level'|'death', …}.
+contextBridge.exposeInMainWorld('nolvusGameLog', {
+  isDesktop: true,
+  start: (opts) => ipcRenderer.invoke('gamelog:start', opts),
+  stop: () => ipcRenderer.invoke('gamelog:stop'),
+  status: () => ipcRenderer.invoke('gamelog:status'),
+  pickPath: () => ipcRenderer.invoke('gamelog:pickPath'),
+  onEvent: (cb) => {
+    const handler = (_e, payload) => cb(payload)
+    ipcRenderer.on('gamelog:event', handler)
+    return () => ipcRenderer.removeListener('gamelog:event', handler)
+  },
+})

@@ -1,0 +1,730 @@
+{
+  "acts": [
+    {
+      "id": "act1",
+      "label": "Act 1",
+      "hubs": [
+        {
+          "id": "clearfell-encampment",
+          "label": "Clearfell Encampment",
+          "route": [
+            "Clearfell → Mud Burrow",
+            "Mud Burrow → The Grelwood",
+            "The Grelwood → The Red Vale",
+            "The Red Vale → The Grim Tangle",
+            "The Grim Tangle → Cemetery of the Eternals",
+            "Cemetery of the Eternals → Mausoleum of the Praetor",
+            "Mausoleum of the Praetor → Tomb of the Consort",
+            "Tomb of the Consort → Hunting Grounds",
+            "Hunting Grounds → Freythorn",
+            "Freythorn → Ogham Farmlands",
+            "Ogham Farmlands → Ogham Village",
+            "Ogham Village → The Manor Ramparts",
+            "The Manor Ramparts → Ogham Manor: First Floor",
+            "Ogham Manor: First Floor → Ogham Manor: Second Floor",
+            "Ogham Manor: Second Floor → Ogham Manor: Third Floor"
+          ],
+          "objectives": [
+            {
+              "text": "Clearfell: Kill Beira of the Rotten Pack",
+              "reward": "Permanent Buff: +10% Cold Resistance"
+            },
+            {
+              "text": "Clearfell: Mysterious Campsite (Abandoned Stash)",
+              "reward": "Uncut Skill Gem (Level 1)",
+              "optional": true
+            },
+            {
+              "text": "Mud Burrow: Kill The Devourer",
+              "reward": "Uncut Skill Gem (Level 2), Uncut Support Gem (Level 1)",
+              "optional": true
+            },
+            {
+              "text": "The Grelwood: Kill The Brambleghast",
+              "reward": "Uncut Skill Gem (Level 2)",
+              "optional": true
+            },
+            {
+              "text": "The Grelwood: Aregane's Hut (Witch Hut)",
+              "reward": "Medium Life and Medium Mana Flask, Uncut Support Gem (Level 1)",
+              "optional": true
+            },
+            {
+              "text": "The Red Vale: Kill The Rust King",
+              "reward": "Uncut Skill Gem (Level 3)"
+            },
+            {
+              "text": "The Red Vale: Weapon Piles (Multiple)",
+              "reward": "Guaranteed second tier weapon bases",
+              "optional": true
+            },
+            {
+              "text": "The Grim Tangle: Kill The Rotten Druid (Optional)",
+              "reward": "Uncut Support Gem (Level 1)",
+              "optional": true
+            },
+            {
+              "text": "Cemetery of the Eternals: Kill Lachlann of Endless Lament",
+              "reward": "Uncut Skill Gem (Level 3)"
+            },
+            {
+              "text": "Cemetery of the Eternals: Ancient Ruin Sarcophagus (beside Grieving Epitaph)",
+              "reward": "Normal Rarity Ring",
+              "optional": true
+            },
+            {
+              "text": "Mausoleum of the Praetor: Kill Draven",
+              "reward": "Part of Sorrow Among Stones quest"
+            },
+            {
+              "text": "Mausoleum of the Praetor: Forgotten Riches (Treasure Trove)",
+              "reward": "Repeatable Gold and Rare Chests",
+              "optional": true
+            },
+            {
+              "text": "Tomb of the Consort: Kill Asinia",
+              "reward": "Part of Sorrow Among Stones quest"
+            },
+            {
+              "text": "Tomb of the Consort: Haunted Treasure (Embattled Trove)",
+              "reward": "Uncut Support Gem (Level 1)",
+              "optional": true
+            },
+            {
+              "text": "Hunting Grounds: Kill The Crowbell",
+              "reward": "Book of Specialisation (+2 Weapon Set Skill Points)"
+            },
+            {
+              "text": "Hunting Grounds: Ritual Encounter (Large Ritual Altar)",
+              "reward": "Uncut Skill Gem (Level 4)",
+              "optional": true
+            },
+            {
+              "text": "Hunting Grounds: Dryadic Ritual (Tree Creatures)",
+              "reward": "Uncut Support Gem (Level 1)",
+              "optional": true
+            },
+            {
+              "text": "Freythorn: Kill The King in the Mists (after 4 rituals)",
+              "reward": "Permanent Buff: +30 to Maximum Spirit, Uncut Spirit Gem (Level 4)"
+            },
+            {
+              "text": "Ogham Farmlands: Una's Lute (inside Una's Lute Box)",
+              "reward": "Book of Specialisation (+2 Weapon Set Skill Points)"
+            },
+            {
+              "text": "Ogham Farmlands: Crop Circle (Ambush)",
+              "reward": "Uncut Skill Gem (Level 4)",
+              "optional": true
+            },
+            {
+              "text": "Ogham Village: Kill The Executioner",
+              "reward": "Uncut Support Gem (Level 1), Uncut Skill Gem (Level 5) (Quest Reward: Save Leitis)"
+            },
+            {
+              "text": "Ogham Village: Renly's Workshop (Smithing Tools)",
+              "reward": "Unlocks Salvage Bench, Artificer's Orb, Blank Lesser Rune"
+            },
+            {
+              "text": "The Manor Ramparts: The Gallows (Hanged Man)",
+              "reward": "Uncut Support Gem (Level 1)",
+              "optional": true
+            },
+            {
+              "text": "Ogham Manor: First Floor: Kill Candlemass, the Living Rite",
+              "reward": "Permanent Buff: +20 to Maximum Life"
+            },
+            {
+              "text": "Ogham Manor: Third Floor: Kill Final Boss Count of Ogham",
+              "reward": "Completes Act 1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act2",
+      "label": "Act 2",
+      "hubs": [
+        {
+          "id": "ardura-caravan",
+          "label": "The Ardura Caravan",
+          "route": [
+            "Vastiri Outskirts → Mawdun Quarry",
+            "Mawdun Quarry → Mawdun Mine",
+            "Mawdun Mine → Traitor's Passage",
+            "Traitor's Passage → The Halani Gates",
+            "The Halani Gates → Keth",
+            "Keth → The Lost City",
+            "The Lost City → Buried Shrines",
+            "Buried Shrines → Mastodon Badlands",
+            "Mastodon Badlands → The Bone Pits",
+            "The Bone Pits → Valley of the Titans",
+            "Valley of the Titans → The Titan Grotto",
+            "The Titan Grotto → Deshar",
+            "Deshar → Path of Mourning",
+            "Path of Mourning → The Spires of Deshar",
+            "The Spires of Deshar → The Dreadnought Vanguard"
+          ],
+          "objectives": [
+            {
+              "text": "Vastiri Outskirts: Kill Rathbreaker",
+              "reward": "Uncut Skill Gem (Level 6), Progresses Earning Passage quest"
+            },
+            {
+              "text": "Mawdun Quarry: Faridun War Cache",
+              "reward": "Artificer's Orb",
+              "optional": true
+            },
+            {
+              "text": "Mawdun Mine: Kill Rudja, the Dread Engineer",
+              "reward": "Uncut Skill Gem, main storyline progression"
+            },
+            {
+              "text": "Mawdun Mine: Munitions Bunker",
+              "reward": "Uncut Skill Gem (Level 6)",
+              "optional": true
+            },
+            {
+              "text": "Traitor's Passage: Kill Balbala, the Traitor",
+              "reward": "Djinn Barya (access to Trial of the Sekhema for Ascendancy)"
+            },
+            {
+              "text": "Traitor's Passage: Bell Chest",
+              "reward": "Uncut Skill Gem (Level 6)",
+              "optional": true
+            },
+            {
+              "text": "The Halani Gates: Kill Jamanra, the Risen King",
+              "reward": "Advances The Trail of Corruption quest"
+            },
+            {
+              "text": "The Halani Gates: L'Im, the Impaler (Optional)",
+              "reward": "Rare Items",
+              "optional": true
+            },
+            {
+              "text": "Keth: Kill Kabala, Constrictor Queen",
+              "reward": "Book of Specialisation (+2 Weapon Set Skill Points)"
+            },
+            {
+              "text": "Keth: Abandoned Prayer",
+              "reward": "Magic Amulet",
+              "optional": true
+            },
+            {
+              "text": "The Lost City: Golden Tomb",
+              "reward": "Uncut Spirit Gem (Level 6 or 7)",
+              "optional": true
+            },
+            {
+              "text": "The Lost City: The Ninth Treasure of Keth (Optional Boss)",
+              "reward": "Magic Jewel",
+              "optional": true
+            },
+            {
+              "text": "Buried Shrines: Kill Azarian, the Forsaken Son",
+              "reward": "City of Seven Waters progression"
+            },
+            {
+              "text": "Buried Shrines: Elemental Offering",
+              "reward": "Choice of Magic Resistance Ring (Ruby/Sapphire/Topaz)",
+              "optional": true
+            },
+            {
+              "text": "Buried Shrines: Suspicious Sarcophagus",
+              "reward": "Uncut Support Gem (Level 1)",
+              "optional": true
+            },
+            {
+              "text": "Mastodon Badlands: Fossilised Memorial",
+              "reward": "Uncut Support Gem (Level 1)",
+              "optional": true
+            },
+            {
+              "text": "The Bone Pits: Kill Iktab, the Deathlord and Ekbab, Ancient Steed",
+              "reward": "Uncut Support Gem (Level 1) (Quest Reward for 'A Theft of Ivory')"
+            },
+            {
+              "text": "Valley of the Titans: Offering to Amrit Quest (Medallion)",
+              "reward": "Permanent Buff: +30% increased Charm Charges Gained or 15% increased Mana Recovery from Flasks"
+            },
+            {
+              "text": "The Titan Grotto: Kill Zalmarath, the Colossus",
+              "reward": "Uncut Support Gem (Level 1) & 500 Gold"
+            },
+            {
+              "text": "The Titan Grotto: Titan's Sword",
+              "reward": "Random Lesser Rune",
+              "optional": true
+            },
+            {
+              "text": "Deshar: Tradition's Toll Quest (Final Letter)",
+              "reward": "Book of Specialisation (+2 Weapon Set Skill Points)"
+            },
+            {
+              "text": "Deshar: The Unremembered (Skeleton)",
+              "reward": "Artificer's Orb",
+              "optional": true
+            },
+            {
+              "text": "Deshar: Rare Vulture Monsters",
+              "reward": "Djinn Barya",
+              "optional": true
+            },
+            {
+              "text": "Path of Mourning: Hushed Urn",
+              "reward": "Uncut Skill Gem (Level 8)",
+              "optional": true
+            },
+            {
+              "text": "The Spires of Deshar: Kill Tor Gul, the Defiler",
+              "reward": "Unlocks Ascent to Power quest"
+            },
+            {
+              "text": "The Spires of Deshar: Sisters of Garukhan",
+              "reward": "Permanent Buff: +10% to Lightning Resistance"
+            },
+            {
+              "text": "The Dreadnought Vanguard: Kill Final Boss Jamanra, the Abomination",
+              "reward": "Completes The Trail of Corruption, End of Act 2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act3",
+      "label": "Act 3",
+      "hubs": [
+        {
+          "id": "ziggurat-encampment",
+          "label": "Ziggurat Encampment",
+          "route": [
+            "Sandswept Marsh → Jungle Ruins",
+            "Jungle Ruins → The Venom Crypts",
+            "The Venom Crypts → Infested Barrens",
+            "Infested Barrens → The Azak Bog",
+            "The Azak Bog → Chimeral Wetlands",
+            "Chimeral Wetlands → Jiquani's Machinarium",
+            "Jiquani's Machinarium → Jiquani's Sanctum",
+            "Jiquani's Sanctum → The Matlan Waterways",
+            "The Matlan Waterways → The Drowned City",
+            "The Drowned City → The Molten Vault",
+            "The Molten Vault → Apex of Filth",
+            "Apex of Filth → Temple of Kopec",
+            "Temple of Kopec → Utzaal",
+            "Utzaal → Aggorat",
+            "Aggorat → The Black Chambers"
+          ],
+          "objectives": [
+            {
+              "text": "Sandswept Marsh: Kill Rootdredge (Foul Ritual)",
+              "reward": "Uncut Skill Gem (Level 9)",
+              "optional": true
+            },
+            {
+              "text": "Sandswept Marsh: Azak Campfire (Orok Campsite)",
+              "reward": "Lesser Jeweller's Orb",
+              "optional": true
+            },
+            {
+              "text": "Sandswept Marsh: Hanging Tree (Click corpse)",
+              "reward": "Magic Ring",
+              "optional": true
+            },
+            {
+              "text": "Jungle Ruins: Kill Mighty Silverfist",
+              "reward": "Book of Specialisation (+2 Weapon Set Skill Points)"
+            },
+            {
+              "text": "Jungle Ruins: Jungle Grave (Servi quest)",
+              "reward": "Rare Rawhide or Linen Belt",
+              "optional": true
+            },
+            {
+              "text": "Jungle Ruins: Troubled Camp",
+              "reward": "Gwendolyn Albright (Secret Vendor: Armour)",
+              "optional": true
+            },
+            {
+              "text": "The Venom Crypts: Corpse Snake Venom Quest Reward",
+              "reward": "Permanent Buff (Choice of +25% Stun Threshold, +30% Elemental Ailment Threshold, or +25% Mana Regeneration Rate); Artificer's Orb"
+            },
+            {
+              "text": "Infested Barrens: Troubled Camp",
+              "reward": "Sebastian Carroway (Secret Vendor: Weapons), guaranteed Rare Boots",
+              "optional": true
+            },
+            {
+              "text": "Infested Barrens: Larva Hollow (The Brood Queen)",
+              "reward": "Random loot",
+              "optional": true
+            },
+            {
+              "text": "The Azak Bog: Kill Ignagduk, the Bog Witch",
+              "reward": "Permanent Buff: +30 to Maximum Spirit"
+            },
+            {
+              "text": "The Azak Bog: Flameskin Ritual (Optional)",
+              "reward": "Temporary buff to Fire Resistance and Item Rarity",
+              "optional": true
+            },
+            {
+              "text": "Chimeral Wetlands: Kill Xyclucian, The Chimera",
+              "reward": "Chimeral Inscribed Ultimatum (access to Trial of Chaos), Uncut Skill Gem (Level 9)"
+            },
+            {
+              "text": "Chimeral Wetlands: Toxic Bloom (Noxious Behemoth)",
+              "reward": "Guaranteed Magic Amulet",
+              "optional": true
+            },
+            {
+              "text": "Chimeral Wetlands: Ravaged Camp",
+              "reward": "Guaranteed Rare Armour",
+              "optional": true
+            },
+            {
+              "text": "Jiquani's Machinarium: Kill Blackjaw, the Remnant",
+              "reward": "Permanent Buff: +10% to Fire Resistance"
+            },
+            {
+              "text": "Jiquani's Machinarium: Unmarked Treasure Vaults (Requires Soul Core)",
+              "reward": "Gold and Rare Chests",
+              "optional": true
+            },
+            {
+              "text": "Jiquani's Sanctum: Kill Zicoatl, Warden of the Core",
+              "reward": "Large Soul Core"
+            },
+            {
+              "text": "Jiquani's Sanctum: Paquate's Mechanism (Corruption Altar)",
+              "reward": "Optional free 'Vaal Orb' item corruption",
+              "optional": true
+            },
+            {
+              "text": "Jiquani's Sanctum: Grand Soul Core Nexus",
+              "reward": "Uncut Spirit Gem (Level 10)",
+              "optional": true
+            },
+            {
+              "text": "The Matlan Waterways: Narag's Hut",
+              "reward": "Rare Weapon",
+              "optional": true
+            },
+            {
+              "text": "The Drowned City: Crawler Ambush",
+              "reward": "Random loot",
+              "optional": true
+            },
+            {
+              "text": "The Drowned City: Foul Quarters (Multiple)",
+              "reward": "Gold, Chests, Rare/Magic Monsters",
+              "optional": true
+            },
+            {
+              "text": "The Molten Vault: Kill Mektul, the Forgemaster",
+              "reward": "Uncut Skill Gem (Level 10), Unlocks Reforging Bench, Artificer's Orb"
+            },
+            {
+              "text": "Apex of Filth: Kill Queen of Filth"
+            },
+            {
+              "text": "Apex of Filth: The Gentle Crone (Secret Vendor)",
+              "reward": "Sells higher quality Jewellery and Spellcaster gear",
+              "optional": true
+            },
+            {
+              "text": "Apex of Filth: The Crone's Cauldron (Requires 3 Fungi)",
+              "reward": "Quality Life and Mana flasks",
+              "optional": true
+            },
+            {
+              "text": "Temple of Kopec: Kill Ketzuli, High Priest of the Sun",
+              "reward": "Uncut Skill Gem (Level 11)"
+            },
+            {
+              "text": "Utzaal: Kill Viper Napuatzi",
+              "reward": "Uncut Support Gem (Level 2)"
+            },
+            {
+              "text": "Utzaal: Perculiar Fortunes (Golden Idols)",
+              "reward": "Various Idols that can be sold to Oswald for Gold (500-1500 Gold each)",
+              "optional": true
+            },
+            {
+              "text": "Aggorat: Sacrificial Altar (Blood Sacrifice Quest)",
+              "reward": "Book of Specialisation (+2 Weapon Set Skill Points)"
+            },
+            {
+              "text": "Aggorat: Vaal Goliaths (Drop Sacrificial Heart)"
+            },
+            {
+              "text": "Aggorat: Peculiar Fortunes (Golden Idols)",
+              "reward": "Idols sellable for Gold",
+              "optional": true
+            },
+            {
+              "text": "The Black Chambers: Kill Final Boss Doryani, Royal Thaumaturge",
+              "reward": "Completes Act 3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "act4",
+      "label": "Act 4",
+      "hubs": [
+        {
+          "id": "kingsmarch",
+          "label": "Kingsmarch",
+          "route": [
+            "Kingsmarch (Town) → Whakapanu Island",
+            "Whakapanu Island → Singing Caverns",
+            "Singing Caverns → Shrike Island",
+            "Shrike Island → Abandoned Prison",
+            "Abandoned Prison → Solitary Confinement",
+            "Solitary Confinement → Isle of Kin",
+            "Isle of Kin → Volcanic Warrens",
+            "Volcanic Warrens → Kedge Bay",
+            "Kedge Bay → Journey's End",
+            "Journey's End → Arastas",
+            "Arastas → Excavation",
+            "Excavation → Eye of Hinekora",
+            "Eye of Hinekora → Halls of the Dead",
+            "Halls of the Dead → Trial of the Ancestors",
+            "Trial of the Ancestors → Ngakanu",
+            "Ngakanu → Heart of the Tribe"
+          ],
+          "objectives": [
+            {
+              "text": "Kingsmarch (Town): Makoru (Captain)",
+              "reward": "Grants access to Karui Archipelago map"
+            },
+            {
+              "text": "Whakapanu Island: Kill The Great White One (Shark Pit)",
+              "reward": "Shark Fin quest item"
+            },
+            {
+              "text": "Whakapanu Island: Petrified Pirate",
+              "reward": "Torn Map Piece"
+            },
+            {
+              "text": "Whakapanu Island: Crabshell Cavern (Clawcrunch)",
+              "reward": "Uncut Support Gem (Level 4)",
+              "optional": true
+            },
+            {
+              "text": "Singing Caverns: Kill Diamora, Song of Death",
+              "reward": "Weapon Piece, Shoreline Hideout (unlocks hideout after speaking to Ange)"
+            },
+            {
+              "text": "Singing Caverns: Beckoning Clam (Humming Pearl)",
+              "reward": "Rare Pearlescent Amulet (Quest turn-in to Rog)",
+              "optional": true
+            },
+            {
+              "text": "Shrike Island: Kill Scourge of the Skies",
+              "reward": "Weapon Piece"
+            },
+            {
+              "text": "Shrike Island: Corpse Nest",
+              "reward": "Torn Map Piece"
+            },
+            {
+              "text": "Abandoned Prison: Goddess of Justice (Requires Chapel Key)",
+              "reward": "Permanent Buff (Choice: 30% increased Life or Mana Recovery from Flasks)"
+            },
+            {
+              "text": "Solitary Confinement: Kill The Prisoner",
+              "reward": "Weapon Piece"
+            },
+            {
+              "text": "Solitary Confinement: Bronnach, the Manhunter (Optional)",
+              "reward": "Guaranteed unique item and some rares",
+              "optional": true
+            },
+            {
+              "text": "Isle of Kin: Kill The Blind Beast (Primal Arena)",
+              "reward": "Book of Specialisation (+2 Weapon Set Skill Points)"
+            },
+            {
+              "text": "Isle of Kin: Beast Pen (Mimbok the Enslaved)",
+              "reward": "Uncut Skill Gem (Level 12) + Uncut Support Gem (Level 4)",
+              "optional": true
+            },
+            {
+              "text": "Isle of Kin: Wrecked Boat (Flayed Sailor)",
+              "reward": "Torn Map Piece"
+            },
+            {
+              "text": "Volcanic Warrens: Kill Krutog, Lord of Kin"
+            },
+            {
+              "text": "Volcanic Warrens: Volcanic Nest",
+              "reward": "Possible Rare Ruby Ring",
+              "optional": true
+            },
+            {
+              "text": "Kedge Bay: Smuggler's Stash",
+              "reward": "Torn Map Piece"
+            },
+            {
+              "text": "Journey's End: Kill Omniphobia (Dark Mists Quest)",
+              "reward": "Book of Specialisation (+2 Weapon Set Skill Points) (NEW IN 0.4)"
+            },
+            {
+              "text": "Arastas: Kill Torvian, Hand of the Savior"
+            },
+            {
+              "text": "Arastas: Morning Bell",
+              "reward": "3 Regal Orbs",
+              "optional": true
+            },
+            {
+              "text": "Arastas: Evening Bell",
+              "reward": "3 Exalted Orbs",
+              "optional": true
+            },
+            {
+              "text": "Excavation: Kill Benedictus, First Herald of Utopia",
+              "reward": "Precursor Forge (unlocked after witnessing lore)"
+            },
+            {
+              "text": "Excavation: Excavated Cache",
+              "reward": "Uncut Support Gem (Level 4)",
+              "optional": true
+            },
+            {
+              "text": "Eye of Hinekora: Silent Hall (Navali's Gift)",
+              "reward": "Permanent Buff: 5% increased Maximum Mana"
+            },
+            {
+              "text": "Halls of the Dead: Hinekora Totems (3 rewards)",
+              "reward": "Choice of +5% Res or +5 Attribute (+5% Fire Res or +5 Str, +5% Cold Res or +5 Dex, +5% Lightning Res or +5 Int)"
+            },
+            {
+              "text": "Halls of the Dead: Kill Yama the White",
+              "reward": "Access to Trial of the Ancestors"
+            },
+            {
+              "text": "Trial of the Ancestors: Hinekora (Navali)",
+              "reward": "Book of Specialisation (+2 Weapon Set Skill Points)"
+            },
+            {
+              "text": "Ngakanu: Abyss",
+              "reward": "Possible Greater Jeweller's Orb drop",
+              "optional": true
+            },
+            {
+              "text": "Heart of the Tribe: Kill Final Boss Tavakai the Fallen / Tavakai the Consumed",
+              "reward": "Completes Act 4"
+            },
+            {
+              "text": "Heart of the Tribe: Meeting House",
+              "reward": "Bonus objective/free loot",
+              "optional": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interlude",
+      "label": "Interlude",
+      "hubs": [
+        {
+          "id": "curse-of-holten",
+          "label": "Curse of Holten (Ogham)",
+          "route": [
+            "The Refuge → Scorched Farmlands",
+            "Scorched Farmlands → Stones of Serle",
+            "Stones of Serle → Blackwood",
+            "Blackwood → Holten",
+            "Holten → Wolvenhold",
+            "Wolvenhold → Holten Estate"
+          ],
+          "objectives": [
+            {
+              "text": "Isolde and Heldra",
+              "optional": true
+            },
+            {
+              "text": "Godwin and Sigbert"
+            },
+            {
+              "text": "Kill Oswin, the Dread Warden",
+              "reward": "Unique item, Vaal Orb, +2 Passive Skill Points"
+            },
+            {
+              "text": "Kill Thane Wulfric and Lady Elswyth"
+            },
+            {
+              "text": "Warden's Ledger",
+              "reward": "+2 Passive Skill Points"
+            }
+          ]
+        },
+        {
+          "id": "the-stolen-barya",
+          "label": "The Stolen Barya (Vastiri Desert)",
+          "route": [
+            "Khari Crossing → Khari Bazaar",
+            "Khari Bazaar → Pools of Kathal",
+            "Pools of Kathal → Sel Khari Sanctuary",
+            "Sel Khari Sanctuary → Molten Shrine",
+            "Molten Shrine → Qimah",
+            "Qimah → Qimah Reservoir"
+          ],
+          "objectives": [
+            {
+              "text": "Kill Akthi and Anundr"
+            },
+            {
+              "text": "Kill Elzarah, the Cobra Lord"
+            },
+            {
+              "text": "Kill Azmadi, the Faridun Prince"
+            },
+            {
+              "text": "Orbala's Pillar (choose one of 7 Boons, swappable)",
+              "reward": "+5% Maximum Life"
+            }
+          ]
+        },
+        {
+          "id": "doryanis-contingency",
+          "label": "Doryani's Contingency (Mount Kriar)",
+          "route": [
+            "The Glade → Ashen Forest",
+            "Ashen Forest → Kriar Village",
+            "Kriar Village → Glacial Tarn",
+            "Glacial Tarn → Howling Caves",
+            "Howling Caves → Kriar Peaks",
+            "Kriar Peaks → Etched Ravine",
+            "Etched Ravine → The Cuachic Vault"
+          ],
+          "objectives": [
+            {
+              "text": "Kill Lythara, the Wayward Spear"
+            },
+            {
+              "text": "Kill The Abominable Yeti"
+            },
+            {
+              "text": "Kill Rakkar, the Frozen Talon"
+            },
+            {
+              "text": "Kill Stormgore, the Guardian"
+            },
+            {
+              "text": "Kill Zolin and Zelina",
+              "reward": "+40 Spirit, Free Unique Item, +2 Passive Skill Points (Book of Specialisation)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

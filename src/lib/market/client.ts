@@ -52,6 +52,18 @@ export function fetchDetail(league: string, base: string, apiId: string): Promis
   return call<CurrencyDetailVM>({ op: "detail", league, base, apiId });
 }
 
+// Live trade price via the edge proxy (browser path — the desktop app calls the trade site
+// directly instead). POESESSID + query go in the POST body; returns { total, listings } or { error }.
+export async function fetchTradePrice(league: string, query: unknown, poesessid: string) {
+  const res = await fetch(`${FN}?op=trade`, {
+    method: "POST",
+    headers: { apikey: KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({ league, query, poesessid }),
+  });
+  if (!res.ok) return { error: "proxy", status: res.status };
+  return res.json();
+}
+
 export function fetchHistory(league: string, itemId: number, days = 90) {
   return cached(`hist:${league}:${itemId}:${days}`, 300_000, async () =>
     (await call<{ history: unknown }>({ op: "history", league, itemId: String(itemId), days: String(days) })).history,

@@ -148,6 +148,39 @@ Deno.serve(async (req: Request) => {
   try {
     if (op === "leagues") return j({ leagues: await getLeagues() });
 
+    // --- Live trade proxy (Price Check) ---
+    // The browser can't reach pathofexile.com/trade2 (CORS + Cloudflare). We proxy it server-side
+    // using the user's own POESESSID (passed in the POST body, never logged). search -> fetch(10)
+    // -> raw listings. The desktop app does this locally instead; this is the browser path.
+    if (op === "trade") {
+      const TRADE = "https://www.pathofexile.com/api/trade2";
+      const BUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36";
+      // deno-lint-ignore no-explicit-any
+      const body = await req.json().catch(() => ({})) as any;
+      const tl = body.league as string;
+      const poesessid = body.poesessid as string;
+      const query = body.query;
+      if (!poesessid) return j({ error: "no-auth" });
+      if (!tl) return j({ error: "no-league" });
+      const h = { Cookie: `POESESSID=${poesessid}`, "User-Agent": BUA, "Content-Type": "application/json", Accept: "application/json" };
+      const ra = (r: Response) => Number(r.headers.get("retry-after")) || 60;
+      const sRes = await fetch(`${TRADE}/search/${REALM}/${encodeURIComponent(tl)}`, { method: "POST", headers: h, body: JSON.stringify(query) });
+      if (sRes.status === 401 || sRes.status === 403) return j({ error: "auth", status: sRes.status });
+      if (sRes.status === 429) return j({ error: "rate", retryAfter: ra(sRes) });
+      if (!sRes.ok) { const detail = await sRes.text().catch(() => ""); return j({ error: "search", status: sRes.status, detail: detail.slice(0, 250) }); }
+      // deno-lint-ignore no-explicit-any
+      const s = await sRes.json() as any;
+      const result: string[] = s.result ?? [];
+      const total: number = s.total ?? 0;
+      if (!result.length) return j({ total: 0, listings: [] });
+      const fRes = await fetch(`${TRADE}/fetch/${result.slice(0, 10).join(",")}?query=${s.id}&realm=${REALM}`, { headers: h });
+      if (fRes.status === 429) return j({ error: "rate", retryAfter: ra(fRes) });
+      if (!fRes.ok) { const detail = await fRes.text().catch(() => ""); return j({ error: "fetch", status: fRes.status, detail: detail.slice(0, 250) }); }
+      // deno-lint-ignore no-explicit-any
+      const f = await fRes.json() as any;
+      return j({ total, listings: f.result ?? [] });
+    }
+
     const league = url.searchParams.get("league") ?? "";
     const base = (url.searchParams.get("base") as BaseCurrency) || "exalted";
     if (!league) return j({ error: "missing_league" }, 400);
