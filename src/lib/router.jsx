@@ -5,7 +5,8 @@ import { usePrefs } from '../store/Prefs.jsx'
 const RouterCtx = createContext(null)
 
 function currentPath(fallback) {
-  const h = window.location.hash.replace(/^#/, '')
+  let h = window.location.hash.replace(/^#/, '')
+  if (h.length > 1) h = h.replace(/\/+$/, '') // tolerate a trailing slash, e.g. /presets/ -> /presets
   return h || fallback || '/presets'
 }
 
