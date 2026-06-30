@@ -58,7 +58,7 @@ contextBridge.exposeInMainWorld('nolvusOverlay', {
   close: () => ipcRenderer.invoke('pluginOverlay:close'),
   toggle: (pluginId) => ipcRenderer.invoke('pluginOverlay:toggle', pluginId),
   isOpen: () => ipcRenderer.invoke('pluginOverlay:isOpen'),
-  setHotkey: (pluginId, accel) => ipcRenderer.invoke('pluginOverlay:setHotkey', { pluginId, accel }),
+  setHotkey: (pluginId, accel, mode) => ipcRenderer.invoke('pluginOverlay:setHotkey', { pluginId, accel, mode }),
 })
 
 // --- Speedrun timer global hotkeys ---

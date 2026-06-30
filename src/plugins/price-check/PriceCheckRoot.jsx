@@ -148,7 +148,7 @@ function Dropdown({ value, options, onChange }) {
   )
 }
 
-export function PriceCheckRoot() {
+export function PriceCheckRoot({ compact = false }) {
   const catalog = useCatalog()
   const market = useMarket?.() || {}
   const { prefs, update } = usePrefs()
@@ -299,6 +299,28 @@ export function PriceCheckRoot() {
     }
   }
 
+  // Overlay/compact mode: when popped out via the hotkey, behave like "copy item → instant price".
+  // Keep a ref to the latest checkPrice so the deferred auto-run isn't a stale closure.
+  const checkPriceRef = useRef(checkPrice)
+  checkPriceRef.current = checkPrice
+  const autoRanRef = useRef(false)
+  // On open, pull the freshly-copied item from the clipboard into the box.
+  useEffect(() => {
+    if (!compact) return
+    let cancelled = false
+    ;(async () => {
+      try { const t = await navigator.clipboard.readText(); if (!cancelled && t && t.trim()) setRaw(t) } catch {}
+    })()
+    return () => { cancelled = true }
+  }, [compact])
+  // …then auto-run the check once the item has parsed (state settled), so the price shows instantly.
+  useEffect(() => {
+    if (!compact || autoRanRef.current || !item) return
+    autoRanRef.current = true
+    const id = setTimeout(() => { try { checkPriceRef.current?.() } catch {} }, 220)
+    return () => clearTimeout(id)
+  }, [compact, item])
+
   const searchByOptions = useMemo(() => {
     if (!item) return []
     const opts = []
@@ -356,8 +378,8 @@ export function PriceCheckRoot() {
   const priceIcon = curIcons[currency === 'ex+div' ? 'Exalted Orb' : currency]
 
   return (
-    <div className="py-1">
-      <div className="border border-poe-line w-full max-w-[560px]" style={{ ...PANEL, borderRadius: 2 }}>
+    <div className={compact ? '' : 'py-1'}>
+      <div className={`w-full ${compact ? '' : 'border border-poe-line max-w-[560px]'}`} style={compact ? { borderRadius: 2 } : { ...PANEL, borderRadius: 2 }}>
         {/* Header */}
         <div className="flex items-center justify-between px-3.5 py-2.5">
           <div className="flex items-center gap-2 font-semibold text-poe-text-bright">
@@ -383,8 +405,8 @@ export function PriceCheckRoot() {
             value={raw}
             onChange={(e) => setRaw(e.target.value)}
             placeholder="In-game, hover an item and press Ctrl+C, then paste it here."
-            rows={17}
-            className="mt-2 w-full max-w-[520px] text-[12px] text-poe-text-bright px-2.5 py-2 resize-y leading-snug"
+            rows={compact ? 7 : 17}
+            className={`mt-2 w-full ${compact ? '' : 'max-w-[520px]'} text-[12px] text-poe-text-bright px-2.5 py-2 resize-y leading-snug`}
             style={{ borderRadius: 2, background: 'rgb(var(--c-bg))', border: '1px solid rgb(var(--c-line))' }}
           />
           {item && socketTotal > 0 && (

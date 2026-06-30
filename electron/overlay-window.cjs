@@ -6,10 +6,41 @@
 
 const path = require('node:path')
 const fs = require('node:fs')
-const { BrowserWindow, globalShortcut, shell, app } = require('electron')
+const { BrowserWindow, globalShortcut, shell, app, screen } = require('electron')
 
 let overlayWin = null
 const hotkeys = new Map() // accelerator -> pluginId (so each plugin can have its own toggle key)
+
+// Resting bounds for the overlay: the left edge, vertically centred ("slide in from the left
+// middle"). If the user has moved/resized it before, respect their saved position.
+function targetBounds() {
+  const display = (() => { try { return screen.getDisplayNearestPoint(screen.getCursorScreenPoint()) } catch { return screen.getPrimaryDisplay() } })()
+  const { workArea } = display
+  const saved = loadBounds() || {}
+  const width = Math.max(280, saved.width || 380)
+  const height = Math.max(240, saved.height || 620)
+  const x = Number.isFinite(saved.x) ? saved.x : workArea.x + 12
+  const y = Number.isFinite(saved.y) ? saved.y : workArea.y + Math.round((workArea.height - height) / 2)
+  return { x, y, width, height, workArea }
+}
+
+// Slide + fade a window from a start x to a target x (easeOutCubic, matching the main overlay's
+// motion). Position carries the "slide in"; opacity makes it a soft entrance.
+function slideIn(win, fromX, toX, y, width, height, dur = 240) {
+  if (!win || win.isDestroyed()) return
+  const start = Date.now()
+  try { win.setOpacity(0) } catch {}
+  const tick = setInterval(() => {
+    if (!win || win.isDestroyed()) { clearInterval(tick); return }
+    const t = Math.min(1, (Date.now() - start) / dur)
+    const e = 1 - Math.pow(1 - t, 3)
+    try {
+      win.setBounds({ x: Math.round(fromX + (toX - fromX) * e), y, width, height })
+      win.setOpacity(e)
+    } catch {}
+    if (t >= 1) { clearInterval(tick); try { win.setOpacity(1) } catch {} }
+  }, 12)
+}
 
 const stateFile = () => path.join(app.getPath('userData'), 'overlay-window-state.json')
 function loadBounds() { try { return JSON.parse(fs.readFileSync(stateFile(), 'utf8')) } catch { return null } }
@@ -29,12 +60,12 @@ function openOverlay(urlFor, pluginId) {
     overlayWin.show(); overlayWin.focus()
     return { ok: true, reused: true }
   }
-  const b = loadBounds() || {}
+  const t = targetBounds()
   overlayWin = new BrowserWindow({
-    width: b.width || 400,
-    height: b.height || 600,
-    x: Number.isFinite(b.x) ? b.x : undefined,
-    y: Number.isFinite(b.y) ? b.y : undefined,
+    width: t.width,
+    height: t.height,
+    x: t.x,
+    y: t.y,
     minWidth: 280,
     minHeight: 240,
     frame: false,
@@ -44,6 +75,7 @@ function openOverlay(urlFor, pluginId) {
     fullscreenable: false,
     transparent: true,            // see-through to the game; the renderer paints a slider-controlled scrim
     backgroundColor: '#00000000',
+    opacity: 0,                   // start invisible; slideIn fades it in as it slides
     title: 'Nolvus overlay',
     icon: path.join(__dirname, 'icon.png'),
     webPreferences: { contextIsolation: true, nodeIntegration: false, preload: path.join(__dirname, 'preload.cjs') },
@@ -57,6 +89,13 @@ function openOverlay(urlFor, pluginId) {
   overlayWin.on('move', queueSave)
   overlayWin.on('close', saveBounds)
   overlayWin.on('closed', () => { overlayWin = null })
+  // Slide in from off the left edge to the resting position (or a short nudge if docked elsewhere).
+  const fromLeftEdge = t.x <= t.workArea.x + 120
+  const startX = fromLeftEdge ? (t.workArea.x - t.width) : Math.max(t.workArea.x, t.x - 60)
+  overlayWin.setBounds({ x: Math.round(startX), y: t.y, width: t.width, height: t.height })
+  overlayWin.show()
+  overlayWin.focus()
+  slideIn(overlayWin, startX, t.x, t.y, t.width, t.height, 240)
   return { ok: true }
 }
 
@@ -72,14 +111,16 @@ function toggleOverlay(urlFor, pluginId) {
   return { ok: true, open: true }
 }
 
-// Bind (or rebind) a global hotkey that toggles this plugin's overlay. One accelerator per plugin;
-// passing a falsy accel clears the plugin's hotkey.
-function setOverlayHotkey(urlFor, pluginId, accel) {
+// Bind (or rebind) a global hotkey for this plugin's overlay. One accelerator per plugin; a falsy
+// accel clears it. mode 'toggle' (default) shows/hides; mode 'show' always opens + reloads (so e.g.
+// Price Check re-reads the clipboard and re-checks the item on every press instead of hiding).
+function setOverlayHotkey(urlFor, pluginId, accel, mode = 'toggle') {
   try {
     for (const [a, p] of [...hotkeys]) if (p === pluginId) { globalShortcut.unregister(a); hotkeys.delete(a) }
     if (!accel) return { ok: true }
     if (hotkeys.has(accel)) { globalShortcut.unregister(accel); hotkeys.delete(accel) }
-    const ok = globalShortcut.register(accel, () => toggleOverlay(urlFor, pluginId))
+    const handler = mode === 'show' ? () => openOverlay(urlFor, pluginId) : () => toggleOverlay(urlFor, pluginId)
+    const ok = globalShortcut.register(accel, handler)
     if (ok) hotkeys.set(accel, pluginId)
     return { ok }
   } catch { return { ok: false } }
@@ -92,7 +133,7 @@ function registerOverlayWindow(ipcMain, urlFor) {
   ipcMain.handle('pluginOverlay:close', () => closeOverlay())
   ipcMain.handle('pluginOverlay:toggle', (_e, pluginId) => toggleOverlay(urlFor, pluginId))
   ipcMain.handle('pluginOverlay:isOpen', () => ({ open: isOpen() }))
-  ipcMain.handle('pluginOverlay:setHotkey', (_e, { pluginId, accel } = {}) => setOverlayHotkey(urlFor, pluginId, accel))
+  ipcMain.handle('pluginOverlay:setHotkey', (_e, { pluginId, accel, mode } = {}) => setOverlayHotkey(urlFor, pluginId, accel, mode))
 }
 
 module.exports = { registerOverlayWindow, closeOverlay }

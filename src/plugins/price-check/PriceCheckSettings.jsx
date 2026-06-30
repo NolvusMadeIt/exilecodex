@@ -65,6 +65,20 @@ export function PriceCheckSettings() {
     if (t) setPc({ sessionExpired: false }) // a fresh paste clears the expired warning
   }
 
+  // Overlay window: register the global hotkey (desktop) so pressing it pops the price checker out and
+  // re-reads the clipboard. mode 'show' = always open + re-check (never hide), which fits "copy an
+  // item, press the key, see its price". Armed only in overlay display mode.
+  const overlay = typeof window !== 'undefined' ? window.nolvusOverlay : null
+  useEffect(() => {
+    if (overlay?.setHotkey) overlay.setHotkey('price-check', displayMode === 'overlay' ? hotkey : null, 'show')
+  }, [overlay, hotkey, displayMode])
+  const setMode = (m) => {
+    setPc({ displayMode: m })
+    if (!overlay) return
+    if (m === 'overlay') overlay.open('price-check')
+    else overlay.close()
+  }
+
   const fieldStyle = { borderRadius: 2, background: 'rgb(var(--c-bg))', border: '1px solid rgb(var(--c-line))' }
 
   return (
@@ -135,7 +149,7 @@ export function PriceCheckSettings() {
         <div className="gold-heading text-[14px]">Show price check as</div>
         <div className="inline-flex mt-2 border border-poe-line" style={{ borderRadius: 2 }}>
           {[['page', 'In-app page'], ['overlay', 'Overlay window']].map(([m, label]) => (
-            <button key={m} onClick={() => setPc({ displayMode: m })}
+            <button key={m} onClick={() => setMode(m)}
               className={`text-[12px] px-3 py-1.5 ${displayMode === m ? 'text-poe-gold' : 'text-poe-text/60 hover:text-poe-gold/80'}`}
               style={{ background: displayMode === m ? 'rgb(var(--c-panel-light))' : 'transparent' }}>
               {label}
@@ -145,8 +159,17 @@ export function PriceCheckSettings() {
         <p className="text-[11px] text-poe-text/50 mt-1.5 max-w-[460px]">
           <span className="text-poe-text/80">In-app page</span> keeps it here in the app.{' '}
           <span className="text-poe-text/80">Overlay window</span> pops just the price checker out as a
-          separate always-on-top window over the game, opened with the hotkey below (desktop).
+          separate always-on-top window that slides in from the left, opened with the hotkey below (desktop).
         </p>
+        {isDesktop && overlay?.open && (
+          <div className="flex items-center gap-3 mt-3 flex-wrap">
+            <button onClick={() => setMode('overlay')}
+              className="inline-flex items-center gap-1.5 text-[12px] font-medium text-poe-gold border border-poe-gold/50 hover:bg-poe-gold/10 px-3 py-1.5" style={{ borderRadius: 2 }}>
+              Pop out now
+            </button>
+            <button onClick={() => overlay.close()} className="text-[12px] text-poe-text/60 hover:text-poe-gold/80">Close overlay</button>
+          </div>
+        )}
       </div>
 
       {/* Hotkey */}
