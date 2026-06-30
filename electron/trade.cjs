@@ -7,14 +7,16 @@
 // So:
 //   • We use Electron's Chromium net.request over a PERSISTENT session partition that holds the user's
 //     pathofexile.com cookies (POESESSID + cf_clearance).
-//   • We derive ONE clean Chrome UA from Electron's own bundled Chromium and use it for BOTH the login
-//     window (which earns cf_clearance) and net.request (which spends it). If those two UAs differ,
-//     Cloudflare rejects the cookie and returns 403 — which was a real bug here (the window used the
-//     default Electron UA while net.request sent a hardcoded, mismatched Chrome string).
+//   • We do NOT spoof the User-Agent. Cloudflare's "Verify you are human" challenge LOOPS when the UA
+//     string disagrees with the rest of the browser identity (JS navigator props + Sec-CH-UA client
+//     hints, which still reveal Electron). A clean fake Chrome UA fails this consistency check, so the
+//     interactive solve never sticks. We instead use Electron's OWN native UA for BOTH the login
+//     window (which earns cf_clearance) and net.request (which spends it) — fully consistent, so the
+//     challenge passes and the cf_clearance it issues (bound to that UA) validates on later requests.
 //   • Pasting a POESESSID alone is NOT enough: without cf_clearance Cloudflare 403s every request. The
 //     reliable path is the "Log in" window, which loads /trade2 so the trade path's challenge is
-//     solved and cf_clearance is captured. (This is exactly how Awakened-PoE-Trade / Exiled-Exchange-2
-//     handle it: "click Browser to complete a CAPTCHA".)
+//     solved and cf_clearance is captured. (This is how Awakened-PoE-Trade / Exiled-Exchange-2 do it:
+//     "click Browser to complete a CAPTCHA".)
 //
 // A genuine expired/invalid POESESSID returns a JSON {error:{...}} (401/403); a Cloudflare block is an
 // HTML challenge page (or a cf-mitigated header). classifyResponse() tells them apart so the UI shows
@@ -23,12 +25,6 @@
 const REALM = 'poe2'
 const HOST = 'www.pathofexile.com'
 const PARTITION = 'persist:poe2-trade'
-
-// One canonical Chrome UA, built from the actual bundled Chromium version so it (a) matches the TLS
-// fingerprint Electron presents and (b) is byte-identical for the window that earns cf_clearance and
-// the net.request that uses it. No "Electron"/app tokens — a vanilla Chrome UA.
-const CHROME_VER = (process.versions && process.versions.chrome) || '130.0.0.0'
-const UA = `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${CHROME_VER} Safari/537.36`
 
 // --- pure + testable: classify a trade-API response ---------------------------------------------
 // GGG auth failures arrive as JSON ({error:{code,message}}). A Cloudflare challenge is an HTML page
@@ -52,6 +48,9 @@ function classifyResponse({ status, headers = {}, json = null, text = '' } = {})
 
 // --- electron-bound helpers (lazy require so the module stays unit-test importable) --------------
 const ses = () => require('electron').session.fromPartition(PARTITION)
+// Electron's own native User-Agent for this session. Deliberately NOT spoofed (see header note): we
+// use this exact string for the login window AND net.request so the whole identity is consistent.
+const nativeUA = () => { try { return ses().getUserAgent() } catch { return '' } }
 
 async function cookieNames() {
   const all = await ses().cookies.get({ domain: '.pathofexile.com' }).catch(() => [])
@@ -69,9 +68,10 @@ async function setPoesessid(value) {
 // User-Agent MUST equal the one the login window used to earn cf_clearance (see UA above).
 function netReq(method, urlStr, bodyObj) {
   const { net } = require('electron')
+  const ua = nativeUA()
   return new Promise((resolve) => {
     const r = net.request({ method, url: urlStr, partition: PARTITION, useSessionCookies: true })
-    r.setHeader('User-Agent', UA)
+    if (ua) r.setHeader('User-Agent', ua)
     r.setHeader('Accept', 'application/json')
     r.setHeader('Accept-Language', 'en-US,en;q=0.9')
     r.setHeader('Origin', `https://${HOST}`)
@@ -143,7 +143,8 @@ function login() {
       width: 1024, height: 860, title: 'Path of Exile — sign in & pass the Cloudflare check',
       autoHideMenuBar: true, webPreferences: { partition: PARTITION },
     })
-    win.webContents.setUserAgent(UA)
+    // No setUserAgent() — the window keeps Electron's native, self-consistent identity so Cloudflare's
+    // interactive challenge actually sticks instead of looping.
     let done = false
     const finish = (payload) => {
       if (done) return
@@ -168,7 +169,7 @@ function login() {
       const names = await cookieNames().catch(() => new Set())
       resolve({ ok: names.has('POESESSID'), cancelled: !names.has('POESESSID'), hasClearance: names.has('cf_clearance') })
     })
-    win.loadURL(`https://${HOST}/trade2/search/${REALM}/Standard`, { userAgent: UA })
+    win.loadURL(`https://${HOST}/trade2/search/${REALM}/Standard`)
   })
 }
 
@@ -181,4 +182,4 @@ function registerTrade(ipcMain) {
   })
 }
 
-module.exports = { price, login, registerTrade, classifyResponse, UA }
+module.exports = { price, login, registerTrade, classifyResponse }
