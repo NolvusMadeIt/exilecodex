@@ -4,6 +4,17 @@ export const CHANGELOG = [
   {
     date: '2026-06-29',
     tag: 'Plugins',
+    title: 'Nolvus Filter v0.18.0 — a true plugin manager (install, activate, delete & updates)',
+    body: [
+      'Settings ▸ Plugins is now a full plugin manager, modeled on WordPress. Every plugin has a real lifecycle: install it from the Add New gallery, then activate or deactivate it, and delete it when you’re done — only active plugins appear in the sidebar.',
+      'The new Add New gallery has plugin screenshots, search, and status filters (All / Active / Inactive / Updates). When a newer version of a plugin ships with the app, you get an update notice with a one-click Update.',
+      'The Filter & Build Editor is now a normal, removable plugin too: it’s installed and on by default, but you can deactivate or delete it any time and the app keeps generating and exporting filters without it.',
+      'Cleaner Settings — the General and Plugins tabs are now larger and easier to find.',
+    ],
+  },
+  {
+    date: '2026-06-29',
+    tag: 'Plugins',
     title: 'Nolvus Filter v0.17.0 — Campaign Mode + Speedrun Mode, pop-out overlays & downloadable plugins',
     body: [
       'The Campaign Guide is now Campaign Mode: a zone-by-zone walkthrough with a real layout map for nearly every zone (Acts 1–4 plus the Interlude). Hover any zone name to preview its map, and on desktop it auto-detects the zone you’re in from the game log, follows you as you play, and remembers your Client.txt location.',

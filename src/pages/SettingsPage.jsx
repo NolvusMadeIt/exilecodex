@@ -40,14 +40,19 @@ export function SettingsPage() {
         <p className="text-[12px] text-poe-text mt-1">Theme, filter meta, plugins, and custom comments. These apply across every filter you build.</p>
       </div>
 
-      {/* Settings tabs */}
-      <div className="flex gap-1 justify-center border-b border-poe-line/60">
-        {[['general', 'General'], ['plugins', 'Plugins']].map(([id, label]) => (
-          <button key={id} onClick={() => setTab(id)}
-            className={`px-4 h-8 text-[12.5px] border-b-2 -mb-px ${tab === id ? 'border-poe-gold text-poe-gold' : 'border-transparent text-poe-text hover:text-poe-heading'}`}>
-            {t(label)}
-          </button>
-        ))}
+      {/* Settings tabs — made prominent (larger, bolder, accent underline, more padding). */}
+      <div className="flex gap-2 border-b border-poe-line/60">
+        {[['general', 'General'], ['plugins', 'Plugins']].map(([id, label]) => {
+          const on = tab === id
+          return (
+            <button key={id} onClick={() => setTab(id)}
+              className={`px-5 h-11 text-[15px] font-semibold border-b-2 -mb-px transition-colors ${on
+                ? 'border-poe-gold text-poe-gold bg-poe-gold/[0.06]'
+                : 'border-transparent text-poe-text/80 hover:text-poe-heading hover:bg-poe-text/[0.04]'}`}>
+              {t(label)}
+            </button>
+          )
+        })}
       </div>
 
       {tab === 'plugins' && <PluginsTab />}

@@ -12,8 +12,8 @@ export default {
   author: 'Nolvus',
   category: 'Editing',
   icon: Code2,
-  core: false,            // removable — can be disabled from Settings ▸ Plugins
-  enabledByDefault: true,
+  core: false,            // plugin #1 — installed + active by default, but the user can deactivate
+  enabledByDefault: true, //   or delete it; the app keeps generating/exporting filters without it.
 
   // Rich content for the WordPress-style detail view (Settings ▸ Plugins ▸ this plugin).
   detail: {
