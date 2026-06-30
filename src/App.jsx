@@ -36,6 +36,31 @@ function HostBoundary({ pluginId, Comp }) {
   return <Comp host={host} />
 }
 
+// The browser build is a free preview: optional (non-core) plugins are desktop-app only. You can
+// still see them in Settings ▸ Plugins (description + screenshots), but using them — and downloading
+// the plugin packages — needs the Windows app.
+const IS_DESKTOP = typeof window !== 'undefined' && !!window.nolvusDesktop?.isDesktop
+
+function DesktopOnly({ plugin }) {
+  const Icon = plugin.icon
+  return (
+    <div className="py-8 max-w-[600px]">
+      <div className="panel p-6" style={{ borderRadius: 2 }}>
+        <div className="flex items-center gap-2 gold-heading text-[16px]">{Icon ? <Icon size={18} /> : null} {plugin.name}</div>
+        <p className="text-[13px] text-poe-text mt-2 leading-relaxed">
+          This plugin runs in the <b>desktop app</b>. The browser version is a free preview — install the
+          Windows app to use {plugin.name}, plus the in-game overlay, live game-log tracking and plugin downloads.
+        </p>
+        <p className="text-[12px] text-poe-text/70 mt-2">{plugin.description}</p>
+        <div className="mt-4">
+          <a href="https://github.com/NolvusMadeIt/nolvusfiltereditor/releases/latest" target="_blank" rel="noreferrer"
+            className="btn-dark h-8 text-[12px] inline-flex items-center px-3">Get the desktop app</a>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function Routes() {
   const { path } = useRouter()
   const { enabledPlugins } = usePlugins()
@@ -44,6 +69,7 @@ function Routes() {
   // (Disabled plugins contribute nothing, so their path falls through to NotFound below.)
   const plugin = enabledPlugins.find(p => p.contributes?.route?.path === path)
   if (plugin) {
+    if (!plugin.core && !IS_DESKTOP) return <DesktopOnly plugin={plugin} />
     const route = plugin.contributes.route
     const C = route.component
     return route.host ? <HostBoundary pluginId={plugin.id} Comp={C} /> : <C />
