@@ -50,6 +50,12 @@ export function PriceCheckSettings() {
   const current = leagues.find((l) => l.IsCurrent)?.Value || ''
   const selectedLeague = pc.league || current
 
+  const isDesktop = typeof window !== 'undefined' && !!window.nolvusTrade
+  const doLogin = async () => {
+    if (!window.nolvusTrade?.login) return
+    const r = await window.nolvusTrade.login()
+    if (r?.ok) { setPc({ sessionExpired: false }); setLoggedIn(true) }
+  }
   const setPc = (patch) => update((p) => ({ ...p, pluginSettings: { ...(p.pluginSettings || {}), 'price-check': { ...(p.pluginSettings?.['price-check'] || {}), ...patch } } }))
   const saveSid = (v) => {
     setSid(v)
@@ -74,38 +80,53 @@ export function PriceCheckSettings() {
         </select>
       </div>
 
-      {/* POESESSID */}
+      {/* Trade session */}
       <div>
-        <div className="gold-heading text-[14px]">Trade session (POESESSID)</div>
-        <p className="text-[12px] text-poe-text/70 mt-1 max-w-[460px]">
-          Live prices come from the official trade, pulled from your own machine with your own login
-          session — no developer account or API key needed. It’s stored only on this device.
+        <div className="gold-heading text-[14px]">Trade session</div>
+        <p className="text-[12px] text-poe-text/70 mt-1 max-w-[480px]">
+          Live prices come from the official trade site, pulled from your own machine with your own
+          login session — no developer account or API key needed. Stored only on this device.
         </p>
-        <div className="flex items-center gap-2 mt-2 flex-wrap">
-          <input type="password" value={sid} onChange={(e) => saveSid(e.target.value)} placeholder="POESESSID cookie value"
-            className="w-[320px] text-[12px] text-poe-text-bright px-2.5 py-1.5" style={fieldStyle} />
-          {saved && <span className="text-[11px] text-emerald-400 whitespace-nowrap">✓ Saved</span>}
-        </div>
-        {typeof window !== 'undefined' && window.nolvusTrade?.login && (
-          <div className="mt-2">
-            <button onClick={async () => { const r = await window.nolvusTrade.login(); if (r?.ok) { setPc({ sessionExpired: false }); setLoggedIn(true) } }}
-              className="text-[12px] font-medium text-poe-gold border border-poe-gold/50 hover:bg-poe-gold/10 px-3 py-1.5" style={{ borderRadius: 2 }}>
-              Log in to Path of Exile {loggedIn ? '✓' : '(recommended)'}
+
+        {/* Desktop: logging in is the reliable path — it captures BOTH your login and the Cloudflare
+            clearance the trade site requires. Pasting a POESESSID alone is often Cloudflare-blocked. */}
+        {isDesktop && window.nolvusTrade?.login && (
+          <div className="mt-2.5">
+            <button onClick={doLogin}
+              className="text-[12.5px] font-semibold text-poe-gold border border-poe-gold/60 hover:bg-poe-gold/10 px-3 py-1.5" style={{ borderRadius: 2 }}>
+              {loggedIn ? '✓ Logged in — re-run your price check' : 'Log in to Path of Exile  ·  recommended'}
             </button>
-            <p className="text-[11px] text-poe-text/50 mt-1 max-w-[460px]">Opens a real login window and captures everything Cloudflare needs — the most reliable way. No copy-paste.</p>
+            <p className="text-[11px] text-poe-text/55 mt-1 max-w-[480px]">
+              Opens a real Path of Exile window. Sign in and let the page finish loading — this captures
+              both your login <span className="text-poe-text/75">and the Cloudflare clearance the trade
+              site requires</span>. Pasting a POESESSID alone often gets blocked by Cloudflare, so this
+              is the reliable way.
+            </p>
           </div>
         )}
+
+        <div className="mt-3">
+          <div className="text-[11.5px] text-poe-text/60">{isDesktop ? 'Or paste a POESESSID cookie' : 'Paste your POESESSID cookie'}</div>
+          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+            <input type="password" value={sid} onChange={(e) => saveSid(e.target.value)} placeholder="POESESSID cookie value"
+              className="w-[320px] text-[12px] text-poe-text-bright px-2.5 py-1.5" style={fieldStyle} />
+            {saved && <span className="text-[11px] text-emerald-400 whitespace-nowrap">✓ Saved</span>}
+          </div>
+        </div>
+
         {sessionExpired && (
-          <p className="text-[11.5px] text-red-400 mt-1.5">Your session expired — grab a fresh POESESSID and paste it above.</p>
+          <p className="text-[11.5px] text-red-400 mt-1.5">Your POESESSID is invalid or expired — {isDesktop ? 'log in again above, or paste a fresh one.' : 'paste a fresh one.'}</p>
         )}
         <div className="text-[11px] text-poe-text/55 mt-2 max-w-[480px] leading-relaxed">
-          <div className="text-poe-text/70">How to get it:</div>
+          <div className="text-poe-text/70">How to get a POESESSID:</div>
           <ol className="list-decimal ml-4 mt-0.5 space-y-0.5">
             <li>Log in at pathofexile.com in your browser.</li>
             <li>Open DevTools (F12) → <span className="text-poe-text/70">Application</span> → Cookies → pathofexile.com.</li>
             <li>Copy the value of the <code className="text-poe-text/70">POESESSID</code> cookie and paste it above.</li>
           </ol>
-          <div className="mt-1.5">Sessions expire every so often — if prices stop loading, repeat these steps. In the desktop app you can also just <span className="text-poe-text/70">log in via a window</span> and we capture it for you.</div>
+          <div className="mt-1.5">{isDesktop
+            ? 'If a price check reports a Cloudflare block, use “Log in to Path of Exile” above — it passes the check for you. (A flagged ISP/VPN can also trip Cloudflare.)'
+            : 'The browser version routes through our server, which Cloudflare usually blocks — the desktop app uses your own connection and is far more reliable.'}</div>
         </div>
       </div>
 

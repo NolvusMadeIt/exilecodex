@@ -153,6 +153,7 @@ export function PriceCheckRoot() {
   const market = useMarket?.() || {}
   const { prefs, update } = usePrefs()
   const toast = useToast()
+  const onDesktop = typeof window !== 'undefined' && !!window.nolvusTrade
 
   // Dropdown choices persist in prefs (DB-synced) so they're remembered across sessions.
   const pc = prefs.pluginSettings?.['price-check'] || {}
@@ -248,11 +249,21 @@ export function PriceCheckRoot() {
         ? await window.nolvusTrade.price({ query, league, poesessid })
         : await fetchTradePrice(league, query, poesessid)
 
+      // Cloudflare is gating the request (NOT an expired session). Re-pasting a POESESSID can never
+      // fix this — you need a cf_clearance cookie, which only comes from passing Cloudflare's check in
+      // a real window. So we point the user at the login window instead of the re-paste loop.
+      if (r?.error === 'cloudflare') {
+        setShowSettings(true)
+        setStatus({ kind: 'cloudflare', msg: onDesktop
+          ? 'Cloudflare is checking your connection — a pasted POESESSID isn’t enough. Click “Log in to Path of Exile” once to pass the check, then Check again.'
+          : 'Cloudflare is blocking our server from the trade site. Use the desktop app — it runs the check on your own connection, which Cloudflare allows.' })
+        return
+      }
       if (r?.error === 'auth') {
         setPc({ sessionExpired: true }); setShowSettings(true)
         setStatus({ kind: 'need-auth', msg: onDesktop
-          ? 'Your session expired — paste a fresh POESESSID in settings.'
-          : 'GGG returned 403. Re-paste a fresh POESESSID — and if it still fails, GGG is blocking our server, so use the desktop app (it uses your own connection).' })
+          ? 'Your POESESSID is invalid or expired. The most reliable fix is “Log in to Path of Exile” in settings (it also handles Cloudflare); or paste a fresh POESESSID.'
+          : 'Your POESESSID is invalid or expired — paste a fresh one. If it still fails, GGG is blocking our server, so use the desktop app (it uses your own connection).' })
         return
       }
       if (r?.error === 'rate') { setStatus({ kind: 'error', msg: `Rate-limited by GGG — try again in ${r.retryAfter || 60}s.` }); return }
@@ -270,6 +281,21 @@ export function PriceCheckRoot() {
       setStatus({ kind: 'error', msg: 'Something went wrong pulling prices.' })
     } finally {
       setChecking(false)
+    }
+  }
+
+  // Open the PoE login window (captures POESESSID + the cf_clearance Cloudflare needs), then retry the
+  // price check automatically. This — not re-pasting a POESESSID — is what actually clears a Cloudflare
+  // block, so it's the primary action we offer on a 'cloudflare'/'need-auth' status.
+  const loginAndRetry = async () => {
+    if (!window.nolvusTrade?.login) return
+    setStatus({ kind: 'loading', msg: 'Opening Path of Exile — sign in and let the page finish loading…' })
+    try {
+      const r = await window.nolvusTrade.login()
+      if (r?.ok) { setPc({ sessionExpired: false }); checkPrice() }
+      else setStatus({ kind: 'error', msg: 'The login window closed before we captured your session. Try again.' })
+    } catch {
+      setStatus({ kind: 'error', msg: 'Couldn’t open the login window.' })
     }
   }
 
@@ -461,8 +487,11 @@ export function PriceCheckRoot() {
                 </button>
               </div>
               {status && (
-                <div className="text-[11.5px] text-poe-text/70 mt-2 max-w-[480px]">
+                <div className={`text-[11.5px] mt-2 max-w-[480px] ${status.kind === 'cloudflare' ? 'text-amber-300' : 'text-poe-text/70'}`}>
                   {status.msg}
+                  {(status.kind === 'cloudflare' || status.kind === 'need-auth') && onDesktop && window.nolvusTrade?.login && (
+                    <button onClick={loginAndRetry} className="ml-1.5 font-medium text-poe-gold hover:underline">Log in to Path of Exile</button>
+                  )}
                   {status.kind === 'need-auth' && (
                     <button onClick={() => setShowSettings(true)} className="ml-1.5 text-poe-gold hover:underline">Open settings</button>
                   )}
