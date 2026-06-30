@@ -55,9 +55,11 @@ function StatusPill({ enabled }) {
   )
 }
 
-// Active/Inactive control. Core plugins can't be turned off, so they show a lock instead.
+// Active/Inactive control. Core plugins are locked on; desktop-only plugins can't be activated in the
+// browser preview (you need to install the desktop app), so they show a lock there too.
 function EnableControl({ p, onToggle }) {
   if (p.core) return <span className="inline-flex items-center gap-1 text-[11px] text-poe-text/60"><Lock size={12} /> Always on</span>
+  if (p.desktopOnly && !IS_DESKTOP) return <span title="Install the desktop app to activate this plugin" className="inline-flex items-center gap-1 text-[11px] text-poe-text/45"><Lock size={12} /> Desktop only</span>
   return <Toggle checked={p.enabled} onChange={onToggle} />
 }
 
@@ -233,8 +235,9 @@ export function PluginsTab() {
   return (
     <div className="space-y-4">
       <p className="text-[12px] text-poe-text">
-        Plugins are optional add-ons. Turn one off and it disappears from the app — the rest keeps working exactly as before.
-        Each one can be <span className="text-poe-text-bright">downloaded as a package</span> to back up or share.
+        Plugins are optional add-ons — <span className="text-poe-text-bright">off until you activate them</span>. Activate one and it
+        appears in the sidebar; turn it off and it disappears. The desktop-only plugins (Market, Price Check, Campaign Mode) need the
+        Windows app to activate or download — in the browser you can still read their details below.
       </p>
 
       <div className="space-y-2">

@@ -15,7 +15,8 @@ export default {
   category: 'Market',
   icon: TrendingUp,
   core: false,
-  enabledByDefault: true,
+  enabledByDefault: false, // opt-in: stays out of the nav until you activate it
+  desktopOnly: true,       // live market runs from the desktop app
   detail: {
     longDescription:
       'The PoE2 Marketplace Companion, now a plugin. Track live currency prices for the current league — '

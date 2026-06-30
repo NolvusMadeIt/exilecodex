@@ -15,7 +15,8 @@ export default {
   category: 'Market',
   icon: Coins,
   core: false,
-  enabledByDefault: true,
+  enabledByDefault: false, // opt-in: stays out of the nav until you activate it
+  desktopOnly: true,       // live trade runs from the desktop app
   detail: {
     longDescription:
       'Price-check any Path of Exile 2 item the way Exiled Exchange 2 does. Paste a copied item and it '

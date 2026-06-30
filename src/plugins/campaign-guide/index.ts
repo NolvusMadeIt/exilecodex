@@ -17,7 +17,8 @@ export default {
   category: 'Leveling',
   icon: Compass,
   core: false,
-  enabledByDefault: true,
+  enabledByDefault: false, // opt-in: stays out of the nav until you activate it
+  desktopOnly: true,       // browser build shows a preview; live features run in the desktop app
   detail: {
     longDescription:
       'A two-mode PoE2 leveling companion. CAMPAIGN MODE is the full guide: pick an act and a zone and the '
