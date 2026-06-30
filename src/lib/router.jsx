@@ -10,15 +10,20 @@ function currentPath(fallback) {
   return h || fallback || '/presets'
 }
 
+// On the web the bare domain (no hash) opens the marketing home; the desktop app opens straight to
+// the last tab / the editor. Everything else is reachable at #/<route> either way.
+const IS_DESKTOP = typeof window !== 'undefined' && !!window.nolvusDesktop?.isDesktop
+const defaultRoute = (prefs) => (IS_DESKTOP ? (prefs.lastRoute || '/presets') : '/home')
+
 export function RouterProvider({ children }) {
   const { prefs, update } = usePrefs()
   // Restore the last tab on a fresh load (QoL), but never override a deep link in the URL.
-  const [path, setPath] = useState(() => currentPath(prefs.lastRoute))
+  const [path, setPath] = useState(() => currentPath(defaultRoute(prefs)))
 
   useEffect(() => {
-    const onHash = () => setPath(currentPath(prefs.lastRoute))
+    const onHash = () => setPath(currentPath(defaultRoute(prefs)))
     window.addEventListener('hashchange', onHash)
-    if (!window.location.hash) window.location.hash = prefs.lastRoute || '/presets'
+    if (!window.location.hash) window.location.hash = defaultRoute(prefs)
     return () => window.removeEventListener('hashchange', onHash)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -27,7 +32,7 @@ export function RouterProvider({ children }) {
   // prefs.lastRoute so it re-corrects if the Supabase prefs-pull merges a stale value back in.
   useEffect(() => {
     // Never remember the pop-out overlay route as the main app's last tab (it's a separate window).
-    if (path && path !== prefs.lastRoute && !path.startsWith('/overlay/')) update({ lastRoute: path })
+    if (path && path !== prefs.lastRoute && path !== '/home' && !path.startsWith('/overlay/')) update({ lastRoute: path })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path, prefs.lastRoute])
 
