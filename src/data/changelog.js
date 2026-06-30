@@ -4,6 +4,16 @@ export const CHANGELOG = [
   {
     date: '2026-06-29',
     tag: 'Plugins',
+    title: 'Nolvus Filter v0.18.1 — Price Check live prices fixed + a working pop-out overlay',
+    body: [
+      'Price Check now reliably pulls live trade prices on desktop. The official trade site sits behind Cloudflare, which needs a one-time “Verify you are human” pass — the “Log in to Path of Exile” button now opens a real window that handles both your sign-in and the Cloudflare check in one go, so a pasted POESESSID alone is no longer required.',
+      'Fixed the endless “your session expired” loop: the app no longer mistakes a Cloudflare block for an expired login, and it tells the two apart so you get the right fix instead of being asked to re-paste your POESESSID forever.',
+      'The Price Check pop-out overlay now actually opens on its hotkey (it never registered before): press it to slide the price checker in from the left over the game — it reads your copied item and prices it instantly. Press again to re-check the next item.',
+    ],
+  },
+  {
+    date: '2026-06-29',
+    tag: 'Plugins',
     title: 'Nolvus Filter v0.18.0 — a true plugin manager (install, activate, delete & updates)',
     body: [
       'Settings ▸ Plugins is now a full plugin manager, modeled on WordPress. Every plugin has a real lifecycle: install it from the Add New gallery, then activate or deactivate it, and delete it when you’re done — only active plugins appear in the sidebar.',

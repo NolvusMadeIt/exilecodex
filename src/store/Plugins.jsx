@@ -3,7 +3,7 @@ import { usePrefs } from './Prefs.jsx'
 import { useMarket } from './Market.jsx'
 import { BUILTIN_PLUGINS } from '../plugins/registry.js'
 
-const APP = { name: "Nolvus's Filter", version: '0.18.0' }
+const APP = { name: "Nolvus's Filter", version: '0.18.1' }
 
 // Plugin core — a WordPress-style lifecycle. Each plugin has three states, persisted in
 // prefs.plugins[id] (so it rides the existing Supabase prefs sync):
