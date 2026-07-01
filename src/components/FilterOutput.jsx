@@ -1,10 +1,9 @@
-import React, { useMemo, useState } from 'react'
-import { ChevronDown, ChevronRight, Pencil, Check, X } from 'lucide-react'
+import React, { useMemo } from 'react'
+import { X } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { usePrefs } from '../store/Prefs.jsx'
 import { useGameInfo } from '../store/GameInfo.jsx'
-import { generateFilter } from '../lib/generate.js'
-import { parseFilterText } from '../lib/parseFilter.js'
+import { useFilterText } from '../lib/useFilterText.js'
 
 // --- Simple elegant syntax highlighter for PoE .filter syntax ---
 const ACTION_WORDS = new Set(['Show', 'Hide', 'Minimal', 'Continue'])
@@ -83,122 +82,55 @@ function renderHighlighted(text) {
   })
 }
 
-// Format a date+time stamp like "2026-06-13 17:42 UTC" — readable and unambiguous.
-function stampNow() {
-  const d = new Date()
-  const pad = (n) => String(n).padStart(2, '0')
-  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`
-}
+// Heavy output gets a plain <pre> by default (one text node — cheap). Syntax highlighting splits
+// the whole filter into thousands of nodes, so it's only used for short outputs / when on.
+const HIGHLIGHT_LINE_CAP = 1500
 
-export function FilterOutput() {
-  const { active, importCustomRules } = useFilter()
+export function FilterOutput({ onClose }) {
+  const { active, clearManualFilter } = useFilter()
   const { prefs } = usePrefs()
   const gameInfo = useGameInfo()
-  const [open, setOpen] = useState(true)
-  const [editing, setEditing] = useState(false)
-  const [draft, setDraft] = useState('')
+  const isManual = typeof active.manualFilter === 'string'
 
-  // Memoize on active+prefs+gameInfo. Stamp date+time at memo time so the header line is
-  // stable per-edit (not rewriting every keystroke).
-  const text = useMemo(() => {
-    return generateFilter(active, {
-      ...prefs,
-      gameVersion: gameInfo.gameVersion,
-      gameVersionLabel: gameInfo.gameVersionLabel,
-      _generatedAt: stampNow(),
-    })
-  }, [active, prefs, gameInfo])
+  // This component only mounts when the panel is shown, so the (debounced) build runs only then.
+  const { text, loading, error } = useFilterText(active, { gameInfo, prefs })
 
-  const lineCount = text.split('\n').length
-  const displayCount = editing ? draft.split('\n').length : lineCount
-
-  const syntaxOn = prefs.syntaxHighlight !== false
-
-  const handleStartEdit = (e) => {
-    e.stopPropagation()
-    setDraft(text)
-    setEditing(true)
-    setOpen(true)
-  }
-
-  const handleSave = (e) => {
-    e.stopPropagation()
-    if (!draft.trim()) {
-      setEditing(false)
-      return
-    }
-    try {
-      const parsed = parseFilterText(draft)
-      importCustomRules({
-        customRules: parsed.customRules || [],
-        freeTextTop: parsed.freeTextTop || '',
-        freeTextBottom: parsed.freeTextBottom || '',
-        meta: parsed.meta || {},
-      })
-    } catch (err) {
-      console.warn('Failed to parse manual filter edits', err)
-    }
-    setEditing(false)
-  }
-
-  const handleCancel = (e) => {
-    e.stopPropagation()
-    setEditing(false)
-  }
+  const lineCount = text ? text.split('\n').length : 0
+  const syntaxOn = prefs.syntaxHighlight !== false && lineCount <= HIGHLIGHT_LINE_CAP
+  // Memoized so re-renders (tab switches, hovers) never re-tokenize the whole filter.
+  const highlighted = useMemo(() => (syntaxOn ? renderHighlighted(text) : null), [text, syntaxOn])
 
   return (
     <section className="flex w-full flex-1 min-h-0 flex-col">
       <div className="section-bar w-full flex items-center gap-2">
-        <button onClick={() => setOpen(o => !o)} className="flex items-center gap-2 flex-1 min-w-0 justify-center hover:opacity-90">
-          {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />} Filter Output
-          <span className="text-[11px] text-poe-text">({displayCount} lines)</span>
-        </button>
-        <div className="flex items-center gap-1 pr-1">
-          {!editing ? (
-            <button
-              onClick={handleStartEdit}
-              title="Edit the filter output manually"
-              className="p-1 rounded hover:bg-white/10 text-poe-text-bright/70 hover:text-poe-text-bright transition-colors"
-            >
-              <Pencil size={13} />
-            </button>
-          ) : (
-            <>
-              <button
-                onClick={handleSave}
-                title="Save manual changes (updates the app filter)"
-                className="p-1 rounded hover:bg-white/10 text-poe-text-bright/70 hover:text-poe-text-bright transition-colors"
-              >
-                <Check size={13} />
-              </button>
-              <button
-                onClick={handleCancel}
-                title="Cancel editing"
-                className="p-1 rounded hover:bg-white/10 text-poe-text-bright/70 hover:text-poe-text-bright transition-colors"
-              >
-                <X size={13} />
-              </button>
-            </>
+        <span className="flex items-center gap-2 flex-1 min-w-0 justify-center">
+          Filter Output
+          <span className="text-[11px] text-poe-text">({loading ? 'building…' : `${lineCount} lines`})</span>
+          {isManual && (
+            <span className="inline-flex items-center gap-1.5 text-[10.5px] text-poe-gold" title="Showing your manually-edited filter — builder changes won't apply until you switch back to live.">
+              · Manual
+              <button onClick={clearManualFilter} className="underline underline-offset-2 hover:text-poe-heading">Use live</button>
+            </span>
           )}
-        </div>
+        </span>
+        {onClose && (
+          <button onClick={onClose} title="Hide output" className="p-1 rounded hover:bg-white/10 text-poe-text/70 hover:text-poe-text-bright">
+            <X size={14} />
+          </button>
+        )}
       </div>
-      {open && (
-        editing ? (
-          <textarea
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] leading-relaxed text-poe-text-bright overflow-auto whitespace-pre-wrap focus:outline-none focus:border-poe-gold-dim border border-poe-line/50"
-            spellCheck={false}
-          />
-        ) : syntaxOn ? (
-          <div className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] leading-relaxed text-poe-text-bright overflow-auto">
-            {renderHighlighted(text)}
-          </div>
-        ) : (
-          <pre className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] leading-relaxed text-poe-text-bright overflow-auto whitespace-pre-wrap">
-            {text}
-          </pre>
-        )
+      {error ? (
+        <div className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] text-poe-danger overflow-auto whitespace-pre-wrap">
+          Couldn’t build the filter: {error.message}
+        </div>
+      ) : highlighted ? (
+        <div className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] leading-relaxed text-poe-text-bright overflow-auto">
+          {highlighted}
+        </div>
+      ) : (
+        <pre className="mt-2 flex-1 min-h-0 panel p-3 font-mono text-[11px] leading-relaxed text-poe-text-bright overflow-auto whitespace-pre-wrap">
+          {text}
+        </pre>
       )}
     </section>
   )

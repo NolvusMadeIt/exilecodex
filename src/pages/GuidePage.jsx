@@ -1,9 +1,10 @@
 import React from 'react'
-import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Check, Volume2, ChevronDown } from 'lucide-react'
+import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Check, Volume2, ChevronDown, Users, Download, Clipboard, FolderInput, FilePlus2, Upload, Code2, EyeOff } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
+import { usePlugins } from '../store/Plugins.jsx'
 import { ItemLabel } from '../components/ItemLabel.jsx'
 import { ItemIcon } from '../components/primitives.jsx'
-import { IMG } from '../data/presets.js'
+import { asset } from '../data/assets.js'
 import { CATEGORY_ICON } from '../data/items.js'
 
 // ---------- small reusable mock pieces (built from real styles, not screenshots) ----------
@@ -18,53 +19,71 @@ const MockCheck = ({ on, label }) => (
     <span className={on ? 'text-poe-text-bright' : 'text-poe-text'}>{label}</span>
   </span>
 )
-const cur = (slug) => `${IMG}/gear/${slug}`
+const cur = (slug) => asset(`gear/${slug}`)
 
 // ---------- per-tab guide content ----------
 const GUIDE = [
   {
     id: 'presets', to: '/presets', icon: Star, title: 'Presets', tag: 'Start here',
-    what: 'The fastest way to a working filter. Tell it your class and where you are in the game, and it sets sensible defaults across every other tab.',
+    what: 'Your starting point. Begin from a blank slate, import a filter you already have, or — the fast path — pick your class and game stage and it sets sensible defaults across every other tab.',
     steps: [
+      'Start your filter: choose Blank, Import an existing .filter / .json, or use a preset below.',
       'Pick your class so the filter shows your weapon & armour types.',
-      'Choose your game stage (Campaign → Very Late Endgame).',
-      'Toggle the endgame content you actually run.',
+      'Choose your game stage (Campaign → Very Late Endgame), then toggle the endgame content you run.',
     ],
     visual: (
       <div className="space-y-2">
         <div className="flex gap-2">
           {['presetEarlyCampaign1', 'presetProgressingMaps70', 'presetVeryStrict95'].map(p => (
-            <img key={p} src={`${IMG}/presets/${p}.webp`} className="w-16 h-16 rounded border border-poe-line object-cover" alt="" />
+            <img key={p} src={asset(`presets/${p}.webp`)} className="w-16 h-16 rounded border border-poe-line object-cover" alt="" />
           ))}
         </div>
         <div className="flex gap-1.5">
           {['warrior', 'witch', 'ranger', 'monk'].map(c => (
-            <img key={c} src={`${IMG}/presets/${c}.webp`} className="w-10 h-10 rounded border border-poe-line object-cover" alt="" />
+            <img key={c} src={asset(`presets/${c}.webp`)} className="w-10 h-10 rounded border border-poe-line object-cover" alt="" />
           ))}
         </div>
       </div>
     ),
   },
   {
-    id: 'quick', to: '/quick-filters', icon: SlidersHorizontal, title: 'Quick Filters', tag: 'Fine-tune',
-    what: 'Adjust what shows and hides without typing any syntax. Related options are grouped into dropdowns — pick from lists instead of guessing.',
+    id: 'quick', to: '/quick-editor', icon: SlidersHorizontal, title: 'Quick Editor', tag: 'Fine-tune',
+    what: 'The show-and-highlight control centre. Tune leveling, currency, uniques, your equipment and crafting bases across organised categories — then send everything you want gone to one dedicated Hide category. Every row layers a real rule on top of your preset and wins in-game.',
     steps: [
-      'Expand a section (or use Expand all).',
-      'Use the dropdowns to choose which item types to show.',
-      'Set the "Show Equipment ≥" rarity to hide low-rarity clutter.',
+      'Turn on what you want to see — Campaign leveling, Valuable Uniques, Crafting Bases and more.',
+      'Pick your Weapon / Armour / Jewellery / Jewel types under My Equipment so off-build gear drops away.',
+      'Send anything you don’t want to the Hide category — currency, flasks, leftover jewellery by rarity — all in one place.',
+      'Need something specific? Add a hide or highlight rule at the bottom, matched by class, base type, rarity or item level.',
     ],
     visual: (
       <div className="panel p-2 w-full max-w-[300px] space-y-1.5">
-        <div className="gold-heading text-[12px]">Currency</div>
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-[11px] text-poe-text-bright">Show Currency Types</span>
-          <MockField w={110}>3 selected</MockField>
+        <div className="gold-heading text-[12px] flex items-center gap-1.5"><EyeOff size={12} /> Hide</div>
+        <div className="rounded border border-poe-line p-1.5 space-y-1.5" style={{ backgroundColor: '#000' }}>
+          <div className="text-[10px] uppercase tracking-wide text-poe-text/60">Currency &amp; Gems</div>
+          <MockCheck on label="Scrolls of Wisdom" />
+          <MockCheck on label="Regular Runes" />
+          <div className="flex items-center justify-between gap-2 pt-0.5">
+            <span className="text-[11px] text-poe-text-bright">Jewels</span>
+            <MockField w={110}>≤ Magic</MockField>
+          </div>
         </div>
-        <div className="rounded border border-poe-line p-1.5 space-y-1" style={{ backgroundColor: '#000' }}>
-          <MockCheck on label="Currency Shards" />
-          <MockCheck on label="Catalysts" />
-          <MockCheck label="Omens" />
-        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'editor', to: '/editor', icon: Code2, title: 'Editor', tag: 'Advanced',
+    what: 'Edit your filter directly in a full code editor — syntax highlighting plus smart autocomplete for filter keywords, values and real item names. Your manual edits become the exported filter, with one click to drop them and go back to the builder.',
+    steps: [
+      'Type and edit the filter like a code editor; press Ctrl+Space to bring up suggestions.',
+      'Use the toolbar for word-wrap, minimap, line numbers, font size and editor size — the cog opens more options.',
+      'Manual edits override the builder for every export; hit “Regenerate from builder” to clear them.',
+    ],
+    visual: (
+      <div className="panel p-2.5 w-full max-w-[320px] font-mono text-[11px] leading-relaxed" style={{ backgroundColor: '#0c0c0c' }}>
+        <div><span style={{ color: '#56a2e0' }}>Show</span> <span className="text-poe-text/50"># Mirror of Kalandra</span></div>
+        <div className="pl-3"><span style={{ color: '#e6d24a' }}>BaseType</span> == <span style={{ color: '#9cc98a' }}>"Mirror of Kalandra"</span></div>
+        <div className="pl-3"><span style={{ color: '#e6d24a' }}>PlayEffect</span> <span style={{ color: '#e0902a' }}>Purple</span></div>
+        <div><span style={{ color: '#e04040' }}>Hide</span> <span className="text-poe-text/50"># clutter</span></div>
       </div>
     ),
   },
@@ -84,7 +103,7 @@ const GUIDE = [
             <div className="flex-1 flex flex-wrap gap-1 p-1.5">
               {icons.map(i => (
                 <span key={i} className="inline-flex items-center gap-1 bg-black border border-poe-line rounded px-1.5 py-0.5 text-[10px]">
-                  <ItemIcon src={`${IMG}/gear/${i}`} size={14} /> item
+                  <ItemIcon src={asset(`gear/${i}`)} size={14} /> item
                 </span>
               ))}
             </div>
@@ -146,21 +165,50 @@ const GUIDE = [
       </div>
     ),
   },
+  {
+    id: 'community', to: '/community', icon: Users, title: 'Community Filters', tag: 'Share',
+    what: "Share the filter you've built, or grab one from another exile. Publish your current filter (with its editable settings so others can load it), or paste / upload a raw .filter — drag-and-drop works too.",
+    steps: [
+      'Share your current filter, or switch to “Paste / upload” to drop in a .filter file or paste its text.',
+      'Add a filter name, your name, and a short description — all three are required.',
+      'Browse what others shared: Download the .filter, Copy it, or Load it straight into the editor.',
+    ],
+    visual: (
+      <div className="panel p-3 w-full max-w-[320px]">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <div className="text-poe-text-bright text-[13px] font-medium truncate">Endgame Strict</div>
+            <div className="text-[11px] text-poe-text/70">by Exile · Path of Exile 2</div>
+          </div>
+          <span className="inline-flex items-center gap-1 text-[11px] text-poe-text/70"><Download size={12} /> 42</span>
+        </div>
+        <p className="text-[11.5px] text-poe-text mt-1.5">Tuned for very late maps — hides clutter, highlights chase items.</p>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          <span className="btn-dark h-7 text-[11px]"><Download size={12} /> Download</span>
+          <span className="btn-dark h-7 text-[11px]"><Clipboard size={12} /> Copy</span>
+          <span className="btn-dark h-7 text-[11px]"><FolderInput size={12} /> Load</span>
+        </div>
+      </div>
+    ),
+  },
 ]
 
 export function GuidePage() {
   const { navigate } = useRouter()
+  const { isEnabled } = usePlugins()
+  // The Editor is a plugin — only show its guide card while that plugin is enabled.
+  const guide = GUIDE.filter(g => g.id !== 'editor' || isEnabled('filter-editor'))
   return (
     <div className="space-y-6">
       <header className="text-center">
         <h1 className="gold-heading text-[22px]">How to Use Nolvus's Filter</h1>
-        <p className="text-[12.5px] text-poe-text mt-1 max-w-[680px] mx-auto">
-          New here? Each tab does one job. Work left to right: start with a <span className="text-poe-text-bright">Preset</span>, fine-tune in <span className="text-poe-text-bright">Quick Filters</span>, then <span className="text-poe-text-bright">Preview</span> and save. Here's what each tab is for.
+        <p className="text-[12.5px] text-poe-text mt-1 max-w-[700px] mx-auto">
+          New here? Each tab does one job. On <span className="text-poe-text-bright">Presets</span> you start blank, import an existing filter, or pick a preset — then fine-tune in the <span className="text-poe-text-bright">Quick Editor</span>, <span className="text-poe-text-bright">Preview</span>, and save. You can also share or grab filters on the <span className="text-poe-text-bright">Community</span> page. Here's what each tab is for.
         </p>
       </header>
 
       <ol className="space-y-4">
-        {GUIDE.map((g, i) => {
+        {guide.map((g, i) => {
           const Icon = g.icon
           return (
             <li key={g.id} className="panel p-4">
@@ -194,10 +242,14 @@ export function GuidePage() {
         })}
       </ol>
 
-      <div className="panel p-4 text-center">
+      <div className="panel p-4 space-y-2.5 text-center">
         <p className="text-[12.5px] text-poe-text">
-          When you're done, the bottom bar saves your filter: <span className="text-poe-text-bright">Save to new file</span> downloads a <code className="font-mono">.filter</code> for your
-          <span className="text-poe-text-bright"> Documents\My Games\Path of Exile 2</span> folder. The legend <span className="text-poe-gold">(?)</span> in the top-right explains every symbol.
+          <span className="inline-flex items-center gap-1 text-poe-text-bright"><FilePlus2 size={13} className="text-poe-gold" /> Save to new file</span> (top bar) downloads a <code className="font-mono">.filter</code> for your
+          <span className="text-poe-text-bright"> Documents\My Games\Path of Exile 2</span> folder, bumping the version each time.
+          <span className="inline-flex items-center gap-1 text-poe-text-bright ml-1"><Upload size={13} className="text-poe-gold" /> Import</span> loads an existing <code className="font-mono">.filter</code> or <code className="font-mono">.json</code> back in — or open one for editing to overwrite it later.
+        </p>
+        <p className="text-[12px] text-poe-text/85">
+          Use the filter name up top to keep several filters and switch between them (<span className="text-poe-text-bright">Create New</span> offers the same blank / preset / import start). Pick your look — theme, typeface and text size — in <span className="text-poe-text-bright">Settings</span>. The legend <span className="text-poe-gold">(?)</span> in the top-right explains every symbol.
         </p>
       </div>
     </div>

@@ -1,0 +1,45 @@
+name: Release
+
+# Builds the Windows installer and publishes it (with latest.yml) to the PUBLIC releases repo
+# so the in-app auto-updater can find it. The code repo stays private.
+#
+# Trigger: push a version tag, e.g.
+#     git tag v0.11.2 && git push origin v0.11.2
+# (make sure package.json "version" matches the tag, minus the leading "v").
+# You can also run it manually from the Actions tab (workflow_dispatch).
+#
+# Requires a repo secret named RELEASES_TOKEN: a Personal Access Token with write access to
+# NolvusMadeIt/nolvusfilter-releases (fine-grained: that repo + Contents: Read and write,
+# or a classic token with the "repo" scope). electron-builder publishes using GH_TOKEN.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web bundle
+        run: npm run build
+
+      - name: Build installer & publish to the releases repo
+        env:
+          GH_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+        run: npx electron-builder --win --publish always

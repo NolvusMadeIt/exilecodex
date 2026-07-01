@@ -21,6 +21,16 @@ export const DEFAULT_TIER_CURRENCY = {
   E: ['Orb of Transmutation', 'Scroll of Wisdom', 'Regal Shard', 'Transmutation Shard'],
 }
 
+// Starting UNIQUE tiers — a small curated set of well-known valuable PoE2 uniques, so the Uniques
+// Tier List auto-seeds with sensible tiers instead of dumping everything in E. On output each is
+// resolved to its base type + `Rarity Unique` (PoE2 can't match a unique by name); users re-tier on
+// the Tier List page and their moves always win. Names must exist in uniques-data.json.
+export const DEFAULT_TIER_UNIQUES = {
+  S: ['Original Sin', 'The Adorned', 'Temporalis', 'Ingenuity'],
+  A: ['Ghostwrithe', 'Morior Invictus', "Olroth's Resolve", "Doryani's Prototype"],
+  B: ['Pillar of the Caged God', 'The Three Dragons'],
+}
+
 export const BEAM_COLORS = ['White', 'Yellow', 'Orange', 'Red', 'Purple', 'Brown', 'Cyan', 'Green', 'Blue', 'Pink', 'Grey']
 export const MINIMAP_SHAPES = ['Circle', 'Diamond', 'Hexagon', 'Square', 'Star', 'Triangle', 'Cross', 'Moon', 'Raindrop', 'Kite', 'Pentagon', 'UpsideDownHouse']
 

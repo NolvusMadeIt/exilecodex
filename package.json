@@ -1,7 +1,7 @@
 {
   "name": "nolvusfilter",
   "private": true,
-  "version": "0.7.2",
+  "version": "0.18.1",
   "type": "module",
   "description": "Visual loot-filter editor for Path of Exile 2.",
   "author": "Nolvus",
@@ -13,6 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "electron": "electron .",
+    "landing": "vite landing --port 4321",
+    "make:icon": "electron scripts/make-ico.cjs",
     "dist:win": "npm run build && electron-builder --win"
   },
   "dependencies": {
@@ -20,12 +22,21 @@
     "@emotion/styled": "^11.14.1",
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource-variable/sora": "^5.2.8",
+    "@fontsource/cinzel": "^5.2.8",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
     "@fontsource/poppins": "^5.2.7",
+    "@fontsource/spline-sans": "^5.2.8",
     "@mui/material": "^9.1.1",
+    "@supabase/supabase-js": "^2.108.1",
+    "@tanstack/react-query": "^5.101.2",
     "@vercel/analytics": "^2.0.1",
+    "electron-updater": "^6.8.9",
+    "lightweight-charts": "^5.2.0",
     "lucide-react": "^0.453.0",
+    "monaco-editor": "^0.52.2",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.2",
@@ -46,6 +57,13 @@
     "appId": "com.nolvus.filter",
     "productName": "Nolvus's Filter",
     "executableName": "NolvusFilter",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "NolvusMadeIt",
+        "repo": "nolvusfilter-releases"
+      }
+    ],
     "directories": {
       "output": "release"
     },
@@ -55,6 +73,7 @@
       "package.json"
     ],
     "win": {
+      "icon": "build/icon.ico",
       "target": [
         "nsis",
         "portable"
@@ -66,6 +85,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "shortcutName": "Nolvus's Filter",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
       "artifactName": "NolvusFilter-Setup-${version}.${ext}"
     },
     "portable": {

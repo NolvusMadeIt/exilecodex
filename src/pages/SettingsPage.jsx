@@ -1,10 +1,14 @@
-import React from 'react'
-import { Lock } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { Lock, RefreshCw } from 'lucide-react'
 import { usePrefs, THEMES } from '../store/Prefs.jsx'
 import { useGameInfo } from '../store/GameInfo.jsx'
 import { useFilter } from '../store/FilterStore.jsx'
 import { Help, Toggle } from '../components/primitives.jsx'
 import { SimpleSelect } from '../components/SimpleSelect.jsx'
+import { OverlaySettings } from '../components/OverlaySettings.jsx'
+import { PluginsTab } from './PluginsTab.jsx'
+import { desktopApi } from '../lib/desktop.js'
+import { useT } from '../i18n/index.js'
 
 const SOURCE_LABEL = { default: 'fallback', bundled: 'bundled with app' }
 
@@ -12,17 +16,68 @@ export function SettingsPage() {
   const { prefs, update } = usePrefs()
   const gameInfo = useGameInfo()
   const { active } = useFilter()
+  const t = useT()
+  const [tab, setTab] = useState('general')
+
+  // Desktop-only: current app version + a manual update check (results show as a dialog / the
+  // bottom-left banner, handled in the main process).
+  const [appVersion, setAppVersion] = useState('')
+  const [checking, setChecking] = useState(false)
+  useEffect(() => {
+    if (desktopApi?.getVersion) desktopApi.getVersion().then(setAppVersion).catch(() => {})
+  }, [])
+  const checkUpdates = () => {
+    if (!desktopApi?.checkForUpdate) return
+    setChecking(true)
+    desktopApi.checkForUpdate()
+    setTimeout(() => setChecking(false), 4000)
+  }
 
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="gold-heading text-[22px]">Settings</h1>
-        <p className="text-[12px] text-poe-text mt-1">Theme, filter meta, and custom comments. These apply across every filter you build.</p>
+        <h1 className="gold-heading text-[22px]">{t('Settings')}</h1>
+        <p className="text-[12px] text-poe-text mt-1">Theme, filter meta, plugins, and custom comments. These apply across every filter you build.</p>
       </div>
+
+      {/* Settings tabs — made prominent (larger, bolder, accent underline, more padding). */}
+      <div className="flex gap-2 border-b border-poe-line/60">
+        {[['general', 'General'], ['plugins', 'Plugins']].map(([id, label]) => {
+          const on = tab === id
+          return (
+            <button key={id} onClick={() => setTab(id)}
+              className={`px-5 h-11 text-[15px] font-semibold border-b-2 -mb-px transition-colors ${on
+                ? 'border-poe-gold text-poe-gold bg-poe-gold/[0.06]'
+                : 'border-transparent text-poe-text/80 hover:text-poe-heading hover:bg-poe-text/[0.04]'}`}>
+              {t(label)}
+            </button>
+          )
+        })}
+      </div>
+
+      {tab === 'plugins' && <PluginsTab />}
+
+      {tab === 'general' && (
+      <div className="space-y-6">
+      {/* Updates (desktop app only) */}
+      {desktopApi && (
+        <section>
+          <div className="section-bar">{t('Updates')}</div>
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            <span className="text-[12.5px] text-poe-text">
+              Current version <span className="font-mono text-poe-text-bright">v{appVersion || '…'}</span>
+            </span>
+            <button onClick={checkUpdates} disabled={checking} className="btn-dark h-8 text-[12px] disabled:opacity-50">
+              <RefreshCw size={13} className={checking ? 'animate-spin' : ''} /> {checking ? 'Checking…' : 'Check for updates'}
+            </button>
+          </div>
+          <p className="text-[11px] text-poe-text/70 mt-1.5">When a newer version is published you’ll get a prompt in the bottom-left to update now or later.</p>
+        </section>
+      )}
 
       {/* Theme */}
       <section>
-        <div className="section-bar">Theme</div>
+        <div className="section-bar">{t('Theme')}</div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
           {THEMES.map(t => {
             const on = prefs.theme === t.id
@@ -44,9 +99,48 @@ export function SettingsPage() {
         </div>
       </section>
 
+      {/* Typography */}
+      <section>
+        <div className="section-bar">{t('Typography')}</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+          <div>
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-poe-text mb-1">
+              {t('Font')} <Help text="The typeface used throughout the app. Poppins is the default; every option is bundled with the app (works offline)." />
+            </div>
+            <SimpleSelect
+              value={prefs.fontFamily || 'poppins'}
+              onChange={v => update({ fontFamily: v })}
+              className="h-8"
+              options={[
+                { value: 'poppins', label: 'Poppins (default)' },
+                { value: 'inter', label: 'Inter' },
+                { value: 'system', label: 'System UI' },
+              ]}
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-poe-text mb-1">
+              {t('Font size')} <Help text="Scales the whole app. Capped at Extra Large (120%) so the layout always stays usable." />
+            </div>
+            <SimpleSelect
+              value={String(prefs.fontScale ?? 1)}
+              onChange={v => update({ fontScale: Number(v) })}
+              className="h-8"
+              options={[
+                { value: '0.9', label: 'Compact (90%)' },
+                { value: '1', label: 'Default (100%)' },
+                { value: '1.1', label: 'Large (110%)' },
+                { value: '1.2', label: 'Extra Large (120%)' },
+              ]}
+            />
+          </div>
+        </div>
+        <p className="text-[11px] text-poe-text/70 mt-2">{t('Applies instantly across the whole app and is saved with your settings.')}</p>
+      </section>
+
       {/* Filter Output display options */}
       <section>
-        <div className="section-bar">Filter Output</div>
+        <div className="section-bar">{t('Filter Output')}</div>
         <div className="mt-2">
           <Toggle
             checked={prefs.syntaxHighlight ?? true}
@@ -58,23 +152,12 @@ export function SettingsPage() {
         </div>
       </section>
 
-      {/* Interface options */}
-      <section>
-        <div className="section-bar">Interface</div>
-        <div className="mt-2">
-          <Toggle
-            checked={prefs.accordionsOpen ?? true}
-            onChange={v => update({ accordionsOpen: v })}
-            label="Expand Quick Filter sections by default"
-            help="When on, every Quick Filter section (Currency, Flasks, Equipment, etc.) starts expanded so you can see all options at once. When off, they start collapsed. On by default."
-          />
-          <p className="text-[11px] text-poe-text/70 mt-1.5 pl-6">You can still expand/collapse individual sections, or use the Expand all / Collapse all buttons on the Quick Filters page.</p>
-        </div>
-      </section>
+      {/* Game Overlay (desktop app) */}
+      <OverlaySettings />
 
       {/* Filter meta */}
       <section>
-        <div className="section-bar">Filter Meta <span className="text-[10px] opacity-70">(written at the top of every .filter)</span></div>
+        <div className="section-bar">{t('Filter Meta')} <span className="text-[10px] opacity-70">(written at the top of every .filter)</span></div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
           {/* League — dropdown, auto-populated from version.json (+ live API if reachable) */}
           <div>
@@ -119,7 +202,6 @@ export function SettingsPage() {
             <div className="field h-8 flex items-center gap-2 cursor-not-allowed select-none">
               <Lock size={12} className="text-poe-text/60 shrink-0" />
               <span className="font-mono text-poe-text-bright">{gameInfo.gameVersionLabel}</span>
-              <span className="text-[10px] text-poe-text/70 ml-auto">auto</span>
             </div>
             <p className="text-[10.5px] text-poe-text/70 mt-1">Source: {SOURCE_LABEL[gameInfo.source]}{gameInfo.asOf ? ` · as of ${gameInfo.asOf}` : ''}</p>
           </div>
@@ -128,7 +210,7 @@ export function SettingsPage() {
 
       {/* Custom comments */}
       <section>
-        <div className="section-bar">Custom Comments</div>
+        <div className="section-bar">{t('Custom Comments')}</div>
         <p className="text-[12px] text-poe-text">
           Free-text added to the top and bottom of every exported <code className="font-mono">.filter</code>. Each line is auto-prefixed with <code className="font-mono">#</code> (PoE filter comment syntax).
         </p>
@@ -157,6 +239,8 @@ export function SettingsPage() {
           </div>
         </div>
       </section>
+      </div>
+      )}
     </div>
   )
 }

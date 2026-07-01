@@ -3,11 +3,14 @@ import { Plus, Copy, Trash2, X, Pencil, Check } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { Modal } from './Modal.jsx'
+import { NewFilterModal } from './NewFilterModal.jsx'
+import { strictnessLevel, styleInfo } from '../data/coreFilters.js'
 
 export function FilterSelector({ onClose }) {
-  const { filters, activeName, setActiveName, createFilter, cloneActive, deleteFilter, renameActive } = useFilter()
+  const { filters, activeName, setActiveName, cloneActive, deleteFilter, renameActive } = useFilter()
   const toast = useToast()
   const [editing, setEditing] = useState(null) // { name, draft }
+  const [choosing, setChoosing] = useState(false)
 
   const startRename = (f) => {
     setActiveName(f.name)
@@ -40,7 +43,7 @@ export function FilterSelector({ onClose }) {
       <div className="mb-3 text-[12px] text-poe-text">
         Stored filters in this browser. Click a row to switch. Names must be unique.
       </div>
-      <button className="btn-dark w-full mb-3" onClick={() => createFilter('new filter')}>
+      <button className="btn-dark w-full mb-3" onClick={() => setChoosing(true)}>
         <Plus size={14} /> Create New
       </button>
       <div className="max-h-[320px] overflow-auto space-y-1">
@@ -64,7 +67,7 @@ export function FilterSelector({ onClose }) {
                 {f.name}
                 {f.version && <span className="ml-2 font-mono text-[10.5px] text-poe-text/70">v{f.version}</span>}
                 <span className="ml-2 text-[11px] text-poe-text">
-                  {f.preset ? f.preset : 'no preset'} · {(f.customRules?.length || 0)} custom
+                  {strictnessLevel(f.strictness).name}{f.style && f.style !== 'default' ? ` · ${styleInfo(f.style).name}` : ''} · {((f.overrides?.rules?.length || 0) + (f.customRules?.length || 0))} rules
                 </span>
               </button>
             )}
@@ -97,6 +100,8 @@ export function FilterSelector({ onClose }) {
       <div className="mt-3 text-right">
         <button className="btn-ghost" onClick={onClose}><X size={14} /> Close</button>
       </div>
+
+      {choosing && <NewFilterModal onClose={() => setChoosing(false)} onChosen={onClose} />}
     </Modal>
   )
 }

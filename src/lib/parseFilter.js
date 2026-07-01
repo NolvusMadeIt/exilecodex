@@ -170,3 +170,26 @@ export function parseFilterText(text) {
     meta,
   }
 }
+
+// Convert parsed rules (ruleFromBlock shape) into Quick Editor override rules, so an imported
+// filter shows up in the hide/highlight builder. `raw` is kept so the rule round-trips exactly
+// (the builder renders raw rules read-only; the override compiler emits them verbatim).
+export function rulesToOverrideRules(rules = []) {
+  return rules.map((r, i) => ({
+    id: 'ov' + Date.now().toString(36) + i + Math.random().toString(36).slice(2, 5),
+    enabled: r.enabled !== false,
+    action: r.action === 'Hide' ? 'Hide' : 'Show',
+    label: r.comment || `Imported rule ${i + 1}`,
+    raw: r.raw?.trim() || undefined,
+    match: {
+      classes: r.classes || [],
+      baseType: (r.baseTypes || []).join(', '),
+      baseMode: r.baseTypePrefix ? 'contains' : 'exact',
+      rarity: r.rarity && r.rarity !== 'Any' ? r.rarity : '',
+      rarityOp: r.rarityOp === '==' ? '=' : (r.rarityOp || '<='),
+      itemLevel: r.itemLevel || '',
+      itemLevelOp: r.itemLevelOp || '>=',
+    },
+    style: null,
+  }))
+}

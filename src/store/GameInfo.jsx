@@ -11,8 +11,8 @@ const LS = 'nolvus-gameinfo-cache'
 const GameInfoCtx = createContext(null)
 
 const DEFAULT = {
-  gameVersion: '0.5.2',
-  gameVersionLabel: 'Path of Exile 2 (0.5.2)',
+  gameVersion: '0.5.4',
+  gameVersionLabel: 'Path of Exile 2 (0.5.4)',
   asOf: '',
   leagues: [{ id: 'Standard', name: 'Standard' }],
   source: 'default',     // 'default' | 'bundled' | 'live'

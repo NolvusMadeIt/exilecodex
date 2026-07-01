@@ -9,6 +9,7 @@ import { useDropdownPortal } from '../lib/useDropdownPortal.js'
 export function ItemDropdown({ options, value = [], onChange, placeholder = 'Choose…', allLabel = 'All', icon, width = 240 }) {
   const [open, setOpen] = useState(false)
   const [q, setQ] = useState('')
+  const [showAll, setShowAll] = useState(false)
   const anchorRef = useRef(null)
   const close = useCallback(() => setOpen(false), [])
   const { menuRef, menuStyle } = useDropdownPortal({
@@ -80,16 +81,38 @@ export function ItemDropdown({ options, value = [], onChange, placeholder = 'Cho
         <ChevronDown size={12} className="opacity-60 shrink-0" />
       </button>
 
-      {selectedOpts.length > 0 && (
-        <div className="flex flex-wrap gap-1 mt-1">
-          {selectedOpts.map(o => (
-            <span key={o.name} className="inline-flex items-center gap-1 bg-black border border-poe-line rounded px-1 py-0.5 text-[11px]">
-              <ItemIcon src={o.icon} size={14} /> {o.name}
-              <button onClick={() => toggle(o.name)} className="text-poe-danger hover:text-red-400"><X size={10} /></button>
-            </span>
-          ))}
-        </div>
-      )}
+      {selectedOpts.length > 0 && (() => {
+        // Long selections (e.g. a build-generated or imported base-type list) would otherwise be a
+        // wall of chips. Show a handful, then collapse the rest behind "+N more" → a scrollable box.
+        const LIMIT = 12
+        const many = selectedOpts.length > LIMIT
+        const shown = many && !showAll ? selectedOpts.slice(0, LIMIT) : selectedOpts
+        const Chip = (o) => (
+          <span key={o.name} className="inline-flex items-center gap-1 bg-black border border-poe-line rounded px-1 py-0.5 text-[11px]">
+            <ItemIcon src={o.icon} size={14} /> {o.name}
+            <button onClick={() => toggle(o.name)} className="text-poe-danger hover:text-red-400"><X size={10} /></button>
+          </span>
+        )
+        return (
+          <div className="mt-1">
+            <div className={`flex flex-wrap gap-1 ${many && showAll ? 'max-h-44 overflow-auto pr-1' : ''}`}>
+              {shown.map(Chip)}
+              {many && !showAll && (
+                <button onClick={() => setShowAll(true)}
+                  className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] text-poe-gold-dim hover:text-poe-gold border border-poe-line hover:border-poe-gold-dim">
+                  +{selectedOpts.length - LIMIT} more
+                </button>
+              )}
+            </div>
+            {many && (
+              <div className="flex items-center gap-3 mt-1">
+                {showAll && <button onClick={() => setShowAll(false)} className="text-[10px] text-poe-text hover:text-poe-heading">Show less</button>}
+                <button onClick={() => onChange([])} className="text-[10px] text-poe-text hover:text-poe-danger">Clear all ({selectedOpts.length})</button>
+              </div>
+            )}
+          </div>
+        )
+      })()}
 
       {menu}
     </div>

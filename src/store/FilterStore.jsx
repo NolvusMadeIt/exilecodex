@@ -1,10 +1,15 @@
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react'
 import { defaultSettings } from './defaultSettings.js'
+import { rulesToOverrideRules } from '../lib/parseFilter.js'
 
 // Single store ABOVE the router so tab navigation never resets the filter.
 // Only Reset clears it — a single-store model keeps tab switches lossless.
 const LS_FILTERS = 'nolvus-filters'        // array of settings objects
 const LS_ACTIVE = 'nolvus-active-name'     // active filter name
+// One-time migration flag. The v0.13–0.14.0 Editor could inadvertently set `manualFilter` (Monaco
+// fired its change event on a programmatic value update), which freezes the live Filter Output. We
+// clear any stored manualFilter ONCE so the output flows again; genuine future edits are unaffected.
+const LS_MF_RESET = 'nolvus-manualfilter-reset-v1'
 
 const FilterCtx = createContext(null)
 
@@ -28,10 +33,13 @@ function normalizeFilter(f) {
   return {
     ...d, ...f, name,
     version: f?.version || d.version,
+    strictness: f?.strictness || d.strictness,
+    style: f?.style || d.style,
     gameMode: { ...d.gameMode, ...f?.gameMode },
-    options: { ...d.options, ...f?.options },
-    endgameContent: { ...d.endgameContent, ...f?.endgameContent },
     quickFilters: { ...d.quickFilters, ...f?.quickFilters },
+    overrides: {
+      rules: Array.isArray(f?.overrides?.rules) ? f.overrides.rules : d.overrides.rules,
+    },
     cosmetic: { ...d.cosmetic, ...f?.cosmetic },
     customRules: Array.isArray(f?.customRules) ? f.customRules : d.customRules,
     freeText: { ...d.freeText, ...f?.freeText },
@@ -41,7 +49,19 @@ function normalizeFilter(f) {
 function loadFilters() {
   try {
     const raw = JSON.parse(localStorage.getItem(LS_FILTERS) || 'null')
-    if (Array.isArray(raw) && raw.length) return raw.map(normalizeFilter)
+    if (Array.isArray(raw) && raw.length) {
+      const filters = raw.map(normalizeFilter)
+      // One-time clear of inadvertent manual-filter locks (see LS_MF_RESET above).
+      if (!localStorage.getItem(LS_MF_RESET)) {
+        let cleared = false
+        for (const f of filters) if (typeof f.manualFilter === 'string') { delete f.manualFilter; cleared = true }
+        try {
+          localStorage.setItem(LS_MF_RESET, '1')
+          if (cleared) localStorage.setItem(LS_FILTERS, JSON.stringify(filters))
+        } catch {}
+      }
+      return filters
+    }
   } catch {}
   return [defaultSettings()]
 }
@@ -81,13 +101,26 @@ export function FilterProvider({ children }) {
     setActiveName(newName)
   }, [active])
 
-  const createFilter = useCallback((name = 'new filter') => {
+  const createFilter = useCallback((name = 'MyNewFilter.filter') => {
     let n = name, i = 1
     const taken = new Set(filters.map(f => f.name))
     while (taken.has(n)) n = `${name} ${++i}`
     const f = defaultSettings(n)
     setFilters(prev => [...prev, f])
     setActiveName(n)
+  }, [filters])
+
+  // Add a fully-formed filter (from an import or a template) as a NEW entry: normalized
+  // onto current defaults, given a unique name, and activated by default. Returns the name.
+  const addFilter = useCallback((settings, { activate = true } = {}) => {
+    const incoming = normalizeFilter(settings || {})
+    let n = incoming.name, i = 1
+    const taken = new Set(filters.map(f => f.name))
+    while (taken.has(n)) n = `${incoming.name} ${++i}`
+    const f = { ...incoming, name: n }
+    setFilters(prev => [...prev, f])
+    if (activate) setActiveName(n)
+    return n
   }, [filters])
 
   const cloneActive = useCallback(() => {
@@ -126,7 +159,8 @@ export function FilterProvider({ children }) {
       const baseVer = parsedVer || f.version || '0.0.1'
       return {
         ...f,
-        customRules: [...(customRules || [])],
+        // Imported rules land in the Quick Editor's hide/highlight builder so they're visible + editable.
+        overrides: { ...f.overrides, rules: rulesToOverrideRules(customRules) },
         freeText: { top: freeTextTop || '', bottom: freeTextBottom || '' },
         version: bumpPatch(baseVer),
         sourceFile: sourceFile || null,
@@ -134,15 +168,48 @@ export function FilterProvider({ children }) {
     })
   }, [update])
 
+  // Apply a build-derived smart filter (from a .build import) to the active filter. The patch is
+  // ordinary settings (strictness + full quickFilters + an editable armour-highlight rule) plus a
+  // name; nothing build-specific is stored. The build's rule is prepended to any existing rules,
+  // the filter is renamed after the build (deduped), and the version auto-bumps.
+  const importBuild = useCallback((patch = {}) => {
+    const { name: wantName, overrides: patchOv, ...rest } = patch
+    let n = (wantName || active.name).trim() || active.name
+    const taken = new Set(filters.filter(f => f.name !== active.name).map(f => f.name))
+    const baseN = n; let i = 1
+    while (taken.has(n)) n = `${baseN} ${++i}`
+    setFilters(prev => prev.map(f => {
+      if (f.name !== active.name) return f
+      const buildRules = patchOv?.rules || []
+      return {
+        ...f, ...rest, name: n,
+        overrides: { ...f.overrides, rules: [...buildRules, ...(f.overrides?.rules || [])] },
+        version: bumpPatch(f.version || '0.0.1'),
+        sourceFile: null,
+      }
+    }))
+    setActiveName(n)
+  }, [active, filters])
+
   // Increment the active filter's patch version. Called when the user "ships" a save.
   const bumpVersion = useCallback(() => {
     update(f => ({ ...f, version: bumpPatch(f.version || '0.0.1') }))
   }, [update])
 
+  // Editor tab: store/clear the manually-edited filter text. When set, it overrides the generated
+  // filter for all output/export (see lib/buildFilter.js → resolveFilter). null = back to live.
+  const setManualFilter = useCallback((text) => {
+    update(f => ({ ...f, manualFilter: text }))
+  }, [update])
+  const clearManualFilter = useCallback(() => {
+    update(f => ({ ...f, manualFilter: null }))
+  }, [update])
+
   const value = {
     filters, active, activeName, setActiveName,
-    update, updateSlice, renameActive, createFilter, cloneActive, deleteFilter,
-    resetActive, importSettings, importCustomRules, bumpVersion,
+    update, updateSlice, renameActive, createFilter, addFilter, cloneActive, deleteFilter,
+    resetActive, importSettings, importCustomRules, importBuild, bumpVersion,
+    setManualFilter, clearManualFilter,
   }
   return <FilterCtx.Provider value={value}>{children}</FilterCtx.Provider>
 }

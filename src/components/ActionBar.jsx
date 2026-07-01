@@ -8,10 +8,14 @@ import { usePrefs } from '../store/Prefs.jsx'
 import { useGameInfo } from '../store/GameInfo.jsx'
 import { useToast } from '../store/Toast.jsx'
 import { useRouter } from '../lib/router.jsx'
-import { generateFilter } from '../lib/generate.js'
+import { useT } from '../i18n/index.js'
+import { resolveFilter } from '../lib/buildFilter.js'
 import { parseFilterText } from '../lib/parseFilter.js'
+import { looksLikeBuild, smartFilterFromBuild } from '../lib/buildImport.js'
 
-const safeName = (name) => (name || 'filter').replace(/[^a-z0-9-_. ]/gi, '')
+// Sanitize a filter name into a base filename. Strips a trailing ".filter" first so a filter
+// literally named "MyNewFilter.filter" exports as "MyNewFilter.filter", not "...filter.filter".
+const safeName = (name) => ((name || 'filter').replace(/\.filter$/i, '').replace(/[^a-z0-9-_. ]/gi, '').trim() || 'filter')
 
 // File System Access API is Chromium-only. We fall back to <input type=file> + download.
 const HAS_FS_ACCESS = typeof window !== 'undefined' && 'showOpenFilePicker' in window
@@ -22,11 +26,12 @@ function stampNow() {
 }
 
 export function ActionBar() {
-  const { active, resetActive, importSettings, importCustomRules, bumpVersion } = useFilter()
+  const { active, resetActive, importSettings, importCustomRules, importBuild, bumpVersion } = useFilter()
   const { prefs } = usePrefs()
   const gameInfo = useGameInfo()
   const toast = useToast()
   const { navigate } = useRouter()
+  const t = useT()
   const [copied, setCopied] = useState(false)
   const [saveMenu, setSaveMenu] = useState(false)
   const [importMenu, setImportMenu] = useState(false)
@@ -37,11 +42,9 @@ export function ActionBar() {
   const handleRef = useRef(null)
 
   const buildText = (bumpedVersion) => {
-    const stamp = stampNow()
-    const ctx = { ...prefs, gameVersion: gameInfo.gameVersion, gameVersionLabel: gameInfo.gameVersionLabel, _generatedAt: stamp }
-    // Pass a synthetic next-version through so the output reflects the bump immediately
+    // Pass a synthetic next-version through so the output reflects the bump immediately.
     const snap = bumpedVersion ? { ...active, version: bumpedVersion } : active
-    return generateFilter(snap, ctx)
+    return resolveFilter(snap, { gameInfo, prefs, stamp: stampNow() })
   }
 
   const downloadBlob = (text, name) => {
@@ -56,12 +59,12 @@ export function ActionBar() {
   // --- Save actions ---
 
   // Bump version, then download as a fresh file
-  const saveToNewFile = () => {
+  const saveToNewFile = async () => {
     setSaveMenu(false)
     const next = bumpPatchInline(active.version)
     bumpVersion()
     const fname = `${safeName(active.name)}.filter`
-    downloadBlob(buildText(next), fname)
+    downloadBlob(await buildText(next), fname)
     toast.success(`Downloaded "${fname}" · v${next}`, { title: 'Saved' })
   }
 
@@ -70,7 +73,7 @@ export function ActionBar() {
     setSaveMenu(false)
     const next = bumpPatchInline(active.version)
     bumpVersion()
-    const text = buildText(next)
+    const text = await buildText(next)
     if (handleRef.current && handleRef.current.createWritable) {
       try {
         const w = await handleRef.current.createWritable()
@@ -99,7 +102,7 @@ export function ActionBar() {
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(buildText())
+      await navigator.clipboard.writeText(await buildText())
       setCopied(true); setTimeout(() => setCopied(false), 1400)
       toast.success(`${active.name} copied to clipboard.`, { title: 'Copied', duration: 4000 })
     } catch (e) {
@@ -132,12 +135,21 @@ export function ActionBar() {
 
   const ingestFile = (f, { fromHandle }) => {
     const reader = new FileReader()
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const txt = String(reader.result)
-        if (f.name.toLowerCase().endsWith('.json')) {
+        const lower = f.name.toLowerCase()
+        if (lower.endsWith('.json') || lower.endsWith('.build')) {
           const j = JSON.parse(txt)
-          // Accept either { filter, prefs } or a raw filter settings object
+          // A PoE2 build export → generate a smart filter from it.
+          if (looksLikeBuild(j)) {
+            const { build, patch } = await smartFilterFromBuild(j)
+            importBuild(patch)
+            toast.success(`Smart filter built for "${build.name}"${build.className ? ` (${build.className})` : ''} — tune it anytime in the Quick Editor.`, { title: 'Build imported' })
+            navigate('/quick-editor')
+            return
+          }
+          // Otherwise it's an editor-settings backup ({ filter, prefs } or a raw settings object).
           importSettings(j.filter || j)
           toast.success(`Loaded editor settings from "${f.name}".`, { title: 'Imported' })
           return
@@ -173,12 +185,12 @@ export function ActionBar() {
       {/* Import split */}
       <div className="relative" ref={importMenuRef}>
         <ButtonGroup variant="outlined" size="small" aria-label="Import">
-          <Button startIcon={<Upload size={14} />} onClick={() => fileRef.current?.click()}>Import</Button>
+          <Button startIcon={<Upload size={14} />} onClick={() => fileRef.current?.click()}>{t('Import')}</Button>
           <Button onClick={() => setImportMenu(o => !o)} aria-label="Import options" sx={{ px: 0.75, minWidth: 0 }}>
             <ChevronDown size={12} />
           </Button>
         </ButtonGroup>
-        <input ref={fileRef} type="file" accept=".filter,.json,text/plain" className="hidden" onChange={onImport} />
+        <input ref={fileRef} type="file" accept=".filter,.json,.build,text/plain" className="hidden" onChange={onImport} />
         <PortalMenu open={importMenu} onClose={() => setImportMenu(false)} anchorRef={importMenuRef}>
           <MenuItem onClick={() => { setImportMenu(false); fileRef.current?.click() }} icon={Upload} label="Import .filter / .json" sub="Browse and load a file" />
           <MenuItem
@@ -194,7 +206,7 @@ export function ActionBar() {
       {/* Save split-button */}
       <div className="relative" ref={saveMenuRef}>
         <ButtonGroup variant="contained" color="primary" size="small" aria-label="Save">
-          <Button startIcon={<Save size={14} />} onClick={saveToNewFile} sx={{ minWidth: 130 }}>Save to new file</Button>
+          <Button startIcon={<Save size={14} />} onClick={saveToNewFile} sx={{ minWidth: 130 }}>{t('Save to new file')}</Button>
           <Button onClick={() => setSaveMenu(o => !o)} aria-label="Save options" sx={{ px: 0.75, minWidth: 0 }}>
             <ChevronDown size={12} />
           </Button>
@@ -219,7 +231,7 @@ export function ActionBar() {
       </div>
 
       <Button variant="outlined" size="small" startIcon={<Clipboard size={14} />} onClick={copy}>
-        {copied ? 'Copied!' : 'Copy'}
+        {copied ? t('Copied!') : t('Copy')}
       </Button>
       <Button
         variant="outlined"
@@ -227,7 +239,7 @@ export function ActionBar() {
         startIcon={<RotateCcw size={14} />}
         onClick={async () => {
           const ok = await toast.confirm(
-            `Reset "${active.name}" to defaults?\nThis clears your Quick Filters, Custom Rules and Cosmetic edits.`,
+            `Reset "${active.name}" to defaults?\nThis clears your Quick Editor, Custom Rules and Cosmetic edits.`,
             { title: 'Reset filter', confirmLabel: 'Reset', cancelLabel: 'Keep' }
           )
           if (ok) {
@@ -236,7 +248,7 @@ export function ActionBar() {
           }
         }}
       >
-        Reset
+        {t('Reset')}
       </Button>
     </div>
   )

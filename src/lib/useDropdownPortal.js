@@ -21,11 +21,19 @@ export function useDropdownPortal({
     const el = anchorRef.current
     if (!el) return
 
-    const rect = el.getBoundingClientRect()
+    // CSS `zoom` on <html> (Settings → font size) scales getBoundingClientRect's visual
+    // coords, while position:fixed style coords are pre-zoom. Convert to style-space by
+    // dividing by the zoom so the menu lands on its anchor at any scale (no-op at zoom 1).
+    const Z = parseFloat(getComputedStyle(document.documentElement).zoom) || 1
+    const r = el.getBoundingClientRect()
+    const rect = { top: r.top / Z, bottom: r.bottom / Z, left: r.left / Z, right: r.right / Z, width: r.width / Z }
+    const vw = window.innerWidth / Z
+    const vh = window.innerHeight / Z
+
     const menuW = Math.max(rect.width, width || 0, minWidth)
     const menuH = menuRef.current?.offsetHeight || maxHeight
 
-    const spaceBelow = window.innerHeight - rect.bottom - MENU_GAP
+    const spaceBelow = vh - rect.bottom - MENU_GAP
     const spaceAbove = rect.top - MENU_GAP
     const openUp = preferUp || (spaceBelow < Math.min(menuH, maxHeight) && spaceAbove > spaceBelow)
 
@@ -33,15 +41,15 @@ export function useDropdownPortal({
     let top = openUp ? rect.top - h - MENU_GAP : rect.bottom + MENU_GAP
     let left = align === 'right' ? rect.right - menuW : rect.left
 
-    if (left + menuW > window.innerWidth - VIEWPORT_PAD) {
-      left = window.innerWidth - menuW - VIEWPORT_PAD
+    if (left + menuW > vw - VIEWPORT_PAD) {
+      left = vw - menuW - VIEWPORT_PAD
     }
     if (left < VIEWPORT_PAD) left = VIEWPORT_PAD
     if (top < VIEWPORT_PAD) top = VIEWPORT_PAD
 
     const maxH = openUp
       ? Math.min(maxHeight, rect.top - VIEWPORT_PAD - MENU_GAP)
-      : Math.min(maxHeight, window.innerHeight - top - VIEWPORT_PAD)
+      : Math.min(maxHeight, vh - top - VIEWPORT_PAD)
 
     const next = {
       position: 'fixed',

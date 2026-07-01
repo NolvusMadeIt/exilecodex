@@ -1,10 +1,10 @@
-// Item icon system — representative per-category art, bundled locally under /public/img.
-// Representative per-category icons (all confirmed 200 via HEAD probes). Weapons/armour
-// reuse generic icons on the real site too, so a category icon next to each base name is
-// faithful. Per-name overrides exist for rings/amulets/jewels/uniques.
+// Item icon system — representative per-category art, bundled locally under /public/img
+// with opaque hashed filenames (resolved via assets.js). Per-name overrides for uniques.
+import { asset } from './assets.js'
+
 export const IMG = '/img'
 
-const g = (p) => `${IMG}/gear/${p}`
+const g = (p) => asset('gear/' + p)
 
 // category id -> confirmed representative icon URL
 export const CATEGORY_ICON = {
@@ -22,10 +22,10 @@ export const CATEGORY_ICON = {
   gloves: g('armours/gloves/glovesstr01.webp'),
   bodyarmours: g('armours/bodyarmours/bodystr01.webp'),
   // offhand
-  shields: `${IMG}/shields/shield-red.png`,
+  shields: asset('shields/shield-red.png'),
   foci: g('offhand/foci/focus02.webp'),
   talismans: g('offhand/talismans/changelingtalisman.webp'),
-  quivers: `${IMG}/all-weapons.png`,
+  quivers: asset('all-weapons.png'),
   // one-hand weapons
   onehandmaces: g('weapons/onehandweapons/onehandmaces/1hmace01.webp'),
   sceptres: g('weapons/onehandweapons/scepters/sceptre01.webp'),
@@ -39,10 +39,10 @@ export const CATEGORY_ICON = {
   crossbows: g('weapons/twohandweapons/crossbows/2hcrossbow01.webp'),
   // other
   relics: g('relics/relicbase1x2.webp'),
-  currency: `${IMG}/currency/CoinPileTier2.webp`,
-  gems: `${IMG}/all-gems.png`,
+  currency: asset('currency/CoinPileTier2.webp'),
+  gems: asset('all-gems.png'),
   waystones: g('maps/endgamemaps/endgamemap15.webp'),
-  items: `${IMG}/all-items.png`,
+  items: asset('all-items.png'),
 }
 
 export const iconFor = (cat) => CATEGORY_ICON[cat] || CATEGORY_ICON.items

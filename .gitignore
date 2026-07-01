@@ -12,3 +12,16 @@ dist-electron
 
 # Playwright MCP scratch output
 .playwright-mcp
+
+# Local env (Supabase publishable key is public, but keep env files out of git)
+.env
+.env.local
+.env.*.local
+
+# Core-filter build sources (de-branded output lives in public/corefilters/, which IS committed).
+# These are the original/branded inputs to scripts/debrand-corefilters.mjs — kept local only.
+/corefilters/
+/NeverSink-Filter-for-PoE2-0.10.1a/
+
+# Internal design notes
+/docs/superpowers/

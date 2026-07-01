@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
 import { Tabs, Tab, Button, IconButton, Tooltip, Box } from '@mui/material'
-import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked, HelpCircle, GraduationCap } from 'lucide-react'
+import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked, HelpCircle, GraduationCap, ScrollText } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
 import { HelpLegend } from './HelpLegend.jsx'
 
 const TABS = [
   { to: '/presets', label: 'Presets', icon: Star },
-  { to: '/quick-filters', label: 'Quick Filters', icon: SlidersHorizontal },
+  { to: '/quick-editor', label: 'Quick Editor', icon: SlidersHorizontal },
   { to: '/tier-lists', label: 'Tier Lists', icon: ListOrdered },
   { to: '/custom-rules', label: 'Custom Rules', icon: Pencil },
   { to: '/cosmetic', label: 'Cosmetic', icon: Shirt },
   { to: '/preview', label: 'Preview', icon: Eye },
 ]
 const RIGHT = [
+  { to: '/patch-notes', label: 'Patch Notes', icon: ScrollText },
   { to: '/guide', label: 'How to Use', icon: GraduationCap },
   { to: '/settings', label: 'Settings', icon: Settings },
   { to: '/changelog', label: 'Changelog', icon: BookMarked },
