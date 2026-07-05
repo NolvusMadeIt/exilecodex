@@ -2,7 +2,7 @@
 
 **A visual loot-filter studio for Path of Exile 2 — build a filter you can *see*, not a file you have to type.**
 
-**▶ Live:** [nolvusfiltereditor.vercel.app](https://nolvusfiltereditor.vercel.app)
+**▶ Live:** [nolvusfiltereditor.vercel.app](https://www.poe2champions.xyz)
 
 Nolvus Filter turns loot-filter creation into a workstation experience: pick a starting point, tune what drops and how it looks through image dropdowns and sliders, watch the real `.filter` build itself live, then export and play. No syntax to memorise, no wall of raw text — every control is wired to a clean, in-game-valid filter.
 
