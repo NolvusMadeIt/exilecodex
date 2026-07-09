@@ -10,6 +10,7 @@ import { buildQuery } from '../../lib/trade/buildQuery.js'
 import { summarize, formatPrice } from '../../lib/trade/summarize.js'
 import { fetchCurrencies, fetchTradePrice, fetchLeagues } from '../../lib/market/client.ts'
 import { PriceCheckSettings, getPoesessid } from './PriceCheckSettings.jsx'
+import { craftingTips } from './tips.js'
 
 // Result-filter options (mirror the official trade): which currency to price in, the listing type,
 // and how recent. The buyout/time values map to the market layer's SaleType / ListedWithin.
@@ -174,6 +175,7 @@ export function PriceCheckRoot({ compact = false }) {
   const [result, setResult] = useState(null)
   const [checking, setChecking] = useState(false)
   const [curIcons, setCurIcons] = useState({})
+  const [spotMap, setSpotMap] = useState({})
   const [divinePrice, setDivinePrice] = useState(0)
   const [autoLeague, setAutoLeague] = useState('')
 
@@ -187,16 +189,29 @@ export function PriceCheckRoot({ compact = false }) {
     return () => { live = false }
   }, [pc.league, market.league])
 
-  // Real PoE2 orb art (for the currency dropdown + price labels) + the divine→exalted rate, both
-  // from the same source the Market plugin uses. Used to display, not to price.
+  // Real PoE2 orb art (for the currency dropdown + price labels), the divine→exalted rate, AND the
+  // live exchange spot prices (in exalted) — all from the same poe2scout feed the Market plugin
+  // uses. Spot prices power the instant no-auth appraisal for pasted currency items (the
+  // Companion's spot-price-check "exchange" path).
   useEffect(() => {
     if (!league) return
     let live = true
-    fetchCurrencies(league, market.base || 'exalted', 'currency')
-      .then((res) => { if (!live) return; const m = {}; (res.rows || []).forEach((r) => { m[r.name] = r.iconPath }); setCurIcons(m); setDivinePrice(res.divinePrice || 0) })
+    fetchCurrencies(league, 'exalted', 'currency')
+      .then((res) => {
+        if (!live) return
+        const m = {}
+        const spots = {}
+        ;(res.rows || []).forEach((r) => {
+          m[r.name] = r.iconPath
+          spots[r.name.toLowerCase()] = { value: r.value, change24h: r.change24h, name: r.name }
+        })
+        setCurIcons(m)
+        setSpotMap(spots)
+        setDivinePrice(res.divinePrice || 0)
+      })
       .catch(() => {})
     return () => { live = false }
-  }, [league, market.base])
+  }, [league])
 
   const item = useMemo(() => (raw.trim() ? parseTradeItem(raw, catalog) : null), [raw, catalog])
   useEffect(() => { try { localStorage.setItem('nolvus-pc-item', raw) } catch {} }, [raw])
@@ -363,6 +378,19 @@ export function PriceCheckRoot({ compact = false }) {
   const affixCap = item?.rarity === 'Rare' ? 6 : item?.rarity === 'Magic' ? 2 : 0
   const modifiable = !!item && !item.corrupted && affixCap > 0 && explicitCount < affixCap
 
+  // Crafting/selling tips (ported from the Companion's spot-price-check) — reads the advanced-copy
+  // affix/tier annotations from the raw text when present.
+  const tips = useMemo(() => (item ? craftingTips(item, raw) : []), [item, raw])
+
+  // Instant exchange spot price for pasted currency items — the live poe2scout value (per unit, in
+  // exalted), no trade auth needed. Only shown when the pasted item really is on the exchange.
+  const spot = useMemo(() => {
+    if (!item || item.category !== 'currency') return null
+    const key = (item.name || item.baseType || '').toLowerCase()
+    return (key && spotMap[key]) || null
+  }, [item, spotMap])
+  const stackSize = item?.stackSize || 1
+
   const props = item?.properties || {}
   const propRows = [
     ['Armour', props.armour], ['Evasion', props.evasion], ['Energy shield', props.energyShield],
@@ -438,7 +466,37 @@ export function PriceCheckRoot({ compact = false }) {
               <div className="text-[12px] text-poe-text/60">
                 {[item.baseType, item.rarity, item.itemLevel ? `ilvl ${item.itemLevel}` : null].filter(Boolean).join(' · ')}
               </div>
+              {spot && (
+                <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12.5px]">
+                  <span className="text-poe-text/50">Exchange spot:</span>
+                  <span className="font-semibold tabular-nums text-poe-gold">
+                    {formatPrice(spot.value, currency, divinePrice)}
+                  </span>
+                  <span className="text-poe-text/40">each</span>
+                  {stackSize > 1 && (
+                    <span className="tabular-nums text-poe-text/70">
+                      · {formatPrice(spot.value * stackSize, currency, divinePrice)} for the stack of {stackSize}
+                    </span>
+                  )}
+                  <span className={`tabular-nums ${spot.change24h >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {spot.change24h >= 0 ? '+' : ''}{spot.change24h.toFixed(1)}% 24h
+                  </span>
+                  <span className="text-[10px] text-poe-text/40">live · poe2scout</span>
+                </div>
+              )}
             </div>
+
+            {/* Crafting/selling tips (from the parsed item — corrupted lock, open affixes, quality, tiers) */}
+            {tips.length > 0 && (
+              <Section label="tips">
+                {tips.map((t, i) => (
+                  <div key={i} className="flex items-start gap-2 py-[3px] text-[12.5px] leading-snug">
+                    <span className="shrink-0 text-poe-gold/80">{t.icon}</span>
+                    <span className="text-poe-text/80">{t.text}</span>
+                  </div>
+                ))}
+              </Section>
+            )}
 
             {/* Search by */}
             {searchByOptions.length > 0 && (
