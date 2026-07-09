@@ -31,6 +31,7 @@ function useIsXl() {
 // The live filter output only belongs on the pages where you build/preview the filter — not on
 // Patch Notes, Community, Guide, Settings or Changelog.
 const OUTPUT_ROUTES = new Set(['/', '/presets', '/quick-editor', '/quick-filters', '/tier-lists', '/custom-rules', '/cosmetic', '/preview'])
+const WIDE_ROUTES = new Set(['/market', '/price-check', '/campaign-guide', '/history', '/items', '/modifiers', '/crafting', '/character', '/regex'])
 
 export function Layout({ children }) {
   const { prefs, update } = usePrefs()
@@ -39,9 +40,10 @@ export function Layout({ children }) {
   const setDockOpen = (v) => update({ dockOpen: v })
   const isXl = useIsXl()
   const outputHere = OUTPUT_ROUTES.has(path)
-  // A few plugin pages (e.g. the Market terminal) are split/dense layouts that want the full width
-  // of the work area rather than the centered reading column.
-  const wide = path === '/market' || path === '/price-check' || path === '/campaign-guide'
+  // Dense/split layouts want the full width of the work area rather than the centered reading
+  // column — the market surfaces and every database/reference page (house rule: dense pages
+  // full-width, content at proper size, never crammed).
+  const wide = WIDE_ROUTES.has(path)
 
   // Tray menu → renderer navigation (e.g. "Settings"). Desktop only; no-op on the web.
   useEffect(() => {

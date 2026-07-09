@@ -1,20 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ExternalLink } from 'lucide-react'
-import { PoeButton } from '../../components/PoeFrame.jsx'
+import { useRouter } from '../../lib/router.jsx'
 import { installXileShim, loadUniques, loadBases } from '../../xilehud/adapter.ts'
 import '../../xilehud/xilehud.css'
 
 // The Item Database — powered by XileHUD's vendored uniques/bases modules (GPL-3.0, see
-// ATTRIBUTION.md). This wrapper owns the React side: tab strip, data fetch through the
-// adapter, honest load/error states, and the credit footer. The vendored modules render
-// vanilla DOM into the #craftingPanel container below and know nothing about React.
-const TABS = [
-  { id: 'uniques', label: 'Uniques' },
-  { id: 'bases', label: 'Bases' },
-]
+// ATTRIBUTION.md). Panel selection lives in the categorized side menu (?panel=uniques|bases);
+// this wrapper owns data fetch through the adapter, honest load/error states, and the credit
+// footer. The vendored modules render vanilla DOM into #craftingPanel and know nothing of React.
+const PANEL_IDS = ['uniques', 'bases']
 
 export function XileItemsPage() {
-  const [tab, setTab] = useState('uniques')
+  const { query } = useRouter()
+  const tab = PANEL_IDS.includes(query?.panel) ? query.panel : 'uniques'
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [error, setError] = useState('')
   const panelRef = useRef(null)
@@ -57,18 +55,6 @@ export function XileItemsPage() {
 
   return (
     <div className="flex min-h-0 flex-col">
-      <div className="mb-3 flex items-center gap-2">
-        {TABS.map((t) => (
-          <PoeButton
-            key={t.id}
-            variant={tab === t.id ? 'gold' : 'default'}
-            onClick={() => setTab(t.id)}
-          >
-            {t.label}
-          </PoeButton>
-        ))}
-      </div>
-
       {status === 'loading' && (
         <div className="py-6 text-[12.5px] text-poe-text/60">Loading the {tab} database…</div>
       )}

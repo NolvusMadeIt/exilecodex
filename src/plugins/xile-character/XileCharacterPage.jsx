@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ExternalLink } from 'lucide-react'
-import { PoeButton } from '../../components/PoeFrame.jsx'
+import { useRouter } from '../../lib/router.jsx'
 import { installXileShim } from '../../xilehud/adapter.ts'
 import '../../xilehud/xilehud.css'
 
-// The Character reference — five XileHUD panels (GPL-3.0, see ATTRIBUTION.md) behind one tab
-// strip: skill gems, keystones, ascendancy passives, atlas nodes, and the campaign quest
-// rewards checklist. Same wrapper contract as the Crafting page: each vendored module drives
-// itself through its upstream show() entry against the shared #craftingPanel container.
+// The Character reference — five XileHUD panels (GPL-3.0, see ATTRIBUTION.md): skill gems,
+// keystones, ascendancy passives, atlas nodes, and the campaign quest rewards checklist.
+// Panel selection lives in the categorized side menu (?panel=<id>); each vendored module
+// drives itself through its upstream show() entry against the shared #craftingPanel container.
 const PANELS = [
   { id: 'gems', label: 'Gems', load: () => import('../../xilehud/overlay/character/gems/module.ts') },
   { id: 'keystones', label: 'Keystones', load: () => import('../../xilehud/overlay/character/keystones/module.ts') },
@@ -17,7 +17,8 @@ const PANELS = [
 ]
 
 export function XileCharacterPage() {
-  const [tab, setTab] = useState('gems')
+  const { query } = useRouter()
+  const tab = PANELS.some((p) => p.id === query?.panel) ? query.panel : 'gems'
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [error, setError] = useState('')
   const panelRef = useRef(null)
@@ -48,14 +49,6 @@ export function XileCharacterPage() {
 
   return (
     <div className="flex h-[calc(100vh-128px)] min-h-0 flex-col">
-      <div className="mb-3 flex flex-wrap items-center gap-2">
-        {PANELS.map((p) => (
-          <PoeButton key={p.id} variant={tab === p.id ? 'gold' : 'default'} onClick={() => setTab(p.id)}>
-            {p.label}
-          </PoeButton>
-        ))}
-      </div>
-
       {status === 'loading' && (
         <div className="py-2 text-[12.5px] text-poe-text/60">Loading…</div>
       )}

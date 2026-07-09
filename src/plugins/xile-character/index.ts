@@ -28,7 +28,16 @@ export default {
     ],
   },
   contributes: {
-    nav: { group: 'main', label: 'Character', order: 34 },
+    nav: {
+      group: 'main', label: 'Character', order: 34,
+      items: [
+        { id: 'gems', label: 'Gems' },
+        { id: 'keystones', label: 'Keystones' },
+        { id: 'ascendancy', label: 'Ascendancies' },
+        { id: 'atlas', label: 'Atlas' },
+        { id: 'quests', label: 'Quest Rewards' },
+      ],
+    },
     route: { path: '/character', component: lazy(() => import('./XileCharacterPage.jsx').then(m => ({ default: m.XileCharacterPage }))) },
   },
 }

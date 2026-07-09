@@ -1,14 +1,23 @@
-import React, { useMemo } from 'react'
-import { Tabs, Tab, Button } from '@mui/material'
-import { Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked, GraduationCap, Users, ScrollText } from 'lucide-react'
+import React, { useMemo, useState } from 'react'
+import { Button } from '@mui/material'
+import {
+  Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked,
+  GraduationCap, Users, ScrollText, ChevronDown, ChevronRight, FolderCog, LineChart, Wrench,
+} from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
 import { usePlugins } from '../store/Plugins.jsx'
 import { useT } from '../i18n/index.js'
 
-// Core (non-plugin) main sections, each with an explicit order so plugin nav items can slot in
-// between them. The Filter Editor is no longer hard-coded here — it's contributed by its plugin
-// (order 60) and only appears while that plugin is enabled.
-const MAIN = [
+// The categorized side menu — the overlay transformation's navigation structure: groups with
+// one entry per panel (the structure the owner wants, on the left, at this app's sizing).
+// Groups come from three sources:
+//   1. Filter Studio — the core filter routes plus the Editor page the filter-editor plugin
+//      contributes (it slots by its nav order).
+//   2. Any enabled plugin that declares contributes.nav.items — one group per plugin, one
+//      menu entry per panel, deep-linked as <route>?panel=<id>.
+//   3. FOLD_INTO — single-route plugins folded into named groups (Market, Tools). Plugins
+//      not named anywhere render as standalone entries, so nothing ever silently vanishes.
+const FILTER_STUDIO = [
   { to: '/presets', label: 'Presets', icon: Star, order: 10 },
   { to: '/quick-editor', label: 'Quick Editor', icon: SlidersHorizontal, order: 20 },
   { to: '/tier-lists', label: 'Tier Lists', icon: ListOrdered, order: 30 },
@@ -16,6 +25,17 @@ const MAIN = [
   { to: '/cosmetic', label: 'Cosmetic', icon: Shirt, order: 50 },
   { to: '/preview', label: 'Preview', icon: Eye, order: 70 },
 ]
+const FOLD_INTO = {
+  'market-companion': 'Market',
+  'xile-history': 'Market',
+  'price-check': 'Market',
+  'xile-tools': 'Tools',
+  'campaign-guide': 'Tools',
+}
+const FOLDED_META = {
+  Market: { icon: LineChart, order: 80 },
+  Tools: { icon: Wrench, order: 50 },
+}
 const SECONDARY = [
   { to: '/community', label: 'Community', icon: Users },
   { to: '/patch-notes', label: 'Patch Notes', icon: ScrollText },
@@ -24,64 +44,135 @@ const SECONDARY = [
   { to: '/changelog', label: 'Changelog', icon: BookMarked },
 ]
 
-// Vertical navigation rail for the Filter Studio. MUI vertical Tabs for the main sections
-// (accent bar on the active item's left edge), MUI Buttons for the secondary group.
-export function SideNav() {
-  const { path, navigate } = useRouter()
-  const { enabledPlugins } = usePlugins()
-  const t = useT()
-  const isActive = (to) => path === to || (to === '/presets' && path === '/')
+function buildGroups(enabledPlugins) {
+  const groups = []
 
-  // Core sections + nav items contributed by enabled plugins (group 'main'), ordered together.
-  const mainItems = useMemo(() => {
-    const pluginItems = enabledPlugins
-      .filter(p => p.contributes?.nav?.group === 'main' && p.contributes?.route?.path)
-      .map(p => ({ to: p.contributes.route.path, label: p.contributes.nav.label, icon: p.icon, order: p.contributes.nav.order ?? 100 }))
-    return [...MAIN, ...pluginItems].sort((a, b) => a.order - b.order)
-  }, [enabledPlugins])
+  const studioItems = [...FILTER_STUDIO]
+  const editor = enabledPlugins.find((p) => p.id === 'filter-editor')
+  if (editor?.contributes?.route?.path) {
+    studioItems.push({
+      to: editor.contributes.route.path,
+      label: editor.contributes.nav?.label || 'Editor',
+      icon: editor.icon,
+      order: editor.contributes.nav?.order ?? 60,
+    })
+  }
+  groups.push({ id: 'studio', label: 'Filter Studio', icon: FolderCog, order: 10, items: studioItems.sort((a, b) => a.order - b.order) })
 
-  const mainValue = mainItems.find(t => isActive(t.to))?.to ?? false
-
-  const tabSx = {
-    minHeight: 38, justifyContent: 'flex-start', textAlign: 'left', px: 2, gap: 1,
-    color: 'rgb(var(--c-text))', fontSize: 13,
-    '& .MuiTab-iconWrapper': { marginRight: '2px' },
-    '&:hover': { color: 'rgb(var(--c-heading))', backgroundColor: 'rgb(var(--c-text) / 0.05)' },
-    '&.Mui-selected': { color: 'rgb(var(--c-accent))', backgroundColor: 'rgb(var(--c-accent) / 0.10)' },
+  const folded = {}
+  for (const p of enabledPlugins) {
+    if (p.id === 'filter-editor') continue
+    const nav = p.contributes?.nav
+    const route = p.contributes?.route
+    if (!nav?.label || !route?.path) continue
+    if (Array.isArray(nav.items) && nav.items.length) {
+      groups.push({
+        id: p.id, label: nav.label, icon: p.icon, order: nav.order ?? 100,
+        items: nav.items.map((it) => ({ to: `${route.path}?panel=${it.id}`, label: it.label, panel: it.id, base: route.path })),
+      })
+    } else {
+      const cat = FOLD_INTO[p.id]
+      const entry = { to: route.path, label: nav.label, icon: p.icon, order: nav.order ?? 100 }
+      if (cat) (folded[cat] ||= []).push(entry)
+      else groups.push({ id: p.id, label: nav.label, icon: p.icon, order: nav.order ?? 100, to: route.path })
+    }
+  }
+  for (const [cat, items] of Object.entries(folded)) {
+    const meta = FOLDED_META[cat] || { icon: Wrench, order: 95 }
+    groups.push({ id: cat, label: cat, icon: meta.icon, order: meta.order, items: items.sort((a, b) => a.order - b.order) })
   }
 
+  return groups.sort((a, b) => a.order - b.order)
+}
+
+export function SideNav() {
+  const { path, query, navigate } = useRouter()
+  const { enabledPlugins } = usePlugins()
+  const t = useT()
+
+  const groups = useMemo(() => buildGroups(enabledPlugins), [enabledPlugins])
+
+  const itemActive = (item) => {
+    const base = item.base || item.to
+    const pathMatch = path === base || (base === '/presets' && path === '/')
+    if (!pathMatch) return false
+    if (!item.panel) return true
+    // Panel entries: exact panel match, or the group's first panel when none is in the URL.
+    return (query?.panel || null) === item.panel || (!query?.panel && item.first)
+  }
+  const groupActive = (g) => (g.items ? g.items.some(itemActive) : path === g.to)
+
+  // The group holding the active route starts open; the user's clicks rule after that.
+  const [open, setOpen] = useState(() => new Set(groups.filter(groupActive).map((g) => g.id)))
+  const toggle = (id) => setOpen((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
+
+  // Mark first panels so "no ?panel in URL" highlights the default entry.
+  const marked = useMemo(() => groups.map((g) => ({
+    ...g,
+    items: g.items?.map((it, i) => ({ ...it, first: i === 0 })),
+  })), [groups])
+
+  const rowSx = (active, indent = false) => ({
+    justifyContent: 'flex-start', px: indent ? 3.25 : 1.5, py: 0.75, fontSize: 13, minHeight: 34,
+    width: '100%', textAlign: 'left', gap: 1,
+    color: active ? 'rgb(var(--c-accent))' : 'rgb(var(--c-text))',
+    backgroundColor: active ? 'rgb(var(--c-accent) / 0.10)' : 'transparent',
+    boxShadow: active ? 'inset 2px 0 0 rgb(var(--c-accent))' : 'none',
+    borderRadius: '6px',
+    '&:hover': { backgroundColor: 'rgb(var(--c-text) / 0.05)', color: 'rgb(var(--c-heading))' },
+  })
+
   return (
-    <nav className="w-[210px] shrink-0 border-r border-poe-line bg-black/20 flex flex-col py-2 overflow-y-auto">
-      <Tabs
-        orientation="vertical"
-        value={mainValue}
-        onChange={(e, v) => navigate(v)}
-        sx={{
-          '& .MuiTabs-flexContainer': { gap: '2px' },
-          '& .MuiTabs-indicator': { left: 0, right: 'auto', width: '2px', backgroundColor: 'rgb(var(--c-accent))' },
-        }}
-      >
-        {mainItems.map(item => {
-          const Icon = item.icon
-          return <Tab key={item.to} value={item.to} disableRipple label={t(item.label)}
-            icon={<Icon size={16} />} iconPosition="start" sx={tabSx} />
+    <nav className="w-[220px] shrink-0 border-r border-poe-line bg-black/20 flex flex-col py-2 overflow-y-auto">
+      <div className="flex flex-col gap-0.5 px-2">
+        {marked.map((g) => {
+          const GIcon = g.icon
+          const isOpen = open.has(g.id)
+          const active = groupActive(g)
+          if (!g.items) {
+            return (
+              <Button key={g.id} onClick={() => navigate(g.to)} startIcon={GIcon ? <GIcon size={16} /> : null} sx={rowSx(active)} disableRipple>
+                {t(g.label)}
+              </Button>
+            )
+          }
+          return (
+            <div key={g.id}>
+              <Button
+                onClick={() => toggle(g.id)}
+                startIcon={GIcon ? <GIcon size={16} /> : null}
+                endIcon={isOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+                sx={{ ...rowSx(active && !isOpen), justifyContent: 'space-between', '& .MuiButton-endIcon': { marginLeft: 'auto', opacity: 0.55 } }}
+                disableRipple
+              >
+                <span className="flex-1 text-left">{t(g.label)}</span>
+              </Button>
+              {isOpen && (
+                <div className="flex flex-col gap-0.5 pb-0.5">
+                  {g.items.map((item) => {
+                    const IIcon = item.icon
+                    return (
+                      <Button key={item.to} onClick={() => navigate(item.to)} startIcon={IIcon ? <IIcon size={15} /> : null}
+                        sx={rowSx(itemActive(item), true)} disableRipple>
+                        {t(item.label)}
+                      </Button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )
         })}
-      </Tabs>
+      </div>
 
       <div className="h-px bg-poe-line/70 mx-3 my-2.5" />
 
       <div className="flex flex-col gap-0.5 px-2">
-        {SECONDARY.map(item => {
+        {SECONDARY.map((item) => {
           const Icon = item.icon
-          const active = isActive(item.to)
+          const active = path === item.to
           return (
-            <Button key={item.to} onClick={() => navigate(item.to)} startIcon={<Icon size={15} />}
-              sx={{
-                justifyContent: 'flex-start', px: 1.5, py: 0.75, fontSize: 13,
-                color: active ? 'rgb(var(--c-accent))' : 'rgb(var(--c-text))',
-                backgroundColor: active ? 'rgb(var(--c-accent) / 0.10)' : 'transparent',
-                '&:hover': { backgroundColor: 'rgb(var(--c-text) / 0.05)', color: 'rgb(var(--c-heading))' },
-              }}>
+            <Button key={item.to} onClick={() => navigate(item.to)} startIcon={<Icon size={15} />} sx={rowSx(active)} disableRipple>
               {t(item.label)}
             </Button>
           )

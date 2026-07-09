@@ -28,7 +28,19 @@ export default {
     ],
   },
   contributes: {
-    nav: { group: 'main', label: 'Crafting', order: 32 },
+    nav: {
+      group: 'main', label: 'Crafting', order: 32,
+      items: [
+        { id: 'currency', label: 'Currency' },
+        { id: 'essences', label: 'Essences' },
+        { id: 'omens', label: 'Omens' },
+        { id: 'catalysts', label: 'Catalysts' },
+        { id: 'augments', label: 'Augments' },
+        { id: 'liquid', label: 'Liquid Emotions' },
+        { id: 'annoints', label: 'Anoints' },
+        { id: 'glossar', label: 'Glossary' },
+      ],
+    },
     route: { path: '/crafting', component: lazy(() => import('./XileCraftingPage.jsx').then(m => ({ default: m.XileCraftingPage }))) },
   },
 }

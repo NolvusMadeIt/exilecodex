@@ -28,7 +28,14 @@ export default {
     ],
   },
   contributes: {
-    nav: { group: 'main', label: 'Items', order: 30 },
+    nav: {
+      group: 'main', label: 'Items', order: 30,
+      // Panels the categorized side menu lists as direct entries (?panel=<id> deep links).
+      items: [
+        { id: 'uniques', label: 'Uniques' },
+        { id: 'bases', label: 'Bases' },
+      ],
+    },
     route: { path: '/items', component: lazy(() => import('./XileItemsPage.jsx').then(m => ({ default: m.XileItemsPage }))) },
   },
 }

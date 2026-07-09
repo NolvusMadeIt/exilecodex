@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ExternalLink } from 'lucide-react'
-import { PoeButton } from '../../components/PoeFrame.jsx'
+import { useRouter } from '../../lib/router.jsx'
 import { installXileShim } from '../../xilehud/adapter.ts'
 import '../../xilehud/xilehud.css'
 
-// The Crafting reference — eight XileHUD panels (GPL-3.0, see ATTRIBUTION.md) behind one tab
-// strip: currencies, essences, omens, catalysts, augments, liquid emotions, anoints and the
-// keyword glossary. Each vendored module fetches its dataset through the adapter shim and
-// renders vanilla DOM into the shared #craftingPanel container; this wrapper owns the tabs,
-// honest states, cleanup between switches, and the credit footer.
+// The Crafting reference — eight XileHUD panels (GPL-3.0, see ATTRIBUTION.md): currencies,
+// essences, omens, catalysts, augments, liquid emotions, anoints and the keyword glossary.
+// Panel selection lives in the categorized side menu (?panel=<id>); each vendored module
+// fetches its dataset through the adapter shim and renders vanilla DOM into the shared
+// #craftingPanel container. This wrapper owns honest states, cleanup, and the credit footer.
 const PANELS = [
   { id: 'currency', label: 'Currency', load: () => import('../../xilehud/overlay/crafting/currency/module.ts') },
   { id: 'essences', label: 'Essences', load: () => import('../../xilehud/overlay/crafting/essences/module.ts') },
@@ -21,7 +21,8 @@ const PANELS = [
 ]
 
 export function XileCraftingPage() {
-  const [tab, setTab] = useState('currency')
+  const { query } = useRouter()
+  const tab = PANELS.some((p) => p.id === query?.panel) ? query.panel : 'currency'
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [error, setError] = useState('')
   const panelRef = useRef(null)
@@ -52,14 +53,6 @@ export function XileCraftingPage() {
 
   return (
     <div className="flex h-[calc(100vh-128px)] min-h-0 flex-col">
-      <div className="mb-3 flex flex-wrap items-center gap-2">
-        {PANELS.map((p) => (
-          <PoeButton key={p.id} variant={tab === p.id ? 'gold' : 'default'} onClick={() => setTab(p.id)}>
-            {p.label}
-          </PoeButton>
-        ))}
-      </div>
-
       {status === 'loading' && (
         <div className="py-2 text-[12.5px] text-poe-text/60">Loading…</div>
       )}
