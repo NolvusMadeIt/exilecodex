@@ -4,6 +4,7 @@ import { useSettings } from "./store/settings";
 import CurrencyTable from "./components/CurrencyTable";
 import CurrencyDetail from "./components/CurrencyDetail";
 import MarketSummary from "./components/MarketSummary";
+import WatchlistView from "./components/WatchlistView";
 import { EmptyState, ErrorState } from "./components/States";
 import { fmtNum } from "../../lib/market/format";
 import { fetchLeagues, fetchCategories, fetchCurrencies } from "../../lib/market/client";
@@ -12,7 +13,8 @@ import type { BaseCurrency } from "../../lib/market/types";
 // Ported from the Marketplace Companion (components/market/MarketView.tsx) — the faithful split view
 // (MarketSummary banner + framed sortable table with category tabs/search + a resizable detail
 // panel), themed natively to nolvusfilter. Data comes from the Supabase edge function via React
-// Query. The detail panel's chart is the next increment.
+// Query. The Companion's /market/watchlist page lives here as the ★ Watchlist view (same single
+// route, internal switch — the host mounts one route per plugin).
 const MIN_DETAIL = 360;
 const MIN_TABLE = 380;
 const BASES: { id: BaseCurrency; label: string }[] = [
@@ -25,6 +27,7 @@ export default function MarketView() {
   const [selected, setSelected] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("currency");
+  const [view, setView] = useState<"market" | "watchlist">("market");
   const containerRef = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
 
@@ -132,7 +135,8 @@ export default function MarketView() {
   );
 
   let body: React.ReactNode;
-  if (!league) body = <EmptyState message="Loading leagues…" />;
+  if (view === "watchlist") body = <WatchlistView onBack={() => setView("market")} />;
+  else if (!league) body = <EmptyState message="Loading leagues…" />;
   else if (isLoading) body = <EmptyState message="Loading market…" />;
   else if (isError) body = <ErrorState message="Market data is temporarily unavailable." />;
   else if (!rows.length) body = <EmptyState message="No currencies found for this league." />;
@@ -151,6 +155,13 @@ export default function MarketView() {
           </div>
 
           <div className="flex gap-1 overflow-x-auto border-b border-poe-line px-2 py-1.5">
+            <button
+              onClick={() => setView("watchlist")}
+              className="shrink-0 rounded border border-poe-gold/40 px-2.5 py-1 text-[11px] uppercase tracking-wide text-poe-gold hover:bg-poe-gold/10"
+              title="Your watchlists — tracked currencies, portfolio value, alerts"
+            >
+              ★ Watchlist
+            </button>
             {categories.map((c) => (
               <button
                 key={c.apiId}
@@ -204,7 +215,7 @@ export default function MarketView() {
   return (
     <div className="flex h-[calc(100vh-128px)] min-h-0 flex-col gap-3">
       {controls}
-      {league && rows.length > 0 && <MarketSummary count={rows.length} />}
+      {view === "market" && league && rows.length > 0 && <MarketSummary count={rows.length} />}
       {body}
     </div>
   );

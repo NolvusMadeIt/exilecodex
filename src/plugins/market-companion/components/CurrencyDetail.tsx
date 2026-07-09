@@ -6,9 +6,12 @@ import { fmtNum, fmtCompact, fmtPct } from "../../../lib/market/format";
 import { buyUrl, sellUrl } from "../../../lib/market/trade";
 import { fetchDetail } from "../../../lib/market/client";
 import { computeSignal } from "../../../lib/market/signal";
+import WikiPanel from "./WikiPanel";
 
 // Ported from the Marketplace Companion (components/market/CurrencyDetail.tsx) — same chart +
-// timeframe + 8-stat behavior; nolvusfilter theme; data via the Supabase edge function.
+// timeframe + 8-stat behavior; nolvusfilter theme; data via the Supabase edge function. The
+// Companion's per-currency page (CurrencyPageView: detail + wiki article) is folded in here as the
+// "About" toggle, which swaps the chart for the live PoE2 Wiki article.
 type TF = "24H" | "7D" | "30D" | "ALL";
 const TABS: TF[] = ["24H", "7D", "30D", "ALL"];
 
@@ -41,6 +44,7 @@ function Stat({ label, value, tone, hint }: { label: string; value: string; tone
 export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
   const { league, base, refreshMs } = useSettings();
   const [tf, setTf] = useState<TF>("7D");
+  const [about, setAbout] = useState(false);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["detail", apiId, league, base],
@@ -128,19 +132,35 @@ export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
         {TABS.map((t) => (
           <button
             key={t}
-            onClick={() => setTf(t)}
+            onClick={() => {
+              setTf(t);
+              setAbout(false);
+            }}
             className={`tabular-nums px-2.5 py-1 text-xs rounded transition-colors ${
-              tf === t ? "bg-poe-gold/15 text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"
+              tf === t && !about ? "bg-poe-gold/15 text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"
             }`}
           >
             {t}
           </button>
         ))}
+        <button
+          onClick={() => setAbout((v) => !v)}
+          title="What this currency does — live from the PoE2 Wiki"
+          className={`px-2.5 py-1 text-xs rounded transition-colors ${
+            about ? "bg-poe-gold/15 text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"
+          }`}
+        >
+          ⓘ About
+        </button>
         <span className="ml-auto text-[10px] uppercase tracking-[0.15em] text-poe-text/60">{data.baseLabel} · per unit</span>
       </div>
 
       <div className="relative min-h-0 flex-1 px-1 py-1">
-        {hasChart ? (
+        {about ? (
+          <div className="h-full overflow-y-auto">
+            <WikiPanel name={data.name} />
+          </div>
+        ) : hasChart ? (
           <PriceChart kind={chart.kind} candles={chart.candles} points={chart.points} unit={unit} />
         ) : (
           <div className="grid h-full place-items-center text-poe-text/60 text-sm">No {tf} data for this currency</div>
