@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, ClipboardPaste, X } from 'lucide-react'
 import { SimpleSelect } from '../../components/SimpleSelect.jsx'
+import { PoeButton } from '../../components/PoeFrame.jsx'
 import { installXileShim, modifierDb, modifierDbReady } from '../../xilehud/adapter.ts'
+import { ItemParser } from '../../xilehud/parser/item-parser.ts'
 import '../../xilehud/xilehud.css'
 
 // The Modifiers browser — powered by XileHUD's vendored modifier engine (GPL-3.0, see
@@ -13,7 +15,11 @@ export function XileModifiersPage() {
   const [category, setCategory] = useState('')
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
+  const [pasteOpen, setPasteOpen] = useState(false)
+  const [pastedItem, setPastedItem] = useState(null) // ParsedItem — rides the engine's data.item envelope
   const modRef = useRef(null)
+  const itemRef = useRef(null)
+  itemRef.current = pastedItem
 
   // Load engine + categories once.
   useEffect(() => {
@@ -54,8 +60,9 @@ export function XileModifiersPage() {
         // The engine's render pipeline takes the ModifierData envelope ({ item?, modifiers }),
         // not the bare section array the database returns. Same priming order as upstream:
         // wrap, post-process annotations, publish the shared reference its filter pipeline
-        // re-reads on every input change, then render.
-        const data = { modifiers: sections }
+        // re-reads on every input change, then render. A pasted item rides the envelope's
+        // item field — that's what lights up the engine's matched-mod highlighting.
+        const data = { modifiers: sections, ...(itemRef.current ? { item: itemRef.current } : {}) }
         try { modRef.current.mechanicsPostProcess?.(data) } catch { /* annotation is best-effort upstream too */ }
         window.originalData = data
         modRef.current.renderFilteredContent(data)
@@ -73,6 +80,43 @@ export function XileModifiersPage() {
   const refilter = () => {
     if (window.originalData && modRef.current) {
       try { modRef.current.renderFilteredContent(window.originalData) } catch { /* module handles its own errors */ }
+    }
+  }
+
+  // Paste-an-item (their clipboard flow, manual-paste variant): parse the game's Ctrl+C /
+  // advanced-copy text, jump to the item's category, cap ilvl at the item's level (as
+  // upstream does) and re-render with the item riding the envelope.
+  async function analyzeItemText(text) {
+    if (!text?.trim()) return
+    try {
+      const item = await new ItemParser('poe2').parse(text)
+      setPasteOpen(false)
+      if (item?.category && categories.includes(item.category)) {
+        setPastedItem(item)
+        const ilvlMax = document.getElementById('ilvl-max')
+        if (ilvlMax && item.itemLevel > 0) ilvlMax.value = String(item.itemLevel)
+        if (item.category !== category) setCategory(item.category) // effect re-renders with the item
+        else if (window.originalData && modRef.current) {
+          window.originalData = { ...window.originalData, item }
+          modRef.current.renderFilteredContent(window.originalData)
+        }
+      } else {
+        setPastedItem(null)
+        setError(`That doesn't look like a copied PoE2 item (category "${item?.category || 'unknown'}" not in the database).`)
+        setStatus('error')
+      }
+    } catch (e) {
+      setError(String(e?.message || e))
+      setStatus('error')
+    }
+  }
+
+  function clearPastedItem() {
+    setPastedItem(null)
+    if (window.originalData && modRef.current) {
+      const { item, ...rest } = window.originalData
+      window.originalData = rest
+      modRef.current.renderFilteredContent(window.originalData)
     }
   }
   const ilvlDebounce = useRef(null)
@@ -99,7 +143,30 @@ export function XileModifiersPage() {
           –
           <input id="ilvl-max" type="number" min="1" max="100" placeholder="max" className="field h-8 w-16" onInput={refilterDebounced} />
         </span>
+        {pastedItem ? (
+          <span className="inline-flex items-center gap-1.5 rounded border border-poe-gold/40 bg-poe-gold/10 px-2 py-1 text-[11.5px] text-poe-gold">
+            {pastedItem.name || pastedItem.baseType || 'Pasted item'}
+            <button type="button" onClick={clearPastedItem} title="Stop analyzing this item" className="hover:text-poe-heading">
+              <X size={11} />
+            </button>
+          </span>
+        ) : (
+          <PoeButton onClick={() => setPasteOpen((v) => !v)} title="Paste a copied item (Ctrl+C or Ctrl+Alt+C in game) to jump to its mods">
+            <ClipboardPaste size={13} /> Paste item
+          </PoeButton>
+        )}
       </div>
+
+      {pasteOpen && !pastedItem && (
+        <textarea
+          autoFocus
+          rows={4}
+          placeholder="Paste the copied item text here (Ctrl+C on the item in game — Ctrl+Alt+C shows affix tiers too)…"
+          className="field mb-3 h-24 w-[480px] max-w-full resize-none py-1.5 font-mono text-[11.5px]"
+          onPaste={(e) => analyzeItemText(e.clipboardData.getData('text'))}
+          onKeyDown={(e) => { if (e.key === 'Escape') setPasteOpen(false) }}
+        />
+      )}
 
       {status === 'error' && (
         <div className="py-6 text-[12.5px] text-poe-danger">

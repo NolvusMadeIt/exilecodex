@@ -55,6 +55,12 @@ heaviest aggregate categories smooth. Engine and data **powered by
 
 ![Modifiers — browse, search, switch categories](docs/screenshots/modifiers.gif)
 
+Copy an item in game (Ctrl+C — or Ctrl+Alt+C for affix tiers) and paste it straight into the
+Modifiers page: it jumps to the item's category, caps the ilvl filter at the item's level,
+highlights the mods it rolled, and runs the whittling analysis on it.
+
+![Paste an item — jump to its mods with whittling analysis](docs/screenshots/paste-item.gif)
+
 ### Crafting
 
 Every crafting resource one tab away: currencies with their exact effects, essences by tier,
