@@ -75,6 +75,14 @@ After editing `landing/index.html`, run `node scripts/sync-landing.mjs` — it i
 
 Export a `.filter` from the top bar, drop it in `Documents\My Games\Path of Exile 2\`, then select it in-game under **Options → Game → Loot Filter**. Output is standard PoE2 filter syntax.
 
+## License & credits
+
+PoE2 Champions is open source under the **[GPL-3.0](LICENSE)** license.
+
+The Item Database and related overlay modules are **powered by [XileHUD](https://github.com/XileHUD/poe_overlay)**
+(GPL-3.0) — see [ATTRIBUTION.md](ATTRIBUTION.md) for the full credits, including the projects that
+inspired this app's look and the data sources it relies on.
+
 ---
 
 *Not affiliated with or endorsed by Grinding Gear Games. Path of Exile 2 is a trademark of Grinding Gear Games.*
