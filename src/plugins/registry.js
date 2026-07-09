@@ -5,8 +5,9 @@ import marketCompanion from './market-companion/index.ts'
 import priceCheck from './price-check/index.ts'
 import campaignGuide from './campaign-guide/index.ts'
 import xileItems from './xile-items/index.ts'
+import xileModifiers from './xile-modifiers/index.ts'
 
-export const BUILTIN_PLUGINS = [filterEditor, marketCompanion, priceCheck, campaignGuide, xileItems]
+export const BUILTIN_PLUGINS = [filterEditor, marketCompanion, priceCheck, campaignGuide, xileItems, xileModifiers]
 
 export function findPlugin(id) {
   return BUILTIN_PLUGINS.find(p => p.id === id) || null

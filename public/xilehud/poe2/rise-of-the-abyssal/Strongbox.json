@@ -1,0 +1,485 @@
+[
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Summons Skeletonschest delay drops until daemons finish [1]",
+    "tier": 1,
+    "ilvl": 2,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestSkeletons",
+    "tiers": [
+      {
+        "tier_name": "Ossified",
+        "tier_level": 2,
+        "text_plain": "2 Summons Skeletonschest delay drops until daemons finish [1]",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Freezes you when activatedCasts a random Hex Curse Spell when activatedIgnites you when activated",
+    "tier": 3,
+    "ilvl": 15,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestInstantSkill",
+    "tiers": [
+      {
+        "tier_name": "Arctic",
+        "tier_level": 8,
+        "text_plain": "8 Freezes you when activated",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Whispering",
+        "tier_level": 15,
+        "text_plain": "15 Casts a random Hex Curse Spell when activated",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Incandescent",
+        "tier_level": 1,
+        "text_plain": "1 Ignites you when activated",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Casts Ice Novachest play warning sound [#]Detonates nearby corpseschest play warning sound [#]Casts Firestormchest play warning sound [#]Summons Volatile Cragschest play warning sound [#]Casts Lightning Stormschest play warning sound [#]Casts Chaos Barrageschest play warning sound [#]Spreads Caustic Groundchest play warning sound [#]Explodeschest play warning sound [#]Cursed by Winter Hagschest play warning sound [#]",
+    "tier": 9,
+    "ilvl": 10,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestDelayedSkill",
+    "tiers": [
+      {
+        "tier_name": "Frigid",
+        "tier_level": 1,
+        "text_plain": "1 Casts Ice Novachest play warning sound [1]",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Putrifying",
+        "tier_level": 4,
+        "text_plain": "4 Detonates nearby corpseschest play warning sound [1]",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Scorched",
+        "tier_level": 10,
+        "text_plain": "10 Casts Firestormchest play warning sound [1]",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Scorched",
+        "tier_level": 1,
+        "text_plain": "1 Summons Volatile Cragschest play warning sound [1]",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Vibrating",
+        "tier_level": 1,
+        "text_plain": "1 Casts Lightning Stormschest play warning sound [1]",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Chaotic",
+        "tier_level": 1,
+        "text_plain": "1 Casts Chaos Barrageschest play warning sound [1]",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Contaminated",
+        "tier_level": 8,
+        "text_plain": "8 Spreads Caustic Groundchest play warning sound [1]",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Unstable",
+        "tier_level": 1,
+        "text_plain": "1 Explodeschest play warning sound [1]",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Frosted",
+        "tier_level": 1,
+        "text_plain": "1 Cursed by Winter Hagschest play warning sound [1]",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Guarded by a pack of Rare Monsterschest delay drops until daemons finish [#]Guarded by # packs of Magic Monsterschest delay drops until daemons finish [#]Guarded by # packs of Monsterschest delay drops until daemons finish [#]",
+    "tier": 3,
+    "ilvl": 35,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestMonsters",
+    "tiers": [
+      {
+        "tier_name": "Menacing",
+        "tier_level": 35,
+        "text_plain": "35 Guarded by a pack of Rare Monsterschest delay drops until daemons finish [1]",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Intimidating",
+        "tier_level": 10,
+        "text_plain": "10 Guarded by (2—4) packs of Magic Monsterschest delay drops until daemons finish [1]",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Crowded",
+        "tier_level": 1,
+        "text_plain": "1 Guarded by (4—8) packs of Monsterschest delay drops until daemons finish [1]",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Guarded by a Rogue Exile",
+    "tier": 1,
+    "ilvl": 12,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestSpawnRogueExile",
+    "tiers": [
+      {
+        "tier_name": "Contested",
+        "tier_level": 12,
+        "text_plain": "12 Guarded by a Rogue Exile",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Revives nearby dead Monsters with Onslaught",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestReviveMonsters",
+    "tiers": [
+      {
+        "tier_name": "Reaper's",
+        "tier_level": 1,
+        "text_plain": "1 Revives nearby dead Monsters with Onslaught",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Guarded by a stream of Monsters",
+    "tier": 1,
+    "ilvl": 35,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestSpawnContinuousMonsters",
+    "tiers": [
+      {
+        "tier_name": "Rallying",
+        "tier_level": 35,
+        "text_plain": "35 Guarded by a stream of Monsters",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Guarded by camoflaged Monsters",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestCamoflage",
+    "tiers": [
+      {
+        "tier_name": "Predator's",
+        "tier_level": 1,
+        "text_plain": "1 Guarded by camoflaged Monsters",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(25—50)% more Quantity of Contained Items",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "StrongboxItemQuantityMultiplicative",
+    "tiers": [
+      {
+        "tier_name": "of Bounty",
+        "tier_level": 1,
+        "text_plain": "1 (25—50)% more Quantity of Contained Items",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(50—100)% more Rarity of Contained Items",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestItemRarity",
+    "tiers": [
+      {
+        "tier_name": "of Treasures",
+        "tier_level": 1,
+        "text_plain": "1 (50—100)% more Rarity of Contained Items",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Contains an additional Unique Item",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestDropUnique",
+    "tiers": [
+      {
+        "tier_name": "of Singularity",
+        "tier_level": 1,
+        "text_plain": "1 Contains an additional Unique Item",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "+(1—2) Chest level",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestItemLevel",
+    "tiers": [
+      {
+        "tier_name": "of Ascendance",
+        "tier_level": 1,
+        "text_plain": "1 +(1—2) Chest level",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Contains Identified Items",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestDropsIdentified",
+    "tiers": [
+      {
+        "tier_name": "of Wisdom",
+        "tier_level": 1,
+        "text_plain": "1 Contains Identified Items",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Contained Items have (5—15)% Quality",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestItemQuality",
+    "tiers": [
+      {
+        "tier_name": "of Quality",
+        "tier_level": 1,
+        "text_plain": "1 Contained Items have (5—15)% Quality",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Contained Items have an additional Socket",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestItemSockets",
+    "tiers": [
+      {
+        "tier_name": "of Complexity",
+        "tier_level": 1,
+        "text_plain": "1 Contained Items have an additional Socket",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Contains (1—2) additional Rune",
+    "tier": 1,
+    "ilvl": 5,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestAdditionalRunes",
+    "tiers": [
+      {
+        "tier_name": "of Runic Power",
+        "tier_level": 5,
+        "text_plain": "5 Contains (1—2) additional Rune",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Contains 1 additional Djinn Barya",
+    "tier": 1,
+    "ilvl": 24,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestAdditionalSanctumKey",
+    "tiers": [
+      {
+        "tier_name": "of the Barya",
+        "tier_level": 24,
+        "text_plain": "24 Contains 1 additional Djinn Barya",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Contains 1 additional Inscribed Ultimatum",
+    "tier": 1,
+    "ilvl": 39,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestAdditionalUltimatumKey",
+    "tiers": [
+      {
+        "tier_name": "of the Trials",
+        "tier_level": 39,
+        "text_plain": "39 Contains 1 additional Inscribed Ultimatum",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Strongbox",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Contains 1 additional Unusual Tablet",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ChestAdditionalSpecialTowerAugment",
+    "tiers": [
+      {
+        "tier_name": "of Inscription",
+        "tier_level": 65,
+        "text_plain": "65 Contains 1 additional Unusual Tablet",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  }
+]

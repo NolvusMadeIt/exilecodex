@@ -1,0 +1,3458 @@
+[
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "# to maximum Life",
+    "tier": 9,
+    "ilvl": 60,
+    "weight": 9000,
+    "weight_pct": 12.465,
+    "tags": [
+      "life"
+    ],
+    "family": "IncreasedLife",
+    "tiers": [
+      {
+        "tier_name": "Hale",
+        "tier_level": 1,
+        "text_plain": "1 +(10—19) to maximum Life",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Healthy",
+        "tier_level": 6,
+        "text_plain": "6 +(20—29) to maximum Life",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Sanguine",
+        "tier_level": 16,
+        "text_plain": "16 +(30—39) to maximum Life",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Stalwart",
+        "tier_level": 24,
+        "text_plain": "24 +(40—59) to maximum Life",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Stout",
+        "tier_level": 33,
+        "text_plain": "33 +(60—69) to maximum Life",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Robust",
+        "tier_level": 38,
+        "text_plain": "38 +(70—84) to maximum Life",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Rotund",
+        "tier_level": 46,
+        "text_plain": "46 +(85—99) to maximum Life",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Virile",
+        "tier_level": 54,
+        "text_plain": "54 +(100—119) to maximum Life",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Athlete's",
+        "tier_level": 60,
+        "text_plain": "60 +(120—149) to maximum Life",
+        "weight": 1000,
+        "weight_pct": 1.385
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "#% increased maximum Life",
+    "tier": 3,
+    "ilvl": 75,
+    "weight": 900,
+    "weight_pct": 1.247,
+    "tags": [
+      "life"
+    ],
+    "family": "MaximumLifeIncreasePercent",
+    "tiers": [
+      {
+        "tier_name": "Hopeful",
+        "tier_level": 33,
+        "text_plain": "33 (3—4)% increased maximum Life",
+        "weight": 300,
+        "weight_pct": 0.416
+      },
+      {
+        "tier_name": "Optimistic",
+        "tier_level": 60,
+        "text_plain": "60 (5—6)% increased maximum Life",
+        "weight": 300,
+        "weight_pct": 0.416
+      },
+      {
+        "tier_name": "Confident",
+        "tier_level": 75,
+        "text_plain": "75 (7—8)% increased maximum Life",
+        "weight": 300,
+        "weight_pct": 0.416
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "# to maximum Mana",
+    "tier": 13,
+    "ilvl": 82,
+    "weight": 13000,
+    "weight_pct": 18.006,
+    "tags": [
+      "mana"
+    ],
+    "family": "IncreasedMana",
+    "tiers": [
+      {
+        "tier_name": "Beryl",
+        "tier_level": 1,
+        "text_plain": "1 +(10—14) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Cobalt",
+        "tier_level": 6,
+        "text_plain": "6 +(15—24) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Azure",
+        "tier_level": 16,
+        "text_plain": "16 +(25—34) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Teal",
+        "tier_level": 25,
+        "text_plain": "25 +(35—54) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Cerulean",
+        "tier_level": 33,
+        "text_plain": "33 +(55—64) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Aqua",
+        "tier_level": 38,
+        "text_plain": "38 +(65—79) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Opalescent",
+        "tier_level": 46,
+        "text_plain": "46 +(80—89) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Gentian",
+        "tier_level": 54,
+        "text_plain": "54 +(90—104) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Chalybeous",
+        "tier_level": 60,
+        "text_plain": "60 +(105—124) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Mazarine",
+        "tier_level": 65,
+        "text_plain": "65 +(125—149) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Blue",
+        "tier_level": 70,
+        "text_plain": "70 +(150—164) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Zaffre",
+        "tier_level": 75,
+        "text_plain": "75 +(165—179) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Ultramarine",
+        "tier_level": 82,
+        "text_plain": "82 +(180—189) to maximum Mana",
+        "weight": 1000,
+        "weight_pct": 1.385
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "#% increased maximum Mana",
+    "tier": 3,
+    "ilvl": 75,
+    "weight": 900,
+    "weight_pct": 1.247,
+    "tags": [
+      "mana"
+    ],
+    "family": "MaximumManaIncreasePercent",
+    "tiers": [
+      {
+        "tier_name": "Cognizant",
+        "tier_level": 33,
+        "text_plain": "33 (3—4)% increased maximum Mana",
+        "weight": 300,
+        "weight_pct": 0.416
+      },
+      {
+        "tier_name": "Perceptive",
+        "tier_level": 60,
+        "text_plain": "60 (5—6)% increased maximum Mana",
+        "weight": 300,
+        "weight_pct": 0.416
+      },
+      {
+        "tier_name": "Mnemonic",
+        "tier_level": 75,
+        "text_plain": "75 (7—8)% increased maximum Mana",
+        "weight": 300,
+        "weight_pct": 0.416
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "# to maximum Energy Shield",
+    "tier": 10,
+    "ilvl": 80,
+    "weight": 10000,
+    "weight_pct": 13.85,
+    "tags": [
+      "defences"
+    ],
+    "family": "IncreasedEnergyShield",
+    "tiers": [
+      {
+        "tier_name": "Shining",
+        "tier_level": 1,
+        "text_plain": "1 +(8—14) to maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Glimmering",
+        "tier_level": 11,
+        "text_plain": "11 +(15—20) to maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Glittering",
+        "tier_level": 16,
+        "text_plain": "16 +(21—24) to maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Glowing",
+        "tier_level": 25,
+        "text_plain": "25 +(25—33) to maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Radiating",
+        "tier_level": 33,
+        "text_plain": "33 +(34—41) to maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Pulsing",
+        "tier_level": 46,
+        "text_plain": "46 +(42—51) to maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Blazing",
+        "tier_level": 54,
+        "text_plain": "54 +(52—61) to maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Dazzling",
+        "tier_level": 65,
+        "text_plain": "65 +(62—70) to maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Scintillating",
+        "tier_level": 70,
+        "text_plain": "70 +(71—79) to maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Incandescent",
+        "tier_level": 80,
+        "text_plain": "80 +(80—89) to maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "#% increased Armour",
+    "tier": 7,
+    "ilvl": 75,
+    "weight": 7000,
+    "weight_pct": 9.695,
+    "tags": [
+      "defences"
+    ],
+    "family": "IncreasedPhysicalDamageReductionRatingPercent",
+    "tiers": [
+      {
+        "tier_name": "Reinforced",
+        "tier_level": 2,
+        "text_plain": "2 (10—14)% increased Armour",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Layered",
+        "tier_level": 16,
+        "text_plain": "16 (15—20)% increased Armour",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Lobstered",
+        "tier_level": 33,
+        "text_plain": "33 (21—26)% increased Armour",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Buttressed",
+        "tier_level": 46,
+        "text_plain": "46 (27—32)% increased Armour",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Thickened",
+        "tier_level": 54,
+        "text_plain": "54 (33—38)% increased Armour",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Girded",
+        "tier_level": 65,
+        "text_plain": "65 (39—44)% increased Armour",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Impregnable",
+        "tier_level": 75,
+        "text_plain": "75 (45—50)% increased Armour",
+        "weight": 1000,
+        "weight_pct": 1.385
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "#% increased Evasion Rating",
+    "tier": 7,
+    "ilvl": 77,
+    "weight": 7000,
+    "weight_pct": 9.695,
+    "tags": [
+      "defences"
+    ],
+    "family": "EvasionRatingPercent",
+    "tiers": [
+      {
+        "tier_name": "Shade's",
+        "tier_level": 2,
+        "text_plain": "2 (10—14)% increased Evasion Rating",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Ghost's",
+        "tier_level": 16,
+        "text_plain": "16 (15—20)% increased Evasion Rating",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Spectre's",
+        "tier_level": 33,
+        "text_plain": "33 (21—26)% increased Evasion Rating",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Wraith's",
+        "tier_level": 46,
+        "text_plain": "46 (27—32)% increased Evasion Rating",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Phantasm's",
+        "tier_level": 54,
+        "text_plain": "54 (33—38)% increased Evasion Rating",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Nightmare's",
+        "tier_level": 70,
+        "text_plain": "70 (39—44)% increased Evasion Rating",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Mirage's",
+        "tier_level": 77,
+        "text_plain": "77 (45—50)% increased Evasion Rating",
+        "weight": 1000,
+        "weight_pct": 1.385
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "#% increased maximum Energy Shield",
+    "tier": 7,
+    "ilvl": 75,
+    "weight": 7000,
+    "weight_pct": 9.695,
+    "tags": [
+      "defences"
+    ],
+    "family": "EnergyShieldPercent",
+    "tiers": [
+      {
+        "tier_name": "Protective",
+        "tier_level": 2,
+        "text_plain": "2 (10—14)% increased maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Strong-Willed",
+        "tier_level": 16,
+        "text_plain": "16 (15—20)% increased maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Resolute",
+        "tier_level": 33,
+        "text_plain": "33 (21—26)% increased maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Fearless",
+        "tier_level": 46,
+        "text_plain": "46 (27—32)% increased maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Dauntless",
+        "tier_level": 54,
+        "text_plain": "54 (33—38)% increased maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Indomitable",
+        "tier_level": 65,
+        "text_plain": "65 (39—44)% increased maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Unassailable",
+        "tier_level": 75,
+        "text_plain": "75 (45—50)% increased maximum Energy Shield",
+        "weight": 1000,
+        "weight_pct": 1.385
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "# to Accuracy Rating",
+    "tier": 8,
+    "ilvl": 67,
+    "weight": 6000,
+    "weight_pct": 8.31,
+    "tags": [
+      "attack"
+    ],
+    "family": "IncreasedAccuracy",
+    "tiers": [
+      {
+        "tier_name": "Precise",
+        "tier_level": 1,
+        "text_plain": "1 +(11—32) to Accuracy Rating",
+        "weight": 800,
+        "weight_pct": 1.108
+      },
+      {
+        "tier_name": "Reliable",
+        "tier_level": 11,
+        "text_plain": "11 +(33—60) to Accuracy Rating",
+        "weight": 800,
+        "weight_pct": 1.108
+      },
+      {
+        "tier_name": "Focused",
+        "tier_level": 18,
+        "text_plain": "18 +(61—84) to Accuracy Rating",
+        "weight": 800,
+        "weight_pct": 1.108
+      },
+      {
+        "tier_name": "Deliberate",
+        "tier_level": 26,
+        "text_plain": "26 +(85—123) to Accuracy Rating",
+        "weight": 800,
+        "weight_pct": 1.108
+      },
+      {
+        "tier_name": "Consistent",
+        "tier_level": 36,
+        "text_plain": "36 +(124—167) to Accuracy Rating",
+        "weight": 800,
+        "weight_pct": 1.108
+      },
+      {
+        "tier_name": "Steady",
+        "tier_level": 48,
+        "text_plain": "48 +(168—236) to Accuracy Rating",
+        "weight": 800,
+        "weight_pct": 1.108
+      },
+      {
+        "tier_name": "Hunter's",
+        "tier_level": 58,
+        "text_plain": "58 +(237—346) to Accuracy Rating",
+        "weight": 800,
+        "weight_pct": 1.108
+      },
+      {
+        "tier_name": "Ranger's",
+        "tier_level": 67,
+        "text_plain": "67 +(347—450) to Accuracy Rating",
+        "weight": 400,
+        "weight_pct": 0.554
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "#% increased Rarity of Items found",
+    "tier": 3,
+    "ilvl": 47,
+    "weight": 3000,
+    "weight_pct": 4.155,
+    "tags": [],
+    "family": "ItemFoundRarityIncreasePrefix",
+    "tiers": [
+      {
+        "tier_name": "Magpie's",
+        "tier_level": 10,
+        "text_plain": "10 (8—11)% increased Rarity of Items found",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Collector's",
+        "tier_level": 29,
+        "text_plain": "29 (12—15)% increased Rarity of Items found",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Hoarder's",
+        "tier_level": 47,
+        "text_plain": "47 (16—19)% increased Rarity of Items found",
+        "weight": 1000,
+        "weight_pct": 1.385
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "# to Spirit",
+    "tier": 5,
+    "ilvl": 54,
+    "weight": 2400,
+    "weight_pct": 3.324,
+    "tags": [],
+    "family": "BaseSpirit",
+    "tiers": [
+      {
+        "tier_name": "Lady's",
+        "tier_level": 16,
+        "text_plain": "16 +(30—33) to Spirit",
+        "weight": 500,
+        "weight_pct": 0.693
+      },
+      {
+        "tier_name": "Baronness'",
+        "tier_level": 25,
+        "text_plain": "25 +(34—37) to Spirit",
+        "weight": 500,
+        "weight_pct": 0.693
+      },
+      {
+        "tier_name": "Viscountess'",
+        "tier_level": 33,
+        "text_plain": "33 +(38—42) to Spirit",
+        "weight": 500,
+        "weight_pct": 0.693
+      },
+      {
+        "tier_name": "Marchioness'",
+        "tier_level": 46,
+        "text_plain": "46 +(43—46) to Spirit",
+        "weight": 500,
+        "weight_pct": 0.693
+      },
+      {
+        "tier_name": "Countess'",
+        "tier_level": 54,
+        "text_plain": "54 +(47—50) to Spirit",
+        "weight": 400,
+        "weight_pct": 0.554
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "#% increased Spell Damage",
+    "tier": 6,
+    "ilvl": 75,
+    "weight": 6000,
+    "weight_pct": 8.31,
+    "tags": [
+      "damage",
+      "caster"
+    ],
+    "family": "SpellDamage",
+    "tiers": [
+      {
+        "tier_name": "Apprentice's",
+        "tier_level": 1,
+        "text_plain": "1 (3—7)% increased Spell Damage",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Adept's",
+        "tier_level": 16,
+        "text_plain": "16 (8—12)% increased Spell Damage",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Scholar's",
+        "tier_level": 33,
+        "text_plain": "33 (13—17)% increased Spell Damage",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Professor's",
+        "tier_level": 46,
+        "text_plain": "46 (18—22)% increased Spell Damage",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Occultist's",
+        "tier_level": 60,
+        "text_plain": "60 (23—26)% increased Spell Damage",
+        "weight": 1000,
+        "weight_pct": 1.385
+      },
+      {
+        "tier_name": "Incanter's",
+        "tier_level": 75,
+        "text_plain": "75 (27—30)% increased Spell Damage",
+        "weight": 1000,
+        "weight_pct": 1.385
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "# to Strength",
+    "tier": 8,
+    "ilvl": 74,
+    "weight": 8000,
+    "weight_pct": 7.948,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Strength",
+    "tiers": [
+      {
+        "tier_name": "of the Brute",
+        "tier_level": 1,
+        "text_plain": "1 +(5—8) to Strength",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Wrestler",
+        "tier_level": 11,
+        "text_plain": "11 +(9—12) to Strength",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Bear",
+        "tier_level": 22,
+        "text_plain": "22 +(13—16) to Strength",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Lion",
+        "tier_level": 33,
+        "text_plain": "33 +(17—20) to Strength",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Gorilla",
+        "tier_level": 44,
+        "text_plain": "44 +(21—24) to Strength",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Goliath",
+        "tier_level": 55,
+        "text_plain": "55 +(25—27) to Strength",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Leviathan",
+        "tier_level": 66,
+        "text_plain": "66 +(28—30) to Strength",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Titan",
+        "tier_level": 74,
+        "text_plain": "74 +(31—33) to Strength",
+        "weight": 1000,
+        "weight_pct": 0.994
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "# to Dexterity",
+    "tier": 8,
+    "ilvl": 74,
+    "weight": 8000,
+    "weight_pct": 7.948,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Dexterity",
+    "tiers": [
+      {
+        "tier_name": "of the Mongoose",
+        "tier_level": 1,
+        "text_plain": "1 +(5—8) to Dexterity",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Lynx",
+        "tier_level": 11,
+        "text_plain": "11 +(9—12) to Dexterity",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Fox",
+        "tier_level": 22,
+        "text_plain": "22 +(13—16) to Dexterity",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Falcon",
+        "tier_level": 33,
+        "text_plain": "33 +(17—20) to Dexterity",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Panther",
+        "tier_level": 44,
+        "text_plain": "44 +(21—24) to Dexterity",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Leopard",
+        "tier_level": 55,
+        "text_plain": "55 +(25—27) to Dexterity",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Jaguar",
+        "tier_level": 66,
+        "text_plain": "66 +(28—30) to Dexterity",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Phantom",
+        "tier_level": 74,
+        "text_plain": "74 +(31—33) to Dexterity",
+        "weight": 1000,
+        "weight_pct": 0.994
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "# to Intelligence",
+    "tier": 8,
+    "ilvl": 74,
+    "weight": 8000,
+    "weight_pct": 7.948,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Intelligence",
+    "tiers": [
+      {
+        "tier_name": "of the Pupil",
+        "tier_level": 1,
+        "text_plain": "1 +(5—8) to Intelligence",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Student",
+        "tier_level": 11,
+        "text_plain": "11 +(9—12) to Intelligence",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Prodigy",
+        "tier_level": 22,
+        "text_plain": "22 +(13—16) to Intelligence",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Augur",
+        "tier_level": 33,
+        "text_plain": "33 +(17—20) to Intelligence",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Philosopher",
+        "tier_level": 44,
+        "text_plain": "44 +(21—24) to Intelligence",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Sage",
+        "tier_level": 55,
+        "text_plain": "55 +(25—27) to Intelligence",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Savant",
+        "tier_level": 66,
+        "text_plain": "66 +(28—30) to Intelligence",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Virtuoso",
+        "tier_level": 74,
+        "text_plain": "74 +(31—33) to Intelligence",
+        "weight": 1000,
+        "weight_pct": 0.994
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "# to all Attributes",
+    "tier": 9,
+    "ilvl": 82,
+    "weight": 7200,
+    "weight_pct": 7.154,
+    "tags": [
+      "attribute"
+    ],
+    "family": "AllAttributes",
+    "tiers": [
+      {
+        "tier_name": "of the Clouds",
+        "tier_level": 1,
+        "text_plain": "1 +(2—4) to all Attributes",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Sky",
+        "tier_level": 11,
+        "text_plain": "11 +(5—7) to all Attributes",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Meteor",
+        "tier_level": 22,
+        "text_plain": "22 +(8—10) to all Attributes",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Comet",
+        "tier_level": 33,
+        "text_plain": "33 +(11—13) to all Attributes",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Heavens",
+        "tier_level": 44,
+        "text_plain": "44 +(14—16) to all Attributes",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Galaxy",
+        "tier_level": 55,
+        "text_plain": "55 +(17—18) to all Attributes",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Universe",
+        "tier_level": 66,
+        "text_plain": "66 +(19—20) to all Attributes",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Multiverse",
+        "tier_level": 75,
+        "text_plain": "75 +(21—22) to all Attributes",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Infinite",
+        "tier_level": 82,
+        "text_plain": "82 +(23—24) to all Attributes",
+        "weight": 800,
+        "weight_pct": 0.795
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% to Fire Resistance",
+    "tier": 8,
+    "ilvl": 82,
+    "weight": 8000,
+    "weight_pct": 7.948,
+    "tags": [
+      "elemental",
+      "fire",
+      "resistance"
+    ],
+    "family": "FireResistance",
+    "tiers": [
+      {
+        "tier_name": "of the Whelpling",
+        "tier_level": 1,
+        "text_plain": "1 +(6—10)% to Fire Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Salamander",
+        "tier_level": 12,
+        "text_plain": "12 +(11—15)% to Fire Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Drake",
+        "tier_level": 24,
+        "text_plain": "24 +(16—20)% to Fire Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Kiln",
+        "tier_level": 36,
+        "text_plain": "36 +(21—25)% to Fire Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Furnace",
+        "tier_level": 48,
+        "text_plain": "48 +(26—30)% to Fire Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Volcano",
+        "tier_level": 60,
+        "text_plain": "60 +(31—35)% to Fire Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Magma",
+        "tier_level": 71,
+        "text_plain": "71 +(36—40)% to Fire Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Tzteosh",
+        "tier_level": 82,
+        "text_plain": "82 +(41—45)% to Fire Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% to Cold Resistance",
+    "tier": 8,
+    "ilvl": 82,
+    "weight": 8000,
+    "weight_pct": 7.948,
+    "tags": [
+      "elemental",
+      "cold",
+      "resistance"
+    ],
+    "family": "ColdResistance",
+    "tiers": [
+      {
+        "tier_name": "of the Seal",
+        "tier_level": 1,
+        "text_plain": "1 +(6—10)% to Cold Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Penguin",
+        "tier_level": 14,
+        "text_plain": "14 +(11—15)% to Cold Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Narwhal",
+        "tier_level": 26,
+        "text_plain": "26 +(16—20)% to Cold Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Yeti",
+        "tier_level": 38,
+        "text_plain": "38 +(21—25)% to Cold Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Walrus",
+        "tier_level": 50,
+        "text_plain": "50 +(26—30)% to Cold Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Polar Bear",
+        "tier_level": 60,
+        "text_plain": "60 +(31—35)% to Cold Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Ice",
+        "tier_level": 71,
+        "text_plain": "71 +(36—40)% to Cold Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Haast",
+        "tier_level": 82,
+        "text_plain": "82 +(41—45)% to Cold Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% to Lightning Resistance",
+    "tier": 8,
+    "ilvl": 82,
+    "weight": 8000,
+    "weight_pct": 7.948,
+    "tags": [
+      "elemental",
+      "lightning",
+      "resistance"
+    ],
+    "family": "LightningResistance",
+    "tiers": [
+      {
+        "tier_name": "of the Cloud",
+        "tier_level": 1,
+        "text_plain": "1 +(6—10)% to Lightning Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Squall",
+        "tier_level": 13,
+        "text_plain": "13 +(11—15)% to Lightning Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Storm",
+        "tier_level": 25,
+        "text_plain": "25 +(16—20)% to Lightning Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Thunderhead",
+        "tier_level": 37,
+        "text_plain": "37 +(21—25)% to Lightning Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Tempest",
+        "tier_level": 49,
+        "text_plain": "49 +(26—30)% to Lightning Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Maelstrom",
+        "tier_level": 60,
+        "text_plain": "60 +(31—35)% to Lightning Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Lightning",
+        "tier_level": 71,
+        "text_plain": "71 +(36—40)% to Lightning Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Ephij",
+        "tier_level": 82,
+        "text_plain": "82 +(41—45)% to Lightning Resistance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% to all Elemental Resistances",
+    "tier": 6,
+    "ilvl": 80,
+    "weight": 4800,
+    "weight_pct": 4.769,
+    "tags": [
+      "elemental",
+      "fire",
+      "cold",
+      "lightning",
+      "resistance"
+    ],
+    "family": "AllResistances",
+    "tiers": [
+      {
+        "tier_name": "of the Crystal",
+        "tier_level": 12,
+        "text_plain": "12 +(3—5)% to all Elemental Resistances",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Prism",
+        "tier_level": 26,
+        "text_plain": "26 +(6—8)% to all Elemental Resistances",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Kaleidoscope",
+        "tier_level": 40,
+        "text_plain": "40 +(9—11)% to all Elemental Resistances",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of Variegation",
+        "tier_level": 54,
+        "text_plain": "54 +(12—14)% to all Elemental Resistances",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Rainbow",
+        "tier_level": 68,
+        "text_plain": "68 +(15—16)% to all Elemental Resistances",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of the Span",
+        "tier_level": 80,
+        "text_plain": "80 +(17—18)% to all Elemental Resistances",
+        "weight": 800,
+        "weight_pct": 0.795
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% to Chaos Resistance",
+    "tier": 6,
+    "ilvl": 81,
+    "weight": 1500,
+    "weight_pct": 1.49,
+    "tags": [
+      "chaos",
+      "resistance"
+    ],
+    "family": "ChaosResistance",
+    "tiers": [
+      {
+        "tier_name": "of the Lost",
+        "tier_level": 16,
+        "text_plain": "16 +(4—7)% to Chaos Resistance",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of Banishment",
+        "tier_level": 30,
+        "text_plain": "30 +(8—11)% to Chaos Resistance",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of Eviction",
+        "tier_level": 44,
+        "text_plain": "44 +(12—15)% to Chaos Resistance",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of Expulsion",
+        "tier_level": 56,
+        "text_plain": "56 +(16—19)% to Chaos Resistance",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of Exile",
+        "tier_level": 68,
+        "text_plain": "68 +(20—23)% to Chaos Resistance",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of Bameth",
+        "tier_level": 81,
+        "text_plain": "81 +(24—27)% to Chaos Resistance",
+        "weight": 250,
+        "weight_pct": 0.248
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "# to Level of all Spell Skills# to Level of all Minion Skills# to Level of all Melee Skills# to Level of all Projectile Skills",
+    "tier": 12,
+    "ilvl": 75,
+    "weight": 3400,
+    "weight_pct": 3.378,
+    "tags": [
+      "caster",
+      "gem"
+    ],
+    "family": "IncreaseSocketedGemLevel",
+    "tiers": [
+      {
+        "tier_name": "of the Mage",
+        "tier_level": 10,
+        "text_plain": "10 +1 to Level of all Spell Skills",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of the Enchanter",
+        "tier_level": 41,
+        "text_plain": "41 +2 to Level of all Spell Skills",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of the Sorcerer",
+        "tier_level": 75,
+        "text_plain": "75 +3 to Level of all Spell Skills",
+        "weight": 100,
+        "weight_pct": 0.099
+      },
+      {
+        "tier_name": "of the Taskmaster",
+        "tier_level": 5,
+        "text_plain": "5 +1 to Level of all Minion Skills",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of the Despot",
+        "tier_level": 41,
+        "text_plain": "41 +2 to Level of all Minion Skills",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of the Overseer",
+        "tier_level": 75,
+        "text_plain": "75 +3 to Level of all Minion Skills",
+        "weight": 100,
+        "weight_pct": 0.099
+      },
+      {
+        "tier_name": "of Combat",
+        "tier_level": 5,
+        "text_plain": "5 +1 to Level of all Melee Skills",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Dueling",
+        "tier_level": 41,
+        "text_plain": "41 +2 to Level of all Melee Skills",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of Battle",
+        "tier_level": 75,
+        "text_plain": "75 +3 to Level of all Melee Skills",
+        "weight": 100,
+        "weight_pct": 0.099
+      },
+      {
+        "tier_name": "of the Archer",
+        "tier_level": 5,
+        "text_plain": "5 +1 to Level of all Projectile Skills",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of the Fletcher",
+        "tier_level": 41,
+        "text_plain": "41 +2 to Level of all Projectile Skills",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of the Sharpshooter",
+        "tier_level": 75,
+        "text_plain": "75 +3 to Level of all Projectile Skills",
+        "weight": 100,
+        "weight_pct": 0.099
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "# Life Regeneration per second",
+    "tier": 10,
+    "ilvl": 75,
+    "weight": 10000,
+    "weight_pct": 9.935,
+    "tags": [
+      "life"
+    ],
+    "family": "LifeRegeneration",
+    "tiers": [
+      {
+        "tier_name": "of the Newt",
+        "tier_level": 1,
+        "text_plain": "1 (1—2) Life Regeneration per second",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Lizard",
+        "tier_level": 5,
+        "text_plain": "5 (2.1—3) Life Regeneration per second",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Flatworm",
+        "tier_level": 11,
+        "text_plain": "11 (3.1—4) Life Regeneration per second",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Starfish",
+        "tier_level": 17,
+        "text_plain": "17 (4.1—6) Life Regeneration per second",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Hydra",
+        "tier_level": 26,
+        "text_plain": "26 (6.1—9) Life Regeneration per second",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of the Troll",
+        "tier_level": 35,
+        "text_plain": "35 (9.1—13) Life Regeneration per second",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Convalescence",
+        "tier_level": 47,
+        "text_plain": "47 (13.1—18) Life Regeneration per second",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Recuperation",
+        "tier_level": 58,
+        "text_plain": "58 (18.1—23) Life Regeneration per second",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Resurgence",
+        "tier_level": 68,
+        "text_plain": "68 (23.1—29) Life Regeneration per second",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Immortality",
+        "tier_level": 75,
+        "text_plain": "75 (29.1—33) Life Regeneration per second",
+        "weight": 1000,
+        "weight_pct": 0.994
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% increased Mana Regeneration Rate",
+    "tier": 6,
+    "ilvl": 79,
+    "weight": 6000,
+    "weight_pct": 5.961,
+    "tags": [
+      "mana"
+    ],
+    "family": "ManaRegeneration",
+    "tiers": [
+      {
+        "tier_name": "of Excitement",
+        "tier_level": 1,
+        "text_plain": "1 (10—19)% increased Mana Regeneration Rate",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Joy",
+        "tier_level": 18,
+        "text_plain": "18 (20—29)% increased Mana Regeneration Rate",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Elation",
+        "tier_level": 29,
+        "text_plain": "29 (30—39)% increased Mana Regeneration Rate",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Bliss",
+        "tier_level": 42,
+        "text_plain": "42 (40—49)% increased Mana Regeneration Rate",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Euphoria",
+        "tier_level": 55,
+        "text_plain": "55 (50—59)% increased Mana Regeneration Rate",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Nirvana",
+        "tier_level": 79,
+        "text_plain": "79 (60—69)% increased Mana Regeneration Rate",
+        "weight": 1000,
+        "weight_pct": 0.994
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% increased Cast Speed",
+    "tier": 5,
+    "ilvl": 60,
+    "weight": 4000,
+    "weight_pct": 3.974,
+    "tags": [
+      "caster",
+      "speed"
+    ],
+    "family": "IncreasedCastSpeed",
+    "tiers": [
+      {
+        "tier_name": "of Talent",
+        "tier_level": 1,
+        "text_plain": "1 (9—12)% increased Cast Speed",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of Nimbleness",
+        "tier_level": 15,
+        "text_plain": "15 (13—16)% increased Cast Speed",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of Expertise",
+        "tier_level": 30,
+        "text_plain": "30 (17—20)% increased Cast Speed",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of Sortilege",
+        "tier_level": 45,
+        "text_plain": "45 (21—24)% increased Cast Speed",
+        "weight": 800,
+        "weight_pct": 0.795
+      },
+      {
+        "tier_name": "of Legerdemain",
+        "tier_level": 60,
+        "text_plain": "60 (25—28)% increased Cast Speed",
+        "weight": 800,
+        "weight_pct": 0.795
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% increased Critical Hit Chance",
+    "tier": 6,
+    "ilvl": 72,
+    "weight": 3875,
+    "weight_pct": 3.85,
+    "tags": [
+      "critical"
+    ],
+    "family": "CriticalStrikeChanceIncrease",
+    "tiers": [
+      {
+        "tier_name": "of Menace",
+        "tier_level": 5,
+        "text_plain": "5 (10—14)% increased Critical Hit Chance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Havoc",
+        "tier_level": 20,
+        "text_plain": "20 (15—19)% increased Critical Hit Chance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Disaster",
+        "tier_level": 30,
+        "text_plain": "30 (20—24)% increased Critical Hit Chance",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Calamity",
+        "tier_level": 44,
+        "text_plain": "44 (25—29)% increased Critical Hit Chance",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Ruin",
+        "tier_level": 58,
+        "text_plain": "58 (30—34)% increased Critical Hit Chance",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of Unmaking",
+        "tier_level": 72,
+        "text_plain": "72 (35—38)% increased Critical Hit Chance",
+        "weight": 125,
+        "weight_pct": 0.124
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% increased Critical Damage Bonus",
+    "tier": 6,
+    "ilvl": 74,
+    "weight": 3875,
+    "weight_pct": 3.85,
+    "tags": [
+      "damage",
+      "critical"
+    ],
+    "family": "CriticalStrikeMultiplier",
+    "tiers": [
+      {
+        "tier_name": "of Ire",
+        "tier_level": 8,
+        "text_plain": "8 (10—14)% increased Critical Damage Bonus",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Anger",
+        "tier_level": 21,
+        "text_plain": "21 (15—19)% increased Critical Damage Bonus",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Rage",
+        "tier_level": 31,
+        "text_plain": "31 (20—24)% increased Critical Damage Bonus",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Fury",
+        "tier_level": 45,
+        "text_plain": "45 (25—29)% increased Critical Damage Bonus",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Ferocity",
+        "tier_level": 59,
+        "text_plain": "59 (30—34)% increased Critical Damage Bonus",
+        "weight": 250,
+        "weight_pct": 0.248
+      },
+      {
+        "tier_name": "of Destruction",
+        "tier_level": 74,
+        "text_plain": "74 (35—39)% increased Critical Damage Bonus",
+        "weight": 125,
+        "weight_pct": 0.124
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% increased Rarity of Items found",
+    "tier": 3,
+    "ilvl": 40,
+    "weight": 3000,
+    "weight_pct": 2.981,
+    "tags": [],
+    "family": "ItemFoundRarityIncrease",
+    "tiers": [
+      {
+        "tier_name": "of Plunder",
+        "tier_level": 3,
+        "text_plain": "3 (6—10)% increased Rarity of Items found",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Raiding",
+        "tier_level": 24,
+        "text_plain": "24 (11—14)% increased Rarity of Items found",
+        "weight": 1000,
+        "weight_pct": 0.994
+      },
+      {
+        "tier_name": "of Archaeology",
+        "tier_level": 40,
+        "text_plain": "40 (15—18)% increased Rarity of Items found",
+        "weight": 1000,
+        "weight_pct": 0.994
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% of Damage taken Recouped as Life",
+    "tier": 5,
+    "ilvl": 79,
+    "weight": 2500,
+    "weight_pct": 2.484,
+    "tags": [
+      "life"
+    ],
+    "family": "DamageTakenGainedAsLife",
+    "tiers": [
+      {
+        "tier_name": "of Mending",
+        "tier_level": 30,
+        "text_plain": "30 (10—12)% of Damage taken Recouped as Life",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Bandaging",
+        "tier_level": 44,
+        "text_plain": "44 (13—15)% of Damage taken Recouped as Life",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Stitching",
+        "tier_level": 56,
+        "text_plain": "56 (16—18)% of Damage taken Recouped as Life",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Suturing",
+        "tier_level": 68,
+        "text_plain": "68 (19—21)% of Damage taken Recouped as Life",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Fleshbinding",
+        "tier_level": 79,
+        "text_plain": "79 (22—24)% of Damage taken Recouped as Life",
+        "weight": 500,
+        "weight_pct": 0.497
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "#% of Damage taken Recouped as Mana",
+    "tier": 5,
+    "ilvl": 80,
+    "weight": 2500,
+    "weight_pct": 2.484,
+    "tags": [
+      "life",
+      "mana"
+    ],
+    "family": "PercentDamageGoesToMana",
+    "tiers": [
+      {
+        "tier_name": "of Reprieve",
+        "tier_level": 31,
+        "text_plain": "31 (10—12)% of Damage taken Recouped as Mana",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Solace",
+        "tier_level": 45,
+        "text_plain": "45 (13—15)% of Damage taken Recouped as Mana",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Tranquility",
+        "tier_level": 57,
+        "text_plain": "57 (16—18)% of Damage taken Recouped as Mana",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Serenity",
+        "tier_level": 69,
+        "text_plain": "69 (19—21)% of Damage taken Recouped as Mana",
+        "weight": 500,
+        "weight_pct": 0.497
+      },
+      {
+        "tier_name": "of Zen",
+        "tier_level": 80,
+        "text_plain": "80 (22—24)% of Damage taken Recouped as Mana",
+        "weight": 500,
+        "weight_pct": 0.497
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "(15—25)% increased Global Defences",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "amanamu_mod",
+      "defences"
+    ],
+    "family": "AllDefences",
+    "tiers": [
+      {
+        "tier_name": "Amanamu's",
+        "tier_level": 65,
+        "text_plain": "65 (15—25)% increased Global Defences",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "Remnants have (8—15)% increased effect",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "amanamu_mod"
+    ],
+    "family": "RemnantEffect",
+    "tiers": [
+      {
+        "tier_name": "Amanamu's",
+        "tier_level": 65,
+        "text_plain": "65 Remnants have (8—15)% increased effect",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "Minions deal (15—25)% increased Damage if you've Hit Recently",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "amanamu_mod",
+      "damage",
+      "minion"
+    ],
+    "family": "IncreasedMinionDamageIfYouHitEnemy",
+    "tiers": [
+      {
+        "tier_name": "Amanamu's",
+        "tier_level": 65,
+        "text_plain": "65 Minions deal (15—25)% increased Damage if you've Hit Recently",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "(35—50)% increased Armour from Equipped Body Armour",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "amanamu_mod",
+      "defences"
+    ],
+    "family": "BodyArmourFromBodyArmour",
+    "tiers": [
+      {
+        "tier_name": "Amanamu's",
+        "tier_level": 65,
+        "text_plain": "65 (35—50)% increased Armour from Equipped Body Armour",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "(15—25)% increased Spell Damage while on Full Energy Shield",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod",
+      "damage",
+      "caster"
+    ],
+    "family": "IncreasedSpellDamageOnFullEnergyShield",
+    "tiers": [
+      {
+        "tier_name": "Kurgal's",
+        "tier_level": 65,
+        "text_plain": "65 (15—25)% increased Spell Damage while on Full Energy Shield",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "Invocated Spells have (10—20)% chance to consume half as much Energy",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod",
+      "caster"
+    ],
+    "family": "InvocatedSpellHalfEnergyChance",
+    "tiers": [
+      {
+        "tier_name": "Kurgal's",
+        "tier_level": 65,
+        "text_plain": "65 Invocated Spells have (10—20)% chance to consume half as much Energy",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "(35—50)% increased Energy Shield from Equipped Body Armour",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod",
+      "defences"
+    ],
+    "family": "MaximumEnergyShieldFromBodyArmour",
+    "tiers": [
+      {
+        "tier_name": "Kurgal's",
+        "tier_level": 65,
+        "text_plain": "65 (35—50)% increased Energy Shield from Equipped Body Armour",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "(20—30)% chance for Skills to retain 40% of Glory on use",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "ulaman_mod"
+    ],
+    "family": "GloryChanceToNotConsume",
+    "tiers": [
+      {
+        "tier_name": "Ulaman's",
+        "tier_level": 65,
+        "text_plain": "65 (20—30)% chance for Skills to retain 40% of Glory on use",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "(35—50)% increased Evasion Rating from Equipped Body Armour",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "ulaman_mod",
+      "defences"
+    ],
+    "family": "EvasionRatingFromBodyArmour",
+    "tiers": [
+      {
+        "tier_name": "Ulaman's",
+        "tier_level": 65,
+        "text_plain": "65 (35—50)% increased Evasion Rating from Equipped Body Armour",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "(15—25)% increased Attack Damage while on Low Life",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "ulaman_mod"
+    ],
+    "family": "AttackDamage",
+    "tiers": [
+      {
+        "tier_name": "Ulaman's",
+        "tier_level": 65,
+        "text_plain": "65 (15—25)% increased Attack Damage while on Low Life",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "(10—20)% increased Deflection Rating",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "ulaman_mod",
+      "defences"
+    ],
+    "family": "GlobalDeflectionRating",
+    "tiers": [
+      {
+        "tier_name": "Ulaman's",
+        "tier_level": 65,
+        "text_plain": "65 (10—20)% increased Deflection Rating",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "# to Strength and Intelligence# to Strength and Dexterity",
+    "tier": 2,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "amanamu_mod",
+      "attribute"
+    ],
+    "family": "Strength",
+    "tiers": [
+      {
+        "tier_name": "of Amanamu",
+        "tier_level": 65,
+        "text_plain": "65 +(9—15) to Strength and Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "of Ulaman",
+        "tier_level": 65,
+        "text_plain": "65 +(9—15) to Strength and Dexterity",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "(8—12)% increased Skill Effect Duration",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "amanamu_mod"
+    ],
+    "family": "SkillEffectDuration",
+    "tiers": [
+      {
+        "tier_name": "of Amanamu",
+        "tier_level": 65,
+        "text_plain": "65 (8—12)% increased Skill Effect Duration",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "Remnants can be collected from (20—30)% further away",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "amanamu_mod"
+    ],
+    "family": "RemnantPickupRadius",
+    "tiers": [
+      {
+        "tier_name": "of Amanamu",
+        "tier_level": 65,
+        "text_plain": "65 Remnants can be collected from (20—30)% further away",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "+(13—17)% to Fire and Chaos Resistances",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "amanamu_mod",
+      "elemental",
+      "fire",
+      "chaos",
+      "resistance"
+    ],
+    "family": "FireAndChaosDamageResistance",
+    "tiers": [
+      {
+        "tier_name": "of Amanamu",
+        "tier_level": 65,
+        "text_plain": "65 +(13—17)% to Fire and Chaos Resistances",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "Aura Skills have (8—16)% increased Magnitudes",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "amanamu_mod"
+    ],
+    "family": "AuraEffect",
+    "tiers": [
+      {
+        "tier_name": "of Amanamu",
+        "tier_level": 65,
+        "text_plain": "65 Aura Skills have (8—16)% increased Magnitudes",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "Equipment and Skill Gems have (10—15)% reduced Attribute Requirements",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "amanamu_mod"
+    ],
+    "family": "GlobalItemAttributeRequirements",
+    "tiers": [
+      {
+        "tier_name": "of Amanamu",
+        "tier_level": 65,
+        "text_plain": "65 Equipment and Skill Gems have (10—15)% reduced Attribute Requirements",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "Recover (2—3)% of maximum Mana on Kill",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod",
+      "mana"
+    ],
+    "family": "ManaGainedOnKillPercentage",
+    "tiers": [
+      {
+        "tier_name": "of Kurgal",
+        "tier_level": 65,
+        "text_plain": "65 Recover (2—3)% of maximum Mana on Kill",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "(10—15)% increased Exposure Effect",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod"
+    ],
+    "family": "ExposureEffect",
+    "tiers": [
+      {
+        "tier_name": "of Kurgal",
+        "tier_level": 65,
+        "text_plain": "65 (10—15)% increased Exposure Effect",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "(8—12)% increased Cooldown Recovery Rate",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod"
+    ],
+    "family": "CooldownRecovery",
+    "tiers": [
+      {
+        "tier_name": "of Kurgal",
+        "tier_level": 65,
+        "text_plain": "65 (8—12)% increased Cooldown Recovery Rate",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "+(13—17)% to Cold and Chaos Resistances",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod",
+      "elemental",
+      "cold",
+      "chaos",
+      "resistance"
+    ],
+    "family": "ColdAndChaosDamageResistance",
+    "tiers": [
+      {
+        "tier_name": "of Kurgal",
+        "tier_level": 65,
+        "text_plain": "65 +(13—17)% to Cold and Chaos Resistances",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "+(9—15) to Dexterity and Intelligence",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod",
+      "attribute"
+    ],
+    "family": "Dexterity",
+    "tiers": [
+      {
+        "tier_name": "of Kurgal",
+        "tier_level": 65,
+        "text_plain": "65 +(9—15) to Dexterity and Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "+(3—5)% to Quality of all Skills",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod",
+      "gem"
+    ],
+    "family": "GlobalSkillGemQuality",
+    "tiers": [
+      {
+        "tier_name": "of Kurgal",
+        "tier_level": 65,
+        "text_plain": "65 +(3—5)% to Quality of all Skills",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "(8—16)% of Damage is taken from Mana before Life",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod",
+      "life",
+      "mana"
+    ],
+    "family": "DamageRemovedFromManaBeforeLife",
+    "tiers": [
+      {
+        "tier_name": "of Kurgal",
+        "tier_level": 65,
+        "text_plain": "65 (8—16)% of Damage is taken from Mana before Life",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "Minions have (12—20)% increased Cooldown Recovery Rate",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "kurgal_mod",
+      "minion"
+    ],
+    "family": "MinionCooldown",
+    "tiers": [
+      {
+        "tier_name": "of Kurgal",
+        "tier_level": 65,
+        "text_plain": "65 Minions have (12—20)% increased Cooldown Recovery Rate",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "(3—6)% increased Skill Speed",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "ulaman_mod",
+      "speed"
+    ],
+    "family": "IncreasedSpeed",
+    "tiers": [
+      {
+        "tier_name": "of Ulaman",
+        "tier_level": 65,
+        "text_plain": "65 (3—6)% increased Skill Speed",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "Recover (2—3)% of maximum Life on Kill",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "ulaman_mod",
+      "life"
+    ],
+    "family": "RecoverPercentMaxLifeOnKill",
+    "tiers": [
+      {
+        "tier_name": "of Ulaman",
+        "tier_level": 65,
+        "text_plain": "65 Recover (2—3)% of maximum Life on Kill",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "+(13—17)% to Lightning and Chaos Resistances",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "ulaman_mod",
+      "elemental",
+      "lightning",
+      "chaos",
+      "resistance"
+    ],
+    "family": "LightningAndChaosDamageResistance",
+    "tiers": [
+      {
+        "tier_name": "of Ulaman",
+        "tier_level": 65,
+        "text_plain": "65 +(13—17)% to Lightning and Chaos Resistances",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "(10—20)% increased Reservation Efficiency of Herald Skills",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "ulaman_mod"
+    ],
+    "family": "HeraldReservationEfficiency",
+    "tiers": [
+      {
+        "tier_name": "of Ulaman",
+        "tier_level": 65,
+        "text_plain": "65 (10—20)% increased Reservation Efficiency of Herald Skills",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "+1 to Level of all Skills",
+    "tier": 1,
+    "ilvl": 65,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "ulaman_mod",
+      "gem"
+    ],
+    "family": "IncreaseSocketedGemLevel",
+    "tiers": [
+      {
+        "tier_name": "of Ulaman",
+        "tier_level": 65,
+        "text_plain": "65 +1 to Level of all Skills",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "prefix",
+    "text_plain": "# to maximum Life",
+    "tier": 3,
+    "ilvl": 46,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "life"
+    ],
+    "family": "IncreasedLife",
+    "tiers": [
+      {
+        "tier_name": "Lesser Essence of the Body",
+        "tier_level": 6,
+        "text_plain": "6 +(20—29) to maximum Life",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Essence of the Body",
+        "tier_level": 38,
+        "text_plain": "38 +(70—84) to maximum Life",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Greater Essence of the Body",
+        "tier_level": 46,
+        "text_plain": "46 +(85—99) to maximum Life",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "prefix",
+    "text_plain": "# to maximum Mana",
+    "tier": 3,
+    "ilvl": 54,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "mana"
+    ],
+    "family": "IncreasedMana",
+    "tiers": [
+      {
+        "tier_name": "Lesser Essence of the Mind",
+        "tier_level": 16,
+        "text_plain": "16 +(25—34) to maximum Mana",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Essence of the Mind",
+        "tier_level": 46,
+        "text_plain": "46 +(80—89) to maximum Mana",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Greater Essence of the Mind",
+        "tier_level": 54,
+        "text_plain": "54 +(90—104) to maximum Mana",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "prefix",
+    "text_plain": "(20—30)% increased Global Defences",
+    "tier": 1,
+    "ilvl": 72,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "defences"
+    ],
+    "family": "AllDefences",
+    "tiers": [
+      {
+        "tier_name": "Perfect Essence of Enhancement",
+        "tier_level": 72,
+        "text_plain": "72 (20—30)% increased Global Defences",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "prefix",
+    "text_plain": "Mark of the Abyssal Lord",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "EssenceAbyss",
+    "tiers": [
+      {
+        "tier_name": "Essence of the Abyss",
+        "tier_level": 1,
+        "text_plain": "1 Mark of the Abyssal Lord",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "#% to Chaos Resistance",
+    "tier": 3,
+    "ilvl": 56,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "chaos",
+      "resistance"
+    ],
+    "family": "ChaosResistance",
+    "tiers": [
+      {
+        "tier_name": "Lesser Essence of Ruin",
+        "tier_level": 16,
+        "text_plain": "16 +(4—7)% to Chaos Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Essence of Ruin",
+        "tier_level": 30,
+        "text_plain": "30 +(8—11)% to Chaos Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Greater Essence of Ruin",
+        "tier_level": 56,
+        "text_plain": "56 +(16—19)% to Chaos Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "# to Strength, Dexterity or Intelligence",
+    "tier": 3,
+    "ilvl": 55,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Strength",
+    "tiers": [
+      {
+        "tier_name": "Lesser Essence of the Infinite",
+        "tier_level": 11,
+        "text_plain": "11 +(9—12) to Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Essence of the Infinite",
+        "tier_level": 33,
+        "text_plain": "33 +(17—20) to Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Greater Essence of the Infinite",
+        "tier_level": 55,
+        "text_plain": "55 +(25—27) to Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "# to Strength, Dexterity or Intelligence",
+    "tier": 3,
+    "ilvl": 55,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Dexterity",
+    "tiers": [
+      {
+        "tier_name": "Lesser Essence of the Infinite",
+        "tier_level": 11,
+        "text_plain": "11 +(9—12) to Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Essence of the Infinite",
+        "tier_level": 33,
+        "text_plain": "33 +(17—20) to Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Greater Essence of the Infinite",
+        "tier_level": 55,
+        "text_plain": "55 +(25—27) to Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "# to Strength, Dexterity or Intelligence",
+    "tier": 3,
+    "ilvl": 55,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Intelligence",
+    "tiers": [
+      {
+        "tier_name": "Lesser Essence of the Infinite",
+        "tier_level": 11,
+        "text_plain": "11 +(9—12) to Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Essence of the Infinite",
+        "tier_level": 33,
+        "text_plain": "33 +(17—20) to Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Greater Essence of the Infinite",
+        "tier_level": 55,
+        "text_plain": "55 +(25—27) to Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "(7—10)% increased Strength, Dexterity or Intelligence",
+    "tier": 1,
+    "ilvl": 72,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "attribute"
+    ],
+    "family": "PercentageStrength",
+    "tiers": [
+      {
+        "tier_name": "Perfect Essence of the Infinite",
+        "tier_level": 72,
+        "text_plain": "72 (7—10)% increased Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "(7—10)% increased Strength, Dexterity or Intelligence",
+    "tier": 1,
+    "ilvl": 72,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "attribute"
+    ],
+    "family": "PercentageDexterity",
+    "tiers": [
+      {
+        "tier_name": "Perfect Essence of the Infinite",
+        "tier_level": 72,
+        "text_plain": "72 (7—10)% increased Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "(7—10)% increased Strength, Dexterity or Intelligence",
+    "tier": 1,
+    "ilvl": 72,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "attribute"
+    ],
+    "family": "PercentageIntelligence",
+    "tiers": [
+      {
+        "tier_name": "Perfect Essence of the Infinite",
+        "tier_level": 72,
+        "text_plain": "72 (7—10)% increased Strength, Dexterity or Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "(19—21)% of Damage taken Recouped as Life",
+    "tier": 1,
+    "ilvl": 68,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "life"
+    ],
+    "family": "DamageTakenGainedAsLife",
+    "tiers": [
+      {
+        "tier_name": "Essence of Hysteria",
+        "tier_level": 68,
+        "text_plain": "68 (19—21)% of Damage taken Recouped as Life",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "Mark of the Abyssal Lord",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "EssenceAbyss",
+    "tiers": [
+      {
+        "tier_name": "Essence of the Abyss",
+        "tier_level": 1,
+        "text_plain": "1 Mark of the Abyssal Lord",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "#% to Fire Resistance",
+    "tier": 3,
+    "ilvl": 60,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "elemental",
+      "fire",
+      "resistance"
+    ],
+    "family": "FireResistance",
+    "tiers": [
+      {
+        "tier_name": "Lesser Essence of Insulation",
+        "tier_level": 12,
+        "text_plain": "12 +(11—15)% to Fire Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Essence of Insulation",
+        "tier_level": 36,
+        "text_plain": "36 +(21—25)% to Fire Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Greater Essence of Insulation",
+        "tier_level": 60,
+        "text_plain": "60 +(31—35)% to Fire Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "#% to Cold Resistance",
+    "tier": 3,
+    "ilvl": 60,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "elemental",
+      "cold",
+      "resistance"
+    ],
+    "family": "ColdResistance",
+    "tiers": [
+      {
+        "tier_name": "Lesser Essence of Thawing",
+        "tier_level": 14,
+        "text_plain": "14 +(11—15)% to Cold Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Essence of Thawing",
+        "tier_level": 38,
+        "text_plain": "38 +(21—25)% to Cold Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Greater Essence of Thawing",
+        "tier_level": 60,
+        "text_plain": "60 +(31—35)% to Cold Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "#% to Lightning Resistance",
+    "tier": 3,
+    "ilvl": 60,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "elemental",
+      "lightning",
+      "resistance"
+    ],
+    "family": "LightningResistance",
+    "tiers": [
+      {
+        "tier_name": "Lesser Essence of Grounding",
+        "tier_level": 13,
+        "text_plain": "13 +(11—15)% to Lightning Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Essence of Grounding",
+        "tier_level": 37,
+        "text_plain": "37 +(21—25)% to Lightning Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Greater Essence of Grounding",
+        "tier_level": 60,
+        "text_plain": "60 +(31—35)% to Lightning Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "essence",
+    "side": "suffix",
+    "text_plain": "#% increased Rarity of Items found",
+    "tier": 3,
+    "ilvl": 40,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "ItemFoundRarityIncrease",
+    "tiers": [
+      {
+        "tier_name": "Lesser Essence of Opulence",
+        "tier_level": 3,
+        "text_plain": "3 (6—10)% increased Rarity of Items found",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Essence of Opulence",
+        "tier_level": 24,
+        "text_plain": "24 (11—14)% increased Rarity of Items found",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Greater Essence of Opulence",
+        "tier_level": 40,
+        "text_plain": "40 (15—18)% increased Rarity of Items found",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "Leech 3% of Physical Attack Damage as Life",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 8.333,
+    "tags": [
+      "life",
+      "physical",
+      "attack"
+    ],
+    "family": "LifeLeech",
+    "tiers": [
+      {
+        "tier_name": "CorruptionLifeLeech1",
+        "tier_level": 1,
+        "text_plain": "1 Leech 3% of Physical Attack Damage as Life",
+        "weight": 1,
+        "weight_pct": 8.333
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "Leech 2% of Physical Attack Damage as Mana",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 8.333,
+    "tags": [
+      "mana",
+      "physical",
+      "attack"
+    ],
+    "family": "ManaLeech",
+    "tiers": [
+      {
+        "tier_name": "CorruptionManaLeech1",
+        "tier_level": 1,
+        "text_plain": "1 Leech 2% of Physical Attack Damage as Mana",
+        "weight": 1,
+        "weight_pct": 8.333
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+1% to all Maximum Elemental Resistances",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 8.333,
+    "tags": [
+      "elemental",
+      "resistance"
+    ],
+    "family": "MaximumResistances",
+    "tiers": [
+      {
+        "tier_name": "CorruptionMaximumElementalResistance1",
+        "tier_level": 1,
+        "text_plain": "1 +1% to all Maximum Elemental Resistances",
+        "weight": 1,
+        "weight_pct": 8.333
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(5—10)% to all Elemental Resistances",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 8.333,
+    "tags": [
+      "elemental",
+      "fire",
+      "cold",
+      "lightning",
+      "resistance"
+    ],
+    "family": "AllResistances",
+    "tiers": [
+      {
+        "tier_name": "CorruptionAllResistances1",
+        "tier_level": 1,
+        "text_plain": "1 +(5—10)% to all Elemental Resistances",
+        "weight": 1,
+        "weight_pct": 8.333
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "(10—15)% increased Rarity of Items found",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 8.333,
+    "tags": [],
+    "family": "ItemFoundRarityIncrease",
+    "tiers": [
+      {
+        "tier_name": "CorruptionItemFoundRarityIncrease1",
+        "tier_level": 1,
+        "text_plain": "1 (10—15)% increased Rarity of Items found",
+        "weight": 1,
+        "weight_pct": 8.333
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+1 to Level of all Skills",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 8.333,
+    "tags": [
+      "gem"
+    ],
+    "family": "IncreaseSocketedGemLevel",
+    "tiers": [
+      {
+        "tier_name": "CorruptionGlobalSkillGemLevel1",
+        "tier_level": 1,
+        "text_plain": "1 +1 to Level of all Skills",
+        "weight": 1,
+        "weight_pct": 8.333
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(10—15) to Strength",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 8.333,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Strength",
+    "tiers": [
+      {
+        "tier_name": "CorruptionStrength1",
+        "tier_level": 1,
+        "text_plain": "1 +(10—15) to Strength",
+        "weight": 1,
+        "weight_pct": 8.333
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(10—15) to Dexterity",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 8.333,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Dexterity",
+    "tiers": [
+      {
+        "tier_name": "CorruptionDexterity1",
+        "tier_level": 1,
+        "text_plain": "1 +(10—15) to Dexterity",
+        "weight": 1,
+        "weight_pct": 8.333
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(10—15) to Intelligence",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 8.333,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Intelligence",
+    "tiers": [
+      {
+        "tier_name": "CorruptionIntelligence1",
+        "tier_level": 1,
+        "text_plain": "1 +(10—15) to Intelligence",
+        "weight": 1,
+        "weight_pct": 8.333
+      }
+    ]
+  },
+  {
+    "category": "Amulets",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "Life Flasks gain # charges per SecondMana Flasks gain # charges per SecondCharms gain # charges per Second",
+    "tier": 3,
+    "ilvl": 1,
+    "weight": 3,
+    "weight_pct": 25,
+    "tags": [],
+    "family": "FlaskChargeGeneration",
+    "tiers": [
+      {
+        "tier_name": "CorruptionLifeFlaskChargeGeneration1",
+        "tier_level": 1,
+        "text_plain": "1 Life Flasks gain (0.08—0.17) charges per Second",
+        "weight": 1,
+        "weight_pct": 8.333
+      },
+      {
+        "tier_name": "CorruptionManaFlaskChargeGeneration1",
+        "tier_level": 1,
+        "text_plain": "1 Mana Flasks gain (0.08—0.17) charges per Second",
+        "weight": 1,
+        "weight_pct": 8.333
+      },
+      {
+        "tier_name": "CorruptionCharmChargeGeneration1",
+        "tier_level": 1,
+        "text_plain": "1 Charms gain (0.08—0.17) charges per Second",
+        "weight": 1,
+        "weight_pct": 8.333
+      }
+    ]
+  }
+]

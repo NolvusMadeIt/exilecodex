@@ -26,6 +26,30 @@ function json(file: string): Promise<unknown> {
 export const loadUniques = () => json('Uniques.json')
 export const loadBases = () => json('Bases.json')
 
+// --- Modifier database -----------------------------------------------------------------
+// Upstream this class lives in Electron's main process behind three IPC channels
+// (get-modifier-data / search-modifiers / get-all-categories). Here it runs in-page against
+// the same dataset snapshot via the fetch shims inside the vendored files (XILE-PORT marks).
+import { ModifierDatabase } from './db/modifier-database'
+import { JsonCache } from './db/utils/jsonCache'
+
+let modDb: ModifierDatabase | null = null
+export function modifierDb(): ModifierDatabase {
+  if (!modDb) modDb = new ModifierDatabase(DATA_ROOT, true, 'poe2', new JsonCache({ cloneResults: false }))
+  return modDb
+}
+
+// Mirrors the upstream IPC handler's guard: the constructor kicks off an async full load, and
+// category listings are empty until it settles — wait for it (bounded) before first use.
+export async function modifierDbReady(): Promise<ModifierDatabase> {
+  const db = modifierDb()
+  const loading = (db as unknown as { __loadingPromise?: Promise<void> }).__loadingPromise
+  if (loading?.then) {
+    await Promise.race([loading.catch(() => {}), new Promise((r) => setTimeout(r, 8000))])
+  }
+  return db
+}
+
 // The modules' own show()/reload() paths call window.electronAPI.get*(). Install
 // fetch-backed equivalents (never overwriting a real desktop API) so those internal
 // refresh paths keep working wherever the modules run.
@@ -34,4 +58,10 @@ export function installXileShim(): void {
   const api = (w.electronAPI = w.electronAPI || {})
   api.getUniques = api.getUniques || loadUniques
   api.getBases = api.getBases || loadBases
+  api.getModifierData = api.getModifierData || ((category: string) => modifierDb().getModifiersForCategory(category))
+  api.searchModifiers = api.searchModifiers || ((q: string, category?: string) => modifierDb().searchModifiers(q, category))
+  api.getAllCategories = api.getAllCategories || (() => modifierDb().getAllCategories())
+  // Upstream opens mod tiers in a separate popout window; in-page the tier list is already
+  // expandable, so this is a deliberate no-op rather than a broken feature.
+  api.openModPopout = api.openModPopout || (() => {})
 }

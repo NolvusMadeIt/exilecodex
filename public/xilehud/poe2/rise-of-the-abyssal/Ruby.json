@@ -1,0 +1,1629 @@
+[
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(4—6)% increased Area of Effect",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [],
+    "family": "AreaOfEffect",
+    "tiers": [
+      {
+        "tier_name": "Blasting",
+        "tier_level": 1,
+        "text_plain": "1 (4—6)% increased Area of Effect",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(10—20)% increased Armour",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "defences"
+    ],
+    "family": "IncreasedPhysicalDamageReductionRatingPercent",
+    "tiers": [
+      {
+        "tier_name": "Armoured",
+        "tier_level": 1,
+        "text_plain": "1 (10—20)% increased Armour",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Break (5—15)% increased Armour",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [],
+    "family": "ArmourBreak",
+    "tiers": [
+      {
+        "tier_name": "Shattering",
+        "tier_level": 1,
+        "text_plain": "1 Break (5—15)% increased Armour",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(5—15)% increased Attack Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage",
+      "attack"
+    ],
+    "family": "AttackDamage",
+    "tiers": [
+      {
+        "tier_name": "Combat",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Attack Damage",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(3—7)% chance to inflict Bleeding on Hit",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [],
+    "family": "BleedChanceIncrease",
+    "tiers": [
+      {
+        "tier_name": "Bleeding",
+        "tier_level": 1,
+        "text_plain": "1 (3—7)% chance to inflict Bleeding on Hit",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(3—7)% increased Block chance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [],
+    "family": "IncreasedBlockChance",
+    "tiers": [
+      {
+        "tier_name": "Protecting",
+        "tier_level": 1,
+        "text_plain": "1 (3—7)% increased Block chance",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(15—25)% increased Damage against Enemies with Fully Broken Armour",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage"
+    ],
+    "family": "DamagevsArmourBrokenEnemies",
+    "tiers": [
+      {
+        "tier_name": "Exploiting",
+        "tier_level": 1,
+        "text_plain": "1 (15—25)% increased Damage against Enemies with Fully Broken Armour",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(5—15)% increased Elemental Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage",
+      "elemental"
+    ],
+    "family": "ElementalDamagePercent",
+    "tiers": [
+      {
+        "tier_name": "Prismatic",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Elemental Damage",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Empowered Attacks deal (10—20)% increased Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage",
+      "attack"
+    ],
+    "family": "ExertedAttackDamage",
+    "tiers": [
+      {
+        "tier_name": "Empowering",
+        "tier_level": 1,
+        "text_plain": "1 Empowered Attacks deal (10—20)% increased Damage",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(5—15)% increased Fire Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage",
+      "elemental",
+      "fire"
+    ],
+    "family": "FireDamagePercentage",
+    "tiers": [
+      {
+        "tier_name": "Flaming",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Fire Damage",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Damage Penetrates (5—10)% Fire Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage",
+      "elemental",
+      "fire"
+    ],
+    "family": "FireResistancePenetration",
+    "tiers": [
+      {
+        "tier_name": "Searing",
+        "tier_level": 1,
+        "text_plain": "1 Damage Penetrates (5—10)% Fire Resistance",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(5—15)% increased Ignite Magnitude",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [],
+    "family": "IgniteEffect",
+    "tiers": [
+      {
+        "tier_name": "Burning",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Ignite Magnitude",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(6—16)% increased Damage with Maces",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage",
+      "attack"
+    ],
+    "family": "SpecificWeaponDamage",
+    "tiers": [
+      {
+        "tier_name": "Beating",
+        "tier_level": 1,
+        "text_plain": "1 (6—16)% increased Damage with Maces",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "+1 to Maximum Rage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [],
+    "family": "MaximumRage",
+    "tiers": [
+      {
+        "tier_name": "Angry",
+        "tier_level": 1,
+        "text_plain": "1 +1 to Maximum Rage",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(5—15)% increased Melee Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage",
+      "attack"
+    ],
+    "family": "MeleeDamage",
+    "tiers": [
+      {
+        "tier_name": "Clashing",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Melee Damage",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Minions have (5—8)% increased Area of Effect",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "minion"
+    ],
+    "family": "MinionAreaOfEffect",
+    "tiers": [
+      {
+        "tier_name": "Companion",
+        "tier_level": 1,
+        "text_plain": "1 Minions have (5—8)% increased Area of Effect",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Minions have (5—15)% increased maximum Life",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "life",
+      "minion"
+    ],
+    "family": "MinionLife",
+    "tiers": [
+      {
+        "tier_name": "Fortuitous",
+        "tier_level": 1,
+        "text_plain": "1 Minions have (5—15)% increased maximum Life",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(5—15)% increased Global Physical Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage",
+      "physical"
+    ],
+    "family": "PhysicalDamagePercent",
+    "tiers": [
+      {
+        "tier_name": "Sharpened",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Global Physical Damage",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(18—32)% increased Defences from Equipped Shield",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "defences"
+    ],
+    "family": "ShieldArmourIncrease",
+    "tiers": [
+      {
+        "tier_name": "Shielding",
+        "tier_level": 1,
+        "text_plain": "1 (18—32)% increased Defences from Equipped Shield",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(5—15)% increased Magnitude of Bleeding you inflict",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage",
+      "physical",
+      "attack",
+      "ailment"
+    ],
+    "family": "BleedingDamage",
+    "tiers": [
+      {
+        "tier_name": "Haemorrhaging",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Magnitude of Bleeding you inflict",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(10—20)% increased Thorns damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage"
+    ],
+    "family": "Thorns",
+    "tiers": [
+      {
+        "tier_name": "Retaliating",
+        "tier_level": 1,
+        "text_plain": "1 (10—20)% increased Thorns damage",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(10—18)% increased Totem Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage"
+    ],
+    "family": "TotemDamage",
+    "tiers": [
+      {
+        "tier_name": "Shaman's",
+        "tier_level": 1,
+        "text_plain": "1 (10—18)% increased Totem Damage",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(10—20)% increased Totem Life",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "life"
+    ],
+    "family": "IncreasedTotemLife",
+    "tiers": [
+      {
+        "tier_name": "Carved",
+        "tier_level": 1,
+        "text_plain": "1 (10—20)% increased Totem Life",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(10—20)% increased Damage with Warcries",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage"
+    ],
+    "family": "WarcryDamage",
+    "tiers": [
+      {
+        "tier_name": "Yelling",
+        "tier_level": 1,
+        "text_plain": "1 (10—20)% increased Damage with Warcries",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(15—25)% chance for Attack Hits to apply Incision",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [
+      "damage",
+      "physical",
+      "ailment"
+    ],
+    "family": "IncisionChance",
+    "tiers": [
+      {
+        "tier_name": "Incise",
+        "tier_level": 1,
+        "text_plain": "1 (15—25)% chance for Attack Hits to apply Incision",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Banner Skills have (10—20)% increased Area of Effect",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [],
+    "family": "BannerArea",
+    "tiers": [
+      {
+        "tier_name": "Rallying",
+        "tier_level": 1,
+        "text_plain": "1 Banner Skills have (10—20)% increased Area of Effect",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "(15—25)% increased Presence Area of Effect",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.448,
+    "tags": [],
+    "family": "PresenceRadius",
+    "tiers": [
+      {
+        "tier_name": "Iconic",
+        "tier_level": 1,
+        "text_plain": "1 (15—25)% increased Presence Area of Effect",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "#% increased Damage while Shapeshifted#% increased Damage with Plant Skills",
+    "tier": 2,
+    "ilvl": 1,
+    "weight": 2,
+    "weight_pct": 6.897,
+    "tags": [
+      "damage"
+    ],
+    "family": "DamageForm",
+    "tiers": [
+      {
+        "tier_name": "Bestial",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Damage while Shapeshifted",
+        "weight": 1,
+        "weight_pct": 3.448
+      },
+      {
+        "tier_name": "Overgrown",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Damage with Plant Skills",
+        "weight": 1,
+        "weight_pct": 3.448
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(10—20)% increased Armour Break Duration",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "ArmourBreakDuration",
+    "tiers": [
+      {
+        "tier_name": "Resonating",
+        "tier_level": 1,
+        "text_plain": "1 (10—20)% increased Armour Break Duration",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(5—10)% increased Bleeding Duration",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [
+      "physical",
+      "attack",
+      "ailment"
+    ],
+    "family": "BleedDuration",
+    "tiers": [
+      {
+        "tier_name": "of Haemophilia",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased Bleeding Duration",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(10—20)% increased Flammability Magnitude",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "IgniteChanceIncrease",
+    "tiers": [
+      {
+        "tier_name": "of Ignition",
+        "tier_level": 1,
+        "text_plain": "1 (10—20)% increased Flammability Magnitude",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(5—10)% increased Skill Effect Duration",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "SkillEffectDuration",
+    "tiers": [
+      {
+        "tier_name": "of Lengthening",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased Skill Effect Duration",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(5—15)% increased Knockback Distance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "Knockback",
+    "tiers": [
+      {
+        "tier_name": "of Fending",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Knockback Distance",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(4—6)% of Skill Mana Costs Converted to Life Costs",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [
+      "life"
+    ],
+    "family": "LifeCost",
+    "tiers": [
+      {
+        "tier_name": "of Sacrifice",
+        "tier_level": 1,
+        "text_plain": "1 (4—6)% of Skill Mana Costs Converted to Life Costs",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(5—15)% increased amount of Life Leeched",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "LifeLeech",
+    "tiers": [
+      {
+        "tier_name": "of Frenzy",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased amount of Life Leeched",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(5—10)% increased Life Regeneration rate",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [
+      "life"
+    ],
+    "family": "LifeRegenerationRate",
+    "tiers": [
+      {
+        "tier_name": "of Regeneration",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased Life Regeneration rate",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(15—25)% increased Stun Buildup with Maces",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [
+      "attack"
+    ],
+    "family": "MaceStun",
+    "tiers": [
+      {
+        "tier_name": "of Thumping",
+        "tier_level": 1,
+        "text_plain": "1 (15—25)% increased Stun Buildup with Maces",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "+1% to Maximum Fire Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [
+      "elemental",
+      "fire",
+      "resistance"
+    ],
+    "family": "MaximumFireResist",
+    "tiers": [
+      {
+        "tier_name": "of the Phoenix",
+        "tier_level": 1,
+        "text_plain": "1 +1% to Maximum Fire Resistance",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Minions have (6—16)% additional Physical Damage Reduction",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [
+      "physical",
+      "minion"
+    ],
+    "family": "MinionPhysicalDamageReduction",
+    "tiers": [
+      {
+        "tier_name": "of Confidence",
+        "tier_level": 1,
+        "text_plain": "1 Minions have (6—16)% additional Physical Damage Reduction",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Gain 1 Rage on Melee Hit",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "RageOnHit",
+    "tiers": [
+      {
+        "tier_name": "of Raging",
+        "tier_level": 1,
+        "text_plain": "1 Gain 1 Rage on Melee Hit",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Gain (1—3) Rage when Hit by an Enemy",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "GainRage",
+    "tiers": [
+      {
+        "tier_name": "of Retribution",
+        "tier_level": 1,
+        "text_plain": "1 Gain (1—3) Rage when Hit by an Enemy",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(10—20)% increased Stun Buildup",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "StunDamageIncrease",
+    "tiers": [
+      {
+        "tier_name": "of Stunning",
+        "tier_level": 1,
+        "text_plain": "1 (10—20)% increased Stun Buildup",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(6—16)% increased Stun Threshold",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "IncreasedStunThreshold",
+    "tiers": [
+      {
+        "tier_name": "of Withstanding",
+        "tier_level": 1,
+        "text_plain": "1 (6—16)% increased Stun Threshold",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(10—20)% increased Totem Placement speed",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [
+      "speed"
+    ],
+    "family": "SummonTotemCastSpeed",
+    "tiers": [
+      {
+        "tier_name": "of Ancestry",
+        "tier_level": 1,
+        "text_plain": "1 (10—20)% increased Totem Placement speed",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(5—15)% increased Warcry Cooldown Recovery Rate",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "WarcryCooldownSpeed",
+    "tiers": [
+      {
+        "tier_name": "of Rallying",
+        "tier_level": 1,
+        "text_plain": "1 (5—15)% increased Warcry Cooldown Recovery Rate",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(10—20)% increased Warcry Speed",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [
+      "speed"
+    ],
+    "family": "WarcrySpeed",
+    "tiers": [
+      {
+        "tier_name": "of Lungs",
+        "tier_level": 1,
+        "text_plain": "1 (10—20)% increased Warcry Speed",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(15—20)% increased Glory generation for Banner Skills",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "BannerValourGained",
+    "tiers": [
+      {
+        "tier_name": "of Valour",
+        "tier_level": 1,
+        "text_plain": "1 (15—20)% increased Glory generation for Banner Skills",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Banner Skills have (15—25)% increased Duration",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [],
+    "family": "BannerDuration",
+    "tiers": [
+      {
+        "tier_name": "of Inspiring",
+        "tier_level": 1,
+        "text_plain": "1 Banner Skills have (15—25)% increased Duration",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(2—4)% increased Skill Speed while Shapeshifted",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.762,
+    "tags": [
+      "speed"
+    ],
+    "family": "SpecificWeaponSpeed",
+    "tiers": [
+      {
+        "tier_name": "of the Wild",
+        "tier_level": 1,
+        "text_plain": "1 (2—4)% increased Skill Speed while Shapeshifted",
+        "weight": 1,
+        "weight_pct": 4.762
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "#% increased Armour#% increased Attack Damage#% increased Warcry Buff Effect#% increased Damage with Warcries#% increased Evasion Rating#% increased Totem Damage#% increased maximum Energy Shield#% increased Totem Damage#% increased Armour#% increased Totem Damage#% increased Evasion Rating#% increased Thorns damage#% increased maximum Energy Shield#% increased Thorns damage#% increased Armour#% increased Thorns damage#% increased Spell Damage#% increased Evasion Rating#% increased Spell Damage#% increased maximum Energy Shield#% increased Spell Damage#% increased Armour#% increased chance to Poison#% increased Magnitude of Poison you inflict#% increased Evasion RatingMinions deal #% increased Damage#% increased maximum Energy ShieldMinions deal #% increased Damage#% increased ArmourMinions deal #% increased Damage#% increased Lightning DamageDamage Penetrates #% Lightning Resistance#% increased Magnitude of Abyssal Wasting you inflict#% increased maximum Energy Shield#% increased Attack Damage#% increased Evasion Rating#% increased Attack Damage#% increased Presence Area of EffectAura Skills have #% increased Magnitudes#% increased chance to inflict Bleeding#% increased Magnitude of Bleeding you inflict#% increased Chaos Damage#% increased Withered Magnitude#% increased Cold DamageDamage Penetrates #% Cold ResistanceCompanions deal #% increased DamageCompanions have #% increased maximum Life#% increased Elemental Damage#% increased Magnitude of Ailments you inflict#% increased Exposure Effect#% increased Fire DamageDamage Penetrates #% Fire Resistance#% increased Global Physical DamageBreak #% increased ArmourMinions have #% increased maximum Lifeminion area of effect +% [#,#]",
+    "tier": 29,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "defences",
+      "attack"
+    ],
+    "family": "AbyssJewelMod",
+    "tiers": [
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased Armour(4—8)% increased Attack Damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Warcry Buff Effect(5—10)% increased Damage with Warcries",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased Evasion Rating(4—8)% increased Totem Damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased maximum Energy Shield(4—8)% increased Totem Damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased Armour(4—8)% increased Totem Damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased Evasion Rating(4—8)% increased Thorns damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased maximum Energy Shield(4—8)% increased Thorns damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased Armour(4—8)% increased Thorns damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Spell Damage(5—10)% increased Evasion Rating",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Spell Damage(5—10)% increased maximum Energy Shield",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Spell Damage(5—10)% increased Armour",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 15% increased chance to Poison(5—10)% increased Magnitude of Poison you inflict",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased Evasion RatingMinions deal (4—8)% increased Damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased maximum Energy ShieldMinions deal (4—8)% increased Damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased ArmourMinions deal (4—8)% increased Damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Lightning DamageDamage Penetrates (4—7)% Lightning Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (10—20)% increased Magnitude of Abyssal Wasting you inflict",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased maximum Energy Shield(4—8)% increased Attack Damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (5—10)% increased Evasion Rating(4—8)% increased Attack Damage",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (8—15)% increased Presence Area of EffectAura Skills have (2—4)% increased Magnitudes",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 15% increased chance to inflict Bleeding(5—10)% increased Magnitude of Bleeding you inflict",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Chaos Damage(3—6)% increased Withered Magnitude",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Cold DamageDamage Penetrates (4—7)% Cold Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Companions deal (5—10)% increased DamageCompanions have (5—10)% increased maximum Life",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Elemental Damage(4—8)% increased Magnitude of Ailments you inflict",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Exposure Effect",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Fire DamageDamage Penetrates (4—7)% Fire Resistance",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 (4—8)% increased Global Physical DamageBreak (4—8)% increased Armour",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Minions have (4—8)% increased maximum Lifeminion area of effect +% [3,6]",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "#% increased Dexterity#% increased Intelligence#% increased Strength",
+    "tier": 3,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "attribute"
+    ],
+    "family": "AbyssJewelMod",
+    "tiers": [
+      {
+        "tier_name": "of the Abyss",
+        "tier_level": 1,
+        "text_plain": "1 (1—2)% increased Dexterity",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "of the Abyss",
+        "tier_level": 1,
+        "text_plain": "1 (1—2)% increased Intelligence",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "of the Abyss",
+        "tier_level": 1,
+        "text_plain": "1 (1—2)% increased Strength",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(4—6) to Strength",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Strength",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelStrength1",
+        "tier_level": 1,
+        "text_plain": "1 +(4—6) to Strength",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(4—6) to Dexterity",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Dexterity",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelDexterity1",
+        "tier_level": 1,
+        "text_plain": "1 +(4—6) to Dexterity",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(4—6) to Intelligence",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Intelligence",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelIntelligence1",
+        "tier_level": 1,
+        "text_plain": "1 +(4—6) to Intelligence",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(5—10)% to Fire Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "elemental",
+      "fire",
+      "resistance"
+    ],
+    "family": "FireResistance",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelFireResist1",
+        "tier_level": 1,
+        "text_plain": "1 +(5—10)% to Fire Resistance",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(5—10)% to Cold Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "elemental",
+      "cold",
+      "resistance"
+    ],
+    "family": "ColdResistance",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelColdResist1",
+        "tier_level": 1,
+        "text_plain": "1 +(5—10)% to Cold Resistance",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(5—10)% to Lightning Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "elemental",
+      "lightning",
+      "resistance"
+    ],
+    "family": "LightningResistance",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelLightningResist1",
+        "tier_level": 1,
+        "text_plain": "1 +(5—10)% to Lightning Resistance",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(3—7)% to Chaos Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "chaos",
+      "resistance"
+    ],
+    "family": "ChaosResistance",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelChaosResist1",
+        "tier_level": 1,
+        "text_plain": "1 +(3—7)% to Chaos Resistance",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "Immune to Maim",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [],
+    "family": "ImmuneToMaim",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelMaimImmunity1",
+        "tier_level": 1,
+        "text_plain": "1 Immune to Maim",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "You cannot be Hindered",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [],
+    "family": "YouCannotBeHindered",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelHinderImmunity1",
+        "tier_level": 1,
+        "text_plain": "1 You cannot be Hindered",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "Corrupted Blood cannot be inflicted on you",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "physical",
+      "ailment"
+    ],
+    "family": "CorruptedBlood",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelCorruptedBloodImmunity1",
+        "tier_level": 1,
+        "text_plain": "1 Corrupted Blood cannot be inflicted on you",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "Cannot be Blinded",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [],
+    "family": "ImmunityToBlind",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelBlindImmunity1",
+        "tier_level": 1,
+        "text_plain": "1 Cannot be Blinded",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  }
+]

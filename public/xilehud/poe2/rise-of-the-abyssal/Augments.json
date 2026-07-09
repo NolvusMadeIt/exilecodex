@@ -1,0 +1,1476 @@
+{
+  "slug": "Augments",
+  "augments": [
+    {
+      "name": "Adept Rune",
+      "slug": "Adept_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "All Equipment: +8 to Dexterity"
+      ],
+      "imageLocal": "augments/adept_rune.webp"
+    },
+    {
+      "name": "Amanamu's Gaze",
+      "slug": "Amanamus_Gaze",
+      "stack_current": null,
+      "stack_max": null,
+      "level_req": 60,
+      "implicitMods": [
+        "Helmets: Remove a Damaging Ailment when you use a Command Skill",
+        "Body Armours: +2 to Armour per 1 Spirit",
+        "Boots: 1% increased Movement Speed per 15 Spirit, up to a maximum of 40% Other Modifiers to Movement Speed except for Sprinting do not apply"
+      ],
+      "imageLocal": "augments/amanamus_gaze.webp"
+    },
+    {
+      "name": "Atmohua's Soul Core of Retreat",
+      "slug": "Atmohuas_Soul_Core_of_Retreat",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Body Armours: 30% faster start of Energy Shield Recharge",
+        "Foci: 30% faster start of Energy Shield Recharge"
+      ],
+      "imageLocal": "augments/atmohuas_soul_core_of_retreat.webp"
+    },
+    {
+      "name": "Bear Idol",
+      "slug": "Bear_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Helmets: 8% increased Area of Effect",
+        "Sceptres: Allies in your Presence deal 12 to 18 added Attack Physical Damage"
+      ],
+      "imageLocal": "augments/bear_talisman.webp"
+    },
+    {
+      "name": "Boar Idol",
+      "slug": "Boar_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Gloves: Gain 1 Rage on Melee Hit",
+        "Sceptres: Allies in your Presence Regenerate 8 Life per second"
+      ],
+      "imageLocal": "augments/boar_talisman.webp"
+    },
+    {
+      "name": "Body Rune",
+      "slug": "Body_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: Leeches 2.5% of Physical Damage as Life",
+        "Wand or Staff: +30 to maximum Energy Shield",
+        "Armour: +30 to maximum Life"
+      ],
+      "imageLocal": "augments/body_rune.webp"
+    },
+    {
+      "name": "Cat Idol",
+      "slug": "Cat_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Gloves: 15% increased Accuracy Rating",
+        "Sceptres: Allies in your Presence have 14% increased Critical Hit Chance"
+      ],
+      "imageLocal": "augments/cat_talisman.webp"
+    },
+    {
+      "name": "Cholotl's Soul Core of War",
+      "slug": "Cholotls_Soul_Core_of_War",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Bows: 20% increased Projectile Speed"
+      ],
+      "imageLocal": "augments/cholotls_soul_core_of_war.webp"
+    },
+    {
+      "name": "Citaqualotl's Soul Core of Foulness",
+      "slug": "Citaqualotls_Soul_Core_of_Foulness",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: Adds 19 to 29 Chaos damage"
+      ],
+      "imageLocal": "augments/citaqualotls_soul_core_of_foulness.webp"
+    },
+    {
+      "name": "Citaqualotl's Thesis",
+      "slug": "Citaqualotls_Thesis",
+      "stack_current": null,
+      "stack_max": null,
+      "level_req": 60,
+      "implicitMods": [
+        "Body Armours: You Recoup 50% of Damage taken by your Offerings as Life",
+        "Gloves: One of your Persistent Minions revives when an Offering expires",
+        "Boots: Sacrifice 10% of maximum Life to gain that much Guard when you Dodge Roll"
+      ],
+      "imageLocal": "augments/citaqualotls_thesis.webp"
+    },
+    {
+      "name": "Countess Seske's Rune of Archery",
+      "slug": "Countess_Seskes_Rune_of_Archery",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Bows: Bow Attacks fire an additional Arrow"
+      ],
+      "imageLocal": "augments/countess_seskes_rune_of_archery.webp"
+    },
+    {
+      "name": "Courtesan Mannan's Rune of Cruelty",
+      "slug": "Courtesan_Mannans_Rune_of_Cruelty",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Gloves: 20% increased Magnitude of Damaging Ailments you inflict"
+      ],
+      "imageLocal": "augments/courtesan_mannans_rune_of_cruelty.webp"
+    },
+    {
+      "name": "Craiceann's Rune of Recovery",
+      "slug": "Craiceanns_Rune_of_Recovery",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Body Armours: 50% increased Energy Shield Recharge Rate"
+      ],
+      "imageLocal": "augments/craiceanns_rune_of_recovery.webp"
+    },
+    {
+      "name": "Craiceann's Rune of Warding",
+      "slug": "Craiceanns_Rune_of_Warding",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Body Armours: 50% reduced effect of Curses on you"
+      ],
+      "imageLocal": "augments/craiceanns_rune_of_warding.webp"
+    },
+    {
+      "name": "Desert Rune",
+      "slug": "Desert_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: Adds 7 to 11 Fire Damage",
+        "Wand or Staff: Gain 8% of Damage as Extra Fire Damage",
+        "Armour: +12% to Fire Resistance"
+      ],
+      "imageLocal": "augments/desert_rune.webp"
+    },
+    {
+      "name": "Estazunti's Soul Core of Convalescence",
+      "slug": "Estazuntis_Soul_Core_of_Convalescence",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Boots: 12% increased speed of Recoup Effects",
+        "Helmets: 8% of Damage taken Recouped as Life"
+      ],
+      "imageLocal": "augments/estazuntis_soul_core_of_convalescence.webp"
+    },
+    {
+      "name": "Farrul's Rune of Grace",
+      "slug": "Farruls_Rune_of_Grace",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Boots: 8% increased Deflection Rating while moving"
+      ],
+      "imageLocal": "augments/farruls_rune_of_grace.webp"
+    },
+    {
+      "name": "Farrul's Rune of the Chase",
+      "slug": "Farruls_Rune_of_the_Chase",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Boots: 5% increased Movement Speed"
+      ],
+      "imageLocal": "augments/farruls_rune_of_the_chase.webp"
+    },
+    {
+      "name": "Farrul's Rune of the Hunt",
+      "slug": "Farruls_Rune_of_the_Hunt",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: 50% increased Attack Damage against Rare or Unique Enemies"
+      ],
+      "imageLocal": "augments/farruls_rune_of_the_hunt.webp"
+    },
+    {
+      "name": "Fenumus' Rune of Agony",
+      "slug": "Fenumus_Rune_of_Agony",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: Gain 13% of Damage as Extra Chaos Damage",
+        "Wand or Staff: Gain 13% of Damage as Extra Chaos Damage"
+      ],
+      "imageLocal": "augments/fenumus_rune_of_agony.webp"
+    },
+    {
+      "name": "Fenumus' Rune of Draining",
+      "slug": "Fenumus_Rune_of_Draining",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Gloves: 20% increased Withered Magnitude"
+      ],
+      "imageLocal": "augments/fenumus_rune_of_draining.webp"
+    },
+    {
+      "name": "Fenumus' Rune of Spinning",
+      "slug": "Fenumus_Rune_of_Spinning",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Gloves: 8% increased Cast Speed"
+      ],
+      "imageLocal": "augments/fenumus_rune_of_spinning.webp"
+    },
+    {
+      "name": "Fox Idol",
+      "slug": "Fox_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Body Armours: +2% to Quality of all Skills",
+        "Sceptres: 30% increased Presence Area of Effect"
+      ],
+      "imageLocal": "augments/fox_talisman.webp"
+    },
+    {
+      "name": "Glacial Rune",
+      "slug": "Glacial_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: Adds 6 to 10 Cold Damage",
+        "Wand or Staff: Gain 8% of Damage as Extra Cold Damage",
+        "Armour: +12% to Cold Resistance"
+      ],
+      "imageLocal": "augments/glacial_rune.webp"
+    },
+    {
+      "name": "Greater Adept Rune",
+      "slug": "Greater_Adept_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "All Equipment: +10 to Dexterity"
+      ],
+      "imageLocal": "augments/greater_adept_rune.webp"
+    },
+    {
+      "name": "Greater Body Rune",
+      "slug": "Greater_Body_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: Leeches 3% of Physical Damage as Life",
+        "Wand or Staff: +35 to maximum Energy Shield",
+        "Armour: +40 to maximum Life"
+      ],
+      "imageLocal": "augments/greater_body_rune.webp"
+    },
+    {
+      "name": "Greater Desert Rune",
+      "slug": "Greater_Desert_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: Adds 13 to 16 Fire Damage",
+        "Wand or Staff: Gain 10% of Damage as Extra Fire Damage",
+        "Armour: +14% to Fire Resistance"
+      ],
+      "imageLocal": "augments/greater_desert_rune.webp"
+    },
+    {
+      "name": "Greater Glacial Rune",
+      "slug": "Greater_Glacial_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: Adds 9 to 15 Cold Damage",
+        "Wand or Staff: Gain 10% of Damage as Extra Cold Damage",
+        "Armour: +14% to Cold Resistance"
+      ],
+      "imageLocal": "augments/greater_glacial_rune.webp"
+    },
+    {
+      "name": "Greater Inspiration Rune",
+      "slug": "Greater_Inspiration_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: Gain 24 Mana per enemy killed",
+        "Wand or Staff: 24% increased Mana Regeneration Rate",
+        "Armour: 18% increased Mana Regeneration Rate"
+      ],
+      "imageLocal": "augments/greater_inspiration_rune.webp"
+    },
+    {
+      "name": "Greater Iron Rune",
+      "slug": "Greater_Iron_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: 18% increased Physical Damage",
+        "Wand or Staff: 30% increased Spell Damage",
+        "Armour: 18% increased Armour, Evasion and Energy Shield"
+      ],
+      "imageLocal": "augments/greater_iron_rune.webp"
+    },
+    {
+      "name": "Greater Mind Rune",
+      "slug": "Greater_Mind_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: Leeches 2.5% of Physical Damage as Mana",
+        "Wand or Staff: +50 to maximum Mana",
+        "Armour: +35 to maximum Mana"
+      ],
+      "imageLocal": "augments/greater_mind_rune.webp"
+    },
+    {
+      "name": "Greater Rebirth Rune",
+      "slug": "Greater_Rebirth_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: Gain 30 Life per enemy killed",
+        "Wand or Staff: 18% increased Energy Shield Recharge Rate",
+        "Armour: Regenerate 0.35% of maximum Life per second"
+      ],
+      "imageLocal": "augments/greater_rebirth_rune.webp"
+    },
+    {
+      "name": "Greater Resolve Rune",
+      "slug": "Greater_Resolve_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "All Equipment: +10 to Intelligence"
+      ],
+      "imageLocal": "augments/greater_resolve_rune.webp"
+    },
+    {
+      "name": "Greater Robust Rune",
+      "slug": "Greater_Robust_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "All Equipment: +10 to Strength"
+      ],
+      "imageLocal": "augments/greater_robust_rune.webp"
+    },
+    {
+      "name": "Greater Rune of Alacrity",
+      "slug": "Greater_Rune_of_Alacrity",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: 8% increased Skill Speed",
+        "Armour: Debuffs on you expire 8% faster"
+      ],
+      "imageLocal": "augments/greater_rune_of_alacrity.webp"
+    },
+    {
+      "name": "Greater Rune of Leadership",
+      "slug": "Greater_Rune_of_Leadership",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Minions gain 10% of their Physical Damage as Extra Lightning Damage",
+        "Armour: Minions take 10% of Physical Damage as Lightning Damage"
+      ],
+      "imageLocal": "augments/greater_rune_of_leadership.webp"
+    },
+    {
+      "name": "Greater Rune of Nobility",
+      "slug": "Greater_Rune_of_Nobility",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Attacks with this Weapon have 10% chance to inflict Exposure",
+        "Armour: 10% reduced effect of Shock on you"
+      ],
+      "imageLocal": "augments/greater_rune_of_nobility.webp"
+    },
+    {
+      "name": "Greater Rune of Tithing",
+      "slug": "Greater_Rune_of_Tithing",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Meta Skills gain 10% increased Energy",
+        "Armour: 1 to 100 Lightning Thorns damage"
+      ],
+      "imageLocal": "augments/greater_rune_of_tithing.webp"
+    },
+    {
+      "name": "Greater Stone Rune",
+      "slug": "Greater_Stone_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: Causes 30% increased Stun Buildup",
+        "Wand or Staff: Gain additional Stun Threshold equal to 14% of maximum Energy Shield",
+        "Armour: +80 to Stun Threshold"
+      ],
+      "imageLocal": "augments/greater_stone_rune.webp"
+    },
+    {
+      "name": "Greater Storm Rune",
+      "slug": "Greater_Storm_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: Adds 1 to 30 Lightning Damage",
+        "Wand or Staff: Gain 10% of Damage as Extra Lightning Damage",
+        "Armour: +14% to Lightning Resistance"
+      ],
+      "imageLocal": "augments/greater_storm_rune.webp"
+    },
+    {
+      "name": "Greater Tempered Rune",
+      "slug": "Greater_Tempered_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: Adds 9 to 12 Physical Damage",
+        "Armour: 31 to 52 Physical Thorns damage"
+      ],
+      "imageLocal": "augments/greater_tempered_rune.webp"
+    },
+    {
+      "name": "Greater Vision Rune",
+      "slug": "Greater_Vision_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 30,
+      "implicitMods": [
+        "Martial Weapon: +110 to Accuracy Rating",
+        "Wand or Staff: 24% increased Critical Hit Chance for Spells",
+        "Armour: 12% increased Life and Mana Recovery from Flasks"
+      ],
+      "imageLocal": "augments/greater_vision_rune.webp"
+    },
+    {
+      "name": "Guatelitzi's Soul Core of Endurance",
+      "slug": "Guatelitzis_Soul_Core_of_Endurance",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: 50% chance when you gain an Endurance Charge to gain an additional Endurance Charge",
+        "Wand or Staff: 50% chance when you gain an Endurance Charge to gain an additional Endurance Charge"
+      ],
+      "imageLocal": "augments/guatelitzis_soul_core_of_endurance.webp"
+    },
+    {
+      "name": "Guatelitzi's Thesis",
+      "slug": "Guatelitzis_Thesis",
+      "stack_current": null,
+      "stack_max": null,
+      "level_req": 60,
+      "implicitMods": [
+        "Helmets: Gain Armour equal to 25% of Life Lost from Hits in the past 8 seconds",
+        "Body Armours: 10% of Physical Damage prevented Recouped as Life",
+        "Boots: Lose 5% of maximum Life per second while Sprinting, 25% increased Movement Speed while Sprinting"
+      ],
+      "imageLocal": "augments/guatelitzis_thesis.webp"
+    },
+    {
+      "name": "Hayoxi's Soul Core of Heatproofing",
+      "slug": "Hayoxis_Soul_Core_of_Heatproofing",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Helmets: +40% of Armour also applies to Cold Damage"
+      ],
+      "imageLocal": "augments/hayoxis_soul_core_of_heatproofing.webp"
+    },
+    {
+      "name": "Hedgewitch Assandra's Rune of Wisdom",
+      "slug": "Hedgewitch_Assandras_Rune_of_Wisdom",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Wand or Staff: +1 to Level of all Spell Skills"
+      ],
+      "imageLocal": "augments/hedgewitch_assandras_rune_of_wisdom.webp"
+    },
+    {
+      "name": "Idol of Eeshta",
+      "slug": "Idol_of_Eeshta",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Helmets: 12% increased Cost Efficiency"
+      ],
+      "imageLocal": "augments/talisman_of_eeshta.webp"
+    },
+    {
+      "name": "Idol of Egrin",
+      "slug": "Idol_of_Egrin",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Helmets: Enemies you Curse take 6% increased Damage"
+      ],
+      "imageLocal": "augments/talisman_of_egrin.webp"
+    },
+    {
+      "name": "Idol of Grold",
+      "slug": "Idol_of_Grold",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Gloves: 20% increased total Power counted by Warcries"
+      ],
+      "imageLocal": "augments/talisman_of_grold.webp"
+    },
+    {
+      "name": "Idol of Maxarius",
+      "slug": "Idol_of_Maxarius",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Body Armours: +1 Charm Slot"
+      ],
+      "imageLocal": "augments/talisman_of_maxarius.webp"
+    },
+    {
+      "name": "Idol of Ralakesh",
+      "slug": "Idol_of_Ralakesh",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Helmets: 8% increased Reservation Efficiency of Minion Skills"
+      ],
+      "imageLocal": "augments/talisman_of_ralakesh.webp"
+    },
+    {
+      "name": "Idol of Sirrius",
+      "slug": "Idol_of_Sirrius",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Gloves: 8% increased Attack Speed"
+      ],
+      "imageLocal": "augments/talisman_of_sirrius.webp"
+    },
+    {
+      "name": "Idol of Thruldana",
+      "slug": "Idol_of_Thruldana",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: 25% reduced Poison Duration, Targets can be affected by +1 of your Poisons at the same time"
+      ],
+      "imageLocal": "augments/talisman_of_thruldana.webp"
+    },
+    {
+      "name": "Inspiration Rune",
+      "slug": "Inspiration_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: Gain 16 Mana per enemy killed",
+        "Wand or Staff: 20% increased Mana Regeneration Rate",
+        "Armour: 15% increased Mana Regeneration Rate"
+      ],
+      "imageLocal": "augments/inspiration_rune.webp"
+    },
+    {
+      "name": "Iron Rune",
+      "slug": "Iron_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: 16% increased Physical Damage",
+        "Wand or Staff: 25% increased Spell Damage",
+        "Armour: 16% increased Armour, Evasion and Energy Shield"
+      ],
+      "imageLocal": "augments/iron_rune.webp"
+    },
+    {
+      "name": "Jiquani's Thesis",
+      "slug": "Jiquanis_Thesis",
+      "stack_current": null,
+      "stack_max": null,
+      "level_req": 60,
+      "implicitMods": [
+        "Helmets: +1 to maximum Mana per 2 Item Energy Shield on Equipped Helmet",
+        "Gloves: Energy Shield Recharge starts after spending a total of  2000 Mana, no more than once every 2 seconds",
+        "Boots: Increases and Reductions to Movement Speed also  apply to Energy Shield Recharge Rate"
+      ],
+      "imageLocal": "augments/jiquanis_thesis.webp"
+    },
+    {
+      "name": "Kurgal's Gaze",
+      "slug": "Kurgals_Gaze",
+      "stack_current": null,
+      "stack_max": null,
+      "level_req": 60,
+      "implicitMods": [
+        "Helmets: Increases and Reductions to Life Regeneration Rate also apply to Mana Regeneration Rate",
+        "Gloves: 40% increased effect of Arcane Surge on you",
+        "Boots: 15% increased Mana Cost Efficiency if you haven't Dodge Rolled Recently"
+      ],
+      "imageLocal": "augments/kurgals_gaze.webp"
+    },
+    {
+      "name": "Lady Hestra's Rune of Winter",
+      "slug": "Lady_Hestras_Rune_of_Winter",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: Adds 19 to 28 Cold Damage"
+      ],
+      "imageLocal": "augments/lady_hestras_rune_of_winter.webp"
+    },
+    {
+      "name": "Lesser Adept Rune",
+      "slug": "Lesser_Adept_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "All Equipment: +6 to Dexterity"
+      ],
+      "imageLocal": "augments/lesser_adept_rune.webp"
+    },
+    {
+      "name": "Lesser Body Rune",
+      "slug": "Lesser_Body_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Leeches 2% of Physical Damage as Life",
+        "Wand or Staff: +25 to maximum Energy Shield",
+        "Armour: +20 to maximum Life"
+      ],
+      "imageLocal": "augments/lesser_body_rune.webp"
+    },
+    {
+      "name": "Lesser Desert Rune",
+      "slug": "Lesser_Desert_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Adds 4 to 6 Fire Damage",
+        "Wand or Staff: Gain 6% of Damage as Extra Fire Damage",
+        "Armour: +10% to Fire Resistance"
+      ],
+      "imageLocal": "augments/lesser_desert_rune.webp"
+    },
+    {
+      "name": "Lesser Glacial Rune",
+      "slug": "Lesser_Glacial_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Adds 3 to 5 Cold Damage",
+        "Wand or Staff: Gain 6% of Damage as Extra Cold Damage",
+        "Armour: +10% to Cold Resistance"
+      ],
+      "imageLocal": "augments/lesser_glacial_rune.webp"
+    },
+    {
+      "name": "Lesser Inspiration Rune",
+      "slug": "Lesser_Inspiration_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Gain 8 Mana per enemy killed",
+        "Wand or Staff: 16% increased Mana Regeneration Rate",
+        "Armour: 12% increased Mana Regeneration Rate"
+      ],
+      "imageLocal": "augments/lesser_inspiration_rune.webp"
+    },
+    {
+      "name": "Lesser Iron Rune",
+      "slug": "Lesser_Iron_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: 14% increased Physical Damage",
+        "Wand or Staff: 20% increased Spell Damage",
+        "Armour: 14% increased Armour, Evasion and Energy Shield"
+      ],
+      "imageLocal": "augments/lesser_iron_rune.webp"
+    },
+    {
+      "name": "Lesser Mind Rune",
+      "slug": "Lesser_Mind_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Leeches 1.5% of Physical Damage as Mana",
+        "Wand or Staff: +30 to maximum Mana",
+        "Armour: +15 to maximum Mana"
+      ],
+      "imageLocal": "augments/lesser_mind_rune.webp"
+    },
+    {
+      "name": "Lesser Rebirth Rune",
+      "slug": "Lesser_Rebirth_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Gain 10 Life per enemy killed",
+        "Wand or Staff: 12% increased Energy Shield Recharge Rate",
+        "Armour: Regenerate 0.25% of maximum Life per second"
+      ],
+      "imageLocal": "augments/lesser_rebirth_rune.webp"
+    },
+    {
+      "name": "Lesser Resolve Rune",
+      "slug": "Lesser_Resolve_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "All Equipment: +6 to Intelligence"
+      ],
+      "imageLocal": "augments/lesser_resolve_rune.webp"
+    },
+    {
+      "name": "Lesser Robust Rune",
+      "slug": "Lesser_Robust_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "All Equipment: +6 to Strength"
+      ],
+      "imageLocal": "augments/lesser_robust_rune.webp"
+    },
+    {
+      "name": "Lesser Stone Rune",
+      "slug": "Lesser_Stone_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Causes 20% increased Stun Buildup",
+        "Wand or Staff: Gain additional Stun Threshold equal to 10% of maximum Energy Shield",
+        "Armour: +40 to Stun Threshold"
+      ],
+      "imageLocal": "augments/lesser_stone_rune.webp"
+    },
+    {
+      "name": "Lesser Storm Rune",
+      "slug": "Lesser_Storm_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Adds 1 to 10 Lightning Damage",
+        "Wand or Staff: Gain 6% of Damage as Extra Lightning Damage",
+        "Armour: +10% to Lightning Resistance"
+      ],
+      "imageLocal": "augments/lesser_storm_rune.webp"
+    },
+    {
+      "name": "Lesser Tempered Rune",
+      "slug": "Lesser_Tempered_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Adds 3 to 4 Physical Damage",
+        "Armour: 6 to 9 Physical Thorns damage"
+      ],
+      "imageLocal": "augments/lesser_tempered_rune.webp"
+    },
+    {
+      "name": "Lesser Vision Rune",
+      "slug": "Lesser_Vision_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: +50 to Accuracy Rating",
+        "Wand or Staff: 16% increased Critical Hit Chance for Spells",
+        "Armour: 8% increased Life and Mana Recovery from Flasks"
+      ],
+      "imageLocal": "augments/lesser_vision_rune.webp"
+    },
+    {
+      "name": "Mind Rune",
+      "slug": "Mind_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: Leeches 2% of Physical Damage as Mana",
+        "Wand or Staff: +40 to maximum Mana",
+        "Armour: +25 to maximum Mana"
+      ],
+      "imageLocal": "augments/mind_rune.webp"
+    },
+    {
+      "name": "Opiloti's Soul Core of Assault",
+      "slug": "Opilotis_Soul_Core_of_Assault",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: 50% chance when you gain a Frenzy Charge to gain an additional Frenzy Charge",
+        "Wand or Staff: 50% chance when you gain a Frenzy Charge to gain an additional Frenzy Charge"
+      ],
+      "imageLocal": "augments/opilotis_soul_core_of_assault.webp"
+    },
+    {
+      "name": "Owl Idol",
+      "slug": "Owl_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Foci: 10% increased Cooldown Recovery Rate",
+        "Sceptres: Allies in your Presence have 8% increased Cast Speed"
+      ],
+      "imageLocal": "augments/owl_talisman.webp"
+    },
+    {
+      "name": "Ox Idol",
+      "slug": "Ox_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Shields, Bucklers: 10% increased Block chance",
+        "Sceptres: Allies in your Presence have +8% to all Elemental Resistances"
+      ],
+      "imageLocal": "augments/ox_talisman.webp"
+    },
+    {
+      "name": "Primate Idol",
+      "slug": "Primate_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Helmets: Minions have 12% increased maximum Life",
+        "Sceptres: Allies in your Presence deal 30% increased Damage"
+      ],
+      "imageLocal": "augments/primate_talisman.webp"
+    },
+    {
+      "name": "Quipolatl's Soul Core of Flow",
+      "slug": "Quipolatls_Soul_Core_of_Flow",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Helmets: 8% increased Skill Effect Duration, 8% increased Cooldown Recovery Rate"
+      ],
+      "imageLocal": "augments/quipolatls_soul_core_of_flow.webp"
+    },
+    {
+      "name": "Quipolatl's Thesis",
+      "slug": "Quipolatls_Thesis",
+      "stack_current": null,
+      "stack_max": null,
+      "level_req": 60,
+      "implicitMods": [
+        "Helmets: A random Skill that requires Glory generates 15% of its maximum Glory when your Mark Activates",
+        "Gloves: Each Runic Inscription from your Curse Skills causes you to Regenerate Mana per second equal to 10% of that Skill's Mana Cost",
+        "Body Armours: +50% of Armour also applies to Chaos Damage while on full Energy Shield"
+      ],
+      "imageLocal": "augments/quipolatls_thesis.webp"
+    },
+    {
+      "name": "Rabbit Idol",
+      "slug": "Rabbit_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Body Armours: 5% increased Rarity of Items found",
+        "Sceptres: 10% increased Spirit"
+      ],
+      "imageLocal": "augments/rabbit_talisman.webp"
+    },
+    {
+      "name": "Rebirth Rune",
+      "slug": "Rebirth_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: Gain 20 Life per enemy killed",
+        "Wand or Staff: 15% increased Energy Shield Recharge Rate",
+        "Armour: Regenerate 0.3% of maximum Life per second"
+      ],
+      "imageLocal": "augments/rebirth_rune.webp"
+    },
+    {
+      "name": "Resolve Rune",
+      "slug": "Resolve_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "All Equipment: +8 to Intelligence"
+      ],
+      "imageLocal": "augments/resolve_rune.webp"
+    },
+    {
+      "name": "Robust Rune",
+      "slug": "Robust_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "All Equipment: +8 to Strength"
+      ],
+      "imageLocal": "augments/robust_rune.webp"
+    },
+    {
+      "name": "Saqawal's Rune of Erosion",
+      "slug": "Saqawals_Rune_of_Erosion",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Helmets: 25% increased Exposure Effect"
+      ],
+      "imageLocal": "augments/saqawals_rune_of_erosion.webp"
+    },
+    {
+      "name": "Saqawal's Rune of Memory",
+      "slug": "Saqawals_Rune_of_Memory",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Helmets: 2% increased Experience gain"
+      ],
+      "imageLocal": "augments/saqawals_rune_of_memory.webp"
+    },
+    {
+      "name": "Saqawal's Rune of the Sky",
+      "slug": "Saqawals_Rune_of_the_Sky",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: Gain 5% of Damage as Extra Damage of all Elements",
+        "Wand or Staff: Gain 5% of Damage as Extra Damage of all Elements"
+      ],
+      "imageLocal": "augments/saqawals_rune_of_the_sky.webp"
+    },
+    {
+      "name": "Snake Idol",
+      "slug": "Snake_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Gloves: 5% increased Curse Magnitudes",
+        "Sceptres: Allies in your Presence have 8% increased Attack Speed"
+      ],
+      "imageLocal": "augments/serpent_talisman.webp"
+    },
+    {
+      "name": "Soul Core of Atmohua",
+      "slug": "Soul_Core_of_Atmohua",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Convert 20% of Requirements to Strength",
+        "Armour: Convert 20% of Requirements to Strength"
+      ],
+      "imageLocal": "augments/soul_core_of_atmohua.webp"
+    },
+    {
+      "name": "Soul Core of Azcapa",
+      "slug": "Soul_Core_of_Azcapa",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: +15 to Spirit",
+        "Gloves: 10% increased Quantity of Gold Dropped by Slain Enemies"
+      ],
+      "imageLocal": "augments/soul_core_of_azcapa.webp"
+    },
+    {
+      "name": "Soul Core of Cholotl",
+      "slug": "Soul_Core_of_Cholotl",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Convert 20% of Requirements to Dexterity",
+        "Armour: Convert 20% of Requirements to Dexterity"
+      ],
+      "imageLocal": "augments/soul_core_of_cholotl.webp"
+    },
+    {
+      "name": "Soul Core of Citaqualotl",
+      "slug": "Soul_Core_of_Citaqualotl",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: 30% increased Elemental Damage with Attacks",
+        "Armour: +5% to all Elemental Resistances"
+      ],
+      "imageLocal": "augments/soul_core_of_citaqualotl.webp"
+    },
+    {
+      "name": "Soul Core of Jiquani",
+      "slug": "Soul_Core_of_Jiquani",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Recover 2% of maximum Life on Kill",
+        "Body Armours: 3% increased maximum Life"
+      ],
+      "imageLocal": "augments/soul_core_of_jiquani.webp"
+    },
+    {
+      "name": "Soul Core of Opiloti",
+      "slug": "Soul_Core_of_Opiloti",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: 15% chance to cause Bleeding on Hit",
+        "Helmets: 20% increased Charm Charges gained"
+      ],
+      "imageLocal": "augments/soul_core_of_opiloti.webp"
+    },
+    {
+      "name": "Soul Core of Puhuarte",
+      "slug": "Soul_Core_of_Puhuarte",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: 30% increased Flammability Magnitude",
+        "Gloves: +1% to Maximum Fire Resistance"
+      ],
+      "imageLocal": "augments/soul_core_of_puhuarte.webp"
+    },
+    {
+      "name": "Soul Core of Quipolatl",
+      "slug": "Soul_Core_of_Quipolatl",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: 5% increased Attack Speed",
+        "Boots: 15% reduced Slowing Potency of Debuffs on You"
+      ],
+      "imageLocal": "augments/soul_core_of_quipolatl.webp"
+    },
+    {
+      "name": "Soul Core of Tacati",
+      "slug": "Soul_Core_of_Tacati",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: 15% chance to Poison on Hit with this weapon",
+        "Armour: +11% to Chaos Resistance"
+      ],
+      "imageLocal": "augments/soul_core_of_tacati.webp"
+    },
+    {
+      "name": "Soul Core of Ticaba",
+      "slug": "Soul_Core_of_Ticaba",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: +5% to Critical Damage Bonus",
+        "Body Armours: Hits against you have 20% reduced Critical Damage Bonus",
+        "Shields, Bucklers: Hits against you have 20% reduced Critical Damage Bonus"
+      ],
+      "imageLocal": "augments/soul_core_of_ticaba.webp"
+    },
+    {
+      "name": "Soul Core of Topotante",
+      "slug": "Soul_Core_of_Topotante",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Attacks with this Weapon Penetrate 15% Elemental Resistances",
+        "Boots: 25% increased Elemental Ailment Threshold"
+      ],
+      "imageLocal": "augments/soul_core_of_topotante.webp"
+    },
+    {
+      "name": "Soul Core of Tzamoto",
+      "slug": "Soul_Core_of_Tzamoto",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: 30% increased Freeze Buildup",
+        "Helmets: +1% to Maximum Cold Resistance"
+      ],
+      "imageLocal": "augments/soul_core_of_tzamoto.webp"
+    },
+    {
+      "name": "Soul Core of Xopec",
+      "slug": "Soul_Core_of_Xopec",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: 30% increased chance to Shock",
+        "Boots: +1% to Maximum Lightning Resistance"
+      ],
+      "imageLocal": "augments/soul_core_of_xopec.webp"
+    },
+    {
+      "name": "Soul Core of Zalatl",
+      "slug": "Soul_Core_of_Zalatl",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Recover 2% of maximum Mana on Kill",
+        "Helmets: 3% increased maximum Mana"
+      ],
+      "imageLocal": "augments/soul_core_of_zalatl.webp"
+    },
+    {
+      "name": "Soul Core of Zantipi",
+      "slug": "Soul_Core_of_Zantipi",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Martial Weapon: Convert 20% of Requirements to Intelligence",
+        "Armour: Convert 20% of Requirements to Intelligence"
+      ],
+      "imageLocal": "augments/soul_core_of_zantipi.webp"
+    },
+    {
+      "name": "Stag Idol",
+      "slug": "Stag_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Helmets: 50% increased Thorns Critical Hit Chance",
+        "Sceptres: Allies in your Presence deal 1 to 40 added Attack Lightning Damage"
+      ],
+      "imageLocal": "augments/stag_talisman.webp"
+    },
+    {
+      "name": "Stone Rune",
+      "slug": "Stone_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: Causes 25% increased Stun Buildup",
+        "Wand or Staff: Gain additional Stun Threshold equal to 12% of maximum Energy Shield",
+        "Armour: +60 to Stun Threshold"
+      ],
+      "imageLocal": "augments/stone_rune.webp"
+    },
+    {
+      "name": "Storm Rune",
+      "slug": "Storm_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: Adds 1 to 20 Lightning Damage",
+        "Wand or Staff: Gain 8% of Damage as Extra Lightning Damage",
+        "Armour: +12% to Lightning Resistance"
+      ],
+      "imageLocal": "augments/storm_rune.webp"
+    },
+    {
+      "name": "Tacati's Soul Core of Affliction",
+      "slug": "Tacatis_Soul_Core_of_Affliction",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Helmets: Enemies you Curse have -5% to Chaos Resistance"
+      ],
+      "imageLocal": "augments/tacatis_soul_core_of_affliction.webp"
+    },
+    {
+      "name": "Tecrod's Gaze",
+      "slug": "Tecrods_Gaze",
+      "stack_current": null,
+      "stack_max": null,
+      "level_req": 60,
+      "implicitMods": [
+        "Body Armours: Regenerate 1.5% of maximum Life per second",
+        "Gloves: 25% increased Life Cost Efficiency",
+        "Boots: 10% increased Movement Speed when on Low Life"
+      ],
+      "imageLocal": "augments/tecrods_gaze.webp"
+    },
+    {
+      "name": "Tempered Rune",
+      "slug": "Tempered_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: Adds 6 to 9 Physical Damage",
+        "Armour: 14 to 21 Physical Thorns damage"
+      ],
+      "imageLocal": "augments/tempered_rune.webp"
+    },
+    {
+      "name": "Thane Girt's Rune of Wildness",
+      "slug": "Thane_Girts_Rune_of_Wildness",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Wand or Staff: 25% chance for Spell Skills to fire 2 additional Projectiles"
+      ],
+      "imageLocal": "augments/thane_girts_rune_of_wildness.webp"
+    },
+    {
+      "name": "Thane Grannell's Rune of Mastery",
+      "slug": "Thane_Grannells_Rune_of_Mastery",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Gloves: 30% increased Magnitude of Non-Damaging Ailments you inflict"
+      ],
+      "imageLocal": "augments/thane_grannells_rune_of_mastery.webp"
+    },
+    {
+      "name": "Thane Leld's Rune of Spring",
+      "slug": "Thane_Lelds_Rune_of_Spring",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: Adds 1 to 60 Lightning Damage"
+      ],
+      "imageLocal": "augments/thane_lelds_rune_of_spring.webp"
+    },
+    {
+      "name": "Thane Myrk's Rune of Summer",
+      "slug": "Thane_Myrks_Rune_of_Summer",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: Adds 23 to 34 Fire Damage"
+      ],
+      "imageLocal": "augments/thane_myrks_rune_of_summer.webp"
+    },
+    {
+      "name": "The Greatwolf's Rune of Claws",
+      "slug": "The_Greatwolfs_Rune_of_Claws",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Gloves: Adds 5 to 12 Physical Damage to Attacks"
+      ],
+      "imageLocal": "augments/the_greatwolfs_rune_of_claws.webp"
+    },
+    {
+      "name": "The Greatwolf's Rune of Willpower",
+      "slug": "The_Greatwolfs_Rune_of_Willpower",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Body Armours: 15% of Damage is taken from Mana before Life"
+      ],
+      "imageLocal": "augments/the_greatwolfs_rune_of_willpower.webp"
+    },
+    {
+      "name": "Topotante's Soul Core of Dampening",
+      "slug": "Topotantes_Soul_Core_of_Dampening",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Gloves: +40% of Armour also applies to Fire Damage"
+      ],
+      "imageLocal": "augments/topotantes_soul_core_of_dampening.webp"
+    },
+    {
+      "name": "Tzamoto's Soul Core of Ferocity",
+      "slug": "Tzamotos_Soul_Core_of_Ferocity",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Helmets: +4 to Maximum Rage"
+      ],
+      "imageLocal": "augments/tzamotos_soul_core_of_ferocity.webp"
+    },
+    {
+      "name": "Ulaman's Gaze",
+      "slug": "Ulamans_Gaze",
+      "stack_current": null,
+      "stack_max": null,
+      "level_req": 60,
+      "implicitMods": [
+        "Helmets: +1 to Accuracy Rating per 1 Item Evasion Rating on Equipped Helmet",
+        "Gloves: Critical Hit chance is Lucky against Parried enemies",
+        "Body Armours: Prevent +3% of Damage from Deflected Hits"
+      ],
+      "imageLocal": "augments/ulamans_gaze.webp"
+    },
+    {
+      "name": "Uromoti's Soul Core of Attenuation",
+      "slug": "Uromotis_Soul_Core_of_Attenuation",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Boots: 15% increased Curse Duration, 15% increased Poison Duration"
+      ],
+      "imageLocal": "augments/uromotis_soul_core_of_attenuation.webp"
+    },
+    {
+      "name": "Vision Rune",
+      "slug": "Vision_Rune",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 15,
+      "implicitMods": [
+        "Martial Weapon: +80 to Accuracy Rating",
+        "Wand or Staff: 20% increased Critical Hit Chance for Spells",
+        "Armour: 10% increased Life and Mana Recovery from Flasks"
+      ],
+      "imageLocal": "augments/vision_rune.webp"
+    },
+    {
+      "name": "Wolf Idol",
+      "slug": "Wolf_Idol",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": null,
+      "implicitMods": [
+        "Gloves: 10% increased Magnitude of Bleeding you inflict",
+        "Sceptres: Allies in your Presence have 14% increased Critical Damage Bonus"
+      ],
+      "imageLocal": "augments/wolf_talisman.webp"
+    },
+    {
+      "name": "Xipocado's Soul Core of Dominion",
+      "slug": "Xipocados_Soul_Core_of_Dominion",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Wand or Staff: Minions deal 40% increased Damage with Command Skills",
+        "Sceptres: Minions deal 40% increased Damage with Command Skills"
+      ],
+      "imageLocal": "augments/xipocados_soul_core_of_dominion.webp"
+    },
+    {
+      "name": "Xopec's Soul Core of Power",
+      "slug": "Xopecs_Soul_Core_of_Power",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Martial Weapon: 50% chance when you gain a Power Charge to gain an additional Power Charge",
+        "Wand or Staff: 50% chance when you gain a Power Charge to gain an additional Power Charge"
+      ],
+      "imageLocal": "augments/xopecs_soul_core_of_power.webp"
+    },
+    {
+      "name": "Zalatl's Soul Core of Insulation",
+      "slug": "Zalatls_Soul_Core_of_Insulation",
+      "stack_current": 1,
+      "stack_max": 10,
+      "level_req": 50,
+      "implicitMods": [
+        "Boots: +40% of Armour also applies to Lightning Damage"
+      ],
+      "imageLocal": "augments/zalatls_soul_core_of_insulation.webp"
+    }
+  ]
+}

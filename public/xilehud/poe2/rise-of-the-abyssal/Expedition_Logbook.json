@@ -1,0 +1,227 @@
+[
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: Area contains (10—40)% increased number of Remnants",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: (10—40)% increased Expedition Explosive Radius",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: (10—40)% increased number of Explosives",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "68: Area contains Medved, Feller of Heroes",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "68: Area contains Vorana, Last to Fall",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "75: Area contains Uhtred, Covetous Traitor",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "81: Area contains Olroth, Origin of the Fall",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: Excavated Chests have a (5—20)% chance to contain twice as many Items",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: Remnants have (10—40)% chance to have an additional Suffix Modifier",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: (20—50)% increased Expedition Explosive Placement Range",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: Area contains (10—40)% increased number of Monster Markers",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: Area contains an additional Underground Area",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: Area contains (10—40)% increased number of Runic Monster Markers",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: Area contains (8—16) additional Chest Markers",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  },
+  {
+    "category": "Expedition_Logbook",
+    "domain": "normal",
+    "side": "none",
+    "text_plain": "1: (10—40)% increased quantity of Artifacts dropped by Monsters",
+    "tier": null,
+    "ilvl": null,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [
+      "expedition"
+    ],
+    "family": null,
+    "tiers": []
+  }
+]

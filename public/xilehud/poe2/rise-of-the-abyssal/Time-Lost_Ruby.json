@@ -1,0 +1,1529 @@
+[
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Upgrades Radius to Mediumlocal jewel effect base radius [#]Upgrades Radius to Largelocal jewel effect base radius [#]",
+    "tier": 2,
+    "ilvl": 1,
+    "weight": 2,
+    "weight_pct": 6.452,
+    "tags": [],
+    "family": "JewelRadiusLargerRadius",
+    "tiers": [
+      {
+        "tier_name": "Greater",
+        "tier_level": 1,
+        "text_plain": "1 Upgrades Radius to Mediumlocal jewel effect base radius [150]",
+        "weight": 1,
+        "weight_pct": 3.226
+      },
+      {
+        "tier_name": "Grand",
+        "tier_level": 1,
+        "text_plain": "1 Upgrades Radius to Largelocal jewel effect base radius [300]",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Notable Passive Skills in Radius also grant (2—3)% increased Area of Effect",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [],
+    "family": "AreaOfEffect",
+    "tiers": [
+      {
+        "tier_name": "Blasting",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (2—3)% increased Area of Effect",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (2—3)% increased Armour",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "defences"
+    ],
+    "family": "IncreasedPhysicalDamageReductionRatingPercent",
+    "tiers": [
+      {
+        "tier_name": "Armoured",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (2—3)% increased Armour",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant Break (1—2)% increased Armour",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [],
+    "family": "ArmourBreak",
+    "tiers": [
+      {
+        "tier_name": "Shattering",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant Break (1—2)% increased Armour",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (1—2)% increased Attack Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage",
+      "attack"
+    ],
+    "family": "AttackDamage",
+    "tiers": [
+      {
+        "tier_name": "Combat",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (1—2)% increased Attack Damage",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant 1% chance to inflict Bleeding on Hit",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [],
+    "family": "BleedChanceIncrease",
+    "tiers": [
+      {
+        "tier_name": "Bleeding",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant 1% chance to inflict Bleeding on Hit",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Notable Passive Skills in Radius also grant (1—3)% increased Block chance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [],
+    "family": "IncreasedBlockChance",
+    "tiers": [
+      {
+        "tier_name": "Protecting",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (1—3)% increased Block chance",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (2—4)% increased Damage against Enemies with Fully Broken Armour",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage"
+    ],
+    "family": "DamagevsArmourBrokenEnemies",
+    "tiers": [
+      {
+        "tier_name": "Exploiting",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (2—4)% increased Damage against Enemies with Fully Broken Armour",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (1—2)% increased Elemental Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage",
+      "elemental"
+    ],
+    "family": "ElementalDamagePercent",
+    "tiers": [
+      {
+        "tier_name": "Prismatic",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (1—2)% increased Elemental Damage",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant Empowered Attacks deal (2—3)% increased Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage",
+      "attack"
+    ],
+    "family": "ExertedAttackDamage",
+    "tiers": [
+      {
+        "tier_name": "Empowering",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant Empowered Attacks deal (2—3)% increased Damage",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (1—2)% increased Fire Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage",
+      "elemental",
+      "fire"
+    ],
+    "family": "FireDamagePercentage",
+    "tiers": [
+      {
+        "tier_name": "Flaming",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (1—2)% increased Fire Damage",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant Damage Penetrates (1—2)% Fire Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage",
+      "elemental",
+      "fire"
+    ],
+    "family": "FireResistancePenetration",
+    "tiers": [
+      {
+        "tier_name": "Searing",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant Damage Penetrates (1—2)% Fire Resistance",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Notable Passive Skills in Radius also grant (3—7)% increased Ignite Magnitude",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [],
+    "family": "IgniteEffect",
+    "tiers": [
+      {
+        "tier_name": "Burning",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (3—7)% increased Ignite Magnitude",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (1—2)% increased Damage with Maces",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage",
+      "attack"
+    ],
+    "family": "SpecificWeaponDamage",
+    "tiers": [
+      {
+        "tier_name": "Beating",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (1—2)% increased Damage with Maces",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Notable Passive Skills in Radius also grant +1 to Maximum Rage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [],
+    "family": "MaximumRage",
+    "tiers": [
+      {
+        "tier_name": "Angry",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant +1 to Maximum Rage",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (1—2)% increased Melee Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage",
+      "attack"
+    ],
+    "family": "MeleeDamage",
+    "tiers": [
+      {
+        "tier_name": "Clashing",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (1—2)% increased Melee Damage",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Notable Passive Skills in Radius also grant Minions have (3—5)% increased Area of Effect",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "minion"
+    ],
+    "family": "MinionAreaOfEffect",
+    "tiers": [
+      {
+        "tier_name": "Companion",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant Minions have (3—5)% increased Area of Effect",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant Minions have (1—2)% increased maximum Life",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "life",
+      "minion"
+    ],
+    "family": "MinionLife",
+    "tiers": [
+      {
+        "tier_name": "Fortuitous",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant Minions have (1—2)% increased maximum Life",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (1—2)% increased Global Physical Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage",
+      "physical"
+    ],
+    "family": "PhysicalDamagePercent",
+    "tiers": [
+      {
+        "tier_name": "Sharpened",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (1—2)% increased Global Physical Damage",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Notable Passive Skills in Radius also grant (8—15)% increased Defences from Equipped Shield",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "defences"
+    ],
+    "family": "ShieldArmourIncrease",
+    "tiers": [
+      {
+        "tier_name": "Shielding",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (8—15)% increased Defences from Equipped Shield",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Notable Passive Skills in Radius also grant (3—7)% increased Magnitude of Bleeding you inflict",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage",
+      "physical",
+      "attack",
+      "ailment"
+    ],
+    "family": "BleedingDamage",
+    "tiers": [
+      {
+        "tier_name": "Haemorrhaging",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (3—7)% increased Magnitude of Bleeding you inflict",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (2—3)% increased Thorns damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage"
+    ],
+    "family": "Thorns",
+    "tiers": [
+      {
+        "tier_name": "Retaliating",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (2—3)% increased Thorns damage",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (2—3)% increased Totem Damage",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage"
+    ],
+    "family": "TotemDamage",
+    "tiers": [
+      {
+        "tier_name": "Shaman's",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (2—3)% increased Totem Damage",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (2—3)% increased Totem Life",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "life"
+    ],
+    "family": "IncreasedTotemLife",
+    "tiers": [
+      {
+        "tier_name": "Carved",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (2—3)% increased Totem Life",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (2—3)% increased Damage with Warcries",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage"
+    ],
+    "family": "WarcryDamage",
+    "tiers": [
+      {
+        "tier_name": "Yelling",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (2—3)% increased Damage with Warcries",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant (3—5)% chance for Attack Hits to apply Incision",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [
+      "damage",
+      "physical",
+      "ailment"
+    ],
+    "family": "IncisionChance",
+    "tiers": [
+      {
+        "tier_name": "Incise",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (3—5)% chance for Attack Hits to apply Incision",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant Banner Skills have (2—3)% increased Area of Effect",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [],
+    "family": "BannerArea",
+    "tiers": [
+      {
+        "tier_name": "Rallying",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant Banner Skills have (2—3)% increased Area of Effect",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Notable Passive Skills in Radius also grant (8—12)% increased Presence Area of Effect",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 3.226,
+    "tags": [],
+    "family": "PresenceRadius",
+    "tiers": [
+      {
+        "tier_name": "Iconic",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (8—12)% increased Presence Area of Effect",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "prefix",
+    "text_plain": "Small Passive Skills in Radius also grant #% increased Damage while ShapeshiftedSmall Passive Skills in Radius also grant #% increased Damage with Plant Skills",
+    "tier": 2,
+    "ilvl": 1,
+    "weight": 2,
+    "weight_pct": 6.452,
+    "tags": [
+      "damage"
+    ],
+    "family": "DamageForm",
+    "tiers": [
+      {
+        "tier_name": "Bestial",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (1—2)% increased Damage while Shapeshifted",
+        "weight": 1,
+        "weight_pct": 3.226
+      },
+      {
+        "tier_name": "Overgrown",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (1—2)% increased Damage with Plant Skills",
+        "weight": 1,
+        "weight_pct": 3.226
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(15—25)% increased Effect of Small Passive Skills in Radius",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "JewelRadiusSmallNodeEffect",
+    "tiers": [
+      {
+        "tier_name": "of Potency",
+        "tier_level": 1,
+        "text_plain": "1 (15—25)% increased Effect of Small Passive Skills in Radius",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "(15—25)% increased Effect of Notable Passive Skills in Radius",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "JewelRadiusNotableEffect",
+    "tiers": [
+      {
+        "tier_name": "of Supremacy",
+        "tier_level": 1,
+        "text_plain": "1 (15—25)% increased Effect of Notable Passive Skills in Radius",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (5—10)% increased Armour Break Duration",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "ArmourBreakDuration",
+    "tiers": [
+      {
+        "tier_name": "Resonating",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (5—10)% increased Armour Break Duration",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (3—7)% increased Bleeding Duration",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [
+      "physical",
+      "attack",
+      "ailment"
+    ],
+    "family": "BleedDuration",
+    "tiers": [
+      {
+        "tier_name": "of Haemophilia",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (3—7)% increased Bleeding Duration",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Small Passive Skills in Radius also grant (2—3)% increased Flammability Magnitude",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "IgniteChanceIncrease",
+    "tiers": [
+      {
+        "tier_name": "of Ignition",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (2—3)% increased Flammability Magnitude",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (3—5)% increased Skill Effect Duration",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "SkillEffectDuration",
+    "tiers": [
+      {
+        "tier_name": "of Lengthening",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (3—5)% increased Skill Effect Duration",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (3—7)% increased Knockback Distance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "Knockback",
+    "tiers": [
+      {
+        "tier_name": "of Fending",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (3—7)% increased Knockback Distance",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (2—3)% of Skill Mana Costs Converted to Life Costs",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [
+      "life"
+    ],
+    "family": "LifeCost",
+    "tiers": [
+      {
+        "tier_name": "of Sacrifice",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (2—3)% of Skill Mana Costs Converted to Life Costs",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Small Passive Skills in Radius also grant (2—3)% increased amount of Life Leeched",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "LifeLeech",
+    "tiers": [
+      {
+        "tier_name": "of Frenzy",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (2—3)% increased amount of Life Leeched",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (3—5)% increased Life Regeneration rate",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [
+      "life"
+    ],
+    "family": "LifeRegenerationRate",
+    "tiers": [
+      {
+        "tier_name": "of Regeneration",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (3—5)% increased Life Regeneration rate",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (6—12)% increased Stun Buildup with Maces",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [
+      "attack"
+    ],
+    "family": "MaceStun",
+    "tiers": [
+      {
+        "tier_name": "of Thumping",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (6—12)% increased Stun Buildup with Maces",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Small Passive Skills in Radius also grant Minions have (1—2)% additional Physical Damage Reduction",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [
+      "physical",
+      "minion"
+    ],
+    "family": "MinionPhysicalDamageReduction",
+    "tiers": [
+      {
+        "tier_name": "of Confidence",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant Minions have (1—2)% additional Physical Damage Reduction",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant Gain 1 Rage on Melee Hit",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "RageOnHit",
+    "tiers": [
+      {
+        "tier_name": "of Raging",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant Gain 1 Rage on Melee Hit",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant Gain (1—2) Rage when Hit by an Enemy",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "GainRage",
+    "tiers": [
+      {
+        "tier_name": "of Retribution",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant Gain (1—2) Rage when Hit by an Enemy",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (5—10)% increased Stun Buildup",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "StunDamageIncrease",
+    "tiers": [
+      {
+        "tier_name": "of Stunning",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (5—10)% increased Stun Buildup",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Small Passive Skills in Radius also grant (1—2)% increased Stun Threshold",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "IncreasedStunThreshold",
+    "tiers": [
+      {
+        "tier_name": "of Withstanding",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (1—2)% increased Stun Threshold",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Small Passive Skills in Radius also grant (2—3)% increased Totem Placement speed",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [
+      "speed"
+    ],
+    "family": "SummonTotemCastSpeed",
+    "tiers": [
+      {
+        "tier_name": "of Ancestry",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (2—3)% increased Totem Placement speed",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (3—7)% increased Warcry Cooldown Recovery Rate",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "WarcryCooldownSpeed",
+    "tiers": [
+      {
+        "tier_name": "of Rallying",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (3—7)% increased Warcry Cooldown Recovery Rate",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Small Passive Skills in Radius also grant (2—3)% increased Warcry Speed",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [
+      "speed"
+    ],
+    "family": "WarcrySpeed",
+    "tiers": [
+      {
+        "tier_name": "of Lungs",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant (2—3)% increased Warcry Speed",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (8—12)% increased Glory generation for Banner Skills",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "BannerValourGained",
+    "tiers": [
+      {
+        "tier_name": "of Valour",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (8—12)% increased Glory generation for Banner Skills",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Small Passive Skills in Radius also grant Banner Skills have (3—4)% increased Duration",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [],
+    "family": "BannerDuration",
+    "tiers": [
+      {
+        "tier_name": "of Inspiring",
+        "tier_level": 1,
+        "text_plain": "1 Small Passive Skills in Radius also grant Banner Skills have (3—4)% increased Duration",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "normal",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant (1—2)% increased Skill Speed while Shapeshifted",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 4.545,
+    "tags": [
+      "speed"
+    ],
+    "family": "SpecificWeaponSpeed",
+    "tiers": [
+      {
+        "tier_name": "of the Wild",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (1—2)% increased Skill Speed while Shapeshifted",
+        "weight": 1,
+        "weight_pct": 4.545
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "desecrated",
+    "side": "prefix",
+    "text_plain": "Notable Passive Skills in Radius also grant #% of Damage is taken from Mana before LifeNotable Passive Skills in Radius also grant #% of Damage taken Recouped as LifeNotable Passive Skills in Radius also grant #% of Damage taken Recouped as ManaNotable Passive Skills in Radius also grant #% increased Global DefencesNotable Passive Skills in Radius also grant #% increased maximum LifeNotable Passive Skills in Radius also grant #% increased maximum Mana",
+    "tier": 6,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "AbyssRadiusJewelMod",
+    "tiers": [
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant 1% of Damage is taken from Mana before Life",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant 1% of Damage taken Recouped as Life",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant 1% of Damage taken Recouped as Mana",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (2—3)% increased Global Defences",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant 1% increased maximum Life",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant 1% increased maximum Mana",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "desecrated",
+    "side": "suffix",
+    "text_plain": "Notable Passive Skills in Radius also grant Charms gain # charges per SecondNotable Passive Skills in Radius also grant Life Flasks gain # charges per SecondNotable Passive Skills in Radius also grant #% increased Mana Cost EfficiencyNotable Passive Skills in Radius also grant Mana Flasks gain # charges per SecondNotable Passive Skills in Radius also grant Hits have #% reduced Critical Hit Chance against youNotable Passive Skills in Radius also grant Regenerate #% of maximum Life per second",
+    "tier": 6,
+    "ilvl": 1,
+    "weight": 0,
+    "weight_pct": 0,
+    "tags": [],
+    "family": "AbyssRadiusJewelMod",
+    "tiers": [
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant Charms gain 0.1 charges per Second",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant Life Flasks gain 0.1 charges per Second",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant (2—3)% increased Mana Cost Efficiency",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant Mana Flasks gain 0.1 charges per Second",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant Hits have (3—5)% reduced Critical Hit Chance against you",
+        "weight": 0,
+        "weight_pct": 0
+      },
+      {
+        "tier_name": "Lightless",
+        "tier_level": 1,
+        "text_plain": "1 Notable Passive Skills in Radius also grant Regenerate (0.03—0.07)% of maximum Life per second",
+        "weight": 0,
+        "weight_pct": 0
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(4—6) to Strength",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Strength",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelStrength1",
+        "tier_level": 1,
+        "text_plain": "1 +(4—6) to Strength",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(4—6) to Dexterity",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Dexterity",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelDexterity1",
+        "tier_level": 1,
+        "text_plain": "1 +(4—6) to Dexterity",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(4—6) to Intelligence",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "attribute"
+    ],
+    "family": "Intelligence",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelIntelligence1",
+        "tier_level": 1,
+        "text_plain": "1 +(4—6) to Intelligence",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(5—10)% to Fire Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "elemental",
+      "fire",
+      "resistance"
+    ],
+    "family": "FireResistance",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelFireResist1",
+        "tier_level": 1,
+        "text_plain": "1 +(5—10)% to Fire Resistance",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(5—10)% to Cold Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "elemental",
+      "cold",
+      "resistance"
+    ],
+    "family": "ColdResistance",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelColdResist1",
+        "tier_level": 1,
+        "text_plain": "1 +(5—10)% to Cold Resistance",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(5—10)% to Lightning Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "elemental",
+      "lightning",
+      "resistance"
+    ],
+    "family": "LightningResistance",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelLightningResist1",
+        "tier_level": 1,
+        "text_plain": "1 +(5—10)% to Lightning Resistance",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "+(3—7)% to Chaos Resistance",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "chaos",
+      "resistance"
+    ],
+    "family": "ChaosResistance",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelChaosResist1",
+        "tier_level": 1,
+        "text_plain": "1 +(3—7)% to Chaos Resistance",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "Immune to Maim",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [],
+    "family": "ImmuneToMaim",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelMaimImmunity1",
+        "tier_level": 1,
+        "text_plain": "1 Immune to Maim",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "You cannot be Hindered",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [],
+    "family": "YouCannotBeHindered",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelHinderImmunity1",
+        "tier_level": 1,
+        "text_plain": "1 You cannot be Hindered",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "Corrupted Blood cannot be inflicted on you",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [
+      "physical",
+      "ailment"
+    ],
+    "family": "CorruptedBlood",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelCorruptedBloodImmunity1",
+        "tier_level": 1,
+        "text_plain": "1 Corrupted Blood cannot be inflicted on you",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  },
+  {
+    "category": "Time-Lost_Ruby",
+    "domain": "corrupted",
+    "side": "none",
+    "text_plain": "Cannot be Blinded",
+    "tier": 1,
+    "ilvl": 1,
+    "weight": 1,
+    "weight_pct": 9.091,
+    "tags": [],
+    "family": "ImmunityToBlind",
+    "tiers": [
+      {
+        "tier_name": "CorruptionJewelBlindImmunity1",
+        "tier_level": 1,
+        "text_plain": "1 Cannot be Blinded",
+        "weight": 1,
+        "weight_pct": 9.091
+      }
+    ]
+  }
+]
