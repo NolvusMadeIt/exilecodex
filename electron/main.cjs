@@ -15,6 +15,7 @@ const fs = require('node:fs')
 const { registerTrade } = require('./trade.cjs')
 const { registerGameLog, stop: stopGameLog, autostart: autostartGameLog } = require('./gamelog.cjs')
 const { registerOverlayWindow, closeOverlay } = require('./overlay-window.cjs')
+const { registerXileClipboard } = require('./xilehud/register.cjs')
 
 // Community invite — also used by the tray menu.
 const DISCORD_URL = 'https://discord.gg/4gueh3Kb3A'
@@ -498,6 +499,7 @@ app.whenReady().then(() => {
   registerTrade(ipcMain)
   registerGameLog(ipcMain, () => BrowserWindow.getAllWindows())
   registerOverlayWindow(ipcMain, overlayUrlFor)
+  registerXileClipboard(ipcMain, () => BrowserWindow.getAllWindows())
   createWindow()
   // Begin zone tracking immediately using the remembered Client.txt (or auto-detect), so it works
   // from launch and the saved location is never "forgotten".

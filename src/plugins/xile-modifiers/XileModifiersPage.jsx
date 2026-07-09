@@ -20,6 +20,7 @@ export function XileModifiersPage() {
   const modRef = useRef(null)
   const itemRef = useRef(null)
   itemRef.current = pastedItem
+  const analyzeRef = useRef(null)
 
   // Load engine + categories once.
   useEffect(() => {
@@ -110,6 +111,15 @@ export function XileModifiersPage() {
       setStatus('error')
     }
   }
+
+  analyzeRef.current = analyzeItemText
+
+  // Desktop smart clipboard: copying an item in game analyzes it automatically — the same
+  // path as manual paste. The bridge only exists in the desktop app; on web this is inert.
+  useEffect(() => {
+    const unsubscribe = window.nolvusXile?.onItemCopied?.((text) => analyzeRef.current?.(text))
+    return () => { try { unsubscribe?.() } catch { /* bridge gone at teardown */ } }
+  }, [])
 
   function clearPastedItem() {
     setPastedItem(null)

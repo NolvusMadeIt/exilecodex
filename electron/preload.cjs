@@ -74,6 +74,22 @@ contextBridge.exposeInMainWorld('nolvusTimer', {
   },
 })
 
+// --- Smart clipboard (XileHUD-derived, desktop only) ---
+// The main process watches the clipboard for copied PoE2 items (vendored XileHUD monitor,
+// GPL-3.0 — see electron/xilehud/). The renderer checks for `window.nolvusXile` to auto-analyze
+// copies (the Modifiers page treats them exactly like a manual paste).
+contextBridge.exposeInMainWorld('nolvusXile', {
+  isDesktop: true,
+  clipboardStart: () => ipcRenderer.send('xile:clipboard:start'),
+  clipboardStop: () => ipcRenderer.send('xile:clipboard:stop'),
+  clipboardReset: () => ipcRenderer.send('xile:clipboard:reset'),
+  onItemCopied: (cb) => {
+    const handler = (_e, text) => cb(text)
+    ipcRenderer.on('xile:item-copied', handler)
+    return () => ipcRenderer.removeListener('xile:item-copied', handler)
+  },
+})
+
 // --- Game-log watcher (Campaign Guide auto-tracking) ---
 // The renderer checks for `window.nolvusGameLog` to know it can auto-detect the live zone by tailing
 // PoE2's Client.txt (desktop only, read-only). `onEvent` streams {type:'zone'|'level'|'death', …}.
