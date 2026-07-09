@@ -31,6 +31,7 @@ The app is a plugin platform with a WordPress-style manager (Settings ▸ Plugin
 | **Filter & Build Editor** | Monaco-based PoE2 filter IDE — syntax highlighting + autocomplete with real base-type names. On by default; even this is removable. |
 | **Item Database** | Every PoE2 unique and base type, searchable and chip-filterable — see below. |
 | **Modifiers** | Every affix by item category — tiers, weights, ilvl gates — searchable and filterable. |
+| **Crafting** | Currencies, essences, omens, catalysts, augments, anoints and the keyword glossary. |
 | **Price Check** *(desktop)* | Paste an item, pick the stats that matter, get real listings from the official trade through your own session — sell verdict, in-demand stats, reliability. Web falls back to poe2scout spot prices. |
 | **Market Companion** *(desktop)* | Live currency market — prices in Exalted/Divine, 24h change, volume, charts and buy/sell signals via poe2scout. |
 | **Campaign Mode** *(desktop for live tracking)* | Zone-by-zone leveling guide with layout maps, plus a Speedrun mode: critical-path route, prep checklist and a game-log run timer that pauses in town/hideout/idle, with saved runs and splits. |
@@ -53,6 +54,15 @@ heaviest aggregate categories smooth. Engine and data **powered by
 [XileHUD](https://github.com/XileHUD/poe_overlay)** (GPL-3.0), in this app's Exile theme.
 
 ![Modifiers — browse, search, switch categories](docs/screenshots/modifiers.gif)
+
+### Crafting
+
+Every crafting resource one tab away: currencies with their exact effects, essences by tier,
+omens, catalysts, socketable augments, liquid emotions, amulet anoints and a searchable
+glossary of game keywords. Engine and data **powered by
+[XileHUD](https://github.com/XileHUD/poe_overlay)** (GPL-3.0), in this app's Exile theme.
+
+![Crafting — currencies, essences and the keyword glossary](docs/screenshots/crafting.gif)
 
 ## Web vs desktop
 

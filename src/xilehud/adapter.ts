@@ -58,6 +58,16 @@ export function installXileShim(): void {
   const api = (w.electronAPI = w.electronAPI || {})
   api.getUniques = api.getUniques || loadUniques
   api.getBases = api.getBases || loadBases
+  // Crafting + annoints panels — each maps 1:1 onto a dataset file in the snapshot.
+  api.getLiquidEmotions = api.getLiquidEmotions || (() => json('Liquid_Emotions.json'))
+  api.getEssences = api.getEssences || (() => json('Essences.json'))
+  api.getCatalysts = api.getCatalysts || (() => json('Catalysts.json'))
+  api.getAugments = api.getAugments || (() => json('Augments.json'))
+  api.getSocketables = api.getSocketables || (() => json('Augments.json')) // upstream legacy alias
+  api.getOmens = api.getOmens || (() => json('Omens.json'))
+  api.getCurrency = api.getCurrency || (() => json('Currency.json'))
+  api.getKeywords = api.getKeywords || (() => json('Keywords.json'))
+  api.getAnnoints = api.getAnnoints || (() => json('Annoints.json'))
   api.getModifierData = api.getModifierData || ((category: string) => modifierDb().getModifiersForCategory(category))
   api.searchModifiers = api.searchModifiers || ((q: string, category?: string) => modifierDb().searchModifiers(q, category))
   api.getAllCategories = api.getAllCategories || (() => modifierDb().getAllCategories())
