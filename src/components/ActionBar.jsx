@@ -11,6 +11,9 @@ import { useRouter } from '../lib/router.jsx'
 import { useT } from '../i18n/index.js'
 import { resolveFilter } from '../lib/buildFilter.js'
 import { parseFilterText } from '../lib/parseFilter.js'
+import { decodeFilter } from '../lib/importFilter.js'
+import { loadBaseNames, loadUniqueBases } from '../lib/catalog.js'
+import { strictnessLevel } from '../data/coreFilters.js'
 import { looksLikeBuild, smartFilterFromBuild } from '../lib/buildImport.js'
 
 // Sanitize a filter name into a base filename. Strips a trailing ".filter" first so a filter
@@ -26,7 +29,7 @@ function stampNow() {
 }
 
 export function ActionBar() {
-  const { active, resetActive, importSettings, importCustomRules, importBuild, bumpVersion } = useFilter()
+  const { active, resetActive, importSettings, importDecoded, importBuild, bumpVersion } = useFilter()
   const { prefs } = usePrefs()
   const gameInfo = useGameInfo()
   const toast = useToast()
@@ -159,15 +162,19 @@ export function ActionBar() {
           toast.warn(`No rules found in "${f.name}".`, { title: 'Import' })
           return
         }
-        importCustomRules({
-          ...parsed,
-          sourceFile: { name: f.name, fromFileHandle: !!fromHandle },
-        })
-        const v = parsed.meta?.filter_version || parsed.meta?.version
-        const detail = v
-          ? `Detected filter version ${v} — bumped automatically.`
-          : 'Version bumped automatically.'
-        toast.success(`Imported ${parsed.customRules.length} rule(s) from "${f.name}".\n${detail}`, { title: 'Imported' })
+        // Decode the filter back into editable settings so EVERY page mirrors it.
+        const [baseNames, uniqueBases] = await Promise.all([
+          loadBaseNames().catch(() => new Set()), loadUniqueBases().catch(() => ({})),
+        ])
+        const patch = decodeFilter(parsed, { text: txt, baseNames, uniqueBases, prefs })
+        importDecoded(patch, { sourceFile: { name: f.name, fromFileHandle: !!fromHandle } })
+        const s = patch.summary
+        const detail = `${strictnessLevel(s.strictness).name} preset · ${s.tiered} tiered item(s) · ${s.custom} custom rule(s).`
+        toast.success(
+          `Imported "${f.name}" — ${s.ours ? 'your filter is now mirrored across the editor' : 'best-effort decode'}.\n${detail}`,
+          { title: 'Imported' },
+        )
+        navigate('/quick-editor')
       } catch (err) {
         toast.error(`Could not import "${f.name}":\n${err.message}`, { title: 'Import failed' })
       }
@@ -224,9 +231,6 @@ export function ActionBar() {
           <MenuItem onClick={saveSettingsJson} icon={Code2}
             label="Save settings as .json"
             sub="Editor state backup (re-importable here)" />
-          <MenuItem onClick={() => {}} disabled icon={Cloud}
-            label="Save to PoE2 account"
-            sub="Coming soon — needs a Path of Exile account" />
         </PortalMenu>
       </div>
 

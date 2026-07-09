@@ -1,23 +1,7 @@
 import { test, expect, vi } from 'vitest'
-import { compileOverrides, injectOverrides, matchConditions } from './overrides.js'
+import { compileOverrides, matchConditions } from './overrides.js'
 import { buildFilter } from './buildFilter.js'
 import { defaultSettings, emptyOverrideRule } from '../store/defaultSettings.js'
-
-// A minimal stand-in for a real core file: a header, the override anchor, and one base rule.
-const FAKE_BASE = [
-  '#====',
-  '# Nolvus Loot Filter - for Path of Exile 2',
-  '#====',
-  "# Built with Nolvus's Filter Editor.",
-  '#====',
-  '# [WELCOME] TABLE OF CONTENTS',
-  '#====',
-  '# [[0100]] Gold',
-  'Show # base gold rule',
-  '\tBaseType == "Gold"',
-  '\tSetFontSize 30',
-  '',
-].join('\n')
 
 test('matchConditions emits valid PoE2 conditions for set fields only', () => {
   const c = matchConditions({ classes: ['Wands'], baseType: 'Sapphire', baseMode: 'contains', rarity: 'Magic', rarityOp: '<=', itemLevel: '65', itemLevelOp: '<' })
@@ -176,18 +160,6 @@ test('imported raw rules round-trip through the rule builder', () => {
   const text = blocks.join('\n\n')
   expect(text).toContain('Show # kept')
   expect(text).toContain('PlayEffect Red')
-})
-
-test('injectOverrides places the block before the first rule and is idempotent', () => {
-  const blocks = compileOverrides({ overrides: { rules: [{ ...emptyOverrideRule(1), action: 'Hide', match: { classes: ['Wands'] } }] } })
-  const once = injectOverrides(FAKE_BASE, blocks)
-  // override must appear before the base gold rule
-  expect(once.indexOf('NOLVUS OVERRIDES (START)')).toBeLessThan(once.indexOf('Show # base gold rule'))
-  // base rule survives verbatim
-  expect(once).toContain('Show # base gold rule')
-  // re-injecting doesn't stack duplicate sections
-  const twice = injectOverrides(once, blocks)
-  expect(twice.match(/NOLVUS OVERRIDES \(START\)/g)).toHaveLength(1)
 })
 
 test('buildFilter never emits a unique name as a BaseType (the in-game parse error)', async () => {

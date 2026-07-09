@@ -1,8 +1,11 @@
 import React, { useRef, useState } from 'react'
 import { useFilter } from '../store/FilterStore.jsx'
+import { usePrefs } from '../store/Prefs.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { useToast } from '../store/Toast.jsx'
-import { parseFilterText, rulesToOverrideRules } from '../lib/parseFilter.js'
+import { parseFilterText } from '../lib/parseFilter.js'
+import { decodeFilter, decodedToSettings } from '../lib/importFilter.js'
+import { loadBaseNames, loadUniqueBases } from '../lib/catalog.js'
 import { looksLikeBuild, smartFilterFromBuild } from '../lib/buildImport.js'
 import { defaultSettings } from '../store/defaultSettings.js'
 import { useT } from '../i18n/index.js'
@@ -21,7 +24,8 @@ const isPristine = (f) =>
 // onPreset overrides the preset card (e.g. scroll to the picker instead of navigating).
 // showPreset=false drops the preset card (the Presets page already IS the preset path).
 export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPreset = true }) {
-  const { createFilter, addFilter, resetActive, importSettings, importCustomRules, importBuild, renameActive, active } = useFilter()
+  const { createFilter, addFilter, resetActive, importSettings, importDecoded, importBuild, renameActive, active } = useFilter()
+  const { prefs } = usePrefs()
   const { navigate } = useRouter()
   const toast = useToast()
   const t = useT()
@@ -84,25 +88,24 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
           navigate('/quick-editor'); done(); return
         }
 
-        // .filter — parse rules out of the raw filter text
+        // .filter — decode the raw filter back into editable settings so every page mirrors it
         const parsed = parseFilterText(txt)
         if (!parsed.customRules.length && !parsed.freeTextTop && !parsed.freeTextBottom) {
           toast.warn(`No rules found in "${file.name}".`, { title: 'Import' }); return
         }
         const ver = parsed.meta?.filter_version || parsed.meta?.version
+        const [baseNames, uniqueBases] = await Promise.all([
+          loadBaseNames().catch(() => new Set()), loadUniqueBases().catch(() => ({})),
+        ])
+        const patch = decodeFilter(parsed, { text: txt, baseNames, uniqueBases, prefs })
+        const sourceFile = { name: file.name, fromFileHandle: false }
         if (mode === 'create') {
-          const n = addFilter({
-            ...defaultSettings(base),
-            overrides: { rules: rulesToOverrideRules(parsed.customRules) },
-            freeText: { top: parsed.freeTextTop || '', bottom: parsed.freeTextBottom || '' },
-            version: ver || '0.0.1',
-            sourceFile: { name: file.name, fromFileHandle: false },
-          })
-          toast.success(`Created "${n}" with ${parsed.customRules.length} rule(s) from "${file.name}".`, { title: 'Imported' })
+          const n = addFilter({ ...defaultSettings(base), ...decodedToSettings(patch), name: base, version: ver || '0.0.1', sourceFile })
+          toast.success(`Created "${n}" from "${file.name}" — mirrored across the editor.`, { title: 'Imported' })
         } else {
-          importCustomRules({ ...parsed, sourceFile: { name: file.name, fromFileHandle: false } })
+          importDecoded(patch, { sourceFile })
           renameActive(base)
-          toast.success(`Imported ${parsed.customRules.length} rule(s) from "${file.name}".`, { title: 'Imported' })
+          toast.success(`Imported "${file.name}" — your filter is now mirrored across the editor.`, { title: 'Imported' })
         }
         navigate('/quick-editor'); done()
       } catch (err) {

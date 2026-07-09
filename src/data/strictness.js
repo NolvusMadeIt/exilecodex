@@ -60,5 +60,8 @@ export const STRICTNESS_PROFILES = {
   }),
 }
 
-// The quick-filter value set for a strictness id (falls back to Regular).
-export const strictnessProfile = (id) => STRICTNESS_PROFILES[id] || STRICTNESS_PROFILES['1-regular']
+// The quick-filter value set for a strictness id (falls back to Regular). Deep-copied at the
+// boundary: profiles share nested arrays with QF_DEFAULTS, so handing out the live object would
+// let any caller that mutates an array corrupt the profile (and every other profile) in place.
+export const strictnessProfile = (id) =>
+  JSON.parse(JSON.stringify(STRICTNESS_PROFILES[id] || STRICTNESS_PROFILES['1-regular']))

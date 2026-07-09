@@ -1,14 +1,13 @@
 import React, { useMemo, useState } from 'react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { useCatalog } from '../lib/catalog.js'
-import { DROP_TIERS, DEFAULT_TIER_CURRENCY, DEFAULT_TIER_UNIQUES } from '../data/dropTiers.js'
+import { DROP_TIERS } from '../data/dropTiers.js'
+import { valueTierOf } from '../data/valueTable.js'
 import { ItemIcon } from '../components/primitives.jsx'
 
 const VISIBLE_TIERS = DROP_TIERS.filter(t => !t.hide) // S..E
-// name -> default tier, matching the generator's starting currency + unique tiers (auto-seeded).
-const DEFAULT_LOOKUP = {}
-for (const [tid, names] of Object.entries(DEFAULT_TIER_CURRENCY)) for (const n of names) DEFAULT_LOOKUP[n] = tid
-for (const [tid, names] of Object.entries(DEFAULT_TIER_UNIQUES)) for (const n of names) DEFAULT_LOOKUP[n] = tid
+// Default tier for an un-dragged item: the curated value table (named orbs explicit, grouped
+// families — essences/runes/catalysts/soul cores/omens — by pattern), so nothing dumps into E.
 
 export function TierListsPage() {
   const { active, update } = useFilter()
@@ -21,15 +20,15 @@ export function TierListsPage() {
     if (tab === 'uniques') {
       // Surface the tiered / auto-seeded uniques first so they're visible (not buried by data order).
       const ov = active?.tierOverrides || {}
-      const ranked = (name) => (ov[name] || DEFAULT_LOOKUP[name]) ? 0 : 1
+      const ranked = (name) => (ov[name] || valueTierOf(name)) ? 0 : 1
       return [...catalog.uniques].sort((a, b) => ranked(a.name) - ranked(b.name)).slice(0, 120)
     }
     return catalog.baseTypes.filter(b => b.category === 'currency').slice(0, 90)
   }, [catalog, tab, active?.tierOverrides])
 
   const overrides = active.tierOverrides || {}
-  // Default tier matches the generator: curated currency in its tier, everything else in E.
-  const tierOf = (name) => overrides[name] || DEFAULT_LOOKUP[name] || 'E'
+  // Default tier matches the generator's seed: curated value table, everything else in E.
+  const tierOf = (name) => overrides[name] || valueTierOf(name) || 'E'
 
   const setTier = (name, tierId) => update(f => ({ ...f, tierOverrides: { ...f.tierOverrides, [name]: tierId } }))
 

@@ -1,14 +1,12 @@
 // Override engine. User customizations (Quick Editor rules + toggles, class gear, tier moves,
-// custom rules) compile to PoE2 Show/Hide blocks that we splice into the core filter's
-// OVERRIDE AREA — before every base rule. Because PoE2 is first-match-wins, anything here wins
-// in-game. This is what makes "hide / show / highlight anything" actually work.
+// custom rules) compile to PoE2 Show/Hide blocks emitted at the top of the generated filter.
+// Because PoE2 is first-match-wins, anything here wins in-game. This is what makes
+// "hide / show / highlight anything" actually work.
 import { quote, quoteList } from './filterSyntax.js'
 import { DROP_TIERS, DEFAULT_TIER_UNIQUES } from '../data/dropTiers.js'
+import { stylePreset } from '../data/styles.js'
 
 const TIER_BY_ID = Object.fromEntries(DROP_TIERS.map(t => [t.id, t]))
-
-const START = '#=== NOLVUS OVERRIDES (START) ===  Your customizations — these run first and win.'
-const END = '#=== NOLVUS OVERRIDES (END) ==='
 
 const clampVol = (v) => Math.max(0, Math.min(300, Math.round(Number(v) || 0)))
 const clampFont = (v) => Math.max(18, Math.min(45, Math.round(Number(v) || 32)))
@@ -74,18 +72,38 @@ export const DEFAULT_HIGHLIGHT = {
   fontSize: 40, beam: 'Red', minimap: 'Red', minimapShape: 'Star', sound: 1, volume: 300,
 }
 
-// Style for a drop tier (used by the Tier List + the currency tiering in the generator). Starts
-// from the tier's defaults (color/beam) and applies the user's Cosmetic overrides for that tier.
-export function tierStyle(tierId, cosmetic = {}) {
+// Style for a drop tier (used by the Tier List + the currency tiering in the generator).
+// Layering, weakest first: built-in tier defaults ← the filter's STYLE preset (data/styles.js)
+// ← the user's global Cosmetic edits ← the user's per-CATEGORY Cosmetic edits. `category` is one
+// of 'currency' | 'items' | 'uniques' | 'chance'. The style id rides on cosmetic._styleId
+// (attached by compileOverrides / the generator).
+export function tierStyle(tierId, cosmetic = {}, category = 'items') {
   const t = TIER_BY_ID[tierId] || TIER_BY_ID.E
-  const ov = cosmetic.tierStyles?.[tierId] || {}
+  const ov = {
+    ...(stylePreset(cosmetic._styleId)[tierId] || {}),
+    ...(cosmetic.tierStyles?.[tierId] || {}),
+    ...(cosmetic.categoryStyles?.[category]?.[tierId] || {}),
+  }
   const cap = (s) => s ? s[0].toUpperCase() + s.slice(1) : s
   const beam = ov.beam != null ? ov.beam : (t.beam ? cap(t.beam) : 'None')
-  const st = { textColor: t.textColor, fontSize: t.id === 'S' ? 40 : t.id === 'A' ? 38 : t.id === 'B' ? 36 : 34 }
+  const st = {
+    textColor: ov.textColor || t.textColor,
+    fontSize: ov.fontSize || (t.id === 'S' ? 40 : t.id === 'A' ? 38 : t.id === 'B' ? 36 : 34),
+  }
+  if (ov.borderColor) st.borderColor = ov.borderColor
+  if (ov.bgColor) st.bgColor = ov.bgColor
   if (beam && beam !== 'None') { st.beam = beam; st.minimap = beam; st.minimapShape = ov.shape || 'Circle' }
   if (ov.customSound?.trim()) { st.customSound = ov.customSound.trim(); st.volume = ov.volume ?? 200 }
   else if (ov.sound && ov.sound !== 'None') { st.sound = ov.sound; st.volume = ov.volume ?? 200 }
   return st
+}
+
+// Whether a tier is hidden for a category (F is always hidden; Cosmetic Hide toggles per layer).
+export function tierHidden(tierId, cosmetic = {}, category = 'items') {
+  if (tierId === 'F') return true
+  return cosmetic.categoryStyles?.[category]?.[tierId]?.hide
+    ?? cosmetic.tierStyles?.[tierId]?.hide
+    ?? !!TIER_BY_ID[tierId]?.hide
 }
 
 // Render one descriptor to a block string. A descriptor is { action, comment, conditions, style }.
@@ -130,7 +148,7 @@ function ruleDescriptors(rules = []) {
 function quickFilterDescriptors(qf = {}, cosmetic = {}, uniqueBases = {}) {
   const out = []
   const has = (arr, v) => Array.isArray(arr) && arr.includes(v)
-  const showT = (comment, conditions, tier = 'C', priority = 22) => out.push({ action: 'Show', comment, conditions, style: tierStyle(tier, cosmetic), priority })
+  const showT = (comment, conditions, tier = 'C', priority = 22, cat = 'items') => out.push({ action: 'Show', comment, conditions, style: tierStyle(tier, cosmetic, cat), priority })
   const highlight = (comment, conditions, priority = 16) => out.push({ action: 'Show', comment, conditions, style: DEFAULT_HIGHLIGHT, priority })
   const hide = (comment, conditions, priority = 46) => out.push({ action: 'Hide', comment, conditions, priority })
   const lvl = (n) => num(n) ? [`GemLevel >= ${Number(n)}`] : []
@@ -138,11 +156,11 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}, uniqueBases = {}) {
   const tierIlvl = (t) => ({ 1: 82, 2: 75, 3: 68, 4: 60, 5: 50 })[Number(t)] ?? 50
 
   // Currency
-  if (has(qf.currencyShow, 'shards')) showT('Show Currency Shards', [`BaseType ${quoteList(['Shard'])}`], 'D')
-  if (has(qf.currencyShow, 'runes')) showT('Show Runes & Soul Cores', [`BaseType ${quoteList(['Rune', 'Soul Core'])}`], 'C')
-  if (has(qf.currencyShow, 'catalysts')) showT('Show Catalysts', [`BaseType ${quoteList(['Catalyst'])}`], 'C')
-  if (has(qf.currencyShow, 'essences')) showT('Show Essences', [`BaseType ${quoteList(['Essence'])}`], 'C')
-  if (has(qf.currencyShow, 'omens')) showT('Show Omens', [`BaseType ${quoteList(['Omen'])}`], 'C')
+  if (has(qf.currencyShow, 'shards')) showT('Show Currency Shards', [`BaseType ${quoteList(['Shard'])}`], 'D', 22, 'currency')
+  if (has(qf.currencyShow, 'runes')) showT('Show Runes & Soul Cores', [`BaseType ${quoteList(['Rune', 'Soul Core'])}`], 'C', 22, 'currency')
+  if (has(qf.currencyShow, 'catalysts')) showT('Show Catalysts', [`BaseType ${quoteList(['Catalyst'])}`], 'C', 22, 'currency')
+  if (has(qf.currencyShow, 'essences')) showT('Show Essences', [`BaseType ${quoteList(['Essence'])}`], 'C', 22, 'currency')
+  if (has(qf.currencyShow, 'omens')) showT('Show Omens', [`BaseType ${quoteList(['Omen'])}`], 'C', 22, 'currency')
   if (qf.hideScrolls) hide('Hide Scrolls of Wisdom', [`BaseType == ${quote('Scroll of Wisdom')}`])
   if (qf.hideGold) hide('Hide Gold', [`BaseType == ${quote('Gold')}`])
   else if (num(qf.minGoldPile)) hide(`Hide small gold piles (< ${Number(qf.minGoldPile)})`, [`BaseType == ${quote('Gold')}`, `StackSize < ${Number(qf.minGoldPile)}`])
@@ -161,7 +179,7 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}, uniqueBases = {}) {
 
   // Uniques & chance
   if (qf.showUniques) highlight('Highlight Uniques', ['Rarity Unique'])
-  if (qf.showChanceBases) showT('Show chance/craft bases', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES, 'Rings', 'Amulets'])}`, 'Rarity Normal Magic', 'ItemLevel >= 82'], 'C', 18)
+  if (qf.showChanceBases) showT('Show chance/craft bases', [`Class == ${quoteList([...WEAPON_CLASSES, ...ARMOUR_CLASSES, 'Rings', 'Amulets'])}`, 'Rarity Normal Magic', 'ItemLevel >= 82'], 'C', 18, 'chance')
 
   // Endgame / other
   if (has(qf.endgameShow, 'quest')) showT('Show Quest Items', [`Class == ${quoteList(['Quest Items'])}`], 'C')
@@ -189,10 +207,14 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}, uniqueBases = {}) {
 
   // ---- Campaign clone: Disenchanting / Selling / Salvaging ----
   if (qf.disRares) {
-    const rar = qf.disRaresMagic ? 'Rarity Magic Rare' : 'Rarity Rare'
+    // The "≤ rarity" select caps the window's top; the Magic toggle widens it downward. Defaults
+    // (≤ Rare, Magic off) emit the classic `Rarity Rare`.
+    const top = ['Normal', 'Magic', 'Rare'].includes(qf.disRaresMaxRarity) ? qf.disRaresMaxRarity : 'Rare'
+    const floor = qf.disRaresMagic && RARITY_ORDER.indexOf('Magic') <= RARITY_ORDER.indexOf(top) ? 'Magic' : top
+    const keep = RARITY_ORDER.slice(RARITY_ORDER.indexOf(floor), RARITY_ORDER.indexOf(top) + 1)
     const size = []
     if (qf.disRaresMaxSize) { const [w, h] = String(qf.disRaresMaxSize).split('x').map(Number); if (w) size.push(`Width <= ${w}`); if (h) size.push(`Height <= ${h}`) }
-    showT('Rares to disenchant/salvage', [`Class == ${quoteList(GEAR_CLASSES)}`, rar, ...size], 'E')
+    showT('Rares to disenchant/salvage', [`Class == ${quoteList(GEAR_CLASSES)}`, `Rarity ${(keep.length ? keep : [top]).join(' ')}`, ...size], 'E')
   }
   if (qf.socketedGear && num(qf.socketedGearMin)) showT(`Socketed gear (${Number(qf.socketedGearMin)}+)`, [`Class == ${quoteList(GEAR_CLASSES)}`, `Sockets >= ${Number(qf.socketedGearMin)}`], 'C', 18)
   const upTo = (val) => (val && val !== 'all') ? rarityCond(val, '<=') : null
@@ -295,25 +317,31 @@ function quickFilterDescriptors(qf = {}, cosmetic = {}, uniqueBases = {}) {
   // unique by name), then highlight by base type + Rarity Unique. Disabled when Tiering Mode = Off.
   const uniqTier = (names, comment, tier, priority) => {
     const bases = [...new Set((names || []).map(n => uniqueBases[n]).filter(Boolean))]
-    if (bases.length) out.push({ action: 'Show', comment, conditions: [`BaseType == ${quoteList(bases)}`, 'Rarity Unique'], style: tierStyle(tier, cosmetic), priority })
+    if (bases.length) out.push({ action: 'Show', comment, conditions: [`BaseType == ${quoteList(bases)}`, 'Rarity Unique'], style: tierStyle(tier, cosmetic, 'uniques'), priority })
   }
   if (qf.uTieringMode !== 'off') {
     if (qf.uExcellent) uniqTier(DEFAULT_TIER_UNIQUES.S, 'Excellent (S-tier) uniques', 'S', 10)
     if (qf.uGood) uniqTier(DEFAULT_TIER_UNIQUES.A, 'Good (A-tier) uniques', 'A', 11)
     if (qf.uPotential) uniqTier(DEFAULT_TIER_UNIQUES.B, 'Potential (B-tier) uniques', 'B', 12)
   }
-  if (qf.uDropRestricted) showT('Show every remaining unique (drop-restricted safety)', ['Rarity Unique'], 'D', 27)
+  // Hide the curated LOW-value uniques at strict levels (their bases + Rarity Unique) — the
+  // valuable tiers above have already matched by the time this hide runs.
+  if (qf.hideLowValueUniques) {
+    const lowBases = [...new Set((DEFAULT_TIER_UNIQUES.C || []).map(n => uniqueBases[n]).filter(Boolean))]
+    if (lowBases.length) hide('Hide low-value uniques', [`BaseType == ${quoteList(lowBases)}`, 'Rarity Unique'], 49)
+  }
+  if (qf.uDropRestricted) showT('Show every remaining unique (drop-restricted safety)', ['Rarity Unique'], 'D', 27, 'uniques')
   if (qf.uClassSpecific?.length) highlight('Class-specific uniques', [`Class == ${quoteList(qf.uClassSpecific)}`, 'Rarity Unique'], 15)
   if (qf.exceptionalUniques && num(qf.exceptionalUniquesMin)) highlight('Exceptional uniques', ['Rarity Unique', `Quality >= ${Number(qf.exceptionalUniquesMin)}`])
   if (qf.vaalModUniques) highlight('Vaal mod (corrupted) uniques', ['Rarity Unique', 'Corrupted True'])
   if (qf.vaalUniques) highlight('Vaal base uniques', [`BaseType ${quoteList(['Vaal'])}`, 'Rarity Unique'])
-  if (qf.smallDisenchantUniques && qf.smallDisenchantMaxSize) { const [w, h] = String(qf.smallDisenchantMaxSize).split('x').map(Number); const s = []; if (w) s.push(`Width <= ${w}`); if (h) s.push(`Height <= ${h}`); showT('Small uniques to disenchant', ['Rarity Unique', ...s], 'D', 26) }
-  if (qf.uOther) showT('Other uniques', ['Rarity Unique'], 'E', 28)
+  if (qf.smallDisenchantUniques && qf.smallDisenchantMaxSize) { const [w, h] = String(qf.smallDisenchantMaxSize).split('x').map(Number); const s = []; if (w) s.push(`Width <= ${w}`); if (h) s.push(`Height <= ${h}`); showT('Small uniques to disenchant', ['Rarity Unique', ...s], 'D', 26, 'uniques') }
+  if (qf.uOther) showT('Other uniques', ['Rarity Unique'], 'E', 28, 'uniques')
   if (qf.hideAllUniques) hide('Hide remaining uniques', ['Rarity Unique'], 50)
   // Chance bases — high-iLvl white bases worth an Orb of Chance.
   const CHANCE_CLASSES = ['Body Armours', 'Helmets', 'Gloves', 'Boots', 'Sceptres', 'Foci', 'Amulets', 'Rings']
   if (qf.chanceWanted) highlight('Wanted chance bases', [`Class == ${quoteList(CHANCE_CLASSES)}`, 'Rarity Normal', 'ItemLevel >= 82'], 17)
-  if (qf.chancePotential) showT('Potential chance bases', [`Class == ${quoteList(CHANCE_CLASSES)}`, 'Rarity Normal', 'ItemLevel >= 75'], 'D', 25)
+  if (qf.chancePotential) showT('Potential chance bases', [`Class == ${quoteList(CHANCE_CLASSES)}`, 'Rarity Normal', 'ItemLevel >= 75'], 'D', 25, 'chance')
 
   // ===== Other Items (cloned toggles) =====
   if (qf.showQuest) showT('Quest items', [`Class == ${quoteList(['Quest Items'])}`], 'C')
@@ -340,19 +368,18 @@ function tierDescriptors(tierOverrides = {}, cosmetic = {}, uniqueBases = {}, ba
   for (const [name, tid] of Object.entries(tierOverrides)) (byTier[tid] ||= []).push(name)
   for (const [tid, names] of Object.entries(byTier)) {
     if (!names.length) continue
-    const hide = tid === 'F' || (cosmetic.tierStyles?.[tid]?.hide ?? !!(TIER_BY_ID[tid]?.hide))
     const uniqueBaseList = [...new Set(names.map(n => uniqueBases[n]).filter(Boolean))]
     // `plain` = names safe to emit as a raw `BaseType ==`: confirmed base types only. When baseNames
     // is available, any name that's neither a resolvable unique nor a known base type (e.g. a unique
     // we couldn't resolve, or a typo) is DROPPED — emitting it would make PoE2 reject the whole
     // filter ("No base types found exactly matching …").
     const plain = names.filter(n => !uniqueBases[n] && (baseNames ? baseNames.has(n) : true))
-    const add = (conditions, label) => {
-      if (hide) out.push({ action: 'Hide', comment: `Hidden — ${label}`, conditions, priority: 41 })
-      else out.push({ action: 'Show', comment: label, conditions, style: tierStyle(tid, cosmetic), priority: 12 })
+    const add = (conditions, label, cat) => {
+      if (tierHidden(tid, cosmetic, cat)) out.push({ action: 'Hide', comment: `Hidden — ${label}`, conditions, priority: 41 })
+      else out.push({ action: 'Show', comment: label, conditions, style: tierStyle(tid, cosmetic, cat), priority: 12 })
     }
-    if (plain.length) add([`BaseType == ${quoteList(plain)}`], `Tier ${tid} (your Tier List)`)
-    if (uniqueBaseList.length) add([`BaseType == ${quoteList(uniqueBaseList)}`, 'Rarity Unique'], `Tier ${tid} uniques (your Tier List)`)
+    if (plain.length) add([`BaseType == ${quoteList(plain)}`], `Tier ${tid} (your Tier List)`, 'currency')
+    if (uniqueBaseList.length) add([`BaseType == ${quoteList(uniqueBaseList)}`, 'Rarity Unique'], `Tier ${tid} uniques (your Tier List)`, 'uniques')
   }
   return out
 }
@@ -372,7 +399,7 @@ function customRuleDescriptors(customRules = [], cosmetic = {}) {
     if (!conditions.length) return
     out.push({
       action, conditions, comment: r.comment || `Custom Rule ${i + 1}`,
-      style: action === 'Show' ? tierStyle(r.dropTier || 'C', cosmetic) : undefined,
+      style: action === 'Show' ? tierStyle(r.dropTier || 'C', cosmetic, 'items') : undefined,
       priority: action === 'Show' ? 24 : 44,
     })
   })
@@ -382,7 +409,8 @@ function customRuleDescriptors(customRules = [], cosmetic = {}) {
 // Gather every descriptor, order them (all Shows before all Hides so pinpoints win), render.
 export function compileOverrides(settings = {}, uniqueBases = {}, baseNames = null) {
   const ov = settings.overrides || {}
-  const cosmetic = settings.cosmetic || {}
+  // Ride the filter's style id on the cosmetic object so tierStyle can layer the style preset.
+  const cosmetic = { ...(settings.cosmetic || {}), _styleId: settings.style }
   const descriptors = [
     ...tierDescriptors(settings.tierOverrides, cosmetic, uniqueBases, baseNames),
     ...quickFilterDescriptors(settings.quickFilters, cosmetic, uniqueBases),
@@ -396,27 +424,3 @@ export function compileOverrides(settings = {}, uniqueBases = {}, baseNames = nu
   return descriptors.map(d => d.raw ? d.raw : renderBlock(d))
 }
 
-// Remove any previously-injected override section (idempotent re-injection).
-function stripExistingOverrides(text) {
-  const lines = text.split(/\r?\n/)
-  const s = lines.findIndex(l => l.includes(START))
-  const e = lines.findIndex(l => l.includes(END))
-  if (s >= 0 && e >= s) {
-    const from = s > 0 && lines[s - 1].trim() === '' ? s - 1 : s
-    let to = e
-    if (lines[to + 1] !== undefined && lines[to + 1].trim() === '') to += 1
-    lines.splice(from, to - from + 1)
-  }
-  return lines.join('\n')
-}
-
-// Splice the override blocks into the base text, immediately before the first real rule.
-export function injectOverrides(baseText, blocks = []) {
-  const body = stripExistingOverrides(baseText)
-  if (!blocks.length) return body
-  const lines = body.split(/\r?\n/)
-  let idx = lines.findIndex(l => /^(Show|Hide|Minimal)\b/.test(l))
-  if (idx < 0) idx = lines.length
-  const section = ['', START, '', ...blocks.flatMap(b => [b, '']), END, '']
-  return [...lines.slice(0, idx), ...section, ...lines.slice(idx)].join('\n')
-}

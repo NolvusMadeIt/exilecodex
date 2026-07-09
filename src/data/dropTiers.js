@@ -1,5 +1,7 @@
 // Drop Tier definitions — market-value buckets for Currency and Uniques.
 // Beam color + minimap + default thresholds drive the Cosmetic defaults (S→F).
+import { CURRENCY_TIERS, UNIQUE_TIERS } from './valueTable.js'
+
 export const DROP_TIERS = [
   { id: 'S', name: 'S-Tier', label: 'Purple highlight', beam: 'purple', minimap: 'purple', threshold: '≥ 100', textColor: [182, 96, 224] },
   { id: 'A', name: 'A-Tier', label: 'Red highlight',    beam: 'red',    minimap: 'red',    threshold: '≥ 15',  textColor: [224, 64, 64] },
@@ -10,26 +12,12 @@ export const DROP_TIERS = [
   { id: 'F', name: 'F-Tier', label: 'Hidden',          beam: null,     minimap: null,     threshold: '< 0.01', hide: true, textColor: [120, 120, 120] },
 ]
 
-// Starting currency tiers (rough value buckets — a static, curated economy snapshot).
-// Drives the "Drop Tier Highlights" output out-of-the-box; users re-tier on the Tier List page.
-export const DEFAULT_TIER_CURRENCY = {
-  S: ['Mirror of Kalandra'],
-  A: ['Divine Orb', "Perfect Jeweller's Orb"],
-  B: ['Exalted Orb', "Greater Jeweller's Orb", 'Orb of Annulment'],
-  C: ['Chaos Orb', 'Regal Orb', 'Vaal Orb', "Gemcutter's Prism", "Lesser Jeweller's Orb", 'Orb of Alchemy'],
-  D: ["Artificer's Orb", 'Orb of Chance', 'Glassblower\'s Bauble', 'Orb of Augmentation'],
-  E: ['Orb of Transmutation', 'Scroll of Wisdom', 'Regal Shard', 'Transmutation Shard'],
-}
-
-// Starting UNIQUE tiers — a small curated set of well-known valuable PoE2 uniques, so the Uniques
-// Tier List auto-seeds with sensible tiers instead of dumping everything in E. On output each is
-// resolved to its base type + `Rarity Unique` (PoE2 can't match a unique by name); users re-tier on
-// the Tier List page and their moves always win. Names must exist in uniques-data.json.
-export const DEFAULT_TIER_UNIQUES = {
-  S: ['Original Sin', 'The Adorned', 'Temporalis', 'Ingenuity'],
-  A: ['Ghostwrithe', 'Morior Invictus', "Olroth's Resolve", "Doryani's Prototype"],
-  B: ['Pillar of the Caged God', 'The Three Dragons'],
-}
+// Starting currency + UNIQUE tiers — a static, curated economy snapshot from data/valueTable.js.
+// Drives the auto-seeded Tier Lists + "Drop Tier Highlights" output out-of-the-box; users re-tier on
+// the Tier List page and their moves always win. On output each unique is resolved to its base type
+// + `Rarity Unique` (PoE2 can't match a unique by name). Names must exist in the bundled catalogs.
+export const DEFAULT_TIER_CURRENCY = CURRENCY_TIERS
+export const DEFAULT_TIER_UNIQUES = UNIQUE_TIERS
 
 export const BEAM_COLORS = ['White', 'Yellow', 'Orange', 'Red', 'Purple', 'Brown', 'Cyan', 'Green', 'Blue', 'Pink', 'Grey']
 export const MINIMAP_SHAPES = ['Circle', 'Diamond', 'Hexagon', 'Square', 'Star', 'Triangle', 'Cross', 'Moon', 'Raindrop', 'Kite', 'Pentagon', 'UpsideDownHouse']

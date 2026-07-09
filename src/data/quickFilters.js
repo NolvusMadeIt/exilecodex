@@ -305,6 +305,10 @@ export const QF_DEFAULTS = {
   catchAll: 'show',
 }
 
+// QF_DEFAULTS holds shared array values — hand out deep copies so no consumer can ever mutate the
+// module-level defaults (or the strictness profiles that spread them) through a nested array.
+export const cloneQuickFilters = () => JSON.parse(JSON.stringify(QF_DEFAULTS))
+
 // Class option groups for the 'classItems' control.
 export const CLASS_GROUPS = {
   weapons: ['Bows', 'Crossbows', 'Quarterstaves', 'Spears', 'Sceptres', 'Wands', 'Staves', 'One Hand Maces', 'Two Hand Maces', 'Foci', 'Quivers'],

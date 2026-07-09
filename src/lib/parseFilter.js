@@ -108,6 +108,7 @@ export function parseFilterText(text) {
 
   const meta = {}
   const customRules = []
+  const ruleBlocks = []        // every Show/Hide block, structured — consumed by the decoder
   const freeTextTop = []
   const freeTextBottom = []
   let sawAnyRule = false
@@ -145,6 +146,7 @@ export function parseFilterText(text) {
       if (action) {
         sawAnyRule = true
         const ruleBlock = { action, conditions, style, raw: block.join('\n'), comment: commentLines[0] || '' }
+        ruleBlocks.push(ruleBlock)
         customRules.push(ruleFromBlock(ruleBlock, customRules.length))
       } else {
         ;(sawAnyRule ? freeTextBottom : freeTextTop).push(block.join('\n'))
@@ -165,6 +167,7 @@ export function parseFilterText(text) {
 
   return {
     customRules,
+    blocks: ruleBlocks,
     freeTextTop: freeTextTop.join('\n\n').trim(),
     freeTextBottom: freeTextBottom.join('\n\n').trim(),
     meta,

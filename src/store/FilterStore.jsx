@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react'
 import { defaultSettings } from './defaultSettings.js'
 import { rulesToOverrideRules } from '../lib/parseFilter.js'
+import { decodedToSettings } from '../lib/importFilter.js'
 
 // Single store ABOVE the router so tab navigation never resets the filter.
 // Only Reset clears it — a single-store model keeps tab switches lossless.
@@ -168,6 +169,26 @@ export function FilterProvider({ children }) {
     })
   }, [update])
 
+  // Apply a DECODED .filter import to the active filter: a full replace where every editable page
+  // (Presets, Quick Editor, Tier Lists, Custom Rules) mirrors the imported file. The decoder
+  // reconstructs strictness/style/quickFilters/tiers/customRules from the filter's real content
+  // (see lib/importFilter.js), so nothing is stored as an opaque blob. Keeps the active name, bumps
+  // the version (importing == "next revision"), and records the source file for "overwrite".
+  const importDecoded = useCallback((patch = {}, { sourceFile = null } = {}) => {
+    update(f => {
+      const base = defaultSettings(f.name)
+      const parsedVer = patch.meta?.filter_version || patch.meta?.version
+      return {
+        ...base,
+        ...decodedToSettings(patch),
+        quickFilters: { ...base.quickFilters, ...(patch.quickFilters || {}) },
+        name: f.name,
+        version: bumpPatch(parsedVer || f.version || '0.0.1'),
+        sourceFile: sourceFile || null,
+      }
+    })
+  }, [update])
+
   // Apply a build-derived smart filter (from a .build import) to the active filter. The patch is
   // ordinary settings (strictness + full quickFilters + an editable armour-highlight rule) plus a
   // name; nothing build-specific is stored. The build's rule is prepended to any existing rules,
@@ -208,7 +229,7 @@ export function FilterProvider({ children }) {
   const value = {
     filters, active, activeName, setActiveName,
     update, updateSlice, renameActive, createFilter, addFilter, cloneActive, deleteFilter,
-    resetActive, importSettings, importCustomRules, importBuild, bumpVersion,
+    resetActive, importSettings, importCustomRules, importDecoded, importBuild, bumpVersion,
     setManualFilter, clearManualFilter,
   }
   return <FilterCtx.Provider value={value}>{children}</FilterCtx.Provider>

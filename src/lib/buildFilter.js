@@ -28,7 +28,7 @@ function block(action, comment, conditions, style) {
 // Currency, tiered by market value (S→E) from your Tier List, with the long tail handled by the
 // catch-all setting. Named valuable currency gets loud styling; the rest a baseline.
 function currencyBlocks(settings, uniqueBases = {}, baseNames = null) {
-  const cosmetic = settings.cosmetic || {}
+  const cosmetic = { ...(settings.cosmetic || {}), _styleId: settings.style }
   const byTier = {}
   for (const t of DROP_TIERS) byTier[t.id] = new Set(DEFAULT_TIER_CURRENCY[t.id] || [])
   for (const [name, tid] of Object.entries(settings.tierOverrides || {})) {
@@ -42,12 +42,12 @@ function currencyBlocks(settings, uniqueBases = {}, baseNames = null) {
   const out = []
   for (const id of ['S', 'A', 'B', 'C', 'D']) {
     const items = [...(byTier[id] || [])]
-    for (const chunk of chunkList(items)) out.push(block('Show', `${id}-tier currency`, [`BaseType == ${quoteList(chunk)}`], tierStyle(id, cosmetic)))
+    for (const chunk of chunkList(items)) out.push(block('Show', `${id}-tier currency`, [`BaseType == ${quoteList(chunk)}`], tierStyle(id, cosmetic, 'currency')))
   }
   for (const chunk of chunkList([...(byTier.F || [])])) out.push(block('Hide', 'Hidden currency (F-tier)', [`BaseType == ${quoteList(chunk)}`]))
   // Everything else in the currency class: show dim, or hide it at strict levels.
   if (settings.quickFilters?.catchAll === 'hide') out.push(block('Hide', 'Remaining low-value currency', [`Class == ${quoteList(['Stackable Currency'])}`]))
-  else out.push(block('Show', 'Remaining currency', [`Class == ${quoteList(['Stackable Currency'])}`], tierStyle('E', cosmetic)))
+  else out.push(block('Show', 'Remaining currency', [`Class == ${quoteList(['Stackable Currency'])}`], tierStyle('E', cosmetic, 'currency')))
   return out
 }
 
@@ -94,8 +94,16 @@ function generate(settings, opts) {
   out.push(...banner('Everything else'))
   out.push(catchAll(settings), '')
 
-  const tail = [settings.freeText?.bottom?.trim(), opts.prefs?.bottomComment?.trim()].filter(Boolean)
-  if (tail.length) out.push('', ...tail)
+  // freeText.bottom is verbatim (may intentionally contain rules); the Settings bottom comment is
+  // prose, so prefix it into comment lines like topComment — raw prose would be invalid filter syntax.
+  const bottomComment = opts.prefs?.bottomComment?.trim()
+  const tail = [
+    settings.freeText?.bottom?.trim(),
+    bottomComment && bottomComment.split('\n').map(l => (l.trim().startsWith('#') ? l : `# ${l}`)).join('\n'),
+  ].filter(Boolean)
+  // Blank line between tail entries so the user's free text and the Settings footer stay separate
+  // chunks — the import decoder strips the footer (a global pref) by whole-chunk match.
+  for (const t of tail) out.push('', t)
 
   return out.join('\n').replace(/\n{3,}/g, '\n\n') + '\n'
 }

@@ -16,20 +16,20 @@ export function PresetsPage() {
     <div className="space-y-6">
       {/* How do you want to start? */}
       <div>
-        <div className="text-center mb-3">
+        <div className="mb-3">
           <h1 className="gold-heading text-[22px]">{t('Start your filter')}</h1>
           <p className="text-[12px] text-poe-text mt-0.5">{t('Start from a clean slate, or bring in a filter you already have.')}</p>
         </div>
-        <div className="max-w-[560px] mx-auto">
+        <div className="max-w-[560px]">
           <StartFilterChoices mode="current" showPreset={false} />
         </div>
       </div>
 
-      {/* Strictness preset — picks the real core filter your filter is built on */}
+      {/* Strictness preset — writes a full quick-filter profile so every page mirrors the choice */}
       <div className="border-t border-poe-line pt-5">
-        <div className="text-center mb-3">
+        <div className="mb-3">
           <h1 className="gold-heading text-[22px]">Choose a strictness</h1>
-          <p className="text-[12px] text-poe-text mt-1 max-w-[760px] mx-auto">
+          <p className="text-[12px] text-poe-text mt-1 max-w-[760px]">
             This is the foundation of your filter — a complete, in-game-ready ruleset. Softer levels show more; stricter levels hide more clutter. You can fine-tune anything afterwards in the Quick Editor.
           </p>
         </div>
@@ -59,27 +59,27 @@ export function PresetsPage() {
         </div>
       </div>
 
-      {/* Style — swaps the visual skin (a different real core file) */}
+      {/* Style — a real per-tier cosmetic preset layered under your Cosmetic page edits */}
       <div className="border-t border-poe-line pt-5">
-        <div className="text-center mb-3">
+        <div className="mb-3">
           <h2 className="gold-heading text-[18px]">Style</h2>
-          <p className="text-[12px] text-poe-text mt-1">The look of your highlights — colors, borders, beams and sounds. The rules stay the same.</p>
+          <p className="text-[12px] text-poe-text mt-1 max-w-[760px]">
+            The look of your tier highlights — colors, borders, backgrounds, beams and sounds change in the generated filter.
+            The rules stay the same, and anything you set on the Cosmetic page still wins.
+          </p>
         </div>
-        <div className="flex flex-wrap justify-center gap-2 max-w-[860px] mx-auto">
+        <div className="flex flex-wrap gap-2 max-w-[860px]">
           {STYLES.map(st => {
             const on = st.id === style
             return (
               <button key={st.id} onClick={() => update({ style: st.id })} title={st.blurb}
-                className={`rounded border px-3 py-2 text-center transition-colors min-w-[110px] ${on ? 'border-poe-gold shadow-glow bg-poe-gold/5' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
+                className={`rounded border px-3 py-2 text-left transition-colors min-w-[110px] ${on ? 'border-poe-gold shadow-glow bg-poe-gold/5' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
                 <div className={`heading text-[13px] ${on ? 'text-poe-gold' : ''}`}>{st.name}</div>
                 <div className="text-[10.5px] text-poe-text leading-snug mt-0.5">{st.blurb}</div>
               </button>
             )
           })}
         </div>
-        <p className="text-[11px] text-poe-text/70 text-center mt-2">
-          The “Custom Sounds” style adds voice/sound files — they’re bundled with the app and must sit next to the filter in your Path of Exile 2 folder.
-        </p>
       </div>
     </div>
   )
