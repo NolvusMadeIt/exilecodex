@@ -105,14 +105,15 @@ export function SettingsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
           <div>
             <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-poe-text mb-1">
-              {t('Font')} <Help text="The typeface used throughout the app. Poppins is the default; every option is bundled with the app (works offline)." />
+              {t('Font')} <Help text="The typeface used throughout the app. Inter Tight is the default; every option is bundled with the app (works offline)." />
             </div>
             <SimpleSelect
-              value={prefs.fontFamily || 'poppins'}
+              value={prefs.fontFamily || 'inter-tight'}
               onChange={v => update({ fontFamily: v })}
               className="h-8"
               options={[
-                { value: 'poppins', label: 'Poppins (default)' },
+                { value: 'inter-tight', label: 'Inter Tight (default)' },
+                { value: 'poppins', label: 'Poppins' },
                 { value: 'inter', label: 'Inter' },
                 { value: 'system', label: 'System UI' },
               ]}

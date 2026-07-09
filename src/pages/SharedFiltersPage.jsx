@@ -8,6 +8,7 @@ import { useToast } from '../store/Toast.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { useT } from '../i18n/index.js'
 import { resolveFilter } from '../lib/buildFilter.js'
+import { PoeFrame, PoeButton } from '../components/PoeFrame.jsx'
 
 const safe = (n) => ((n || 'filter').replace(/[^a-z0-9-_. ]/gi, '').trim() || 'filter')
 function stampNow() {
@@ -247,32 +248,34 @@ export function SharedFiltersPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
             {list.map((item) => (
-              <div key={item.id} className="panel p-3.5 flex flex-col">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <div className="text-poe-text-bright font-medium text-[13.5px] truncate">{item.name}</div>
-                    <div className="text-[11px] text-poe-text/70">
-                      {item.author ? <>by <span className="text-poe-text-bright">{item.author}</span> · </> : null}
-                      {fmtDate(item.created_at)}{item.game_version ? ` · ${item.game_version}` : ''}
-                    </div>
-                  </div>
-                  <span className="shrink-0 inline-flex items-center gap-1 text-[11px] text-poe-text/70" title="Downloads">
+              <PoeFrame
+                key={item.id}
+                title={item.name}
+                actions={
+                  <span className="inline-flex items-center gap-1 text-[11px] text-poe-text/70" title="Downloads">
                     <Download size={12} /> {item.downloads || 0}
                   </span>
+                }
+                bodyClassName="p-3.5 flex flex-col flex-1"
+                className="flex flex-col"
+              >
+                <div className="text-[11px] text-poe-text/70">
+                  {item.author ? <>by <span className="text-poe-text-bright">{item.author}</span> · </> : null}
+                  {fmtDate(item.created_at)}{item.game_version ? ` · ${item.game_version}` : ''}
                 </div>
                 {item.description && <p className="text-[12px] text-poe-text mt-1.5 line-clamp-3">{item.description}</p>}
                 <div className="mt-auto pt-3 flex flex-wrap gap-2">
-                  <button className="btn-dark h-8" onClick={() => download(item)} disabled={busy === item.id}>
+                  <PoeButton onClick={() => download(item)} disabled={busy === item.id}>
                     {busy === item.id ? <Loader2 size={13} className="animate-spin" /> : <Download size={13} />} {t('Download')}
-                  </button>
-                  <button className="btn-dark h-8" onClick={() => copy(item)} disabled={busy === item.id}>
+                  </PoeButton>
+                  <PoeButton onClick={() => copy(item)} disabled={busy === item.id}>
                     <Clipboard size={13} /> {t('Copy')}
-                  </button>
-                  <button className="btn-dark h-8" onClick={() => loadIntoEditor(item)} disabled={busy === item.id} title="Load this filter's settings into the editor">
+                  </PoeButton>
+                  <PoeButton onClick={() => loadIntoEditor(item)} disabled={busy === item.id} title="Load this filter's settings into the editor">
                     <FolderInput size={13} /> {t('Load')}
-                  </button>
+                  </PoeButton>
                 </div>
-              </div>
+              </PoeFrame>
             ))}
           </div>
         )}

@@ -7,19 +7,20 @@ import { supabase, clientId } from '../lib/supabase.js'
 const LS = 'nolvus-prefs'
 
 export const THEMES = [
+  { id: 'exile',  name: 'Exile',  swatch: '#c59e54', desc: 'The in-game window look — dark stone, parchment text, gold trim.' },
   { id: 'ember',  name: 'Ember',  swatch: '#ff6b4a', desc: 'Warm charcoal with molten coral & amber accents.' },
   { id: 'abyss',  name: 'Abyss',  swatch: '#38c8b0', desc: 'Cool slate with teal & cyan accents.' },
   { id: 'arcane', name: 'Arcane', swatch: '#b27cf0', desc: 'Midnight violet with orchid accents.' },
 ]
 
 const DEFAULTS = {
-  theme: 'ember',
+  theme: 'exile',
   league: 'Return of the Ancients',   // selected from GameInfo's league list
   topComment: '',                      // free text inserted at the very top of .filter
   bottomComment: '',                   // free text appended at the bottom
   syntaxHighlight: true,               // colorize the Filter Output pane (comments, keywords, strings, etc.)
   accordionsOpen: true,                // Quick Filter sections start expanded (first run only)
-  fontFamily: 'poppins',               // app typeface: 'poppins' | 'inter' | 'system'
+  fontFamily: 'inter-tight',           // app typeface: 'inter-tight' | 'poppins' | 'inter' | 'system'
   fontScale: 1,                        // app zoom: 0.9 | 1 | 1.1 | 1.2 (capped so it never gets too big)
   lang: 'en',                          // UI language: en | ru | pt | de | zh (see src/i18n)
   // --- Remembered view state (QoL: the app looks how you left it) ---
@@ -44,6 +45,7 @@ const DEFAULTS = {
 
 // Bundled font stacks for the fontFamily pref.
 const FONT_STACKS = {
+  'inter-tight': "'Inter Tight', system-ui, sans-serif",
   poppins: "'Poppins', system-ui, sans-serif",
   inter: "'Inter Variable', Inter, system-ui, sans-serif",
   system: "system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
@@ -51,12 +53,25 @@ const FONT_STACKS = {
 
 const PrefsCtx = createContext(null)
 
+// One-time migration to the overlay transformation's look: prefs saved before the Exile theme
+// existed pin the old defaults. Applied to BOTH the localStorage cache (load) and the Supabase
+// row (the pull below) — a pre-transformation server row would otherwise clobber the migrated
+// local state on mount. Once the flag is written back, explicit Settings choices (including
+// going back to Ember/Poppins) stick forever.
+function migrateExile(p) {
+  if (!p || p.exileMigrated) return p
+  const out = { ...p, exileMigrated: true }
+  if (p.theme === 'ember' || !p.theme) out.theme = 'exile'
+  if (p.fontFamily === 'poppins' || !p.fontFamily) out.fontFamily = 'inter-tight'
+  return out
+}
+
 function load() {
   try {
     const raw = JSON.parse(localStorage.getItem(LS) || 'null')
-    if (raw && typeof raw === 'object') return { ...DEFAULTS, ...raw }
+    if (raw && typeof raw === 'object') return { ...DEFAULTS, ...migrateExile(raw) }
   } catch {}
-  return { ...DEFAULTS }
+  return { ...DEFAULTS, exileMigrated: true }
 }
 
 export function PrefsProvider({ children }) {
@@ -82,10 +97,10 @@ export function PrefsProvider({ children }) {
     return () => window.removeEventListener('storage', onStorage)
   }, [])
 
-  useEffect(() => { document.documentElement.setAttribute('data-theme', prefs.theme || 'ember') }, [prefs.theme])
+  useEffect(() => { document.documentElement.setAttribute('data-theme', prefs.theme || 'exile') }, [prefs.theme])
   useEffect(() => {
     const el = document.documentElement
-    el.style.setProperty('--app-font', FONT_STACKS[prefs.fontFamily] || FONT_STACKS.poppins)
+    el.style.setProperty('--app-font', FONT_STACKS[prefs.fontFamily] || FONT_STACKS['inter-tight'])
     // Whole-app scale, hard-capped at 1.2 so it can never get too big to use.
     const scale = Math.min(1.2, Math.max(0.85, Number(prefs.fontScale) || 1))
     el.style.zoom = String(scale)
@@ -98,7 +113,7 @@ export function PrefsProvider({ children }) {
     supabase.rpc('get_app_settings', { p_client_id: clientId() })
       .then(({ data, error }) => {
         if (!alive || error || !data || typeof data !== 'object') return
-        setPrefs(p => ({ ...p, ...data }))
+        setPrefs(p => ({ ...p, ...migrateExile(data) }))
       })
       .catch(() => {})
     return () => { alive = false }

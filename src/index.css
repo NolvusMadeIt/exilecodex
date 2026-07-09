@@ -1,19 +1,38 @@
-/* Poppins (Anthropic's brand font) is imported in main.jsx via @fontsource (bundled locally
-   → works offline). Used across the whole UI. */
+/* Inter Tight is the default app typeface (Exile theme); it and the alternative choices are
+   imported in main.jsx via @fontsource (bundled locally → works offline). */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Themes — "Ember Forge" identity. RGB triplets (no rgb() wrapper) so Tailwind utilities
-   + MUI overrides can apply opacity. Default = ember (coral). The other two share the same
-   modern structure (Sora type, soft panels) with a complementary accent. */
+/* Themes — RGB triplets (no rgb() wrapper) so Tailwind utilities + MUI overrides can
+   apply opacity. Default = exile (the in-game window look); ember/abyss/arcane remain
+   selectable in Settings. */
 :root {
   /* Default app font; overridden at runtime by Settings → Typography (see Prefs.jsx). */
-  --app-font: 'Poppins', system-ui, sans-serif;
+  --app-font: 'Inter Tight', system-ui, sans-serif;
 }
 
-:root, [data-theme="ember"] {
+/* Exile — dark warm stone, worn-parchment text, muted gold trim. Original palette for the
+   overlay transformation; PoeFrame.jsx leans on --c-accent/--c-accent2 for its bevels. */
+:root, [data-theme="exile"] {
+  color-scheme: dark;
+  --c-bg: 12 11 9;
+  --c-panel: 24 20 16;
+  --c-panel-light: 33 28 22;
+  --c-line: 62 52 38;
+  --c-text: 190 178 158;
+  --c-text-bright: 228 216 194;
+  --c-heading: 240 228 204;
+  --c-accent: 197 158 84;          /* muted gold */
+  --c-accent-light: 226 190 118;
+  --c-accent-dim: 148 116 60;
+  --c-accent2: 168 128 72;         /* deep bronze */
+  --c-danger: 205 84 72;
+  --bg-glow-1: rgba(197,158,84,0.05);
+  --bg-glow-2: rgba(120,90,50,0.04);
+}
+[data-theme="ember"] {
   color-scheme: dark;
   --c-bg: 15 14 13;
   --c-panel: 26 23 20;
@@ -105,6 +124,78 @@ body {
     background: rgb(var(--c-panel) / 0.92);
     box-shadow: 0 10px 30px -18px rgba(0,0,0,0.85), inset 0 1px 0 0 rgba(255,255,255,0.025);
   }
+
+  /* --- PoE-window chrome (Exile theme; see PoeFrame.jsx) ------------------------------------
+     Original layered CSS. Texture slots: define --ui-frame-bg / --ui-head-bg (e.g. pointing at
+     real game textures in public/ui/) and every frame upgrades automatically; without them the
+     crafted gradients stand on their own. */
+  .poe-frame {
+    @apply relative rounded-[3px];
+    background:
+      var(--ui-frame-bg, linear-gradient(180deg, rgb(var(--c-panel-light) / 0.55), rgb(var(--c-panel)) 38%));
+    background-size: cover;
+    border: 1px solid rgb(0 0 0 / 0.9);
+    box-shadow:
+      inset 0 0 0 1px rgb(var(--c-accent2) / 0.50),
+      inset 0 0 0 2px rgb(0 0 0 / 0.65),
+      inset 0 0 0 3px rgb(var(--c-accent2) / 0.16),
+      0 8px 26px -14px rgb(0 0 0 / 0.95);
+  }
+  .poe-frame-head {
+    @apply flex h-[30px] items-center justify-between gap-2 rounded-t-[3px] px-2.5 select-none;
+    background:
+      var(--ui-head-bg, linear-gradient(180deg, rgb(var(--c-panel-light)), rgb(var(--c-panel)) 85%));
+    border-bottom: 1px solid rgb(var(--c-accent2) / 0.45);
+    box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(var(--c-accent-light) / 0.12);
+  }
+  .poe-frame-title {
+    @apply text-[12px] uppercase;
+    letter-spacing: 0.14em;
+    color: rgb(var(--c-heading));
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.8);
+  }
+  .poe-frame-body { @apply min-h-0; }
+  .poe-frame-btn {
+    @apply inline-flex h-[18px] w-[18px] items-center justify-center rounded-[2px] transition-colors;
+    color: rgb(var(--c-text) / 0.75);
+    background: linear-gradient(180deg, rgb(var(--c-panel-light)), rgb(var(--c-panel)));
+    box-shadow: inset 0 0 0 1px rgb(var(--c-accent2) / 0.4), inset 0 1px 0 rgb(var(--c-accent-light) / 0.15), 0 1px 2px rgb(0 0 0 / 0.6);
+  }
+  .poe-frame-btn:hover { color: rgb(var(--c-heading)); box-shadow: inset 0 0 0 1px rgb(var(--c-accent) / 0.7), inset 0 1px 0 rgb(var(--c-accent-light) / 0.2), 0 1px 2px rgb(0 0 0 / 0.6); }
+  .poe-frame-btn:active { transform: translateY(0.5px); }
+  .poe-frame-corner {
+    @apply pointer-events-none absolute z-[1] block h-[7px] w-[7px];
+    transform: rotate(45deg);
+    background: linear-gradient(135deg, rgb(var(--c-accent-light)), rgb(var(--c-accent-dim)));
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.85);
+  }
+  .poe-frame-corner[data-pos="tl"] { top: -3.5px; left: -3.5px; }
+  .poe-frame-corner[data-pos="tr"] { top: -3.5px; right: -3.5px; }
+  .poe-frame-corner[data-pos="bl"] { bottom: -3.5px; left: -3.5px; }
+  .poe-frame-corner[data-pos="br"] { bottom: -3.5px; right: -3.5px; }
+
+  /* The beveled game-style button (PoeButton). */
+  .poe-btn {
+    @apply inline-flex h-8 cursor-pointer select-none items-center justify-center gap-1.5 whitespace-nowrap rounded-[3px] px-3 text-[12.5px] font-medium transition-all disabled:cursor-not-allowed disabled:opacity-40;
+    font-family: var(--app-font);
+    color: rgb(var(--c-text-bright));
+    background: linear-gradient(180deg, rgb(var(--c-panel-light)), rgb(var(--c-panel)) 80%);
+    border: 1px solid rgb(0 0 0 / 0.85);
+    box-shadow: inset 0 0 0 1px rgb(var(--c-accent2) / 0.35), inset 0 1px 0 rgb(var(--c-accent-light) / 0.14), 0 2px 6px -3px rgb(0 0 0 / 0.8);
+    text-shadow: 0 1px 1px rgb(0 0 0 / 0.7);
+  }
+  .poe-btn:hover:not(:disabled) {
+    color: rgb(var(--c-heading));
+    box-shadow: inset 0 0 0 1px rgb(var(--c-accent) / 0.65), inset 0 1px 0 rgb(var(--c-accent-light) / 0.22), 0 2px 8px -3px rgb(0 0 0 / 0.85);
+  }
+  .poe-btn:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 0 0 1px rgb(var(--c-accent2) / 0.5), inset 0 2px 4px rgb(0 0 0 / 0.5); }
+  .poe-btn-gold {
+    color: #24160a;
+    background: linear-gradient(180deg, rgb(var(--c-accent-light)), rgb(var(--c-accent)) 60%, rgb(var(--c-accent-dim)));
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.25), 0 2px 8px -3px rgb(var(--c-accent) / 0.5);
+    text-shadow: 0 1px 0 rgb(255 255 255 / 0.2);
+  }
+  .poe-btn-gold:hover:not(:disabled) { filter: brightness(1.06); color: #24160a; }
 
   /* Buttons */
   .btn { @apply inline-flex items-center justify-center gap-1.5 px-3.5 h-9 rounded-lg text-[13px] font-semibold transition-all select-none cursor-pointer whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed; font-family: var(--app-font); }
