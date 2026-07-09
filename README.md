@@ -29,9 +29,19 @@ The app is a plugin platform with a WordPress-style manager (Settings ▸ Plugin
 | Plugin | What it does |
 |---|---|
 | **Filter & Build Editor** | Monaco-based PoE2 filter IDE — syntax highlighting + autocomplete with real base-type names. On by default; even this is removable. |
+| **Item Database** | Every PoE2 unique and base type, searchable and chip-filterable — see below. |
 | **Price Check** *(desktop)* | Paste an item, pick the stats that matter, get real listings from the official trade through your own session — sell verdict, in-demand stats, reliability. Web falls back to poe2scout spot prices. |
 | **Market Companion** *(desktop)* | Live currency market — prices in Exalted/Divine, 24h change, volume, charts and buy/sell signals via poe2scout. |
 | **Campaign Mode** *(desktop for live tracking)* | Zone-by-zone leveling guide with layout maps, plus a Speedrun mode: critical-path route, prep checklist and a game-log run timer that pauses in town/hideout/idle, with saved runs and splits. |
+
+### Item Database
+
+Browse every unique (grouped Weapon / Armour / Other) and every base type in the game, with
+mod-category filter chips and instant search — on the web or in the overlay, no game running
+required. The browsing engine and curated datasets are **powered by
+[XileHUD](https://github.com/XileHUD/poe_overlay)** (GPL-3.0), wearing this app's Exile theme.
+
+![Item Database — uniques, bases and live search](docs/screenshots/items.gif)
 
 ## Web vs desktop
 
@@ -61,7 +71,9 @@ Vite + React 18, Tailwind, MUI (themed), Zustand, hash router; Supabase for comm
 
 ```
 src/                the app — pages, stores, filter generator/parser
-src/plugins/        built-in plugins (filter-editor, price-check, market-companion, campaign-guide)
+src/plugins/        built-in plugins (filter-editor, xile-items, price-check, market-companion, campaign-guide)
+src/xilehud/        vendored XileHUD modules (GPL-3.0, origin banners) + our adapter/theme bridge
+public/xilehud/     static dataset snapshots the database plugins fetch on demand
 electron/           desktop shell: frameless window, tray, game overlay, updater
 landing/            marketing page (source of truth; {{APP_VERSION}} placeholders)
 public/home/        generated copy of the landing the app iframes on #/home
