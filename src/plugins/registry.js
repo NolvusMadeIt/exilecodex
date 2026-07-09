@@ -8,8 +8,9 @@ import xileItems from './xile-items/index.ts'
 import xileModifiers from './xile-modifiers/index.ts'
 import xileCrafting from './xile-crafting/index.ts'
 import xileCharacter from './xile-character/index.ts'
+import xileTools from './xile-tools/index.ts'
 
-export const BUILTIN_PLUGINS = [filterEditor, marketCompanion, priceCheck, campaignGuide, xileItems, xileModifiers, xileCrafting, xileCharacter]
+export const BUILTIN_PLUGINS = [filterEditor, marketCompanion, priceCheck, campaignGuide, xileItems, xileModifiers, xileCrafting, xileCharacter, xileTools]
 
 export function findPlugin(id) {
   return BUILTIN_PLUGINS.find(p => p.id === id) || null
