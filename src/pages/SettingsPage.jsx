@@ -239,6 +239,25 @@ export function SettingsPage() {
             />
           </div>
         </div>
+
+        <div className="section-bar">{t('Credits & licenses')}</div>
+        <div className="text-[12px] leading-relaxed text-poe-text/80 max-w-2xl">
+          <p>
+            This app is open source under{' '}
+            <a href="https://github.com/NolvusMadeIt/nolvusfiltereditor/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="text-poe-gold-dim hover:text-poe-gold">GPL-3.0</a>.
+            The Item Database, Modifiers, Crafting, Character and Map Regex modules are{' '}
+            <span className="text-poe-text-bright">powered by{' '}
+            <a href="https://github.com/XileHUD/poe_overlay" target="_blank" rel="noopener noreferrer" className="text-poe-gold-dim hover:text-poe-gold">XileHUD</a></span>{' '}
+            (engine &amp; curated data, GPL-3.0). The window look is our own implementation, inspired by the overlay
+            style the PoE2 community loves. Market &amp; price data via poe2scout; articles via the PoE2 Wiki; charts via
+            TradingView lightweight-charts. Full details in{' '}
+            <a href="https://github.com/NolvusMadeIt/nolvusfiltereditor/blob/main/ATTRIBUTION.md" target="_blank" rel="noopener noreferrer" className="text-poe-gold-dim hover:text-poe-gold">ATTRIBUTION.md</a>.
+          </p>
+          <p className="mt-1.5 text-poe-text/50">
+            Unofficial fan-made tool — not affiliated with or endorsed by Grinding Gear Games. Game images load from
+            GGG's public CDN and are never redistributed with the app.
+          </p>
+        </div>
       </section>
       </div>
       )}
