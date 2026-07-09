@@ -1,0 +1,34 @@
+/* Theme bridge for the vendored XileHUD modules — original file.
+   Their generated markup references XileHUD's CSS variable NAMES; this maps every one of
+   them to this app's Exile tokens, scoped to the panel wrapper so nothing leaks app-wide.
+   This is where the "their structure, none of their colors" rule is enforced: XileHUD's
+   own stylesheet (overlay.css) is never vendored. */
+.xilehud-panel {
+  --accent-blue: rgb(var(--c-accent));
+  --accent-red: rgb(var(--c-danger));
+  --border-color: rgb(var(--c-line));
+  --bg-secondary: rgb(var(--c-panel));
+  --bg-tertiary: rgb(var(--c-panel-light));
+  --bg-card: rgb(var(--c-panel));
+  --text-primary: rgb(var(--c-text-bright));
+  --text-secondary: rgb(var(--c-text));
+  --text-muted: rgb(var(--c-text) / 0.6);
+
+  font-size: 12.5px;
+  color: rgb(var(--c-text));
+}
+
+/* The two structural classes the modules generate. */
+.xilehud-panel .no-mods {
+  padding: 14px 6px;
+  color: rgb(var(--c-text) / 0.6);
+  font-size: 12.5px;
+}
+.xilehud-panel .mod-value {
+  color: rgb(var(--c-accent-light));
+  font-weight: 500;
+}
+
+/* Their item art is not shipped (see adapter.ts) — keep broken-image glyphs invisible and
+   let the modules' own placeholder box carry the slot. */
+.xilehud-panel img { color: transparent; }
