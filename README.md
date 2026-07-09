@@ -32,6 +32,7 @@ The app is a plugin platform with a WordPress-style manager (Settings ▸ Plugin
 | **Item Database** | Every PoE2 unique and base type, searchable and chip-filterable — see below. |
 | **Modifiers** | Every affix by item category — tiers, weights, ilvl gates — searchable and filterable. |
 | **Crafting** | Currencies, essences, omens, catalysts, augments, anoints and the keyword glossary. |
+| **Character** | Gems, keystones, ascendancy passives, atlas nodes and the campaign quest-rewards checklist. |
 | **Price Check** *(desktop)* | Paste an item, pick the stats that matter, get real listings from the official trade through your own session — sell verdict, in-demand stats, reliability. Web falls back to poe2scout spot prices. |
 | **Market Companion** *(desktop)* | Live currency market — prices in Exalted/Divine, 24h change, volume, charts and buy/sell signals via poe2scout. |
 | **Campaign Mode** *(desktop for live tracking)* | Zone-by-zone leveling guide with layout maps, plus a Speedrun mode: critical-path route, prep checklist and a game-log run timer that pauses in town/hideout/idle, with saved runs and splits. |
@@ -69,6 +70,15 @@ glossary of game keywords. Engine and data **powered by
 [XileHUD](https://github.com/XileHUD/poe_overlay)** (GPL-3.0), in this app's Exile theme.
 
 ![Crafting — currencies, essences and the keyword glossary](docs/screenshots/crafting.gif)
+
+### Character
+
+The character side of the grind: every skill gem with its stats, keystones, ascendancy
+passives, atlas nodes, and a checklist of every permanent campaign reward (skill points,
+resistances, spirit) so you never leave one behind. Engine and data **powered by
+[XileHUD](https://github.com/XileHUD/poe_overlay)** (GPL-3.0), in this app's Exile theme.
+
+![Character — gems, ascendancies and quest rewards](docs/screenshots/character.gif)
 
 ## Web vs desktop
 

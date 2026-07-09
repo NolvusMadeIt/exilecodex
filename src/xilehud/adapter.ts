@@ -68,6 +68,11 @@ export function installXileShim(): void {
   api.getCurrency = api.getCurrency || (() => json('Currency.json'))
   api.getKeywords = api.getKeywords || (() => json('Keywords.json'))
   api.getAnnoints = api.getAnnoints || (() => json('Annoints.json'))
+  // Character reference panels (quest-passives is self-contained — no dataset).
+  api.getKeystones = api.getKeystones || (() => json('Keystones.json'))
+  api.getAscendancyPassives = api.getAscendancyPassives || (() => json('Ascendancy_Passives.json'))
+  api.getAtlasNodes = api.getAtlasNodes || (() => json('Atlas_Nodes.json'))
+  api.getGems = api.getGems || (() => json('Gems.json'))
   api.getModifierData = api.getModifierData || ((category: string) => modifierDb().getModifiersForCategory(category))
   api.searchModifiers = api.searchModifiers || ((q: string, category?: string) => modifierDb().searchModifiers(q, category))
   api.getAllCategories = api.getAllCategories || (() => modifierDb().getAllCategories())
