@@ -33,27 +33,28 @@
    let the modules' own placeholder box carry the slot. */
 .xilehud-panel img { color: transparent; }
 
-.xilehud-panel .page-inner { max-width: 1100px; margin: 0 auto; padding: 2px 2px 16px; }
+.xilehud-panel .page-inner { max-width: 1100px; margin: 0 auto; padding: 2px 2px 20px; }
 
-/* ---- Quest-rewards panel (character/quest-passives) — a proper, professional layout ------- */
+/* ---- Quest-rewards panel (character/quest-passives) — matches the app's native pages -------
+   Same DNA as .panel / .section-bar / .gold-heading so it reads as one design, not a bolt-on. */
 /* Search + filters bar */
 .xilehud-panel .qp-topbar {
   position: sticky;
   top: 0;
   z-index: 5;
-  padding: 6px 0 10px;
-  background: linear-gradient(180deg, rgb(var(--c-bg)) 72%, transparent);
+  padding: 8px 0 12px;
+  background: linear-gradient(180deg, rgb(var(--c-bg)) 74%, transparent);
 }
 .xilehud-panel .qp-search {
   width: 100%;
-  height: 38px;
-  padding: 0 14px;
-  margin-bottom: 10px;
-  border-radius: 6px;
+  height: 40px;
+  padding: 0 15px;
+  margin-bottom: 12px;
+  border-radius: 8px;
   border: 1px solid rgb(var(--c-line));
   background: rgb(var(--c-bg));
   color: rgb(var(--c-text-bright));
-  font-size: 13.5px;
+  font-size: 14px;
   outline: none;
   transition: border-color 120ms, box-shadow 120ms;
 }
@@ -63,55 +64,83 @@
 }
 .xilehud-panel .qp-search::placeholder { color: rgb(var(--c-text) / 0.45); }
 
-/* Each act = a card */
+/* Reward-type filter chips — override the vendored inline greys to clean themed pills. */
+.xilehud-panel #qpTagFilters { gap: 6px !important; }
+.xilehud-panel #qpTagFilters > div {
+  padding: 4px 11px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgb(var(--c-line)) !important;
+  background: rgb(255 255 255 / 0.03) !important;
+  color: rgb(var(--c-text)) !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  transition: background-color 120ms, color 120ms, border-color 120ms !important;
+}
+.xilehud-panel #qpTagFilters > div:hover {
+  border-color: rgb(var(--c-accent) / 0.6) !important;
+  color: rgb(var(--c-heading)) !important;
+}
+
+/* Each act = a card, same treatment as the app's .panel. */
 .xilehud-panel .qp-section {
   border: 1px solid rgb(var(--c-line));
-  border-radius: 8px;
-  background: linear-gradient(180deg, rgb(var(--c-panel-light) / 0.35), rgb(var(--c-panel) / 0.85));
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgb(var(--c-panel-light) / 0.45), rgb(var(--c-panel) / 0.92) 30%);
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--c-accent2) / 0.13),
+    inset 0 1px 0 0 rgb(var(--c-accent-light) / 0.07),
+    0 10px 30px -18px rgba(0, 0, 0, 0.85);
   overflow: hidden;
 }
 .xilehud-panel .qp-title {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  padding: 11px 14px;
+  gap: 12px;
+  padding: 13px 16px;
   border-bottom: 1px solid rgb(var(--c-line) / 0.7);
-  background: rgb(0 0 0 / 0.25);
+  background: rgb(0 0 0 / 0.22);
 }
-.xilehud-panel .qp-title > span:first-child,
-.xilehud-panel .qp-title .collapse-arrow { color: rgb(var(--c-accent) / 0.8); font-size: 11px; }
+.xilehud-panel .qp-title .collapse-arrow { color: rgb(var(--c-accent) / 0.7); font-size: 11px; }
+.xilehud-panel .qp-title h3,
 .xilehud-panel .qp-title b,
-.xilehud-panel .qp-title strong { font-size: 15px; color: rgb(var(--c-heading)); font-weight: 600; letter-spacing: 0.01em; }
-.xilehud-panel .qp-summary { color: rgb(var(--c-text) / 0.75); font-size: 12px; margin-left: auto; text-align: right; max-width: 60%; }
+.xilehud-panel .qp-title strong {
+  font-family: var(--display-font);
+  font-size: 17px;
+  color: rgb(var(--c-accent));
+  font-weight: 400;
+  letter-spacing: 0.015em;
+}
+.xilehud-panel .qp-summary { color: rgb(var(--c-text) / 0.75); font-size: 12px; margin-left: auto; text-align: right; max-width: 62%; line-height: 1.4; }
 
 /* Reward rows */
 .xilehud-panel .qp-list { padding: 4px 0; }
 .xilehud-panel .qp-item {
   display: flex;
   align-items: flex-start;
-  gap: 11px;
-  padding: 9px 14px;
+  gap: 12px;
+  padding: 10px 16px;
   border-top: 1px solid rgb(var(--c-line) / 0.4);
   transition: background-color 120ms;
 }
 .xilehud-panel .qp-list > .qp-item:first-child { border-top: none; }
 .xilehud-panel .qp-item:hover { background: rgb(255 255 255 / 0.025); }
 .xilehud-panel .qp-check { margin-top: 2px; }
-.xilehud-panel .qp-item:has(.qp-check:checked) { opacity: 0.55; }
+.xilehud-panel .qp-item:has(.qp-check:checked) { opacity: 0.5; }
 .xilehud-panel .qp-item:has(.qp-check:checked) .qp-line { text-decoration: line-through; }
-.xilehud-panel .qp-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.xilehud-panel .qp-line { font-size: 13px; line-height: 1.5; color: rgb(var(--c-text-bright)); }
-.xilehud-panel .qp-note { font-size: 12px; line-height: 1.45; color: rgb(var(--c-text) / 0.72); padding-left: 4px; }
+.xilehud-panel .qp-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.xilehud-panel .qp-line { font-size: 13.5px; line-height: 1.5; color: rgb(var(--c-text-bright)); }
+.xilehud-panel .qp-note { font-size: 12px; line-height: 1.45; color: rgb(var(--c-text) / 0.72); padding-left: 6px; }
 
-/* Reward-type tags */
-.xilehud-panel .qp-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+/* Reward-type tags on each row */
+.xilehud-panel .qp-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
 .xilehud-panel .qp-tag {
-  font-size: 10px;
+  font-size: 9.5px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   padding: 2px 7px;
   border-radius: 999px;
   border: 1px solid rgb(var(--c-line));
   background: rgb(255 255 255 / 0.03);
-  color: rgb(var(--c-text) / 0.8);
+  color: rgb(var(--c-text) / 0.75);
 }

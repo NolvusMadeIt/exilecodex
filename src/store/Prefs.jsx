@@ -131,7 +131,13 @@ export function PrefsProvider({ children }) {
           // Last-write-wins: never let a stale cloud row overwrite settings this device changed
           // more recently (previously the pull always won, resetting fresh local choices).
           if ((incoming._updatedAt || 0) < (p._updatedAt || 0)) return p
-          return { ...p, ...incoming }
+          const merged = { ...p, ...incoming }
+          // The LOOK is device-local and must NEVER be reset by a sync — the owner has been
+          // burned by this repeatedly. Typography + theme always keep this device's values.
+          merged.theme = p.theme
+          merged.fontFamily = p.fontFamily
+          merged.fontScale = p.fontScale
+          return merged
         })
       })
       .catch(() => {})
