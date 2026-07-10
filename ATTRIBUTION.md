@@ -1,7 +1,7 @@
 # Attribution
 
-PoE2 Champions is licensed under the **GNU General Public License v3.0** (see [LICENSE](LICENSE)).
-Complete source code: https://github.com/NolvusMadeIt/nolvusfiltereditor
+Exile Codex is licensed under the **GNU General Public License v3.0** (see [LICENSE](LICENSE)).
+Complete source code: https://github.com/NolvusMadeIt/exilecodex
 
 ## XileHUD
 

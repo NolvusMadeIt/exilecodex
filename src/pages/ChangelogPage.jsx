@@ -19,7 +19,7 @@ export function ChangelogPage() {
       <header className="text-center">
         <h1 className="gold-heading text-[22px]">Changelog</h1>
         <p className="text-[12px] text-poe-text mt-1">
-          Updates to Nolvus's Filter, in the spirit of <span className="text-poe-text-bright">GGG's Bluetracker feed</span>. Newest first.
+          Updates to Exile Codex, in the spirit of <span className="text-poe-text-bright">GGG's Bluetracker feed</span>. Newest first.
         </p>
       </header>
 

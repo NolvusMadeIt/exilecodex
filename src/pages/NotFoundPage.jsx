@@ -36,7 +36,7 @@ export function NotFoundPage() {
         <button className="btn-dark" onClick={() => navigate('/community')}><Compass size={14} /> Browse community filters</button>
       </div>
 
-      <div className="mt-10 text-[10px] uppercase tracking-[0.3em] text-poe-text/35 font-display">Nolvus · PoE2 Filter Editor</div>
+      <div className="mt-10 text-[10px] uppercase tracking-[0.3em] text-poe-text/35 font-display">Exile Codex · PoE2 Companion</div>
     </div>
   )
 }

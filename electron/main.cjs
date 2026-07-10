@@ -1,4 +1,4 @@
-// Nolvus's Filter — Windows desktop shell.
+// Exile Codex — Windows desktop shell.
 //
 // This is intentionally thin: it's the same web build (dist/) wrapped in a native window.
 // By default it serves the bundled build through a custom `app://` protocol so the app works
@@ -35,7 +35,7 @@ const ICON_PATH = path.join(__dirname, 'icon.png')
 // If the live site can't be reached (offline / down), we fall back to the bundled build (see the
 // did-fail-load handler in createWindow), so the app still works. Override with NOLVUS_APP_URL, or
 // set it to '' to force the offline bundle.
-const REMOTE_URL = process.env.NOLVUS_APP_URL ?? 'https://nolvusfiltereditor.vercel.app'
+const REMOTE_URL = process.env.NOLVUS_APP_URL ?? 'https://exilecodex.com'
 const BUNDLE_URL = 'app://bundle/index.html'
 
 // The URL the plugin-overlay window loads for a given plugin: the same app the main window runs
@@ -138,7 +138,7 @@ function createWindow() {
     minHeight: 700,
     backgroundColor: '#000000',
     autoHideMenuBar: true,
-    title: "Nolvus's Filter",
+    title: "Exile Codex",
     icon: ICON_PATH,
     // Frameless: no native Windows title bar. The app draws its own (TitleBar.jsx) and the
     // window stays movable (CSS drag region) and resizable (frameless keeps edge resize).
@@ -479,9 +479,9 @@ function createTray() {
     if (base.isEmpty()) return
     const icon = base.resize({ width: 16, height: 16, quality: 'best' })
     tray = new Tray(icon)
-    tray.setToolTip("Nolvus's Filter")
+    tray.setToolTip("Exile Codex")
     tray.setContextMenu(Menu.buildFromTemplate([
-      { label: "Open Nolvus's Filter", click: restoreWindow },
+      { label: "Open Exile Codex", click: restoreWindow },
       { label: 'Settings', click: () => goToRoute('/settings') },
       { label: 'Check for updates…', click: () => checkForUpdates(true) },
       { label: 'Toggle game overlay', click: toggleOverlayVisibility },

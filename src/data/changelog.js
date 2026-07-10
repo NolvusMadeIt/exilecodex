@@ -2,6 +2,16 @@
 // Newest first. Edit this file to publish a new entry.
 export const CHANGELOG = [
   {
+    date: '2026-07-10',
+    tag: 'Announcement',
+    title: 'Exile Codex — a new name and a new home',
+    body: [
+      'Nolvus Filter is now Exile Codex, living at exilecodex.com. Same app, same account data, bigger mission: the filter studio is joined by full item, modifier, crafting and character databases, map-regex tools and a merchant history — your Path of Exile 2 companion, in the browser and as a Windows overlay app.',
+      'Nothing you saved is lost — filters, settings and cloud sync all carry over, and filters exported under the old name still import fine.',
+      'Desktop installs keep updating automatically; the next release ships as ExileCodex-Setup.',
+    ],
+  },
+  {
     date: '2026-06-29',
     tag: 'Plugins',
     title: 'Nolvus Filter v0.18.1 — Price Check live prices fixed + a working pop-out overlay',

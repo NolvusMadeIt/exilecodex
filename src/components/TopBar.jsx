@@ -21,8 +21,8 @@ export function TopBar() {
   return (
     <header className="flex items-center gap-3 h-14 px-4 border-b border-poe-line bg-black/40 backdrop-blur-sm shrink-0">
       {/* Brand — the logo doubles as the home button */}
-      <button onClick={() => navigate('/presets')} className="flex items-center group shrink-0" aria-label="Nolvus Filter — home" title="Nolvus Filter — home">
-        <img src="/128.png" alt="Nolvus Filter" draggable={false}
+      <button onClick={() => navigate('/presets')} className="flex items-center group shrink-0" aria-label="Exile Codex — home" title="Exile Codex — home">
+        <img src="/128.png" alt="Exile Codex" draggable={false}
           className="h-8 w-8 object-contain transition-transform group-hover:scale-105"
           style={{ filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.55))' }} />
       </button>

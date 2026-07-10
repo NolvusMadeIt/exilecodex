@@ -52,7 +52,9 @@ const sizeFromBlock = (b) => { const w = numCond(b, 'Width'), h = numCond(b, 'He
 
 // ----- header → strictness + style (only present in filters this app generated) -----
 function readHeader(text) {
-  const m = String(text || '').match(/Built with Nolvus's Filter Editor\s+-\s+(.+?)\s+-\s+v\d/)
+  // Accepts both the current header and the pre-rebrand one, so filters exported before the
+  // Exile Codex rename still round-trip their strictness/style.
+  const m = String(text || '').match(/Built with (?:Exile Codex|Nolvus's Filter Editor)\s+-\s+(.+?)\s+-\s+v\d/)
   if (!m) return null
   const [sRaw, stRaw] = m[1].split(/\s*\/\s*/).map(x => x.trim())
   const strictness = STRICTNESS_BY_NAME[(sRaw || '').toLowerCase()]

@@ -108,7 +108,7 @@ export function tierHidden(tierId, cosmetic = {}, category = 'items') {
 
 // Render one descriptor to a block string. A descriptor is { action, comment, conditions, style }.
 function renderBlock(d) {
-  const lines = [`${d.action} # ${d.comment || 'Nolvus override'}`]
+  const lines = [`${d.action} # ${d.comment || 'Exile Codex override'}`]
   for (const c of d.conditions || []) if (c) lines.push('\t' + c)
   if (d.action === 'Show') for (const s of emitStyle(d.style || {})) lines.push('\t' + s)
   return lines.join('\n')

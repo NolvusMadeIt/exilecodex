@@ -6,7 +6,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const UPSTREAM = "https://poe2scout.com/api";
 const REALM = "poe2";
-const UA = "NolvusFilterMarket/0.1 (+https://github.com/Nolvus)";
+const UA = "ExileCodexMarket/0.1 (+https://github.com/NolvusMadeIt/exilecodex)";
 
 const CORS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",

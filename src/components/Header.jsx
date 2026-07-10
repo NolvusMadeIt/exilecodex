@@ -18,10 +18,10 @@ export function Header() {
       {/* Own wordmark — modern Sora type, no PoE chrome */}
       <div className="flex flex-col items-center justify-center pt-2 pb-4 select-none">
         <div className="flex items-baseline gap-2">
-          <span className="gold-heading text-[32px] leading-none">Nolvus’s</span>
-          <span className="heading text-[32px] leading-none">Filter</span>
+          <span className="gold-heading text-[32px] leading-none">Exile</span>
+          <span className="heading text-[32px] leading-none">Codex</span>
         </div>
-        <span className="mt-2 text-[10.5px] tracking-[0.24em] uppercase text-poe-text/65 font-display">PoE2 Loot Filter Editor</span>
+        <span className="mt-2 text-[10.5px] tracking-[0.24em] uppercase text-poe-text/65 font-display">Path of Exile 2 Companion</span>
       </div>
 
       {selectorOpen && <FilterSelector onClose={() => setSelectorOpen(false)} />}

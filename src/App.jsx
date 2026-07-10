@@ -53,7 +53,7 @@ function DesktopOnly({ plugin }) {
         </p>
         <p className="text-[12px] text-poe-text/70 mt-2">{plugin.description}</p>
         <div className="mt-4">
-          <a href="https://github.com/NolvusMadeIt/nolvusfiltereditor/releases/latest" target="_blank" rel="noreferrer"
+          <a href="https://github.com/NolvusMadeIt/nolvusfilter-releases/releases/latest" target="_blank" rel="noreferrer"
             className="btn-dark h-8 text-[12px] inline-flex items-center px-3">Get the desktop app</a>
         </div>
       </div>
@@ -99,12 +99,12 @@ function Routes() {
 
 // Chooses the shell based on the route: the pop-out overlay window loads #/overlay/<pluginId> and
 // renders only that plugin (no app chrome); everything else gets the normal Layout.
-// poe2champions.xyz/ → the marketing home (the landing, served statically from /home/), framed
+// exilecodex.com/ → the marketing home (the landing, served statically from /home/), framed
 // full-page. Everything else lives at #/<route>; "Open Web App" on the home navigates here in place.
 function HomePage() {
   // Explicit /index.html so dev (Vite SPA fallback), Vercel and the desktop bundle all serve the
   // static landing file rather than falling back to the app's own index.html.
-  return <iframe src="/home/index.html" title="PoE2 Champions" style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', border: 0, background: '#0a0807' }} />
+  return <iframe src="/home/index.html" title="Exile Codex" style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', border: 0, background: '#0a0807' }} />
 }
 
 function AppShell() {

@@ -58,7 +58,7 @@ function catchAll(settings) {
 }
 
 function header(settings, opts) {
-  const name = (settings.name || "Nolvus's Filter").trim()
+  const name = (settings.name || "Exile Codex").trim()
   const ver = settings.version || '0.0.1'
   const sName = strictnessLevel(settings.strictness).name
   const stName = styleInfo(settings.style).name
@@ -67,7 +67,7 @@ function header(settings, opts) {
     BAR,
     `# ${name} - Path of Exile 2 loot filter`,
     BAR,
-    `# Built with Nolvus's Filter Editor  -  ${sName}${stName && stName !== 'Default' ? ` / ${stName}` : ''}  -  v${ver}`
+    `# Built with Exile Codex  -  ${sName}${stName && stName !== 'Default' ? ` / ${stName}` : ''}  -  v${ver}`
       + (gv ? `  -  ${gv}` : '') + `  -  ${opts.stamp || stampNow()}`,
     BAR,
   ]

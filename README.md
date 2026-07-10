@@ -1,12 +1,12 @@
-# PoE2 Champions
+# Exile Codex
 
 **A Path of Exile 2 companion: a visual loot-filter studio you can *see*, plus a plugin platform for the rest of your grind.**
 
-**▶ Live:** [poe2champions.xyz](https://poe2champions.xyz) · **⬇ Windows app:** [latest release](https://github.com/NolvusMadeIt/nolvusfilter-releases/releases/latest) · **💬 [Discord](https://discord.gg/4gueh3Kb3A)**
+**▶ Live:** [exilecodex.com](https://exilecodex.com) · **⬇ Windows app:** [latest release](https://github.com/NolvusMadeIt/nolvusfilter-releases/releases/latest) · **💬 [Discord](https://discord.gg/4gueh3Kb3A)**
 
 Pick a starting point, tune what drops and how it looks through image dropdowns and sliders, and watch the real `.filter` build itself live — no syntax to memorise, every control wired to clean, in-game-valid PoE2 filter output. Then take it further: the Windows app pins the studio over the game and runs live plugins for price checking, the currency market and campaign speedruns.
 
-![PoE2 Champions — the studio](docs/screenshots/studio.png)
+![Exile Codex — the studio](docs/screenshots/studio.png)
 
 ## The studio
 
@@ -98,7 +98,7 @@ The browser version builds, imports and exports filters — free, no account. Th
 - Live plugin features: Price Check against the official trade, the live Market, and game-log tracking for Campaign/Speedrun.
 - System-tray icon, frameless window, auto-updates from GitHub releases.
 
-Releases are published to [NolvusMadeIt/nolvusfilter-releases](https://github.com/NolvusMadeIt/nolvusfilter-releases) as `NolvusFilter-Setup-<version>.exe` (installer) and `NolvusFilter-Portable-<version>.exe`.
+Releases are published to [NolvusMadeIt/nolvusfilter-releases](https://github.com/NolvusMadeIt/nolvusfilter-releases) as `ExileCodex-Setup-<version>.exe` (installer) and `ExileCodex-Portable-<version>.exe` (releases before the Exile Codex rename shipped as `NolvusFilter-*`; auto-update carries installs across the rename).
 
 ## Develop
 
@@ -136,7 +136,7 @@ Export a `.filter` from the top bar, drop it in `Documents\My Games\Path of Exil
 
 ## License & credits
 
-PoE2 Champions is open source under the **[GPL-3.0](LICENSE)** license.
+Exile Codex is open source under the **[GPL-3.0](LICENSE)** license.
 
 The Item Database and related overlay modules are **powered by [XileHUD](https://github.com/XileHUD/poe_overlay)**
 (GPL-3.0) — see [ATTRIBUTION.md](ATTRIBUTION.md) for the full credits, including the projects that

@@ -201,7 +201,7 @@ export function GuidePage() {
   return (
     <div className="space-y-6">
       <header className="text-center">
-        <h1 className="gold-heading text-[22px]">How to Use Nolvus's Filter</h1>
+        <h1 className="gold-heading text-[22px]">How to Use Exile Codex</h1>
         <p className="text-[12.5px] text-poe-text mt-1 max-w-[700px] mx-auto">
           New here? Each tab does one job. On <span className="text-poe-text-bright">Presets</span> you start blank, import an existing filter, or pick a preset — then fine-tune in the <span className="text-poe-text-bright">Quick Editor</span>, <span className="text-poe-text-bright">Preview</span>, and save. You can also share or grab filters on the <span className="text-poe-text-bright">Community</span> page. Here's what each tab is for.
         </p>

@@ -1,4 +1,4 @@
-# Nolvus's Filter — Windows desktop shell
+# Exile Codex — Windows desktop shell
 
 This is a thin Electron wrapper around the **same web build** in `../dist`. It's "just the
 shell": it doesn't reimplement anything — it loads the web app in a native window.
@@ -15,7 +15,7 @@ That gives it a real, secure web origin, so the app's absolute paths (`/assets`,
 If you'd rather the desktop app always show the deployed web version, point it at your
 deployed URL — either:
 
-- set an environment variable: `NOLVUS_APP_URL=https://nolvusfiltereditor.vercel.app`, or
+- set an environment variable: `NOLVUS_APP_URL=https://exilecodex.com`, or
 - edit `REMOTE_URL` near the top of `main.cjs`.
 
 When set, the shell loads the live site instead of the bundle (requires internet).
