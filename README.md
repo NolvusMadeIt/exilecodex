@@ -4,7 +4,7 @@
 
 **▶ Live:** [exilecodex.com](https://exilecodex.com) · **⬇ Windows app:** [latest release](https://github.com/NolvusMadeIt/nolvusfilter-releases/releases/latest) · **💬 [Discord](https://discord.gg/4gueh3Kb3A)**
 
-Pick a starting point, tune what drops and how it looks through image dropdowns and sliders, and watch the real `.filter` build itself live — no syntax to memorise, every control wired to clean, in-game-valid PoE2 filter output. Then take it further: the Windows app pins the studio over the game and runs live plugins for price checking, the currency market and campaign speedruns.
+Most PoE2 filter tools hand you a wall of code. This one doesn't. Tell it where you're at in the game, click through what to show and hide (with real item art, so you're not guessing), and your `.filter` updates as you go. Then run the Windows app and it sits right over PoE2 — price a drop, watch the market, or follow a leveling route without alt-tabbing.
 
 ![Exile Codex — the studio](docs/screenshots/studio.png)
 
