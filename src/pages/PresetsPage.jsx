@@ -1,10 +1,76 @@
 import React from 'react'
-import { Check } from 'lucide-react'
+import { Check, Volume2 } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { STRICTNESS_LEVELS, STYLES } from '../data/coreFilters.js'
 import { strictnessProfile } from '../data/strictness.js'
+import { STYLE_PRESETS } from '../data/styles.js'
+import { DROP_TIERS } from '../data/dropTiers.js'
 import { StartFilterChoices } from '../components/StartFilterChoices.jsx'
 import { useT } from '../i18n/index.js'
+
+const rgba = (c, fallback = 'transparent') =>
+  Array.isArray(c) ? `rgba(${c[0]},${c[1]},${c[2]},${(c[3] ?? 255) / 255})` : fallback
+
+// What each strictness level actually does to a handful of telltale drops — derived straight
+// from the level's real quick-filter profile, so the preview can never drift from the filter.
+function strictnessRows(p) {
+  return [
+    { name: 'Scroll of Wisdom', color: [190, 190, 190], show: !p.hideScrolls },
+    { name: 'Gold ×64', color: [235, 205, 95], show: !p.hideGold && !(p.minGoldPile > 100) },
+    { name: 'Magic Boots', color: [110, 130, 255], show: p.gearMinRarity === 'all' || p.gearMinRarity === 'Magic' },
+    { name: 'Life Flask', color: [200, 200, 200], show: (p.flasksShow || []).includes('life') && !p.hideNonUniqueFlasks },
+    { name: 'Skill Gem', color: [27, 180, 170], show: (p.gemsShow || []).includes('skill') },
+    { name: 'Exalted Orb', color: [230, 170, 60], show: true },
+  ]
+}
+
+function StrictnessPreview({ profile }) {
+  return (
+    <div className="mt-1.5 rounded-sm bg-black/45 border border-white/[0.05] px-1.5 py-1 space-y-px">
+      {strictnessRows(profile).map((r) => (
+        <div key={r.name}
+          className={`text-[10px] leading-[15px] whitespace-nowrap overflow-hidden text-ellipsis ${r.show ? '' : 'line-through'}`}
+          style={{ color: r.show ? `rgb(${r.color.join(',')})` : 'rgb(255 255 255 / 0.22)' }}>
+          {r.name}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// A style card's preview: the top tiers rendered as in-game labels with that style's REAL
+// per-tier preset (data/styles.js) merged over the built-in tier defaults.
+const PREVIEW_TIERS = [
+  { tier: 'S', text: 'Divine Orb' },
+  { tier: 'A', text: 'Exalted Orb' },
+  { tier: 'C', text: 'Chaos Orb' },
+]
+
+function StylePreview({ styleId }) {
+  const preset = STYLE_PRESETS[styleId] || {}
+  return (
+    <div className="mt-2 flex flex-col items-start gap-1 rounded-sm bg-black/50 border border-white/[0.05] px-2 py-2">
+      {PREVIEW_TIERS.map(({ tier, text }) => {
+        const base = DROP_TIERS.find((t) => t.id === tier)
+        const s = preset[tier] || {}
+        const size = Math.max(9, Math.round((s.fontSize || 32) * 0.34))
+        return (
+          <span key={tier} className="inline-flex items-center gap-1 leading-none whitespace-nowrap"
+            style={{
+              color: rgba(s.textColor, `rgb(${base.textColor.join(',')})`),
+              background: rgba(s.bgColor, 'rgba(0,0,0,0.55)'),
+              border: `1px solid ${rgba(s.borderColor, 'rgba(120,120,120,0.45)')}`,
+              fontSize: size, padding: `${Math.round(size * 0.3)}px ${Math.round(size * 0.55)}px`,
+              borderRadius: 2, textShadow: '0 1px 2px rgba(0,0,0,0.9)',
+            }}>
+            {text}
+            {styleId === 'alerts' && <Volume2 size={size} className="opacity-70" />}
+          </span>
+        )
+      })}
+    </div>
+  )
+}
 
 export function PresetsPage() {
   const { active, update } = useFilter()
@@ -52,7 +118,9 @@ export function PresetsPage() {
                     <span key={i} className={`h-1 flex-1 rounded-sm ${i < s.n ? (on ? 'bg-poe-gold' : 'bg-poe-gold-dim') : 'bg-poe-line'}`} />
                   ))}
                 </div>
-                <p className="text-[10.5px] text-poe-text leading-snug mt-1.5 line-clamp-4">{s.blurb}</p>
+                {/* live consequence preview — struck rows are what this level hides */}
+                <StrictnessPreview profile={strictnessProfile(s.id)} />
+                <p className="text-[10.5px] text-poe-text leading-snug mt-1.5 line-clamp-3">{s.blurb}</p>
               </button>
             )
           })}
@@ -68,14 +136,19 @@ export function PresetsPage() {
             The rules stay the same, and anything you set on the Cosmetic page still wins.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2 max-w-[860px]">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 max-w-[980px]">
           {STYLES.map(st => {
             const on = st.id === style
             return (
               <button key={st.id} onClick={() => update({ style: st.id })} title={st.blurb}
-                className={`rounded border px-3 py-2 text-left transition-colors min-w-[110px] ${on ? 'border-poe-gold shadow-glow bg-poe-gold/5' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
-                <div className={`heading text-[13px] ${on ? 'text-poe-gold' : ''}`}>{st.name}</div>
+                className={`rounded border px-3 py-2.5 text-left transition-colors ${on ? 'border-poe-gold shadow-glow bg-poe-gold/5' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
+                <div className="flex items-center justify-between">
+                  <div className={`heading text-[13px] ${on ? 'text-poe-gold' : ''}`}>{st.name}</div>
+                  {on && <Check size={14} className="text-poe-gold" />}
+                </div>
                 <div className="text-[10.5px] text-poe-text leading-snug mt-0.5">{st.blurb}</div>
+                {/* the style's real per-tier look, rendered as in-game labels */}
+                <StylePreview styleId={st.id} />
               </button>
             )
           })}

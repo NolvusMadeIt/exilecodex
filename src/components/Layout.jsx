@@ -39,6 +39,8 @@ export function Layout({ children }) {
   const dockOpen = !!prefs.dockOpen
   const setDockOpen = (v) => update({ dockOpen: v })
   const isXl = useIsXl()
+  // Below md the nav rail becomes a drawer, toggled from the top bar's hamburger.
+  const [navOpen, setNavOpen] = useState(false)
   const outputHere = OUTPUT_ROUTES.has(path)
   // Dense/split layouts want the full width of the work area rather than the centered reading
   // column — the market surfaces and every database/reference page (house rule: dense pages
@@ -54,9 +56,9 @@ export function Layout({ children }) {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <TitleBar />
-      <TopBar />
+      <TopBar onToggleNav={() => setNavOpen((v) => !v)} />
       <div className="flex flex-1 min-h-0">
-        <SideNav />
+        <SideNav mobileOpen={navOpen} onClose={() => setNavOpen(false)} />
 
         <main className="flex-1 min-w-0 overflow-y-auto" style={{ scrollbarGutter: 'stable both-edges' }}>
           <div className={wide ? 'px-4 py-4' : 'px-5 py-5 mx-auto'} style={{ maxWidth: wide ? 'none' : 1180 }}>

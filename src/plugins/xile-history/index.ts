@@ -9,7 +9,7 @@ import { ScrollText } from 'lucide-react'
 export default {
   id: 'xile-history',
   name: 'Merchant History',
-  description: 'Your Currency Exchange trade history — searchable, grouped, with running totals and an earnings chart. Powered by XileHUD.',
+  description: 'Your Currency Exchange trade history — searchable, grouped, with running totals and an earnings chart.',
   version: '1.0.0',
   author: 'XileHUD (engine) · Nolvus (port)',
   category: 'Market',

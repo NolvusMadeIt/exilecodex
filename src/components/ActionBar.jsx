@@ -192,7 +192,10 @@ export function ActionBar() {
       {/* Import split */}
       <div className="relative" ref={importMenuRef}>
         <ButtonGroup variant="outlined" size="small" aria-label="Import">
-          <Button startIcon={<Upload size={14} />} onClick={() => fileRef.current?.click()}>{t('Import')}</Button>
+          <Button startIcon={<Upload size={14} />} onClick={() => fileRef.current?.click()}
+            sx={{ '& .MuiButton-startIcon': { mr: { xs: 0, lg: 1 } } }}>
+            <span className="hidden lg:inline">{t('Import')}</span>
+          </Button>
           <Button onClick={() => setImportMenu(o => !o)} aria-label="Import options" sx={{ px: 0.75, minWidth: 0 }}>
             <ChevronDown size={12} />
           </Button>
@@ -213,7 +216,10 @@ export function ActionBar() {
       {/* Save split-button */}
       <div className="relative" ref={saveMenuRef}>
         <ButtonGroup variant="contained" color="primary" size="small" aria-label="Save">
-          <Button startIcon={<Save size={14} />} onClick={saveToNewFile} sx={{ minWidth: 130 }}>{t('Save to new file')}</Button>
+          <Button startIcon={<Save size={14} />} onClick={saveToNewFile}
+            sx={{ minWidth: { xs: 0, lg: 130 }, '& .MuiButton-startIcon': { mr: { xs: 0, lg: 1 } } }}>
+            <span className="hidden lg:inline">{t('Save to new file')}</span>
+          </Button>
           <Button onClick={() => setSaveMenu(o => !o)} aria-label="Save options" sx={{ px: 0.75, minWidth: 0 }}>
             <ChevronDown size={12} />
           </Button>
@@ -234,13 +240,15 @@ export function ActionBar() {
         </PortalMenu>
       </div>
 
-      <Button variant="outlined" size="small" startIcon={<Clipboard size={14} />} onClick={copy}>
-        {copied ? t('Copied!') : t('Copy')}
+      <Button variant="outlined" size="small" startIcon={copied ? <Check size={14} /> : <Clipboard size={14} />} onClick={copy}
+        sx={{ '& .MuiButton-startIcon': { mr: { xs: 0, lg: 1 } } }}>
+        <span className="hidden lg:inline">{copied ? t('Copied!') : t('Copy')}</span>
       </Button>
       <Button
         variant="outlined"
         size="small"
         startIcon={<RotateCcw size={14} />}
+        sx={{ '& .MuiButton-startIcon': { mr: { xs: 0, lg: 1 } } }}
         onClick={async () => {
           const ok = await toast.confirm(
             `Reset "${active.name}" to defaults?\nThis clears your Quick Editor, Custom Rules and Cosmetic edits.`,
@@ -252,7 +260,7 @@ export function ActionBar() {
           }
         }}
       >
-        {t('Reset')}
+        <span className="hidden lg:inline">{t('Reset')}</span>
       </Button>
     </div>
   )

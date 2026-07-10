@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { IconButton, Tooltip } from '@mui/material'
-import { HelpCircle } from 'lucide-react'
+import { HelpCircle, Menu } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { FilterSelector } from './FilterSelector.jsx'
@@ -11,7 +11,7 @@ import { useT } from '../i18n/index.js'
 
 // Slim top app bar for the Filter Studio: brand, active-filter selector, theme switch,
 // the global actions (Import/Save/Copy/Reset) and the legend.
-export function TopBar() {
+export function TopBar({ onToggleNav }) {
   const { active } = useFilter()
   const { navigate } = useRouter()
   const t = useT()
@@ -19,7 +19,13 @@ export function TopBar() {
   const [legendOpen, setLegendOpen] = useState(false)
 
   return (
-    <header className="flex items-center gap-3 h-14 px-4 border-b border-poe-line bg-black/40 backdrop-blur-sm shrink-0">
+    <header className="flex items-center gap-2 md:gap-3 h-14 px-3 md:px-4 border-b border-poe-line bg-black/40 backdrop-blur-sm shrink-0">
+      {/* Nav drawer toggle — only below md, where the rail is hidden */}
+      <button onClick={onToggleNav} aria-label="Open navigation"
+        className="md:hidden grid place-items-center w-8 h-8 rounded border border-poe-line text-poe-text hover:text-poe-gold hover:border-poe-gold-dim/60 shrink-0">
+        <Menu size={16} />
+      </button>
+
       {/* Brand — the logo doubles as the home button */}
       <button onClick={() => navigate('/presets')} className="flex items-center group shrink-0" aria-label="Exile Codex — home" title="Exile Codex — home">
         <img src="/128.png" alt="Exile Codex" draggable={false}
@@ -29,19 +35,19 @@ export function TopBar() {
 
       {/* Active filter selector */}
       <button onClick={() => setSelectorOpen(true)}
-        className="flex items-center gap-2 px-2.5 h-7 rounded border border-poe-line bg-poe-panel hover:border-poe-gold-dim/60 text-[12px] shrink-0"
+        className="flex items-center gap-2 px-2.5 h-7 rounded border border-poe-line bg-poe-panel hover:border-poe-gold-dim/60 text-[12px] min-w-0"
         title="Switch or manage filters">
-        <span className="text-poe-text-bright max-w-[150px] truncate">{active?.name}</span>
-        {active?.version && <span className="font-mono text-poe-text/55 text-[11px]">v{active.version}</span>}
-        <span className="text-poe-gold text-[11px]">{t('Change')}</span>
+        <span className="text-poe-text-bright max-w-[90px] md:max-w-[150px] truncate">{active?.name}</span>
+        {active?.version && <span className="hidden md:inline font-mono text-poe-text/55 text-[11px]">v{active.version}</span>}
+        <span className="hidden md:inline text-poe-gold text-[11px]">{t('Change')}</span>
       </button>
 
       <div className="ml-auto flex items-center gap-3">
         {/* Global actions */}
         <ActionBar />
 
-        {/* Language */}
-        <LangPicker />
+        {/* Language — desktop only; the setting also lives in Settings */}
+        <div className="hidden md:block"><LangPicker /></div>
 
         {/* Legend */}
         <Tooltip title="Open the filter legend (comparators, tiers, rarities, terminology)" arrow>

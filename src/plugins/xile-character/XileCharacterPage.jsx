@@ -62,16 +62,16 @@ export function XileCharacterPage() {
       <div id="craftingPanel" ref={panelRef} className="xilehud-panel content min-h-0 flex-1 overflow-y-auto" />
 
       <div className="mt-4 border-t border-poe-line/60 pt-2 text-[11px] text-poe-text/45">
-        Powered by{' '}
+        Built by{' '}
         <a
-          href="https://github.com/XileHUD/poe_overlay"
+          href="https://github.com/NolvusMadeIt"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-0.5 text-poe-gold-dim hover:text-poe-gold"
         >
-          XileHUD <ExternalLink size={10} />
+          Nolvus <ExternalLink size={10} />
         </a>{' '}
-        — character reference engine &amp; data (GPL-3.0). Item art is not redistributed.
+        — a player with a passion for the game. Item art is not redistributed.
       </div>
     </div>
   )

@@ -8,7 +8,7 @@ import { User } from 'lucide-react'
 export default {
   id: 'xile-character',
   name: 'Character',
-  description: 'Gems, keystones, ascendancy passives, atlas nodes and the campaign quest-rewards checklist. Powered by XileHUD.',
+  description: 'Gems, keystones, ascendancy passives, atlas nodes and the campaign quest-rewards checklist.',
   version: '1.0.0',
   author: 'XileHUD (engine) · Nolvus (port)',
   category: 'Database',

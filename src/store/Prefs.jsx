@@ -6,11 +6,17 @@ import { supabase, clientId } from '../lib/supabase.js'
 
 const LS = 'nolvus-prefs'
 
+// Each theme carries its real surface colors (mirroring its index.css block) so pickers can
+// paint an honest sample of the theme rather than just a swatch dot.
 export const THEMES = [
-  { id: 'exile',  name: 'Exile',  swatch: '#c59e54', desc: 'The in-game window look — dark stone, parchment text, gold trim.' },
-  { id: 'ember',  name: 'Ember',  swatch: '#ff6b4a', desc: 'Warm charcoal with molten coral & amber accents.' },
-  { id: 'abyss',  name: 'Abyss',  swatch: '#38c8b0', desc: 'Cool slate with teal & cyan accents.' },
-  { id: 'arcane', name: 'Arcane', swatch: '#b27cf0', desc: 'Midnight violet with orchid accents.' },
+  { id: 'exile',  name: 'Exile',  swatch: '#c59e54', bg: '#0c0b09', panel: '#181410', text: '#beb29e', bright: '#e4d8c2',
+    desc: 'The in-game window look — dark stone, parchment text, gold trim.' },
+  { id: 'ember',  name: 'Ember',  swatch: '#ff6b4a', bg: '#0f0e0d', panel: '#1a1714', text: '#c7beb4', bright: '#ece5db',
+    desc: 'Warm charcoal with molten coral & amber accents.' },
+  { id: 'abyss',  name: 'Abyss',  swatch: '#38c8b0', bg: '#0c1012', panel: '#141a1d', text: '#b0bec3', bright: '#dce8ec',
+    desc: 'Cool slate with teal & cyan accents.' },
+  { id: 'arcane', name: 'Arcane', swatch: '#b27cf0', bg: '#100d16', panel: '#1a1622', text: '#bfb6d0', bright: '#e6def6',
+    desc: 'Midnight violet with orchid accents.' },
 ]
 
 const DEFAULTS = {

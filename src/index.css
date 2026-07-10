@@ -322,10 +322,36 @@ body {
 
   /* Buttons */
   .btn { @apply inline-flex items-center justify-center gap-1.5 px-3.5 h-9 rounded-lg text-[13px] font-semibold transition-all select-none cursor-pointer whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed; font-family: var(--app-font); }
-  .btn-action { @apply btn; color: #2b1208; background-image: linear-gradient(135deg, rgb(var(--c-accent)), rgb(var(--c-accent2))); box-shadow: 0 4px 14px -7px rgb(var(--c-accent) / 0.65); }
-  .btn-action:hover { filter: brightness(1.06); box-shadow: 0 6px 18px -7px rgb(var(--c-accent) / 0.7); }
-  .btn-dark { @apply btn text-poe-text-bright; background: rgb(var(--c-panel-light)); border: 1px solid rgb(var(--c-line)); }
-  .btn-dark:hover { border-color: rgb(var(--c-accent) / 0.55); color: rgb(var(--c-heading)); }
+  /* Action buttons wear the game's own button chrome (same 3-slice sprites as .poe-btn),
+     site-wide. Primary (.btn-action) gets the glowing gold label; .btn-dark the standard one. */
+  .btn-action, .btn-dark {
+    @apply btn relative rounded-none;
+    border: none;
+    font-family: var(--display-font);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    background: url('/assets/ui/buttongenericnormalmiddle.webp') repeat-x;
+    background-size: auto 100%;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.85);
+  }
+  .btn-action::before, .btn-action::after, .btn-dark::before, .btn-dark::after {
+    content: '';
+    @apply pointer-events-none absolute bottom-0 top-0 w-[26px];
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+  }
+  .btn-action::before, .btn-dark::before { left: -9px; background-image: url('/assets/ui/buttongenericnormalleft.webp'); }
+  .btn-action::after, .btn-dark::after { right: -9px; background-image: url('/assets/ui/buttongenericnormalright.webp'); background-position: right; }
+  .btn-action:hover:not(:disabled), .btn-dark:hover:not(:disabled) { background-image: url('/assets/ui/buttongenerichovermiddle.webp'); }
+  .btn-action:hover:not(:disabled)::before, .btn-dark:hover:not(:disabled)::before { background-image: url('/assets/ui/buttongenerichoverleft.webp'); }
+  .btn-action:hover:not(:disabled)::after, .btn-dark:hover:not(:disabled)::after { background-image: url('/assets/ui/buttongenerichoverright.webp'); }
+  .btn-action:active:not(:disabled), .btn-dark:active:not(:disabled) { background-image: url('/assets/ui/buttongenericpressedmiddle.webp'); }
+  .btn-action:active:not(:disabled)::before, .btn-dark:active:not(:disabled)::before { background-image: url('/assets/ui/buttongenericpressedleft.webp'); }
+  .btn-action:active:not(:disabled)::after, .btn-dark:active:not(:disabled)::after { background-image: url('/assets/ui/buttongenericpressedright.webp'); }
+  .btn-action { color: rgb(var(--c-accent-light)); text-shadow: 0 0 8px rgb(var(--c-accent) / 0.55), 0 1px 2px rgb(0 0 0 / 0.85); }
+  .btn-action:hover:not(:disabled) { color: rgb(var(--c-accent-light)); filter: brightness(1.08); }
+  .btn-dark { color: rgb(var(--c-text-bright)); }
+  .btn-dark:hover:not(:disabled) { color: rgb(var(--c-heading)); }
   .btn-ghost { @apply btn text-poe-text; }
   .btn-ghost:hover { background: rgb(var(--c-text) / 0.06); color: rgb(var(--c-heading)); }
 

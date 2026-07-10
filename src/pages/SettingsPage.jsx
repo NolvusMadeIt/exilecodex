@@ -85,14 +85,19 @@ export function SettingsPage() {
               <button
                 key={t.id}
                 onClick={() => update({ theme: t.id })}
-                className={`text-left p-3 rounded border transition-colors ${on ? 'border-poe-gold shadow-glow bg-poe-gold/5' : 'border-poe-line hover:border-poe-gold-dim'}`}
+                className={`text-left p-3 rounded border transition-colors ${on ? 'border-poe-gold shadow-glow' : 'border-poe-line hover:border-poe-gold-dim'}`}
+                style={{
+                  // The card wears its own theme: real surface gradient + a wash of the accent.
+                  background: `linear-gradient(135deg, ${t.panel} 0%, ${t.bg} 70%), ${t.bg}`,
+                  boxShadow: on ? undefined : `inset 0 0 0 1px ${t.swatch}22, inset 0 40px 60px -50px ${t.swatch}55`,
+                }}
               >
                 <div className="flex items-center gap-2">
                   <span className="inline-block w-4 h-4 rounded-full border border-white/10" style={{ background: t.swatch }} />
-                  <span className="heading text-[15px]">{t.name}</span>
+                  <span className="heading text-[15px]" style={{ color: t.swatch }}>{t.name}</span>
                   {on && <span className="ml-auto text-[10px] bg-poe-gold/90 text-black px-1 rounded-sm font-smallcaps">SELECTED</span>}
                 </div>
-                <p className="text-[11.5px] text-poe-text mt-1.5">{t.desc}</p>
+                <p className="text-[11.5px] mt-1.5" style={{ color: t.text }}>{t.desc}</p>
               </button>
             )
           })}

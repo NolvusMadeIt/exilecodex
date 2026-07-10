@@ -8,7 +8,7 @@ import { FlaskConical } from 'lucide-react'
 export default {
   id: 'xile-crafting',
   name: 'Crafting',
-  description: 'The PoE2 crafting reference — currencies, essences, omens, catalysts, augments, anoints and the keyword glossary. Powered by XileHUD.',
+  description: 'The PoE2 crafting reference — currencies, essences, omens, catalysts, augments, anoints and the keyword glossary.',
   version: '1.0.0',
   author: 'XileHUD (engine) · Nolvus (port)',
   category: 'Database',

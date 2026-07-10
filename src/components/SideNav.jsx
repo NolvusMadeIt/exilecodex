@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Button } from '@mui/material'
 import {
   Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked,
@@ -85,12 +85,15 @@ function buildGroups(enabledPlugins) {
   return groups.sort((a, b) => a.order - b.order)
 }
 
-export function SideNav() {
+export function SideNav({ mobileOpen = false, onClose }) {
   const { path, query, navigate } = useRouter()
   const { enabledPlugins } = usePlugins()
   const t = useT()
 
   const groups = useMemo(() => buildGroups(enabledPlugins), [enabledPlugins])
+
+  // Drawer mode (below md): any navigation closes it.
+  useEffect(() => { onClose?.() }, [path, query?.panel]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const itemActive = (item) => {
     const base = item.base || item.to
@@ -119,11 +122,26 @@ export function SideNav() {
     backgroundColor: active ? 'rgb(var(--c-accent) / 0.10)' : 'transparent',
     boxShadow: active ? 'inset 2px 0 0 rgb(var(--c-accent))' : 'none',
     borderRadius: '6px',
-    '&:hover': { backgroundColor: 'rgb(var(--c-text) / 0.05)', color: 'rgb(var(--c-heading))' },
+    '&:hover': { backgroundColor: 'rgb(var(--c-text) / 0.05)', backgroundImage: 'none', color: 'rgb(var(--c-heading))' },
+    // Nav rows are navigation, not action buttons — strip the game button chrome the global
+    // MuiButton override applies (sprite background + end caps + smallcaps face).
+    background: active ? 'rgb(var(--c-accent) / 0.10)' : 'transparent',
+    backgroundImage: 'none',
+    textShadow: 'none',
+    fontFamily: 'var(--app-font)',
+    fontWeight: 500,
+    letterSpacing: 0,
+    '&::before, &::after': { display: 'none' },
+    '&:hover::before, &:hover::after': { display: 'none' },
   })
 
   return (
-    <nav className="w-[220px] shrink-0 border-r border-poe-line bg-black/20 flex flex-col py-2 overflow-y-auto">
+    <>
+    {/* Drawer backdrop — only when the drawer is open below md */}
+    {mobileOpen && <div className="fixed inset-0 z-30 bg-black/60 md:hidden" onClick={onClose} />}
+    <nav className={`${mobileOpen
+      ? 'flex fixed inset-y-0 left-0 z-40 bg-[#12100c] shadow-2xl'
+      : 'hidden'} md:flex md:static md:z-auto md:bg-black/20 w-[220px] shrink-0 border-r border-poe-line flex-col py-2 overflow-y-auto`}>
       <div className="flex flex-col gap-0.5 px-2">
         {marked.map((g) => {
           const GIcon = g.icon
@@ -188,6 +206,7 @@ export function SideNav() {
         </a>
       </div>
     </nav>
+    </>
   )
 }
 

@@ -8,7 +8,7 @@ import { BookOpen } from 'lucide-react'
 export default {
   id: 'xile-items',
   name: 'Item Database',
-  description: 'Browse every PoE2 unique and base item — searchable, filterable, offline-friendly. Powered by XileHUD.',
+  description: 'Browse every PoE2 unique and base item — searchable, filterable, offline-friendly.',
   version: '1.0.0',
   author: 'XileHUD (engine) · Nolvus (port)',
   category: 'Database',

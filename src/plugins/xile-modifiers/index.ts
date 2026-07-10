@@ -7,7 +7,7 @@ import { ListFilter } from 'lucide-react'
 export default {
   id: 'xile-modifiers',
   name: 'Modifiers',
-  description: 'Every PoE2 modifier by item category — tiers, weights, ilvl — searchable and filterable. Powered by XileHUD.',
+  description: 'Every PoE2 modifier by item category — tiers, weights, ilvl — searchable and filterable.',
   version: '1.0.0',
   author: 'XileHUD (engine) · Nolvus (port)',
   category: 'Database',

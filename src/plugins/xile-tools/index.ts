@@ -8,7 +8,7 @@ import { Regex } from 'lucide-react'
 export default {
   id: 'xile-tools',
   name: 'Map Regex',
-  description: 'Build the shortest in-game search regex for juicing Waystones — include/exclude mods, saved presets. Powered by XileHUD.',
+  description: 'Build the shortest in-game search regex for juicing Waystones — include/exclude mods, saved presets.',
   version: '1.0.0',
   author: 'XileHUD (engine) · Nolvus (port)',
   category: 'Tools',

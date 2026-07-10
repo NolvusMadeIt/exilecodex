@@ -28,37 +28,59 @@ export const muiTheme = createTheme({
   components: {
     MuiButton: {
       defaultProps: { disableElevation: true },
+      // Every MUI button wears the game's 3-slice button chrome (same sprites as .poe-btn /
+      // .btn-dark in index.css) — end caps ride on pseudo-elements, the middle stretches.
       styleOverrides: {
-        root: { textTransform: 'none', fontWeight: 600, borderRadius: 3, fontFamily: SORA },
+        root: {
+          textTransform: 'none', fontWeight: 400, borderRadius: 0,
+          fontFamily: 'var(--display-font)', letterSpacing: '0.03em',
+          whiteSpace: 'nowrap',
+          position: 'relative', border: 'none', overflow: 'visible',
+          color: V('--c-text-bright'),
+          background: "url('/assets/ui/buttongenericnormalmiddle.webp') repeat-x",
+          backgroundSize: 'auto 100%',
+          textShadow: '0 1px 2px rgb(0 0 0 / 0.85)',
+          '&::before, &::after': {
+            content: '""', position: 'absolute', top: 0, bottom: 0, width: 26,
+            backgroundSize: 'auto 100%', backgroundRepeat: 'no-repeat', pointerEvents: 'none',
+          },
+          '&::before': { left: -9, backgroundImage: "url('/assets/ui/buttongenericnormalleft.webp')" },
+          '&::after': { right: -9, backgroundImage: "url('/assets/ui/buttongenericnormalright.webp')", backgroundPosition: 'right' },
+          '&:hover': { backgroundImage: "url('/assets/ui/buttongenerichovermiddle.webp')", color: V('--c-heading') },
+          '&:hover::before': { backgroundImage: "url('/assets/ui/buttongenerichoverleft.webp')" },
+          '&:hover::after': { backgroundImage: "url('/assets/ui/buttongenerichoverright.webp')" },
+          '&:active': { backgroundImage: "url('/assets/ui/buttongenericpressedmiddle.webp')" },
+          '&:active::before': { backgroundImage: "url('/assets/ui/buttongenericpressedleft.webp')" },
+          '&:active::after': { backgroundImage: "url('/assets/ui/buttongenericpressedright.webp')" },
+        },
         outlined: {
           color: V('--c-text-bright'),
-          borderColor: V('--c-line'),
-          backgroundColor: V('--c-panel-light'),
-          '&:hover': { borderColor: V('--c-accent', '0.55'), backgroundColor: V('--c-panel-light'), color: V('--c-heading') },
+          '&:hover': { color: V('--c-heading') },
         },
-        text: { color: V('--c-text'), '&:hover': { backgroundColor: V('--c-text', '0.06'), color: V('--c-heading') } },
+        text: { color: V('--c-text'), '&:hover': { color: V('--c-heading') } },
       },
-      // MUI v6+ uses the variants API for variant+color combos (the old `containedPrimary`
-      // composite key no longer applies). This drives the primary CTA off the theme vars.
+      // Primary CTA keeps the same game chrome — the label glows gold instead of a new skin.
       variants: [
         {
           props: { variant: 'contained', color: 'primary' },
           style: {
-            color: '#2b1208',
-            backgroundImage: `linear-gradient(135deg, ${V('--c-accent')}, ${V('--c-accent2')})`,
-            boxShadow: `0 4px 14px -7px ${V('--c-accent', '0.65')}`,
-            '&:hover': {
-              backgroundImage: `linear-gradient(135deg, ${V('--c-accent')}, ${V('--c-accent2')})`,
-              filter: 'brightness(1.06)',
-              boxShadow: `0 6px 18px -7px ${V('--c-accent', '0.7')}`,
-            },
+            color: V('--c-accent-light'),
+            textShadow: `0 0 8px ${V('--c-accent', '0.55')}, 0 1px 2px rgb(0 0 0 / 0.85)`,
+            '&:hover': { color: V('--c-accent-light'), filter: 'brightness(1.08)' },
           },
         },
       ],
     },
     MuiButtonGroup: {
+      // Split buttons render as ONE long game button: inner end-caps are hidden and a thin
+      // dark seam divides the segments.
       styleOverrides: {
-        grouped: { borderColor: V('--c-line') },
+        grouped: {
+          border: 'none',
+          '&.MuiButtonGroup-firstButton, &.MuiButtonGroup-middleButton': { borderRight: '1px solid rgba(0,0,0,0.55)' },
+          '&.MuiButtonGroup-firstButton::after, &.MuiButtonGroup-middleButton::after': { display: 'none' },
+          '&.MuiButtonGroup-lastButton::before, &.MuiButtonGroup-middleButton::before': { display: 'none' },
+        },
       },
     },
     MuiTab: {
