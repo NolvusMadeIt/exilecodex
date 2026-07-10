@@ -5,6 +5,7 @@ import CurrencyTable from "./components/CurrencyTable";
 import CurrencyDetail from "./components/CurrencyDetail";
 import MarketSummary from "./components/MarketSummary";
 import WatchlistView from "./components/WatchlistView";
+import MoversView from "./components/MoversView";
 import { EmptyState, ErrorState } from "./components/States";
 import { fmtNum } from "../../lib/market/format";
 import { fetchLeagues, fetchCategories, fetchCurrencies } from "../../lib/market/client";
@@ -27,7 +28,7 @@ export default function MarketView() {
   const [selected, setSelected] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("currency");
-  const [view, setView] = useState<"market" | "watchlist">("market");
+  const [view, setView] = useState<"market" | "watchlist" | "movers">("market");
   const containerRef = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
 
@@ -134,8 +135,14 @@ export default function MarketView() {
     </div>
   );
 
+  const openDetail = (apiId: string) => {
+    setSelected(apiId);
+    setView("market");
+  };
+
   let body: React.ReactNode;
   if (view === "watchlist") body = <WatchlistView onBack={() => setView("market")} />;
+  else if (view === "movers") body = <MoversView onBack={() => setView("market")} onSelect={openDetail} />;
   else if (!league) body = <EmptyState message="Loading leagues…" />;
   else if (isLoading) body = <EmptyState message="Loading market…" />;
   else if (isError) body = <ErrorState message="Market data is temporarily unavailable." />;
@@ -156,8 +163,15 @@ export default function MarketView() {
 
           <div className="flex gap-1 overflow-x-auto border-b border-poe-line px-2 py-1.5">
             <button
+              onClick={() => setView("movers")}
+              className="shrink-0 rounded border border-poe-line px-2.5 py-1 text-[11px] uppercase tracking-wide text-poe-text/70 hover:border-poe-gold-dim hover:text-poe-gold"
+              title="Market movers — what's rising, falling and most traded, scored against each item's own range"
+            >
+              ↕ Movers
+            </button>
+            <button
               onClick={() => setView("watchlist")}
-              className="shrink-0 rounded border border-poe-gold/40 px-2.5 py-1 text-[11px] uppercase tracking-wide text-poe-gold hover:bg-poe-gold/10"
+              className="shrink-0 rounded border border-poe-line px-2.5 py-1 text-[11px] uppercase tracking-wide text-poe-text/70 hover:border-poe-gold-dim hover:text-poe-gold"
               title="Your watchlists — tracked currencies, portfolio value, alerts"
             >
               ★ Watchlist
