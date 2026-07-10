@@ -72,6 +72,16 @@ glossary of game keywords. Engine and data **powered by
 
 ![Crafting — currencies, essences and the keyword glossary](docs/screenshots/crafting.gif)
 
+### Keyword Glossary
+
+Every game keyword as a real wiki: an A–Z index with search and nature filters, each entry an
+article where every underlined term links to its own entry, "Referenced by" walks you back up,
+and entries deep-link so the browser back button retraces your reading trail. Tags and values
+wear the element's own color. Keyword data from **[XileHUD](https://github.com/XileHUD/poe_overlay)**
+(GPL-3.0); the wiki reader is ours.
+
+![Keyword Glossary — cross-linked articles with backlinks](docs/screenshots/glossary.gif)
+
 ### Character
 
 The character side of the grind: every skill gem with its stats, keystones, ascendancy
