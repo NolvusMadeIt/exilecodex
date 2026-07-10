@@ -118,14 +118,15 @@ export function SideNav({ mobileOpen = false, onClose }) {
   const rowSx = (active, indent = false) => ({
     justifyContent: 'flex-start', px: indent ? 3.25 : 1.5, py: 0.75, fontSize: 13, minHeight: 34,
     width: '100%', textAlign: 'left', gap: 1,
+    // Selected = a lit leather plate (neutral lighter surface) + gold text + a thin gold edge
+    // on the left. No gold wash, no glow — the game highlights by lightening, not tinting.
     color: active ? 'rgb(var(--c-accent))' : 'rgb(var(--c-text))',
-    backgroundColor: active ? 'rgb(var(--c-accent) / 0.10)' : 'transparent',
-    boxShadow: active ? 'inset 2px 0 0 rgb(var(--c-accent))' : 'none',
-    borderRadius: '6px',
-    '&:hover': { backgroundColor: 'rgb(var(--c-text) / 0.05)', backgroundImage: 'none', color: 'rgb(var(--c-heading))' },
+    backgroundColor: active ? 'rgb(255 250 240 / 0.05)' : 'transparent',
+    boxShadow: active ? 'inset 2px 0 0 rgb(var(--c-accent-dim))' : 'none',
+    borderRadius: '4px',
     // Nav rows are navigation, not action buttons — strip the game button chrome the global
     // MuiButton override applies (border-image + smallcaps face).
-    background: active ? 'rgb(var(--c-accent) / 0.10)' : 'transparent',
+    background: active ? 'rgb(255 250 240 / 0.05)' : 'transparent',
     backgroundImage: 'none',
     border: 'none',
     borderImage: 'none',
@@ -133,7 +134,7 @@ export function SideNav({ mobileOpen = false, onClose }) {
     fontFamily: 'var(--app-font)',
     fontWeight: 500,
     letterSpacing: 0,
-    '&:hover': { backgroundColor: 'rgb(var(--c-text) / 0.05)', backgroundImage: 'none', borderImage: 'none', color: 'rgb(var(--c-heading))' },
+    '&:hover': { backgroundColor: 'rgb(255 250 240 / 0.04)', backgroundImage: 'none', borderImage: 'none', color: 'rgb(var(--c-heading))' },
   })
 
   return (

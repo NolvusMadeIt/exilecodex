@@ -108,7 +108,7 @@ export function PresetsPage() {
             return (
               <button key={s.id} onClick={() => update({ strictness: s.id, quickFilters: { ...strictnessProfile(s.id) } })}
                 title={s.blurb}
-                className={`relative group rounded border text-left p-2.5 h-full flex flex-col transition-colors ${on ? 'border-poe-gold shadow-glow bg-poe-gold/5' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
+                className={`relative group rounded border text-left p-2.5 h-full flex flex-col transition-colors ${on ? 'border-poe-gold shadow-glow bg-white/[0.04]' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
                 <div className="flex items-center justify-between">
                   <span className={`grid place-items-center w-7 h-7 rounded font-smallcaps text-[15px] ${on ? 'bg-poe-gold text-black' : 'bg-black/50 text-poe-gold-dim border border-poe-line'}`}>{s.n}</span>
                   {s.recommended && <span className="text-[9px] uppercase tracking-wide bg-poe-gold/90 text-black px-1 rounded-sm">Rec</span>}
@@ -144,7 +144,7 @@ export function PresetsPage() {
             const on = st.id === style
             return (
               <button key={st.id} onClick={() => update({ style: st.id })} title={st.blurb}
-                className={`rounded border px-3 py-2.5 text-left transition-colors ${on ? 'border-poe-gold shadow-glow bg-poe-gold/5' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
+                className={`rounded border px-3 py-2.5 text-left transition-colors ${on ? 'border-poe-gold shadow-glow bg-white/[0.04]' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
                 <div className="flex items-center justify-between">
                   <div className={`heading text-[13px] ${on ? 'text-poe-gold' : ''}`}>{st.name}</div>
                   {on && <Check size={14} className="text-poe-gold" />}

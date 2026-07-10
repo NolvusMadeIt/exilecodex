@@ -52,7 +52,9 @@ export default {
       },
       boxShadow: {
         panel: '0 10px 30px -18px rgba(0,0,0,0.85), inset 0 1px 0 0 rgba(255,255,255,0.025)',
-        glow: '0 0 0 1px rgb(var(--c-accent) / 0.4), 0 0 22px -6px rgb(var(--c-accent) / 0.55)',
+        // "Selected" depth — a quiet inner top highlight like a lit leather plate, no colored
+        // bloom (the game highlights by lightening the surface, not with a neon glow).
+        glow: 'inset 0 1px 0 rgb(255 235 180 / 0.07)',
       },
       // Sharp, angular PoE2-native paneling — overrides Tailwind's soft default radii so the
       // whole app sharpens at once (rounded-full kept for dots/avatars).

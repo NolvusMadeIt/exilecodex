@@ -50,7 +50,7 @@ export function PatchNotesPage() {
             const on = p.version === selected
             return (
               <button key={p.version} onClick={() => setSelected(p.version)}
-                className={`w-full text-left rounded-lg border px-3 py-2 transition-colors ${on ? 'border-poe-gold shadow-glow bg-poe-gold/5' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
+                className={`w-full text-left rounded-lg border px-3 py-2 transition-colors ${on ? 'border-poe-gold shadow-glow bg-white/[0.04]' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
                 <div className="flex items-center gap-2">
                   <span className={`font-mono text-[14px] ${on ? 'text-poe-gold' : 'text-poe-text-bright'}`}>{p.version}</span>
                   {p.current && <span className="text-[9px] uppercase tracking-wide bg-poe-gold/90 text-black px-1 rounded-sm">Current</span>}
