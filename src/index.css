@@ -41,26 +41,25 @@
   --display-font: 'Fontin SmallCaps', 'Fontin', var(--app-font);
 }
 
-/* Exile — dark warm stone, worn-parchment text, muted gold trim. Original palette for the
-   overlay transformation; PoeFrame.jsx leans on --c-accent/--c-accent2 for its bevels. */
+/* Exile — the game's own HUD look: near-black neutral stone, light silvery text, gold frames,
+   with life-red / mana-blue reserved for meaning. Deliberately NOT brown-on-brown (the previous
+   palette read too warm); sampled from the PoE2 in-game orbs/panels. */
 :root, [data-theme="exile"] {
   color-scheme: dark;
-  /* Palette sampled from the game's own Options/menu panels (owner's reference screenshots):
-     warm near-black ground, dark leather panels, bronze rails, parchment text, plaque gold. */
-  --c-bg: 10 8 6;
-  --c-panel: 20 16 12;
-  --c-panel-light: 30 24 18;
-  --c-line: 74 58 38;
-  --c-text: 179 161 131;
-  --c-text-bright: 226 211 179;
-  --c-heading: 240 228 200;
-  --c-accent: 201 164 79;          /* plaque gold */
-  --c-accent-light: 231 199 130;
-  --c-accent-dim: 150 118 62;
-  --c-accent2: 166 128 70;         /* deep bronze */
-  --c-danger: 205 84 72;
-  --bg-glow-1: rgba(197,158,84,0.05);
-  --bg-glow-2: rgba(120,90,50,0.04);
+  --c-bg: 13 13 15;                /* neutral near-black, a hair cool (the game's ground) */
+  --c-panel: 22 23 26;             /* dark stone panel */
+  --c-panel-light: 31 32 37;       /* raised stone */
+  --c-line: 60 59 56;              /* muted metal edge — neutral, not orange */
+  --c-text: 187 186 180;           /* light silvery grey — readable, NOT brown */
+  --c-text-bright: 232 231 226;
+  --c-heading: 245 243 237;
+  --c-accent: 201 164 79;          /* frame gold (kept — it's the game's trim) */
+  --c-accent-light: 233 201 132;
+  --c-accent-dim: 150 122 66;
+  --c-accent2: 178 145 85;         /* bronze-gold */
+  --c-danger: 214 72 66;           /* life-orb red */
+  --bg-glow-1: rgba(201,164,79,0.04);
+  --bg-glow-2: rgba(70,90,140,0.035);   /* faint cool (mana) glow instead of brown */
 }
 [data-theme="ember"] {
   color-scheme: dark;
@@ -123,7 +122,7 @@ body {
   background-image:
     radial-gradient(1100px 640px at 50% -12%, var(--bg-glow-1), transparent 62%),
     radial-gradient(820px 540px at 88% 8%, var(--bg-glow-2), transparent 60%),
-    linear-gradient(rgb(var(--c-bg) / 0.82), rgb(var(--c-bg) / 0.86)),
+    linear-gradient(rgb(var(--c-bg) / 0.93), rgb(var(--c-bg) / 0.965)),
     var(--ui-app-bg, url('/assets/ui/background1.webp'));
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
   background-size: auto, auto, auto, cover;

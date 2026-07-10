@@ -99,6 +99,24 @@ export function render(model: QpModel){
   const tagWrap = panel.querySelector('#qpTagFilters') as HTMLElement | null;
   const container = panel.querySelector('#qpSections') as HTMLElement | null;
   const selectedTags = new Set<string>();
+  // XILE-PORT: reward-type → RGB, so the filter chips carry each type's own colour.
+  const questTagRGB = (tag:string):[number,number,number]=>{
+    const t=(tag||'').toLowerCase();
+    if(t==='life') return [224,90,90];
+    if(t==='mana') return [98,128,230];
+    if(t==='resistance') return [255,112,67];
+    if(t==='spirit') return [150,210,235];
+    if(t==='gem') return [60,200,170];
+    if(t==='passive skill') return [201,164,79];
+    if(t==='relic') return [190,120,220];
+    if(t==='charm') return [230,170,90];
+    if(t==='flask') return [200,130,130];
+    if(t==='dexterity') return [100,192,115];
+    if(t==='intelligence') return [92,148,235];
+    if(t==='movement') return [90,200,110];
+    if(t==='strength') return [227,88,65];
+    return [150,170,185];
+  };
   const colorClass = (tag:string)=>{
     const m = tag.toLowerCase();
     if(m==='life') return 'life';
@@ -134,9 +152,11 @@ export function render(model: QpModel){
       const isActive=selectedTags.has(tag);
       const count = counts[tag]||0;
       chip.textContent = count ? `${tag} (${count})` : tag;
-      applyFilterChipChrome(chip, buildPoe2ChipChrome([120, 144, 156], isActive), {
+      // XILE-PORT: colour the filter chips by reward type (was a flat grey), matching the
+      // per-row tag colours so every pill reads in its own colour.
+      applyFilterChipChrome(chip, buildPoe2ChipChrome(questTagRGB(tag), isActive), {
         padding: "3px 10px",
-        fontWeight: isActive ? "600" : "500"
+        fontWeight: isActive ? "700" : "600"
       });
       chip.style.margin = "0 4px 4px 0";
       chip.addEventListener('click', ()=>{ isActive?selectedTags.delete(tag):selectedTags.add(tag); build(searchEl?.value||''); renderTagFilters(); });
