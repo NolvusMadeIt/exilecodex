@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Lock, RefreshCw } from 'lucide-react'
 import { usePrefs, THEMES } from '../store/Prefs.jsx'
 import { useGameInfo } from '../store/GameInfo.jsx'
@@ -19,6 +19,16 @@ export function SettingsPage() {
   const t = useT()
   const [tab, setTab] = useState('general')
 
+  // Hidden unlock for the Developer section: tap the page title 7 times (Android-style). Once
+  // unlocked it persists in prefs; normal users never stumble into it. A ref (not state) so
+  // rapid taps accumulate without closure/batching races.
+  const tapsRef = useRef(0)
+  const bumpTitle = () => {
+    if (prefs.devUnlocked) return
+    tapsRef.current += 1
+    if (tapsRef.current >= 7) update({ devUnlocked: true })
+  }
+
   // Desktop-only: current app version + a manual update check (results show as a dialog / the
   // bottom-left banner, handled in the main process).
   const [appVersion, setAppVersion] = useState('')
@@ -36,8 +46,8 @@ export function SettingsPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="gold-heading text-[22px]">{t('Settings')}</h1>
-        <p className="text-[12px] text-poe-text mt-1">Theme, filter meta, plugins, and custom comments. These apply across every filter you build.</p>
+        <h1 className="gold-heading text-[28px] cursor-default select-none" onClick={bumpTitle}>{t('Settings')}</h1>
+        <p className="text-[13px] text-poe-text mt-1">Theme, filter meta, plugins, and custom comments. These apply across every filter you build.</p>
       </div>
 
       {/* The game's Options-panel structure: raised dark tabs over one ornate carved frame. */}
@@ -159,6 +169,27 @@ export function SettingsPage() {
           <p className="text-[11px] text-poe-text/70 mt-1.5 pl-6">Makes the generated .filter text much easier and more pleasant to read while you work.</p>
         </div>
       </section>
+
+      {/* Developer — hidden until unlocked (tap the Settings title 7×). Lets the web build run
+          the desktop-only plugins (live market, price check, merchant history, overlay preview)
+          without installing the app. */}
+      {prefs.devUnlocked && (
+        <section>
+          <div className="section-bar">Developer</div>
+          <div className="mt-2">
+            <Toggle
+              checked={!!prefs.devMode}
+              onChange={v => update({ devMode: v })}
+              label="Developer mode"
+              help="Unlocks desktop-only plugins in the browser (live Market, Price Check, Merchant History, overlay preview) so you can work on everything without the desktop app."
+            />
+            <p className="text-[11px] text-poe-text/70 mt-1.5 pl-6">
+              Bypasses the “install the desktop app” gate for desktop-only plugins. Intended for development —
+              those features still need the desktop app to run for real (game log, global hotkeys, your PoE session).
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Game Overlay (desktop app) */}
       <OverlaySettings />

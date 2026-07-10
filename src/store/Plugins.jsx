@@ -51,10 +51,11 @@ export function readState(manifest, raw) {
     : { installed: false, active: false, version }
 }
 
-// Whether a plugin is effectively active (in the sidebar + routes).
-function effectiveActive(manifest, state) {
+// Whether a plugin is effectively active (in the sidebar + routes). `canDesktop` is true on the
+// desktop app OR when Developer mode is on (owner-only) — either lets desktop-only plugins run.
+function effectiveActive(manifest, state, canDesktop = IS_DESKTOP) {
   if (manifest.core) return true
-  if (manifest.desktopOnly && !IS_DESKTOP) return false // can't run optional desktop-only on the web
+  if (manifest.desktopOnly && !canDesktop) return false // can't run optional desktop-only on the web
   const st = readState(manifest, state?.[manifest.id])
   return st.installed && st.active
 }
@@ -68,13 +69,15 @@ function effectiveInstalled(manifest, state) {
 export function PluginProvider({ children }) {
   const { prefs, update } = usePrefs()
   const state = prefs.plugins || {}
+  // Developer mode (owner-only; see Settings) lets the web build run desktop-only plugins.
+  const canDesktop = IS_DESKTOP || !!prefs.devMode
 
   // Decorate each manifest with its resolved lifecycle for consumers.
   const plugins = useMemo(
     () => BUILTIN_PLUGINS.map(m => {
       const st = readState(m, state[m.id])
       const installed = m.core ? true : st.installed
-      const active = effectiveActive(m, state)
+      const active = effectiveActive(m, state, canDesktop)
       const storedVersion = st.version
       return {
         ...m,
@@ -86,7 +89,7 @@ export function PluginProvider({ children }) {
         hasUpdate: !m.core && installed && !!storedVersion && storedVersion !== m.version,
       }
     }),
-    [state]
+    [state, canDesktop]
   )
 
   // The set the sidebar + routes consume (installed && active, or core).
@@ -97,9 +100,9 @@ export function PluginProvider({ children }) {
   const isActive = useCallback(
     (id) => {
       const m = BUILTIN_PLUGINS.find(p => p.id === id)
-      return m ? effectiveActive(m, state) : false
+      return m ? effectiveActive(m, state, canDesktop) : false
     },
-    [state]
+    [state, canDesktop]
   )
   const isInstalled = useCallback(
     (id) => {

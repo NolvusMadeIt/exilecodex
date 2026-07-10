@@ -47,6 +47,12 @@ const DEFAULTS = {
   pluginSettings: {},
   // Market plugins (Market Companion / Spot Price Check) shared state: chosen league + base currency.
   market: { league: null, base: 'exalted' },
+  // --- Developer mode (hidden; unlocked by a secret gesture — see SettingsPage) ---
+  devUnlocked: false,                  // whether the Developer section is revealed in Settings
+  devMode: false,                      // when on: web sees desktop-only plugins (bypasses the gate)
+  // Last local modification time (epoch ms) — used so the cloud pull never clobbers a setting
+  // this device changed more recently (fixes settings silently resetting).
+  _updatedAt: 0,
 }
 
 // Bundled font stacks for the fontFamily pref.
@@ -119,7 +125,13 @@ export function PrefsProvider({ children }) {
     supabase.rpc('get_app_settings', { p_client_id: clientId() })
       .then(({ data, error }) => {
         if (!alive || error || !data || typeof data !== 'object') return
-        setPrefs(p => ({ ...p, ...migrateExile(data) }))
+        setPrefs(p => {
+          const incoming = migrateExile(data)
+          // Last-write-wins: never let a stale cloud row overwrite settings this device changed
+          // more recently (previously the pull always won, resetting fresh local choices).
+          if ((incoming._updatedAt || 0) < (p._updatedAt || 0)) return p
+          return { ...p, ...incoming }
+        })
       })
       .catch(() => {})
     return () => { alive = false }
@@ -133,7 +145,9 @@ export function PrefsProvider({ children }) {
   }, [prefs])
 
   const update = useCallback((patch) => {
-    setPrefs(p => ({ ...p, ...(typeof patch === 'function' ? patch(p) : patch) }))
+    // Stamp every explicit change so the cloud pull can tell "this device just set it" from
+    // "this is an older row" (see the get_app_settings merge above).
+    setPrefs(p => ({ ...p, ...(typeof patch === 'function' ? patch(p) : patch), _updatedAt: Date.now() }))
   }, [])
 
   return <PrefsCtx.Provider value={{ prefs, update }}>{children}</PrefsCtx.Provider>

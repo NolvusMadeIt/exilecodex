@@ -31,12 +31,12 @@ export function TopBar({ onToggleNav }) {
       </button>
 
       {/* Brand — icon + gold wordmark, doubles as the home button */}
-      <button onClick={() => navigate('/presets')} className="flex items-center gap-2 group shrink-0" aria-label="Exile Codex — home" title="Exile Codex — home">
+      <button onClick={() => navigate('/presets')} className="flex items-center gap-2.5 group shrink-0" aria-label="Exile Codex — home" title="Exile Codex — home">
         <img src="/128.png" alt="Exile Codex" draggable={false}
-          className="h-8 w-8 object-contain transition-transform group-hover:scale-105"
+          className="h-10 w-10 object-contain transition-transform group-hover:scale-105"
           style={{ filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.55))' }} />
-        <img src="/wordmark.png" alt="" draggable={false}
-          className="hidden sm:block h-[22px] w-auto object-contain opacity-95 group-hover:opacity-100" />
+        <img src="/wordmark.png" alt="Exile Codex" draggable={false}
+          className="hidden sm:block h-[34px] w-auto object-contain group-hover:brightness-110" />
       </button>
 
       {/* Active filter selector — only while working in the Filter Studio */}

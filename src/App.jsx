@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { FilterProvider } from './store/FilterStore.jsx'
-import { PrefsProvider } from './store/Prefs.jsx'
+import { PrefsProvider, usePrefs } from './store/Prefs.jsx'
 import { GameInfoProvider } from './store/GameInfo.jsx'
 import { ToastProvider } from './store/Toast.jsx'
 import { PluginProvider, usePlugins, usePluginHost } from './store/Plugins.jsx'
@@ -64,11 +64,14 @@ function DesktopOnly({ plugin }) {
 function Routes() {
   const { path } = useRouter()
   const { enabledPlugins, plugins } = usePlugins()
+  const { prefs } = usePrefs()
+  // Developer mode lets the web build run desktop-only plugins (owner-only; see Settings).
+  const canDesktop = IS_DESKTOP || !!prefs.devMode
 
   // Plugin-contributed routes win for their own paths — but only while the plugin is enabled.
   const plugin = enabledPlugins.find(p => p.contributes?.route?.path === path)
   if (plugin) {
-    if (plugin.desktopOnly && !IS_DESKTOP) return <DesktopOnly plugin={plugin} />
+    if (plugin.desktopOnly && !canDesktop) return <DesktopOnly plugin={plugin} />
     const route = plugin.contributes.route
     const C = route.component
     return route.host ? <HostBoundary pluginId={plugin.id} Comp={C} /> : <C />
@@ -76,7 +79,7 @@ function Routes() {
   // A desktop-only plugin reached on the web (it's off / not activated here) → show its preview gate
   // rather than a 404, so the page still sells the desktop app.
   const knownPlugin = plugins.find(p => p.contributes?.route?.path === path)
-  if (knownPlugin?.desktopOnly && !IS_DESKTOP) return <DesktopOnly plugin={knownPlugin} />
+  if (knownPlugin?.desktopOnly && !canDesktop) return <DesktopOnly plugin={knownPlugin} />
 
   switch (path) {
     case '/':
