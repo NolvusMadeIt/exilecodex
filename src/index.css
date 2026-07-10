@@ -8,9 +8,37 @@
 /* Themes — RGB triplets (no rgb() wrapper) so Tailwind utilities + MUI overrides can
    apply opacity. Default = exile (the in-game window look); ember/abyss/arcane remain
    selectable in Settings. */
+/* A font by Jos Buivenga (exljbris) -> www.exljbris.com — Fontin, the typeface Path of Exile
+   itself uses. Free for commercial use; font-face embedding permitted with this notice
+   (see ATTRIBUTION.md). Served locally: no third-party font hosts. */
+@font-face {
+  font-family: 'Fontin SmallCaps';
+  src: url('/assets/fonts/fontin/fontin-smallcaps.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Fontin';
+  src: url('/assets/fonts/fontin/fontin-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Fontin';
+  src: url('/assets/fonts/fontin/fontin-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Default app font; overridden at runtime by Settings → Typography (see Prefs.jsx). */
   --app-font: 'Inter Tight', system-ui, sans-serif;
+  /* Display voice — headings, section labels, window titles. The game's own smallcaps face;
+     deliberately NOT user-switchable (it's the brand voice, body text is the preference). */
+  --display-font: 'Fontin SmallCaps', 'Fontin', var(--app-font);
 }
 
 /* Exile — dark warm stone, worn-parchment text, muted gold trim. Original palette for the
@@ -110,15 +138,15 @@ body {
   /* Shared page container — wide but capped so it's never too wide or too skinny. */
   .app-shell { @apply mx-auto w-full px-4; max-width: 1680px; }
 
-  /* Headings now use Sora (modern), not the medieval smallcaps. */
-  .heading { font-family: var(--app-font); color: rgb(var(--c-heading)); font-weight: 600; letter-spacing: -0.01em; }
-  .gold-heading { font-family: var(--app-font); color: rgb(var(--c-accent)); font-weight: 600; letter-spacing: -0.01em; }
+  /* Headings speak in the game's own smallcaps (Fontin) — body text stays the reading font. */
+  .heading { font-family: var(--display-font); color: rgb(var(--c-heading)); font-weight: 400; letter-spacing: 0.015em; }
+  .gold-heading { font-family: var(--display-font); color: rgb(var(--c-accent)); font-weight: 400; letter-spacing: 0.015em; }
 
   /* Section label + trailing hairline (replaces the fantasy gradient bar). */
   .section-bar {
-    @apply relative flex items-center gap-3 py-1.5 my-2 text-[12.5px];
-    font-family: var(--app-font);
-    color: rgb(var(--c-accent)); font-weight: 600; letter-spacing: 0.02em;
+    @apply relative flex items-center gap-3 py-1.5 my-2 text-[13.5px];
+    font-family: var(--display-font);
+    color: rgb(var(--c-accent)); font-weight: 400; letter-spacing: 0.04em;
   }
   .section-bar::after {
     content: ''; @apply flex-1 h-px;
@@ -156,7 +184,10 @@ body {
   }
   .poe-frame-head {
     @apply relative flex h-[32px] items-center justify-between gap-2 px-3 select-none;
-    /* The game's window title-bar band (3-slice: caps via pseudo-elements, stretched middle). */
+    /* The game's window title-bar band (3-slice: caps via pseudo-elements, stretched middle),
+       titled in the game's smallcaps face. */
+    font-family: var(--display-font);
+    letter-spacing: 0.03em;
     background: var(--ui-head-bg, url('/assets/ui/windowtitlebarmiddle.webp'));
     background-size: auto 100%;
     background-repeat: repeat-x;
@@ -200,8 +231,11 @@ body {
   /* The game's own button (PoeButton) — 3-slice sprites (see ATTRIBUTION.md), three states.
      Caps ride on pseudo-elements; the middle stretches under the label. */
   .poe-btn {
-    @apply relative inline-flex h-[34px] cursor-pointer select-none items-center justify-center gap-1.5 whitespace-nowrap px-4 text-[12.5px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40;
-    font-family: var(--app-font);
+    @apply relative inline-flex h-[34px] cursor-pointer select-none items-center justify-center gap-1.5 whitespace-nowrap px-4 text-[13px] transition-colors disabled:cursor-not-allowed disabled:opacity-40;
+    /* Game buttons speak smallcaps, weight 400 — Fontin has no bold-smallcaps, and faux bold smears. */
+    font-family: var(--display-font);
+    font-weight: 400;
+    letter-spacing: 0.03em;
     color: rgb(var(--c-text-bright));
     background: url('/assets/ui/buttongenericnormalmiddle.webp');
     background-size: auto 100%;

@@ -34,6 +34,16 @@ fan-made tool, not affiliated with or endorsed by Grinding Gear Games.
 - Item, currency and skill images are loaded from Grinding Gear Games' public CDN
   (`web.poecdn.com`) or cached locally from it.
 
+## Typography
+
+Headings and window titles are set in **Fontin / Fontin SmallCaps** by
+[Jos Buivenga (exljbris Font Foundry)](https://www.exljbris.com) — the typeface Path of Exile
+itself uses. The fonts are free for commercial use and are embedded via `@font-face` under the
+[exljbris free-font license](https://www.exljbris.com/eula.html), with the required notice in
+`src/index.css`. The font files under `public/assets/fonts/` are © Jos Buivenga, are **not**
+part of this project's GPL-licensed work, and would be removed promptly on the foundry's
+request. Body text is [Inter Tight](https://github.com/googlefonts/inter) (OFL, via @fontsource).
+
 ## Data sources
 
 - **poe2scout** — economy and price data (Market plugin)

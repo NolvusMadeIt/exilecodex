@@ -44,8 +44,9 @@ export default {
         },
       },
       fontFamily: {
-        // App font is a CSS var so it can be switched at runtime (Settings → Typography).
-        display: ['var(--app-font)'],
+        // Body font is a CSS var so it can be switched at runtime (Settings → Typography);
+        // the display face (Fontin smallcaps — the game's own) is fixed brand voice.
+        display: ['var(--display-font)'],
         body: ['var(--app-font)'],
         mono: ['Consolas', 'ui-monospace', 'monospace'],
       },
