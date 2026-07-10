@@ -214,7 +214,7 @@ export function GlossaryPanel() {
                   key={e.slug}
                   onClick={() => open(e.slug)}
                   className={`block w-full truncate px-2.5 py-[5px] text-left text-[12.5px] transition-colors hover:bg-white/[0.04] ${
-                    selected?.slug === e.slug ? 'bg-poe-gold/10 text-poe-gold' : 'text-poe-text'
+                    selected?.slug === e.slug ? 'bg-white/[0.06] text-poe-gold' : 'text-poe-text'
                   }`}
                 >
                   {e.name}

@@ -154,7 +154,7 @@ export function XileModifiersPage() {
           <input id="ilvl-max" type="number" min="1" max="100" placeholder="max" className="field h-8 w-16" onInput={refilterDebounced} />
         </span>
         {pastedItem ? (
-          <span className="inline-flex items-center gap-1.5 rounded border border-poe-gold/40 bg-poe-gold/10 px-2 py-1 text-[11.5px] text-poe-gold">
+          <span className="inline-flex items-center gap-1.5 rounded border border-poe-gold/40 bg-white/[0.06] px-2 py-1 text-[11.5px] text-poe-gold">
             {pastedItem.name || pastedItem.baseType || 'Pasted item'}
             <button type="button" onClick={clearPastedItem} title="Stop analyzing this item" className="hover:text-poe-heading">
               <X size={11} />

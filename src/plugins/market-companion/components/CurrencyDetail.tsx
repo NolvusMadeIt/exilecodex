@@ -119,7 +119,7 @@ export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
               ? "text-emerald-300 border-emerald-700/50 bg-emerald-900/20"
               : signal.action === "sell"
                 ? "text-red-300 border-red-800/50 bg-red-900/20"
-                : "text-poe-gold border-poe-gold/40 bg-poe-gold/10"
+                : "text-poe-gold border-poe-gold/40 bg-white/[0.06]"
           }`}
         >
           {signal.action === "buy" ? "▲" : signal.action === "sell" ? "▼" : "●"} {signal.label}
@@ -137,7 +137,7 @@ export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
               setAbout(false);
             }}
             className={`tabular-nums px-2.5 py-1 text-xs rounded transition-colors ${
-              tf === t && !about ? "bg-poe-gold/15 text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"
+              tf === t && !about ? "bg-white/[0.06] text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"
             }`}
           >
             {t}
@@ -147,7 +147,7 @@ export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
           onClick={() => setAbout((v) => !v)}
           title="What this currency does — live from the PoE2 Wiki"
           className={`px-2.5 py-1 text-xs rounded transition-colors ${
-            about ? "bg-poe-gold/15 text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"
+            about ? "bg-white/[0.06] text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"
           }`}
         >
           ⓘ About

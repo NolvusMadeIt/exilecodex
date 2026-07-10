@@ -64,7 +64,6 @@ export const muiTheme = createTheme({
           props: { variant: 'contained', color: 'primary' },
           style: {
             color: V('--c-accent-light'),
-            textShadow: `0 0 8px ${V('--c-accent', '0.55')}, 0 1px 2px rgb(0 0 0 / 0.85)`,
             '&:hover': { color: V('--c-accent-light'), filter: 'brightness(1.08)' },
           },
         },
@@ -108,7 +107,7 @@ export const muiTheme = createTheme({
     },
     MuiIconButton: {
       styleOverrides: {
-        root: { color: V('--c-text'), '&:hover': { color: V('--c-accent'), backgroundColor: V('--c-accent', '0.08') } },
+        root: { color: V('--c-text'), '&:hover': { color: V('--c-accent'), backgroundColor: 'rgb(255 250 240 / 0.05)' } },
       },
     },
     MuiTooltip: {

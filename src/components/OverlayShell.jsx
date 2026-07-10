@@ -62,7 +62,7 @@ export function OverlayShell({ pluginId }) {
                 onClick={() => select(tab.id)}
                 className={`shrink-0 rounded-t-[3px] px-2.5 py-1 text-[11px] uppercase tracking-[0.08em] transition-colors ${
                   tab.id === activeId
-                    ? 'bg-poe-gold/15 text-poe-gold shadow-[inset_0_1px_0_rgb(var(--c-accent-light)/0.25)]'
+                    ? 'bg-white/[0.06] text-poe-gold'
                     : 'text-poe-text/60 hover:text-poe-text-bright'
                 }`}
               >

@@ -123,7 +123,7 @@ const GUIDE = [
     visual: (
       <div className="panel p-2 w-full max-w-[340px]">
         <div className="flex flex-wrap items-center gap-1">
-          <span className="px-2 h-7 grid place-items-center rounded bg-poe-steel/80 text-white text-[11px]">Show</span>
+          <span className="px-2 h-7 grid place-items-center rounded border border-poe-line bg-white/[0.06] text-poe-text-bright text-[11px]">Show</span>
           <MockField w={90}>Rings</MockField>
           <MockField w={90}>All Items</MockField>
           <MockField w={70}>≥ Rare</MockField>
@@ -215,7 +215,7 @@ export function GuidePage() {
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(280px,360px)] gap-4 items-center">
                 <div>
                   <div className="flex items-center gap-2.5 mb-2">
-                    <span className="w-8 h-8 grid place-items-center rounded bg-poe-gold/10 border border-poe-gold-dim/50 text-poe-gold shrink-0">
+                    <span className="w-8 h-8 grid place-items-center rounded bg-white/[0.06] border border-poe-gold-dim/50 text-poe-gold shrink-0">
                       <Icon size={16} />
                     </span>
                     <div>

@@ -62,8 +62,8 @@ export function TopBar({ onToggleNav }) {
           <IconButton onClick={() => setLegendOpen(true)} size="small" aria-label="Filter legend"
             sx={{
               borderRadius: '3px', color: 'rgb(var(--c-accent))',
-              border: '1px solid rgb(var(--c-accent-dim) / 0.6)', backgroundColor: 'rgb(var(--c-accent) / 0.10)',
-              '&:hover': { backgroundColor: 'rgb(var(--c-accent) / 0.18)', color: 'rgb(var(--c-accent))' },
+              border: '1px solid rgb(var(--c-line))', backgroundColor: 'transparent',
+              '&:hover': { backgroundColor: 'rgb(255 250 240 / 0.05)', borderColor: 'rgb(var(--c-accent-dim) / 0.6)', color: 'rgb(var(--c-accent))' },
             }}>
             <HelpCircle size={15} />
           </IconButton>

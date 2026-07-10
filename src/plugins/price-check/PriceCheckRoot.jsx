@@ -562,7 +562,7 @@ export function PriceCheckRoot({ compact = false }) {
                 <Dropdown value={currency} onChange={setCurrency} options={currencyOpts} />
                 <Dropdown value={saleType} onChange={setSaleType} options={SALE_OPTS} />
                 <Dropdown value={listedWithin} onChange={setListedWithin} options={TIME_OPTS} />
-                <button onClick={checkPrice} disabled={checking} className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-poe-gold border border-poe-gold/50 hover:bg-poe-gold/10 disabled:opacity-50 px-3 py-1.5" style={{ borderRadius: 2 }}>
+                <button onClick={checkPrice} disabled={checking} className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-poe-gold border border-poe-gold/50 hover:bg-white/[0.06] disabled:opacity-50 px-3 py-1.5" style={{ borderRadius: 2 }}>
                   <Search size={14} /> {checking ? 'Checking…' : 'Check sell price'}
                 </button>
               </div>

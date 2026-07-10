@@ -37,7 +37,7 @@ export default function CurrencyRow({
       <tr
         onClick={onClick}
         className={`group cursor-pointer border-b border-poe-line/50 transition-colors ${
-          selected ? "bg-poe-gold/10" : "hover:bg-white/5"
+          selected ? "bg-white/[0.06]" : "hover:bg-white/5"
         }`}
       >
         <td className="py-2 pl-3">
@@ -163,7 +163,7 @@ function AlertEditor({
           <button
             key={d}
             onClick={() => setDir(d)}
-            className={`px-2 py-1 ${dir === d ? "bg-poe-gold/20 text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"}`}
+            className={`px-2 py-1 ${dir === d ? "bg-white/[0.08] text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"}`}
           >
             {d === "above" ? "≥" : "≤"} {d}
           </button>
@@ -182,7 +182,7 @@ function AlertEditor({
           const v = parseFloat(value);
           if (!Number.isNaN(v) && v > 0) onSave(v, dir);
         }}
-        className="rounded border border-poe-gold/60 bg-poe-gold/15 px-3 py-1 text-poe-gold hover:bg-poe-gold/25"
+        className="rounded border border-poe-gold/60 bg-white/[0.06] px-3 py-1 text-poe-gold hover:bg-white/[0.10]"
       >
         Save
       </button>

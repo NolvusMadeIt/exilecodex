@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { CHANGELOG } from '../data/changelog.js'
 
 const TAG_COLORS = {
-  Release: 'bg-poe-gold/15 text-poe-gold border-poe-gold-dim/60',
+  Release: 'bg-white/[0.06] text-poe-gold border-poe-gold-dim/60',
   Imports: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/40',
   Foundation: 'bg-sky-500/10 text-sky-300 border-sky-500/40',
   Fix: 'bg-rose-500/10 text-rose-300 border-rose-500/40',
@@ -28,7 +28,7 @@ export function ChangelogPage() {
           <button
             key={t}
             onClick={() => setTag(t)}
-            className={`px-2.5 h-7 text-[11.5px] rounded-full border ${tag === t ? 'border-poe-gold text-poe-gold bg-poe-gold/10' : 'border-poe-line text-poe-text hover:border-poe-gold-dim hover:text-poe-text-bright'}`}
+            className={`px-2.5 h-7 text-[11.5px] rounded-full border ${tag === t ? 'border-poe-gold text-poe-gold bg-white/[0.06]' : 'border-poe-line text-poe-text hover:border-poe-gold-dim hover:text-poe-text-bright'}`}
           >
             {t}
           </button>

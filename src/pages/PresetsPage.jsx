@@ -110,15 +110,15 @@ export function PresetsPage() {
                 title={s.blurb}
                 className={`relative group rounded border text-left p-2.5 h-full flex flex-col transition-colors ${on ? 'border-poe-gold shadow-glow bg-white/[0.04]' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
                 <div className="flex items-center justify-between">
-                  <span className={`grid place-items-center w-7 h-7 rounded font-smallcaps text-[15px] ${on ? 'bg-poe-gold text-black' : 'bg-black/50 text-poe-gold-dim border border-poe-line'}`}>{s.n}</span>
-                  {s.recommended && <span className="text-[9px] uppercase tracking-wide bg-poe-gold/90 text-black px-1 rounded-sm">Rec</span>}
+                  <span className={`grid place-items-center w-7 h-7 rounded font-smallcaps text-[15px] border ${on ? 'border-poe-gold text-poe-gold bg-white/[0.05]' : 'border-poe-line bg-black/50 text-poe-gold-dim'}`}>{s.n}</span>
+                  {s.recommended && <span className="text-[9px] uppercase tracking-wide border border-poe-gold-dim/60 text-poe-gold px-1 rounded-sm">Rec</span>}
                   {on && !s.recommended && <Check size={14} className="text-poe-gold" />}
                 </div>
                 <div className="heading text-[13px] mt-1.5 leading-tight">{s.name}</div>
                 {/* strictness meter */}
                 <div className="flex gap-0.5 mt-1.5">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <span key={i} className={`h-1 flex-1 rounded-sm ${i < s.n ? (on ? 'bg-poe-gold' : 'bg-poe-gold-dim') : 'bg-poe-line'}`} />
+                    <span key={i} className={`h-1 flex-1 rounded-sm ${i < s.n ? 'bg-poe-gold-dim' : 'bg-poe-line'}`} />
                   ))}
                 </div>
                 {/* live consequence preview — struck rows are what this level hides */}

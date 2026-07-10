@@ -24,7 +24,7 @@ export function UpdateBanner() {
   return (
     <div className="fixed bottom-4 left-4 z-[300] w-[330px] panel p-3.5 update-rise" role="alert">
       <div className="flex items-start gap-2.5">
-        <span className="mt-0.5 w-8 h-8 grid place-items-center rounded-lg bg-poe-gold/10 border border-poe-gold-dim/50 text-poe-gold shrink-0">
+        <span className="mt-0.5 w-8 h-8 grid place-items-center rounded-lg bg-white/[0.06] border border-poe-gold-dim/50 text-poe-gold shrink-0">
           <Download size={16} />
         </span>
         <div className="flex-1 min-w-0">

@@ -53,7 +53,7 @@ export function PatchNotesPage() {
                 className={`w-full text-left rounded-lg border px-3 py-2 transition-colors ${on ? 'border-poe-gold shadow-glow bg-white/[0.04]' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
                 <div className="flex items-center gap-2">
                   <span className={`font-mono text-[14px] ${on ? 'text-poe-gold' : 'text-poe-text-bright'}`}>{p.version}</span>
-                  {p.current && <span className="text-[9px] uppercase tracking-wide bg-poe-gold/90 text-black px-1 rounded-sm">Current</span>}
+                  {p.current && <span className="text-[9px] uppercase tracking-wide border border-poe-gold-dim/60 text-poe-gold px-1 rounded-sm">Current</span>}
                   {p.major && !p.current && <span className="text-[9px] uppercase tracking-wide text-poe-gold-dim border border-poe-gold-dim/50 px-1 rounded-sm">Major</span>}
                 </div>
                 <div className="text-[11px] text-poe-text mt-0.5 truncate">{p.codename || p.season || 'Patch'}{p.date ? ` · ${fmtDate(p.date)}` : ''}</div>
@@ -65,12 +65,12 @@ export function PatchNotesPage() {
         {/* detail */}
         <div className="panel p-4 min-h-[300px]">
           <div className="flex items-center gap-2 pb-3 border-b border-poe-line">
-            <span className="w-8 h-8 grid place-items-center rounded-lg bg-poe-gold/10 border border-poe-gold-dim/50 text-poe-gold shrink-0"><ScrollText size={16} /></span>
+            <span className="w-8 h-8 grid place-items-center rounded-lg bg-white/[0.06] border border-poe-gold-dim/50 text-poe-gold shrink-0"><ScrollText size={16} /></span>
             <div>
               <h2 className="gold-heading text-[19px] leading-tight">Patch {patch.version}{patch.codename ? ` — ${patch.codename}` : ''}</h2>
               <p className="text-[11.5px] text-poe-text">{patch.season && !patch.codename ? `${patch.season} season` : 'Path of Exile 2'}{patch.date ? ` · ${fmtDate(patch.date)}` : ''}</p>
             </div>
-            {patch.current && <span className="ml-auto text-[10px] uppercase tracking-wide bg-poe-gold/90 text-black px-1.5 py-0.5 rounded-sm self-start">Current</span>}
+            {patch.current && <span className="ml-auto text-[10px] uppercase tracking-wide border border-poe-gold-dim/60 text-poe-gold px-1.5 py-0.5 rounded-sm self-start">Current</span>}
           </div>
 
           {/* notes body */}

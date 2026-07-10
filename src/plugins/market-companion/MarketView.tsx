@@ -126,7 +126,7 @@ export default function MarketView() {
           <button
             key={b.id}
             onClick={() => setBase(b.id)}
-            className={`px-2.5 py-1 text-sm ${base === b.id ? "bg-poe-gold/20 text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"}`}
+            className={`px-2.5 py-1 text-sm ${base === b.id ? "bg-white/[0.08] text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"}`}
           >
             {b.label}
           </button>
@@ -182,7 +182,7 @@ export default function MarketView() {
                 onClick={() => changeCategory(c.apiId)}
                 className={`shrink-0 rounded px-2.5 py-1 text-[11px] uppercase tracking-wide transition-colors ${
                   c.apiId === category
-                    ? "bg-poe-gold/15 text-poe-gold"
+                    ? "bg-white/[0.06] text-poe-gold"
                     : "text-poe-text/60 hover:bg-white/5 hover:text-poe-gold"
                 }`}
               >

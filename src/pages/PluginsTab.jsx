@@ -66,7 +66,7 @@ function IconTile({ p, size = 18, big = false }) {
   const Icon = p.icon || Puzzle
   return (
     <span
-      className={`grid place-items-center bg-poe-gold/10 border border-poe-gold-dim/50 text-poe-gold shrink-0 ${big ? 'w-12 h-12' : 'w-10 h-10'}`}
+      className={`grid place-items-center bg-white/[0.06] border border-poe-gold-dim/50 text-poe-gold shrink-0 ${big ? 'w-12 h-12' : 'w-10 h-10'}`}
       style={SHARP}>
       <Icon size={big ? 22 : size} />
     </span>
@@ -122,7 +122,7 @@ function CardCover({ p }) {
   }
   const Icon = p.icon || Puzzle
   return (
-    <div className="w-full aspect-video grid place-items-center bg-poe-gold/5 border-b border-poe-line text-poe-gold/70" style={{ borderTopLeftRadius: 2, borderTopRightRadius: 2 }}>
+    <div className="w-full aspect-video grid place-items-center bg-white/[0.04] border-b border-poe-line text-poe-gold/70" style={{ borderTopLeftRadius: 2, borderTopRightRadius: 2 }}>
       <Icon size={40} />
     </div>
   )
@@ -330,7 +330,7 @@ function InstalledRow({ p, onOpen, onOpenSettings }) {
 
   return (
     <div
-      className={`panel p-3 ${p.active ? 'border-l-2 border-l-poe-gold bg-poe-gold/[0.04]' : ''}`}
+      className={`panel p-3 ${p.active ? 'border-l-2 border-l-poe-gold bg-white/[0.05]' : ''}`}
       style={SHARP}>
       {/* Update notice strip */}
       {p.hasUpdate && (

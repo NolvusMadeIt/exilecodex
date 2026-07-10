@@ -191,7 +191,7 @@ export function SharedFiltersPage() {
           <div className="mb-3">
             <div
               onClick={() => fileRef.current?.click()}
-              className={`rounded border border-dashed p-3 text-center cursor-pointer transition-colors ${dragOver ? 'border-poe-gold bg-poe-gold/5' : 'border-poe-line hover:border-poe-text/40'}`}>
+              className={`rounded border border-dashed p-3 text-center cursor-pointer transition-colors ${dragOver ? 'border-poe-gold bg-white/[0.04]' : 'border-poe-line hover:border-poe-text/40'}`}>
               <div className="flex items-center justify-center gap-2 text-[12px] text-poe-text-bright">
                 <Upload size={14} className="text-poe-gold" /> Drag &amp; drop a <code className="font-mono">.filter</code> file here, or click to browse
               </div>

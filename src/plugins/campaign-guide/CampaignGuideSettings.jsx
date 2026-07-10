@@ -106,7 +106,7 @@ export function CampaignGuideSettings() {
         {desktop ? (
           <div className="flex items-center gap-3 mt-3 flex-wrap">
             <button onClick={() => { setCg({ displayMode: 'overlay' }); overlay?.open(OVERLAY_PLUGIN) }}
-              className="inline-flex items-center gap-1.5 text-[12px] font-medium text-poe-gold border border-poe-gold/50 hover:bg-poe-gold/10 px-3 py-1.5" style={{ borderRadius: 2 }}>
+              className="inline-flex items-center gap-1.5 text-[12px] font-medium text-poe-gold border border-poe-gold/50 hover:bg-white/[0.06] px-3 py-1.5" style={{ borderRadius: 2 }}>
               <ExternalLink size={13} /> Pop out now
             </button>
             <button onClick={() => overlay?.close()} className="text-[12px] text-poe-text/60 hover:text-poe-gold/80">Close overlay</button>

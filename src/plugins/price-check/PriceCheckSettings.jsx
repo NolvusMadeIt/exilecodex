@@ -107,7 +107,7 @@ export function PriceCheckSettings() {
         {isDesktop && window.nolvusTrade?.login && (
           <div className="mt-2.5">
             <button onClick={doLogin}
-              className="text-[12.5px] font-semibold text-poe-gold border border-poe-gold/60 hover:bg-poe-gold/10 px-3 py-1.5" style={{ borderRadius: 2 }}>
+              className="text-[12.5px] font-semibold text-poe-gold border border-poe-gold/60 hover:bg-white/[0.06] px-3 py-1.5" style={{ borderRadius: 2 }}>
               {loggedIn ? '✓ Logged in — re-run your price check' : 'Log in to Path of Exile  ·  recommended'}
             </button>
             <p className="text-[11px] text-poe-text/55 mt-1 max-w-[480px]">
@@ -164,7 +164,7 @@ export function PriceCheckSettings() {
         {isDesktop && overlay?.open && (
           <div className="flex items-center gap-3 mt-3 flex-wrap">
             <button onClick={() => setMode('overlay')}
-              className="inline-flex items-center gap-1.5 text-[12px] font-medium text-poe-gold border border-poe-gold/50 hover:bg-poe-gold/10 px-3 py-1.5" style={{ borderRadius: 2 }}>
+              className="inline-flex items-center gap-1.5 text-[12px] font-medium text-poe-gold border border-poe-gold/50 hover:bg-white/[0.06] px-3 py-1.5" style={{ borderRadius: 2 }}>
               Pop out now
             </button>
             <button onClick={() => overlay.close()} className="text-[12px] text-poe-text/60 hover:text-poe-gold/80">Close overlay</button>

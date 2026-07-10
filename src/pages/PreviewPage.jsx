@@ -123,7 +123,7 @@ function DropTester({ blocks }) {
   return (
     <div className="panel p-4 space-y-3">
       <div className="flex items-center gap-2">
-        <span className="w-7 h-7 grid place-items-center rounded bg-poe-gold/10 border border-poe-gold-dim/50 text-poe-gold"><FlaskConical size={15} /></span>
+        <span className="w-7 h-7 grid place-items-center rounded bg-white/[0.06] border border-poe-gold-dim/50 text-poe-gold"><FlaskConical size={15} /></span>
         <div>
           <div className="gold-heading text-[15px]">Will this drop show?</div>
           <div className="text-[11.5px] text-poe-text">Paste a real item and see exactly what your filter does with it — before you ever load the game.</div>

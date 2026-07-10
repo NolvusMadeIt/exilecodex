@@ -222,7 +222,7 @@ function RouteList({ steps, liveZoneNorm, srDone, setCg, showOptional, dense }) 
         const done = !!srDone[s.id]
         const showChip = s.reward && (s.chip === 'upgrade' || (showOptional && s.chip === 'loot'))
         return (
-          <li key={s.id} className={`flex items-start gap-2 px-3 py-1.5 text-[13px] ${i > 0 ? 'border-t border-poe-line/60' : ''} ${here ? 'bg-poe-gold/10' : ''}`}>
+          <li key={s.id} className={`flex items-start gap-2 px-3 py-1.5 text-[13px] ${i > 0 ? 'border-t border-poe-line/60' : ''} ${here ? 'bg-white/[0.06]' : ''}`}>
             <input type="checkbox" checked={done} onChange={() => setCg({ srDone: { ...srDone, [s.id]: !done } })}
               style={{ accentColor: 'rgb(var(--c-accent))', width: 13, height: 13 }} className="mt-[3px] shrink-0" />
             <span className="flex-1 min-w-0">

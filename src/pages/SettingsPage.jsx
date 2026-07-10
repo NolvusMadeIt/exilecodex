@@ -47,7 +47,7 @@ export function SettingsPage() {
           return (
             <button key={id} onClick={() => setTab(id)}
               className={`px-6 h-10 text-[14px] font-display tracking-wide rounded-t border border-b-0 transition-colors ${on
-                ? 'border-poe-line bg-poe-panel-light text-poe-gold shadow-[inset_0_1px_0_rgb(var(--c-accent)/0.35)]'
+                ? 'border-poe-line bg-poe-panel-light text-poe-gold'
                 : 'border-poe-line/60 bg-black/40 text-poe-text/80 hover:text-poe-heading hover:bg-black/25'}`}>
               {t(label)}
             </button>
@@ -97,7 +97,7 @@ export function SettingsPage() {
                 <div className="flex items-center gap-2">
                   <span className="inline-block w-4 h-4 rounded-full border border-white/10" style={{ background: t.swatch }} />
                   <span className="heading text-[15px]" style={{ color: t.swatch }}>{t.name}</span>
-                  {on && <span className="ml-auto text-[10px] bg-poe-gold/90 text-black px-1 rounded-sm font-smallcaps">SELECTED</span>}
+                  {on && <span className="ml-auto text-[10px] border border-poe-gold-dim/60 text-poe-gold px-1 rounded-sm font-smallcaps">SELECTED</span>}
                 </div>
                 <p className="text-[11.5px] mt-1.5" style={{ color: t.text }}>{t.desc}</p>
               </button>

@@ -62,7 +62,7 @@ export function MarketSettings() {
         <button
           onClick={() => setSoundEnabled(!soundEnabled)}
           className={`relative h-5 w-10 rounded-full border transition-colors ${
-            soundEnabled ? "border-poe-gold/60 bg-poe-gold/30" : "border-poe-line bg-black/40"
+            soundEnabled ? "border-poe-gold/60 bg-white/[0.10]" : "border-poe-line bg-black/40"
           }`}
           title={soundEnabled ? "On" : "Off"}
         >

@@ -18,7 +18,7 @@ const HEIGHT_LABEL = { compact: 'S', comfortable: 'M', tall: 'L' }
 function TBtn({ on, onClick, title, children }) {
   return (
     <button onClick={onClick} title={title}
-      className={`inline-flex items-center gap-1 h-7 px-2 rounded border text-[11.5px] ${on ? 'border-poe-gold text-poe-heading bg-poe-gold/10' : 'border-poe-line text-poe-text hover:border-poe-gold-dim/60 hover:text-poe-text-bright'}`}>
+      className={`inline-flex items-center gap-1 h-7 px-2 rounded border text-[11.5px] ${on ? 'border-poe-gold text-poe-heading bg-white/[0.06]' : 'border-poe-line text-poe-text hover:border-poe-gold-dim/60 hover:text-poe-text-bright'}`}>
       {children}
     </button>
   )
@@ -98,7 +98,7 @@ export function EditorPage() {
 
   const toolbar = (
     <div className="flex items-center flex-wrap gap-1.5 panel px-2.5 py-1.5">
-      <span className={`inline-flex items-center gap-1 h-6 px-2 rounded text-[10.5px] font-medium ${isManual ? 'bg-poe-gold/15 text-poe-gold' : 'bg-white/5 text-poe-text'}`}>
+      <span className={`inline-flex items-center gap-1 h-6 px-2 rounded text-[10.5px] font-medium ${isManual ? 'bg-white/[0.06] text-poe-gold' : 'bg-white/5 text-poe-text'}`}>
         {isManual ? <><Sparkles size={11} /> Manual</> : <><Code2 size={11} /> Live</>}
       </span>
       <span className="mx-1 w-px h-5 bg-poe-line" />

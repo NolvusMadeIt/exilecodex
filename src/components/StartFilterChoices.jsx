@@ -143,7 +143,7 @@ export function StartFilterChoices({ mode = 'create', onDone, onPreset, showPres
 function Card({ art, title, desc, onClick, drag, onDragOver, onDragLeave, onDrop }) {
   return (
     <button onClick={onClick} onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}
-      className={`group text-left rounded border p-2.5 h-full flex flex-col transition-colors bg-black ${drag ? 'border-poe-gold bg-poe-gold/5' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
+      className={`group text-left rounded border p-2.5 h-full flex flex-col transition-colors bg-black ${drag ? 'border-poe-gold bg-white/[0.04]' : 'border-poe-line hover:border-poe-gold-dim hover:bg-[#1a1a1c]'}`}>
       <div className="rounded h-[96px] grid place-items-center text-poe-gold overflow-hidden border border-poe-line/60"
         style={{ background: 'radial-gradient(120% 100% at 50% 0%, rgb(var(--c-accent) / 0.12), transparent 70%), #0b0b0d' }}>
         <div className="w-[88px] h-[70px] opacity-90 transition-transform duration-200 group-hover:scale-105">{art}</div>
