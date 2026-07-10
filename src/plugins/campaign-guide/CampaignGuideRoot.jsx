@@ -1,9 +1,53 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ChevronDown, Check, MapPin, Radio } from 'lucide-react'
+import { ChevronDown, Check, MapPin, Radio, Play, Pause, RotateCcw } from 'lucide-react'
 import { usePrefs } from '../../store/Prefs.jsx'
 import campaign from './data/campaign.json'
 import { CampaignGuideSettings } from './CampaignGuideSettings.jsx'
 import { SpeedrunView } from './SpeedrunView.jsx'
+import { fmtMs } from './useRunTimer.js'
+
+// --- Guide term colouring (the backbone for the poe2way-style cards) -------------------------
+// Colours the meaningful words in a route/objective line: rewards green, waypoints/portals blue,
+// numbers bright, boss names red. Zone names are handled separately (they get a hover-map tooltip).
+const _num = /^\+?\d[\d,]*%?$/
+const _wp = /^(town portal|waypoint|wp|checkpoint|portal)$/i
+const _reward = /(resistance|passive skill|uncut .*gem|maximum (life|mana|energy shield)|spirit|charm slot|memorial key)/i
+const TERM_RE = /(\+?\d[\d,]*%?|Town Portal|waypoint|checkpoint|portal|\bWP\b|(?:Cold |Fire |Lightning |Chaos )?[Rr]esistances?|passive skill points?|Uncut [A-Za-z]+ Gem|maximum (?:Life|Mana|Energy Shield)|Charm Slot|Memorial Key(?: Piece)?|\bSpirit\b)/g
+
+function colorPlain(text, keyBase) {
+  if (!text) return text
+  const out = []
+  let last = 0
+  TERM_RE.lastIndex = 0
+  let m
+  while ((m = TERM_RE.exec(text))) {
+    if (m.index > last) out.push(text.slice(last, m.index))
+    const tok = m[0]
+    let cls = ''
+    if (_num.test(tok)) cls = 'text-poe-text-bright font-semibold'
+    else if (_wp.test(tok)) cls = 'text-sky-400'
+    else if (_reward.test(tok)) cls = 'text-emerald-400'
+    out.push(cls ? <span key={`${keyBase}-${m.index}`} className={cls}>{tok}</span> : tok)
+    last = m.index + tok.length
+  }
+  if (last < text.length) out.push(text.slice(last))
+  return out
+}
+
+// A tiny manual stopwatch (Start / Pause / Reset) for the guide's Play Timer — works on web too,
+// unlike the game-log run timer which only ticks on the desktop app.
+function useStopwatch() {
+  const [ms, setMs] = useState(0)
+  const [running, setRunning] = useState(false)
+  const originRef = useRef(0)
+  useEffect(() => {
+    if (!running) return
+    originRef.current = Date.now() - ms
+    const id = setInterval(() => setMs(Date.now() - originRef.current), 250)
+    return () => clearInterval(id)
+  }, [running]) // eslint-disable-line react-hooks/exhaustive-deps
+  return { ms, running, toggle: () => setRunning((r) => !r), reset: () => { setRunning(false); setMs(0) } }
+}
 
 // Campaign Guide — pick an Act, then a Zone within it. The selected zone shows its layout MAP on the
 // left and its objectives (bosses, quest steps, optional pickups, gem/passive rewards) on the right.
@@ -127,25 +171,26 @@ export function CampaignGuideRoot({ compact = false }) {
   const onKwMove = useCallback((e) => setTip((t) => (t ? { ...t, x: e.clientX, y: e.clientY } : t)), [])
   const onKwLeave = useCallback(() => setTip(null), [])
 
-  // Render a string with every known zone name turned into a hover/click keyword.
+  // Render a string with zone names as hover/click map keywords (blue), and every other
+  // meaningful term coloured to its nature (rewards green, waypoints blue, numbers bright).
   const ZoneText = useCallback(({ text }) => {
     if (!text) return null
-    if (!zoneRe) return text
+    if (!zoneRe) return colorPlain(text, 'p')
     const out = []
     let last = 0
     zoneRe.lastIndex = 0
     let m
     while ((m = zoneRe.exec(text))) {
-      if (m.index > last) out.push(text.slice(last, m.index))
+      if (m.index > last) out.push(...[].concat(colorPlain(text.slice(last, m.index), `p${last}`)))
       const name = m[0]
       out.push(
-        <span key={`${m.index}-${name}`} className="text-poe-gold/90 underline decoration-dotted underline-offset-2 cursor-pointer hover:text-poe-gold"
+        <span key={`${m.index}-${name}`} className="text-sky-400 underline decoration-dotted underline-offset-2 cursor-pointer hover:text-sky-300"
           onMouseEnter={(e) => onKwEnter(name, e)} onMouseMove={onKwMove} onMouseLeave={onKwLeave}
           onClick={() => selectZoneByName(name)}>{name}</span>,
       )
       last = m.index + name.length
     }
-    if (last < text.length) out.push(text.slice(last))
+    if (last < text.length) out.push(...[].concat(colorPlain(text.slice(last), `p${last}`)))
     return out
   }, [zoneRe, onKwEnter, onKwMove, onKwLeave, selectZoneByName])
 
@@ -252,15 +297,24 @@ export function CampaignGuideRoot({ compact = false }) {
   const isVisited = !!visited[`${actId}/${zoneId}`]
   const isHere = !!live?.zone && norm(live.zone) === norm(zone.name)
 
-  // Whole-run progress for the current mode's scope (all acts; alt mode counts required steps only).
-  const progress = useMemo(() => {
-    let total = 0, complete = 0
-    for (const z of ALL_ZONES) {
-      const objs = (z.objectives || []).filter((o) => !hideOptional || !o.optional)
-      objs.forEach((o, i) => { total++; if (done[`${z.actId}/${z.id}/obj/${i}`]) complete++ })
+  // Per-act progress (for the tabs) + whole-run total, for the current mode's scope.
+  const progressByAct = useMemo(() => {
+    const m = {}
+    let gTotal = 0, gComplete = 0
+    for (const a of ACTS) {
+      let total = 0, complete = 0
+      for (const z of (a.zones || [])) {
+        const objs = (z.objectives || []).filter((o) => !hideOptional || !o.optional)
+        objs.forEach((o, i) => { total++; if (done[`${a.id}/${z.id}/obj/${i}`]) complete++ })
+      }
+      m[a.id] = { total, complete, pct: total ? Math.round((complete / total) * 100) : 0 }
+      gTotal += total; gComplete += complete
     }
-    return { total, complete, pct: total ? Math.round((complete / total) * 100) : 0 }
+    m.__all = { total: gTotal, complete: gComplete, pct: gTotal ? Math.round((gComplete / gTotal) * 100) : 0 }
+    return m
   }, [done, hideOptional])
+  const progress = progressByAct.__all
+  const sw = useStopwatch()
 
   return (
     <div className="py-1" onMouseLeave={onKwLeave}>
@@ -288,92 +342,34 @@ export function CampaignGuideRoot({ compact = false }) {
       <>
       <LiveBar desktop={desktop} autoTrack={autoTrack} watch={watch} live={live} actLabel={liveActLabel} />
 
-      {/* Whole-run progress bar (auto-fills as objectives get checked / auto-tracked) */}
-      <div className="mb-3 max-w-[680px]">
-        <div className="flex items-center justify-between text-[11px] mb-1">
-          <span className="text-poe-text/60">Campaign progress</span>
-          <span className="tabular-nums text-poe-text/80">{progress.complete}/{progress.total} · {progress.pct}%</span>
-        </div>
-        <div className="h-2 overflow-hidden border border-poe-line bg-black/40" style={{ borderRadius: 999 }}>
-          <div className="h-full transition-all" style={{ width: `${progress.pct}%`, background: 'rgb(var(--c-accent-dim))', borderRadius: 999 }} />
-        </div>
-      </div>
+      {/* Act tabs (with per-act %) — the poe2way structure */}
+      <ActTabs acts={ACTS} actId={actId} setAct={setAct} progressByAct={progressByAct} />
 
-      {/* Selectors */}
-      <div className="flex flex-wrap items-center gap-2 mb-3">
-        <Dropdown value={actId} onChange={setAct} options={actOptions} />
-        {zoneOptions.length > 0 && <Dropdown value={zoneId} onChange={setZone} options={zoneOptions} maxW={260} />}
-      </div>
-
-      {/* Map (left) + objectives (right). In compact/overlay mode the big map panel is hidden — the
-          map stays reachable by hovering the zone title or any zone keyword. */}
-      <div className={compact ? '' : 'flex flex-wrap items-start gap-3'}>
+      <div className={compact ? 'mt-2' : 'mt-3 flex items-start gap-4'}>
+        {/* Left rail: Play Timer + overall progress */}
         {!compact && (
-          <div className="w-full max-w-[520px] border border-poe-line" style={{ borderRadius: 2, ...PANEL }}>
-            <MapPanel images={images} zoneName={zone.name} onZoom={setZoom} />
+          <div className="w-[240px] shrink-0 space-y-3">
+            <TimerPanel sw={sw} />
+            <div className="border border-poe-line px-3 py-2.5" style={{ borderRadius: 2, ...PANEL }}>
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.12em] mb-1.5">
+                <span className="text-poe-text/55">Progress</span>
+                <span className="tabular-nums text-poe-text/85">{progress.complete}/{progress.total} · {progress.pct}%</span>
+              </div>
+              <div className="h-2 overflow-hidden border border-poe-line bg-black/40" style={{ borderRadius: 999 }}>
+                <div className="h-full transition-all" style={{ width: `${progress.pct}%`, background: 'rgb(var(--c-accent-dim))', borderRadius: 999 }} />
+              </div>
+            </div>
           </div>
         )}
 
-        {/* Objectives panel — transparent in overlay/compact mode so the window scrim shows through it. */}
-        <div className={`${compact ? 'w-full' : 'flex-1 min-w-[300px] max-w-[680px]'} border border-poe-line`} style={{ borderRadius: 2, ...(compact ? {} : PANEL) }}>
-          <div className="flex items-center justify-between px-3.5 py-2.5 gap-2">
-            <div className="flex items-center gap-2 font-semibold text-poe-text-bright">
-              <MapPin size={15} className="text-poe-gold/80" />
-              <span className={images.length ? 'cursor-help underline decoration-dotted underline-offset-[5px] decoration-poe-gold/50' : ''}
-                onMouseEnter={images.length ? (e) => onKwEnter(zone.name, e) : undefined}
-                onMouseMove={images.length ? onKwMove : undefined}
-                onMouseLeave={images.length ? onKwLeave : undefined}>{zone.name}</span>
-              {zone.group && <span className="text-[11px] text-poe-text/45 font-normal">· {zone.group}</span>}
-            </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              {isHere && <span className="text-[10px] uppercase tracking-[0.04em] text-emerald-400 border border-emerald-500/40 px-1 py-[1px]" style={{ borderRadius: 2 }}>here</span>}
-              {isVisited && !isHere && <span className="text-[10px] uppercase tracking-[0.04em] text-poe-text/45 border border-poe-line px-1 py-[1px]" style={{ borderRadius: 2 }}>visited</span>}
-            </div>
-          </div>
-
-          {zone.route && (
-            <div className="border-t border-poe-line px-3.5 py-2 text-[12px] text-poe-text/75 leading-relaxed">
-              <ZoneText text={zone.route} />
-            </div>
-          )}
-
-          {objectives.length > 0 && (
-            <div className="border-t border-poe-line px-3.5 py-2.5">
-              <div className="space-y-1.5">
-                {objectives.map((o, i) => {
-                  const id = `${actId}/${zoneId}/obj/${i}`
-                  const isDone = !!done[id]
-                  return (
-                    <label key={i} className="flex items-start gap-2 text-[13px] cursor-pointer">
-                      <input type="checkbox" checked={isDone} onChange={() => setCg({ done: { ...done, [id]: !isDone } })}
-                        style={{ accentColor: 'rgb(var(--c-accent))', width: 13, height: 13 }} className="mt-[3px] shrink-0" />
-                      <span className="flex-1 min-w-0">
-                        <span className="flex flex-wrap items-center gap-1.5">
-                          <span className={isDone ? 'text-poe-text/40 line-through' : 'text-poe-text-bright'}>
-                            <ZoneText text={o.text} />
-                          </span>
-                          {o.optional && (
-                            <span className="text-[10px] uppercase tracking-[0.04em] text-poe-text/50 border border-poe-line px-1 py-[1px]" style={{ borderRadius: 2 }}>optional</span>
-                          )}
-                        </span>
-                        {o.reward && (
-                          <span className="block mt-1">
-                            <span className="text-[11px] text-poe-gold/90 border border-poe-gold/40 px-1.5 py-[2px]" style={{ borderRadius: 2 }}>{o.reward}</span>
-                          </span>
-                        )}
-                      </span>
-                    </label>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
-          {zone.next && (
-            <div className="border-t border-poe-line px-3.5 py-2.5 text-[12.5px] text-poe-text/80">
-              <span className="text-poe-text/45">→ Go to </span><ZoneText text={zone.next} />
-            </div>
-          )}
+        {/* Chapter cards for the selected act */}
+        <div className={`${compact ? '' : 'flex-1 min-w-0'} space-y-2.5`}>
+          {zones.map((z, i) => (
+            <ChapterCard key={z.id} zone={z} num={i + 1} actId={actId} done={done} setCg={setCg}
+              hideOptional={hideOptional} Text={ZoneText} onZoom={setZoom}
+              onKwEnter={onKwEnter} onKwMove={onKwMove} onKwLeave={onKwLeave}
+              here={!!live?.zone && norm(live.zone) === norm(z.name)} compact={compact} />
+          ))}
         </div>
       </div>
 
@@ -387,6 +383,133 @@ export function CampaignGuideRoot({ compact = false }) {
         </div>
       )}
       </>
+      )}
+    </div>
+  )
+}
+
+// Horizontal act tabs with per-act completion % (the poe2way structure).
+function ActTabs({ acts, actId, setAct, progressByAct }) {
+  return (
+    <div className="flex gap-1 overflow-x-auto border-b border-poe-line">
+      {acts.map((a) => {
+        const on = a.id === actId
+        const p = progressByAct[a.id] || { pct: 0 }
+        return (
+          <button key={a.id} onClick={() => setAct(a.id)}
+            className={`shrink-0 flex items-center gap-2 px-3 py-2 border-b-2 -mb-px transition-colors ${on ? 'border-poe-gold' : 'border-transparent hover:bg-white/[0.03]'}`}>
+            <span className={`text-[12.5px] font-medium whitespace-nowrap ${on ? 'text-poe-gold' : 'text-poe-text/70'}`}>{a.label}</span>
+            <span className={`text-[10px] tabular-nums ${p.pct === 100 ? 'text-emerald-400' : 'text-poe-text/40'}`}>{p.pct}%</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+// The prominent Play Timer (manual stopwatch — works on the web; desktop also has the game-log
+// auto-timer in Speed Leveling).
+function TimerPanel({ sw }) {
+  return (
+    <div className="border border-poe-line" style={{ borderRadius: 2, background: 'rgb(var(--c-panel) / 0.92)' }}>
+      <div className="px-3 pt-2.5 text-[10px] uppercase tracking-[0.14em] text-poe-text/50">Play Timer</div>
+      <div className="px-3 py-1 text-center tabular-nums text-[30px] text-poe-gold" style={{ letterSpacing: '0.03em' }}>{fmtMs(sw.ms)}</div>
+      <div className="grid grid-cols-2 gap-px border-t border-poe-line bg-poe-line">
+        <button onClick={sw.toggle} className="flex items-center justify-center gap-1.5 py-2 text-[12px] bg-poe-panel hover:bg-white/[0.04] text-poe-text-bright">
+          {sw.running ? <Pause size={13} /> : <Play size={13} />} {sw.running ? 'Pause' : 'Start'}
+        </button>
+        <button onClick={sw.reset} className="flex items-center justify-center gap-1.5 py-2 text-[12px] bg-poe-panel hover:bg-white/[0.04] text-poe-text/65">
+          <RotateCcw size={12} /> Reset
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// One zone = one chapter card: number, name, PURPOSE (route), REWARDS, objectives, NOTES, and a
+// togglable layout map (click to zoom; multiple seed variants switch).
+function ChapterCard({ zone, num, actId, done, setCg, hideOptional, Text, onZoom, here }) {
+  const objectives = (zone.objectives || []).filter((o) => !hideOptional || !o.optional)
+  const rewards = objectives.map((o) => o.reward).filter(Boolean)
+  const images = asArray(zone.mapImage)
+  const [mapIdx, setMapIdx] = useState(0)
+  const [showMap, setShowMap] = useState(false)
+  const curMap = images.length ? mapSrc(images[Math.min(mapIdx, images.length - 1)]) : null
+  return (
+    <div className="border border-poe-line" style={{ borderRadius: 3, background: 'rgb(var(--c-panel) / 0.5)' }}>
+      <div className="flex items-center gap-2.5 px-3.5 py-2.5">
+        <span className="grid place-items-center w-7 h-7 shrink-0 border border-poe-line text-[12px] tabular-nums text-poe-text/70" style={{ borderRadius: 2 }}>{String(num).padStart(2, '0')}</span>
+        <div className="min-w-0 flex-1 flex items-center gap-2 flex-wrap">
+          <span className="font-semibold text-poe-text-bright">{zone.name}</span>
+          {zone.group && <span className="text-[11px] text-poe-text/40">· {zone.group}</span>}
+          {here && <span className="text-[9px] uppercase tracking-[0.06em] text-emerald-400 border border-emerald-500/40 px-1" style={{ borderRadius: 2 }}>here</span>}
+        </div>
+        {images.length > 0 && (
+          <button onClick={() => setShowMap((s) => !s)} className="text-[11px] text-sky-400 hover:text-sky-300 shrink-0">{showMap ? 'Hide map' : 'Map'}</button>
+        )}
+      </div>
+
+      {zone.route && (
+        <div className="px-3.5 pb-2">
+          <div className="text-[10px] uppercase tracking-[0.12em] text-poe-text/45 mb-0.5">Purpose</div>
+          <div className="text-[12.5px] text-poe-text/85 leading-relaxed"><Text text={zone.route} /></div>
+        </div>
+      )}
+
+      {rewards.length > 0 && (
+        <div className="px-3.5 pb-2">
+          <div className="text-[10px] uppercase tracking-[0.12em] text-poe-text/45 mb-1">Rewards</div>
+          <div className="flex flex-wrap gap-1.5">
+            {rewards.map((r, i) => <span key={i} className="text-[11px] text-emerald-400 border border-emerald-500/30 bg-emerald-500/5 px-1.5 py-[2px]" style={{ borderRadius: 2 }}>{r}</span>)}
+          </div>
+        </div>
+      )}
+
+      {objectives.length > 0 && (
+        <div className="border-t border-poe-line/60 px-3.5 py-2 space-y-1">
+          {objectives.map((o, i) => {
+            const id = `${actId}/${zone.id}/obj/${i}`
+            const isDone = !!done[id]
+            return (
+              <label key={i} className="flex items-start gap-2 text-[12.5px] cursor-pointer">
+                <input type="checkbox" checked={isDone} onChange={() => setCg({ done: { ...done, [id]: !isDone } })} className="mt-[3px] shrink-0" />
+                <span className="flex-1 min-w-0">
+                  <span className="flex flex-wrap items-center gap-1.5">
+                    <span className={isDone ? 'text-poe-text/40 line-through' : 'text-poe-text-bright'}><Text text={o.text} /></span>
+                    {o.optional && <span className="text-[9px] uppercase tracking-[0.05em] text-poe-text/45 border border-poe-line px-1" style={{ borderRadius: 2 }}>optional</span>}
+                  </span>
+                  {o.tip && <span className="block text-[11px] text-poe-text/50 italic mt-0.5"><Text text={o.tip} /></span>}
+                </span>
+              </label>
+            )
+          })}
+        </div>
+      )}
+
+      {zone.notes && (
+        <div className="border-t border-poe-line/60 px-3.5 py-2 text-[11.5px] text-poe-text/60 leading-relaxed">
+          <span className="text-poe-text/40">Note — </span><Text text={zone.notes} />
+        </div>
+      )}
+
+      {showMap && curMap && (
+        <div className="border-t border-poe-line/60 p-2">
+          <img src={curMap} alt="" className="block w-full max-w-[460px] cursor-zoom-in" style={{ borderRadius: 2 }} onClick={() => onZoom(curMap)} loading="lazy" />
+          {images.length > 1 && (
+            <div className="flex gap-1.5 mt-1.5">
+              {images.map((_, mi) => (
+                <button key={mi} onClick={() => setMapIdx(mi)}
+                  className={`text-[11px] px-2 py-0.5 border ${mi === mapIdx ? 'border-sky-500/60 text-sky-400' : 'border-poe-line text-poe-text/60 hover:text-sky-400/80'}`} style={{ borderRadius: 2 }}>Map {mi + 1}</button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {zone.next && (
+        <div className="border-t border-poe-line/60 px-3.5 py-1.5 text-[11.5px] text-poe-text/70">
+          <span className="text-poe-text/40">→ Go to </span><Text text={zone.next} />
+        </div>
       )}
     </div>
   )
