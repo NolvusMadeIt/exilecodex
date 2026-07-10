@@ -80,7 +80,13 @@ export function CampaignGuideRoot({ compact = false }) {
   }))
   const done = cg.done || {}
   const visited = cg.visited || {}
-  const mode = cg.mode || 'campaign'
+  // Three modes (back-compat: old 'campaign'→fresh, 'speedrun'→speed):
+  //   fresh — everything, all acts + interlude, nothing skipped
+  //   alt   — only what the main story needs; bonus/optional steps are hidden
+  //   speed — the lean fastest route + prep + run timer (SpeedrunView)
+  const rawMode = cg.mode || 'fresh'
+  const mode = rawMode === 'campaign' ? 'fresh' : rawMode === 'speedrun' ? 'speed' : rawMode
+  const hideOptional = mode === 'alt'
 
   // Selected act + zone (fall back to first).
   const actId = ACTS.find((a) => a.id === cg.actId)?.id || ACTS[0]?.id
@@ -242,26 +248,56 @@ export function CampaignGuideRoot({ compact = false }) {
   }
 
   const images = asArray(zone.mapImage)
-  const objectives = zone.objectives || []
+  const objectives = (zone.objectives || []).filter((o) => !hideOptional || !o.optional)
   const isVisited = !!visited[`${actId}/${zoneId}`]
   const isHere = !!live?.zone && norm(live.zone) === norm(zone.name)
 
+  // Whole-run progress for the current mode's scope (all acts; alt mode counts required steps only).
+  const progress = useMemo(() => {
+    let total = 0, complete = 0
+    for (const z of ALL_ZONES) {
+      const objs = (z.objectives || []).filter((o) => !hideOptional || !o.optional)
+      objs.forEach((o, i) => { total++; if (done[`${z.actId}/${z.id}/obj/${i}`]) complete++ })
+    }
+    return { total, complete, pct: total ? Math.round((complete / total) * 100) : 0 }
+  }, [done, hideOptional])
+
   return (
     <div className="py-1" onMouseLeave={onKwLeave}>
-      {/* Mode: Campaign vs Speedrun */}
+      {/* Mode: Fresh Character / Alt Leveling / Speed Leveling */}
       <div className="inline-flex mb-2 border border-poe-line" style={{ borderRadius: 2 }}>
-        {[['campaign', 'Campaign'], ['speedrun', 'Speedrun']].map(([m, label]) => (
+        {[['fresh', 'Fresh Character'], ['alt', 'Alt Leveling'], ['speed', 'Speed Leveling']].map(([m, label]) => (
           <button key={m} onClick={() => setCg({ mode: m })}
             className={`text-[11.5px] px-2.5 py-1 ${mode === m ? 'text-poe-gold' : 'text-poe-text/55 hover:text-poe-gold/80'}`}
             style={{ background: mode === m ? 'rgb(var(--c-panel-light))' : 'transparent' }}>{label}</button>
         ))}
       </div>
+      {!compact && (
+        <p className="text-[11px] text-poe-text/50 mb-2 max-w-[560px]">
+          {mode === 'speed'
+            ? 'Speed Leveling — the fastest critical-path route: story steps only, plus a prep checklist and a live run timer (desktop).'
+            : mode === 'alt'
+            ? 'Alt Leveling — only what the main story needs. Bonus objectives are hidden so you can rush to maps.'
+            : 'Fresh Character — the complete walkthrough: every act and the interlude, with all bonus objectives and pickups.'}
+        </p>
+      )}
 
-      {mode === 'speedrun' ? (
+      {mode === 'speed' ? (
         <SpeedrunView compact={compact} />
       ) : (
       <>
       <LiveBar desktop={desktop} autoTrack={autoTrack} watch={watch} live={live} actLabel={liveActLabel} />
+
+      {/* Whole-run progress bar (auto-fills as objectives get checked / auto-tracked) */}
+      <div className="mb-3 max-w-[680px]">
+        <div className="flex items-center justify-between text-[11px] mb-1">
+          <span className="text-poe-text/60">Campaign progress</span>
+          <span className="tabular-nums text-poe-text/80">{progress.complete}/{progress.total} · {progress.pct}%</span>
+        </div>
+        <div className="h-2 overflow-hidden border border-poe-line bg-black/40" style={{ borderRadius: 999 }}>
+          <div className="h-full transition-all" style={{ width: `${progress.pct}%`, background: 'rgb(var(--c-accent-dim))', borderRadius: 999 }} />
+        </div>
+      </div>
 
       {/* Selectors */}
       <div className="flex flex-wrap items-center gap-2 mb-3">
