@@ -379,6 +379,17 @@ body {
     border-radius: 0;
   }
 
+  /* Ground behind item-label previews — the game's dark texture under a vignette, so labels
+     sit on "the floor" the way drops do in-game (reference: FilterBlade-style previews). */
+  .label-ground {
+    background:
+      radial-gradient(120% 90% at 50% 10%, rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.6)),
+      url('/assets/ui/background1.webp');
+    background-size: cover;
+    border: 1px solid rgb(0 0 0 / 0.6);
+    box-shadow: inset 0 0 22px rgb(0 0 0 / 0.7);
+  }
+
   /* --- Semantic game colors — stats colored to their nature, app-wide ------------------- */
   :root {
     --el-fire: 227 88 60; --el-cold: 96 176 233; --el-lightning: 245 210 92; --el-chaos: 208 118 221;

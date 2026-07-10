@@ -6,65 +6,61 @@ import { strictnessProfile } from '../data/strictness.js'
 import { STYLE_PRESETS } from '../data/styles.js'
 import { DROP_TIERS } from '../data/dropTiers.js'
 import { StartFilterChoices } from '../components/StartFilterChoices.jsx'
+import { ItemLabel } from '../components/ItemLabel.jsx'
 import { useT } from '../i18n/index.js'
-
-const rgba = (c, fallback = 'transparent') =>
-  Array.isArray(c) ? `rgba(${c[0]},${c[1]},${c[2]},${(c[3] ?? 255) / 255})` : fallback
 
 // What each strictness level actually does to a handful of telltale drops — derived straight
 // from the level's real quick-filter profile, so the preview can never drift from the filter.
+// Colors are the drops' authentic in-game label colors (currency tan, magic blue, gem teal).
 function strictnessRows(p) {
   return [
-    { name: 'Scroll of Wisdom', color: [190, 190, 190], show: !p.hideScrolls },
+    { name: 'Scroll of Wisdom', color: [170, 158, 130], show: !p.hideScrolls },
     { name: 'Gold ×64', color: [235, 205, 95], show: !p.hideGold && !(p.minGoldPile > 100) },
     { name: 'Magic Boots', color: [110, 130, 255], show: p.gearMinRarity === 'all' || p.gearMinRarity === 'Magic' },
     { name: 'Life Flask', color: [200, 200, 200], show: (p.flasksShow || []).includes('life') && !p.hideNonUniqueFlasks },
     { name: 'Skill Gem', color: [27, 180, 170], show: (p.gemsShow || []).includes('skill') },
-    { name: 'Exalted Orb', color: [230, 170, 60], show: true },
+    { name: 'Exalted Orb', color: [230, 170, 60], border: [230, 170, 60, 160], show: true },
   ]
 }
 
 function StrictnessPreview({ profile }) {
   return (
-    <div className="mt-1.5 rounded-sm bg-black/45 border border-white/[0.05] px-1.5 py-1 space-y-px">
+    <div className="label-ground mt-1.5 flex flex-col items-start gap-[3px] rounded-sm px-2 py-2">
       {strictnessRows(profile).map((r) => (
-        <div key={r.name}
-          className={`text-[10px] leading-[15px] whitespace-nowrap overflow-hidden text-ellipsis ${r.show ? '' : 'line-through'}`}
-          style={{ color: r.show ? `rgb(${r.color.join(',')})` : 'rgb(255 255 255 / 0.22)' }}>
-          {r.name}
-        </div>
+        <ItemLabel key={r.name} text={r.name} textColor={r.color} borderColor={r.border}
+          fontSize={22} showBeam={false} hidden={!r.show} />
       ))}
     </div>
   )
 }
 
 // A style card's preview: the top tiers rendered as in-game labels with that style's REAL
-// per-tier preset (data/styles.js) merged over the built-in tier defaults.
+// per-tier preset (data/styles.js) merged over the built-in tier defaults — on game ground.
 const PREVIEW_TIERS = [
-  { tier: 'S', text: 'Divine Orb' },
-  { tier: 'A', text: 'Exalted Orb' },
-  { tier: 'C', text: 'Chaos Orb' },
+  { tier: 'S', text: 'Divine Orb', shape: 'star' },
+  { tier: 'A', text: 'Exalted Orb', shape: 'diamond' },
+  { tier: 'C', text: 'Chaos Orb', shape: 'circle' },
 ]
 
 function StylePreview({ styleId }) {
   const preset = STYLE_PRESETS[styleId] || {}
   return (
-    <div className="mt-2 flex flex-col items-start gap-1 rounded-sm bg-black/50 border border-white/[0.05] px-2 py-2">
-      {PREVIEW_TIERS.map(({ tier, text }) => {
+    <div className="label-ground mt-2 flex flex-col items-start gap-1.5 rounded-sm px-2.5 py-2.5">
+      {PREVIEW_TIERS.map(({ tier, text, shape }) => {
         const base = DROP_TIERS.find((t) => t.id === tier)
         const s = preset[tier] || {}
-        const size = Math.max(9, Math.round((s.fontSize || 32) * 0.34))
+        const beam = s.beam === 'None' ? null : (s.beam || base.beam)
         return (
-          <span key={tier} className="inline-flex items-center gap-1 leading-none whitespace-nowrap"
-            style={{
-              color: rgba(s.textColor, `rgb(${base.textColor.join(',')})`),
-              background: rgba(s.bgColor, 'rgba(0,0,0,0.55)'),
-              border: `1px solid ${rgba(s.borderColor, 'rgba(120,120,120,0.45)')}`,
-              fontSize: size, padding: `${Math.round(size * 0.3)}px ${Math.round(size * 0.55)}px`,
-              borderRadius: 2, textShadow: '0 1px 2px rgba(0,0,0,0.9)',
-            }}>
-            {text}
-            {styleId === 'alerts' && <Volume2 size={size} className="opacity-70" />}
+          <span key={tier} className="inline-flex items-center gap-1">
+            <ItemLabel text={text}
+              textColor={s.textColor || base.textColor}
+              bgColor={s.bgColor}
+              borderColor={s.borderColor}
+              fontSize={Math.min(s.fontSize || 30, 34)}
+              beam={beam}
+              showBeam={false}
+              minimap minimapShape={shape} />
+            {styleId === 'alerts' && <Volume2 size={13} className="text-poe-text/70" />}
           </span>
         )
       })}
