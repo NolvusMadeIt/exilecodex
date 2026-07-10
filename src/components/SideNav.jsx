@@ -118,11 +118,11 @@ export function SideNav({ mobileOpen = false, onClose }) {
   const rowSx = (active, indent = false) => ({
     justifyContent: 'flex-start', px: indent ? 3.25 : 1.5, py: 0.75, fontSize: 13, minHeight: 34,
     width: '100%', textAlign: 'left', gap: 1,
-    // Selected = a lit leather plate (neutral lighter surface) + gold text + a thin gold edge
-    // on the left. No gold wash, no glow — the game highlights by lightening, not tinting.
+    // Selected = a lit leather plate (neutral lighter surface) + gold text. Nothing else —
+    // no wash, no glow, no accent stripe. The game highlights by lightening the surface.
     color: active ? 'rgb(var(--c-accent))' : 'rgb(var(--c-text))',
     backgroundColor: active ? 'rgb(255 250 240 / 0.05)' : 'transparent',
-    boxShadow: active ? 'inset 2px 0 0 rgb(var(--c-accent-dim))' : 'none',
+    boxShadow: 'none',
     borderRadius: '4px',
     // Nav rows are navigation, not action buttons — strip the game button chrome the global
     // MuiButton override applies (border-image + smallcaps face).
