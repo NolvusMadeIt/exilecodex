@@ -163,7 +163,7 @@ export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
         >
           ⓘ About
         </button>
-        <span className="ml-auto text-[10px] uppercase tracking-[0.15em] text-poe-text/60">{unit} · per unit</span>
+        <span className="ml-auto text-[10px] uppercase tracking-[0.15em] text-poe-text/60">price in {unit}</span>
       </div>
 
       <div className="relative min-h-0 flex-1 px-1 py-1">
@@ -179,14 +179,14 @@ export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
       </div>
 
       <div className="grid grid-cols-2 gap-px border-t border-poe-line bg-poe-line sm:grid-cols-4">
-        <Stat label={`Day Open (${unit})`} value={fmtNum(inUnit(s.open))} hint="Price when the latest day started" />
-        <Stat label={`Latest (${unit})`} value={fmtNum(inUnit(s.close))} hint="Most recent price (latest day's close)" />
-        <Stat label={`24h High (${unit})`} value={fmtNum(inUnit(s.high24h))} hint="Highest price in the last 24 hours" />
-        <Stat label={`24h Low (${unit})`} value={fmtNum(inUnit(s.low24h))} hint="Lowest price in the last 24 hours" />
-        <Stat label="7-Day" value={fmtPct(s.change7d)} tone={s.change7d >= 0 ? "gain" : "loss"} hint="Price move over the past 7 days" />
-        <Stat label="30-Day" value={fmtPct(s.change30d)} tone={s.change30d >= 0 ? "gain" : "loss"} hint="Price move over the past 30 days" />
-        <Stat label="Traded / day" value={fmtCompact(s.volume24h)} hint="How many were traded in the last 24 hours — higher means easier to buy or sell" />
-        <Stat label="For Sale" value={fmtCompact(s.listed)} hint="How many are listed for sale right now" />
+        <Stat label="Right now" value={`${fmtNum(inUnit(s.close))} ${unit}`} hint="The most recent price" />
+        <Stat label="Earlier today" value={`${fmtNum(inUnit(s.open))} ${unit}`} hint="What it cost when today started" />
+        <Stat label="Highest (24h)" value={`${fmtNum(inUnit(s.high24h))} ${unit}`} hint="The most it went for in the last 24 hours" />
+        <Stat label="Lowest (24h)" value={`${fmtNum(inUnit(s.low24h))} ${unit}`} hint="The least it went for in the last 24 hours" />
+        <Stat label="This week" value={fmtPct(s.change7d)} tone={s.change7d >= 0 ? "gain" : "loss"} hint="How much the price moved over the last 7 days" />
+        <Stat label="This month" value={fmtPct(s.change30d)} tone={s.change30d >= 0 ? "gain" : "loss"} hint="How much the price moved over the last 30 days" />
+        <Stat label="Sold / day" value={fmtCompact(s.volume24h)} hint="Roughly how many change hands each day — more means it's easier to buy or sell" />
+        <Stat label="For sale" value={fmtCompact(s.listed)} hint="How many are listed for sale right now" />
       </div>
     </div>
   );

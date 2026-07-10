@@ -144,14 +144,14 @@ export default function PriceChart({
           return;
         }
         // deno-lint-ignore no-explicit-any
-        const vd: any = param.seriesData.get(volSeries);
         const date = `<span class="text-poe-text/60">${formatTime(param.time)}</span>`;
+        // Plain words, no O/H/L/C jargon: candles show the price then the day's range; area shows
+        // just the price. Volume is left off the tooltip — players don't read a price chart for it.
         const body =
           kind === "candle"
-            ? `O <b class="text-poe-text-bright">${fmtNum(pd.open)}</b> H <b style="color:${GAIN}">${fmtNum(pd.high)}</b> L <b style="color:${LOSS}">${fmtNum(pd.low)}</b> C <b class="text-poe-text-bright">${fmtNum(pd.close)}</b>`
+            ? `<b class="text-poe-text-bright">${fmtNum(pd.close)}</b> <span class="text-poe-text/50">${unit}</span> <span class="text-poe-text/45">· high ${fmtNum(pd.high)} · low ${fmtNum(pd.low)}</span>`
             : `<b class="text-poe-text-bright">${fmtNum(pd.value)}</b> <span class="text-poe-text/50">${unit}</span>`;
-        const vol = vd && vd.value != null ? ` · Vol <b class="text-poe-text">${fmtCompact(vd.value)}</b>` : "";
-        out.innerHTML = `${date} &nbsp; ${body}${vol}`;
+        out.innerHTML = `${date} &nbsp; ${body}`;
         out.style.opacity = "1";
       });
 

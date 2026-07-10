@@ -88,7 +88,7 @@ export default function MoversView({ onBack, onSelect }: { onBack: () => void; o
                 <th className="py-2 text-left font-medium">Item</th>
                 <th className="py-2 text-right font-medium">Price</th>
                 <th className="py-2 text-right font-medium">24h</th>
-                <th className="hidden py-2 text-right font-medium sm:table-cell" title="How many traded in the last 24 hours — higher means easier to buy or sell">Traded/day</th>
+                <th className="hidden py-2 text-right font-medium sm:table-cell" title="Roughly how many change hands each day — more means it's easier to buy or sell">Sold/day</th>
                 <th className="hidden py-2 text-center font-medium md:table-cell">Trend</th>
                 <th className="py-2 pr-4 text-right font-medium">Call</th>
               </tr>

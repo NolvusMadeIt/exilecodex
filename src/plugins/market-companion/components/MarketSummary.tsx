@@ -54,7 +54,7 @@ export default function MarketSummary({ count }: { count: number }) {
         <div className="text-[10px] uppercase tracking-[0.18em] text-poe-text/60">Currency Exchange</div>
       </div>
       <Metric label="Total market value" value={data ? fmtCompact(inDiv(data.marketCap)) : "—"} unit="div" accent />
-      <Metric label="Traded / day" value={data ? fmtCompact(inDiv(data.volume)) : "—"} unit="div" />
+      <Metric label="Sold / day" value={data ? fmtCompact(inDiv(data.volume)) : "—"} unit="div" />
       <Metric label="1 Divine =" value={data ? fmtNum(data.divinePrice) : "—"} unit="ex" />
       <Metric label="Tracked" value={`${count}`} />
       <Metric label="Updated" value={updated} />

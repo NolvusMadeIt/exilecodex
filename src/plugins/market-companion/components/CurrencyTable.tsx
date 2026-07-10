@@ -54,7 +54,7 @@ export default function CurrencyTable({
           </th>
           {head("value", "Price", "text-right", "Current price, shown in Divine (div) for expensive items or Exalt (ex) for cheaper ones")}
           {head("change24h", "24h", "text-right", "Price change over the last 24 hours")}
-          {head("volume", "Traded / day", "text-right", "How many traded in the last 24 hours — higher means easier to buy or sell quickly")}
+          {head("volume", "Sold / day", "text-right", "Roughly how many change hands each day — more means it's easier to buy or sell quickly")}
           <th className="px-1 py-2 text-center text-[11px] uppercase tracking-[0.15em] text-poe-gold-dim">Watch</th>
           <th className="px-2 py-2 pr-3 text-right text-[11px] uppercase tracking-[0.15em] text-poe-gold-dim">Trade</th>
         </tr>
