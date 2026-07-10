@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
 import { usePlugins } from '../store/Plugins.jsx'
+import { usePrefs } from '../store/Prefs.jsx'
 import { useT } from '../i18n/index.js'
 
 // The categorized side menu — the overlay transformation's navigation structure: groups with
@@ -88,6 +89,8 @@ function buildGroups(enabledPlugins) {
 export function SideNav({ mobileOpen = false, onClose }) {
   const { path, query, navigate } = useRouter()
   const { enabledPlugins } = usePlugins()
+  const { prefs } = usePrefs()
+  const collapsed = !!prefs.navCollapsed
   const t = useT()
 
   const groups = useMemo(() => buildGroups(enabledPlugins), [enabledPlugins])
@@ -143,7 +146,7 @@ export function SideNav({ mobileOpen = false, onClose }) {
     {mobileOpen && <div className="fixed inset-0 z-30 bg-black/60 md:hidden" onClick={onClose} />}
     <nav className={`${mobileOpen
       ? 'flex fixed inset-y-0 left-0 z-40 bg-[#12100c] shadow-2xl'
-      : 'hidden'} md:flex md:static md:z-auto md:bg-black/20 w-[220px] shrink-0 border-r border-poe-line flex-col py-2 overflow-y-auto`}>
+      : 'hidden'} ${collapsed ? 'md:hidden' : 'md:flex'} md:static md:z-auto md:bg-black/20 w-[220px] shrink-0 border-r border-poe-line flex-col py-2 overflow-y-auto`}>
       <div className="flex flex-col gap-0.5 px-2">
         {/* Home — always first, always one click away */}
         <Button onClick={() => navigate('/presets')} startIcon={<Home size={16} />}
