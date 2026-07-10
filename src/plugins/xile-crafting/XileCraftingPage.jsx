@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { ExternalLink } from 'lucide-react'
 import { useRouter } from '../../lib/router.jsx'
 import { installXileShim } from '../../xilehud/adapter.ts'
+import { GlossaryPanel } from './GlossaryPanel.jsx'
 import '../../xilehud/xilehud.css'
 
 // The Crafting reference — eight XileHUD panels (GPL-3.0, see ATTRIBUTION.md): currencies,
@@ -17,17 +18,19 @@ const PANELS = [
   { id: 'augments', label: 'Augments', load: () => import('../../xilehud/overlay/crafting/augments/module.ts') },
   { id: 'liquid', label: 'Liquid Emotions', load: () => import('../../xilehud/overlay/crafting/liquid/module.ts') },
   { id: 'annoints', label: 'Anoints', load: () => import('../../xilehud/overlay/character/annoints/module.ts') },
-  { id: 'glossar', label: 'Glossary', load: () => import('../../xilehud/overlay/crafting/glossar/module.ts') },
+  // 'glossar' is ours now — a React wiki (GlossaryPanel.jsx) over the same XileHUD dataset.
 ]
 
 export function XileCraftingPage() {
   const { query } = useRouter()
+  const isGlossary = query?.panel === 'glossar'
   const tab = PANELS.some((p) => p.id === query?.panel) ? query.panel : 'currency'
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [error, setError] = useState('')
   const panelRef = useRef(null)
 
   useEffect(() => {
+    if (isGlossary) return // the glossary is a React panel — no vendored module to drive
     installXileShim()
     let alive = true
     setStatus('loading')
@@ -49,21 +52,25 @@ export function XileCraftingPage() {
       if (panelRef.current) panelRef.current.innerHTML = ''
       document.body.classList.remove('crafting-mode') // show() adds it; keep body clean across pages
     }
-  }, [tab])
+  }, [tab, isGlossary])
 
   return (
     <div className="flex h-[calc(100vh-128px)] min-h-0 flex-col">
-      {status === 'loading' && (
+      {!isGlossary && status === 'loading' && (
         <div className="py-2 text-[12.5px] text-poe-text/60">Loading…</div>
       )}
-      {status === 'error' && (
+      {!isGlossary && status === 'error' && (
         <div className="py-6 text-[12.5px] text-poe-danger">
           Couldn’t load this panel ({error}). Switch tabs to retry.
         </div>
       )}
 
-      {/* Shared container every vendored crafting panel renders into (their ensurePanel()). */}
-      <div id="craftingPanel" ref={panelRef} className="xilehud-panel content min-h-0 flex-1 overflow-y-auto" />
+      {isGlossary ? (
+        <GlossaryPanel />
+      ) : (
+        /* Shared container every vendored crafting panel renders into (their ensurePanel()). */
+        <div id="craftingPanel" ref={panelRef} className="xilehud-panel content min-h-0 flex-1 overflow-y-auto" />
+      )}
 
       <div className="mt-4 border-t border-poe-line/60 pt-2 text-[11px] text-poe-text/45">
         Powered by{' '}

@@ -285,6 +285,22 @@ body {
   .c-dex { color: rgb(var(--attr-dex)); }
   .c-int { color: rgb(var(--attr-int)); }
 
+  /* Glossary wiki article (GlossaryPanel.jsx): live cross-links + bright stat values. */
+  .kw-article .kw-link {
+    color: rgb(var(--c-accent-light));
+    text-decoration: underline;
+    text-decoration-color: rgb(var(--c-accent) / 0.35);
+    text-underline-offset: 3px;
+    transition: color 120ms, text-decoration-color 120ms;
+  }
+  .kw-article .kw-link:hover { color: rgb(var(--c-accent)); text-decoration-color: rgb(var(--c-accent) / 0.8); }
+  .kw-article .kw-num { color: rgb(var(--c-text-bright)); font-weight: 600; }
+  .kw-article p { margin: 0 0 0.7em; }
+  .kw-article ul, .kw-article ol { margin: 0 0 0.7em; padding-left: 1.2em; list-style: disc; }
+  .kw-article table { margin: 0.4em 0 0.8em; border-collapse: collapse; font-size: 12.5px; }
+  .kw-article th, .kw-article td { border: 1px solid rgb(var(--c-line)); padding: 4px 8px; text-align: left; }
+  .kw-article th { color: rgb(var(--c-accent)); font-family: var(--display-font); font-weight: 400; }
+
   /* Buttons */
   .btn { @apply inline-flex items-center justify-center gap-1.5 px-3.5 h-9 rounded-lg text-[13px] font-semibold transition-all select-none cursor-pointer whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed; font-family: var(--app-font); }
   .btn-action { @apply btn; color: #2b1208; background-image: linear-gradient(135deg, rgb(var(--c-accent)), rgb(var(--c-accent2))); box-shadow: 0 4px 14px -7px rgb(var(--c-accent) / 0.65); }
