@@ -4,7 +4,7 @@
 import { DEFAULT_STRICTNESS, DEFAULT_STYLE } from '../data/coreFilters.js'
 import { strictnessProfile } from '../data/strictness.js'
 
-export function defaultSettings(name = "Exile Codex") {
+export function defaultSettings(name = 'Unnamed.filter') {
   return {
     name,
     version: '0.0.1',        // semver of this filter — auto-bumps on Save and Import

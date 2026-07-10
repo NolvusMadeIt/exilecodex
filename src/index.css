@@ -45,17 +45,19 @@
    overlay transformation; PoeFrame.jsx leans on --c-accent/--c-accent2 for its bevels. */
 :root, [data-theme="exile"] {
   color-scheme: dark;
-  --c-bg: 12 11 9;
-  --c-panel: 24 20 16;
-  --c-panel-light: 33 28 22;
-  --c-line: 62 52 38;
-  --c-text: 190 178 158;
-  --c-text-bright: 228 216 194;
-  --c-heading: 240 228 204;
-  --c-accent: 197 158 84;          /* muted gold */
-  --c-accent-light: 226 190 118;
-  --c-accent-dim: 148 116 60;
-  --c-accent2: 168 128 72;         /* deep bronze */
+  /* Palette sampled from the game's own Options/menu panels (owner's reference screenshots):
+     warm near-black ground, dark leather panels, bronze rails, parchment text, plaque gold. */
+  --c-bg: 10 8 6;
+  --c-panel: 20 16 12;
+  --c-panel-light: 30 24 18;
+  --c-line: 74 58 38;
+  --c-text: 179 161 131;
+  --c-text-bright: 226 211 179;
+  --c-heading: 240 228 200;
+  --c-accent: 201 164 79;          /* plaque gold */
+  --c-accent-light: 231 199 130;
+  --c-accent-dim: 150 118 62;
+  --c-accent2: 166 128 70;         /* deep bronze */
   --c-danger: 205 84 72;
   --bg-glow-1: rgba(197,158,84,0.05);
   --bg-glow-2: rgba(120,90,50,0.04);
@@ -149,8 +151,9 @@ body {
     color: rgb(var(--c-accent)); font-weight: 400; letter-spacing: 0.04em;
   }
   .section-bar::after {
+    /* The game's section headers use a plain quiet rule, edge to edge — no gradient fades. */
     content: ''; @apply flex-1 h-px;
-    background: linear-gradient(90deg, rgb(var(--c-accent) / 0.4), rgb(var(--c-line) / 0.6) 40%, transparent);
+    background: rgb(var(--c-line) / 0.75);
   }
 
   .panel {
@@ -228,48 +231,27 @@ body {
   .poe-frame-corner[data-pos="bl"] { bottom: -3.5px; left: -3.5px; }
   .poe-frame-corner[data-pos="br"] { bottom: -3.5px; right: -3.5px; }
 
-  /* The game's own button (PoeButton) — 3-slice sprites (see ATTRIBUTION.md), three states.
-     Caps ride on pseudo-elements; the middle stretches under the label. */
+  /* Game-themed button, drawn purely in CSS (Bootstrap-style: solid structure, one theme).
+     Dark leather gradient, bronze rim, gold smallcaps label — no textures, so the rims stay
+     crisp at any size and nothing reads as machine-cut. */
   .poe-btn {
-    @apply relative inline-flex h-[34px] cursor-pointer select-none items-center justify-center gap-1.5 whitespace-nowrap px-4 text-[13px] transition-colors disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex h-[34px] cursor-pointer select-none items-center justify-center gap-1.5 whitespace-nowrap px-4 text-[13px] transition-[filter,border-color,background-color] disabled:cursor-not-allowed disabled:opacity-40;
     /* Game buttons speak smallcaps, weight 400 — Fontin has no bold-smallcaps, and faux bold smears. */
     font-family: var(--display-font);
     font-weight: 400;
     letter-spacing: 0.03em;
+    border-radius: 3px;
     color: rgb(var(--c-text-bright));
-    background: url('/assets/ui/buttongenericnormalmiddle.webp');
-    background-size: auto 100%;
-    background-repeat: repeat-x;
-    border: none;
-    text-shadow: 0 1px 2px rgb(0 0 0 / 0.85);
+    border: 1px solid rgb(var(--c-accent2) / 0.5);
+    background: linear-gradient(180deg, rgb(var(--c-panel-light)), rgb(var(--c-panel)));
+    box-shadow: inset 0 1px 0 rgb(255 235 180 / 0.06), 0 1px 2px rgb(0 0 0 / 0.45);
+    text-shadow: 0 1px 1px rgb(0 0 0 / 0.7);
   }
-  .poe-btn::before,
-  .poe-btn::after {
-    content: '';
-    @apply pointer-events-none absolute bottom-0 top-0 w-[10px];
-    background-size: auto 100%;
-    background-repeat: no-repeat;
-  }
-  .poe-btn::before { left: -9px; background-image: url('/assets/ui/buttongenericnormalleft.webp'); }
-  .poe-btn::after { right: -9px; background-image: url('/assets/ui/buttongenericnormalright.webp'); background-position: right; }
-  .poe-btn:hover:not(:disabled) { color: rgb(var(--c-heading)); background-image: url('/assets/ui/buttongenerichovermiddle.webp'); }
-  .poe-btn:hover:not(:disabled)::before { background-image: url('/assets/ui/buttongenerichoverleft.webp'); }
-  .poe-btn:hover:not(:disabled)::after { background-image: url('/assets/ui/buttongenerichoverright.webp'); }
-  .poe-btn:active:not(:disabled) { background-image: url('/assets/ui/buttongenericpressedmiddle.webp'); }
-  .poe-btn:active:not(:disabled)::before { background-image: url('/assets/ui/buttongenericpressedleft.webp'); }
-  .poe-btn:active:not(:disabled)::after { background-image: url('/assets/ui/buttongenericpressedright.webp'); }
-  /* Primary action: same game chrome, gold label + glow instead of a different skin. */
-  .poe-btn-gold { color: rgb(var(--c-accent-light)); text-shadow: 0 0 8px rgb(var(--c-accent) / 0.55), 0 1px 2px rgb(0 0 0 / 0.85); }
-  .poe-btn-gold:hover:not(:disabled) { color: rgb(var(--c-accent-light)); filter: brightness(1.08); }
-
-  /* --- Ornate carved frame — the game's own 8-piece border (composited to a 9-patch by
-     scripts/build-ui-cuts.py) around major panels. Center stays the panel's own surface. */
-  .poe-frame-ornate {
-    border: 40px solid transparent;
-    border-image: url('/assets/ui/cut/ornateframe.png') 92 / 40px stretch;
-    background: linear-gradient(180deg, rgb(var(--c-panel) / 0.9), rgb(var(--c-bg) / 0.95));
-    background-clip: padding-box;
-  }
+  .poe-btn:hover:not(:disabled) { color: rgb(var(--c-heading)); border-color: rgb(var(--c-accent) / 0.8); filter: brightness(1.09); }
+  .poe-btn:active:not(:disabled) { background: linear-gradient(180deg, rgb(var(--c-panel)), rgb(var(--c-panel-light))); box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.5); }
+  /* Primary action: gold rim + glowing gold label. */
+  .poe-btn-gold { border-color: rgb(var(--c-accent) / 0.85); color: rgb(var(--c-accent-light)); text-shadow: 0 0 8px rgb(var(--c-accent) / 0.5), 0 1px 1px rgb(0 0 0 / 0.7); }
+  .poe-btn-gold:hover:not(:disabled) { color: rgb(var(--c-accent-light)); filter: brightness(1.1); }
 
   /* --- Main-menu button — the game's stacked menu bars (reference: owner's screenshots).
      Dark gradient bar, black edge, gold hairline inner frame with corner accents, glowing
@@ -450,34 +432,23 @@ body {
 
   /* Buttons */
   .btn { @apply inline-flex items-center justify-center gap-1.5 px-3.5 h-9 rounded-lg text-[13px] font-semibold transition-all select-none cursor-pointer whitespace-nowrap disabled:opacity-40 disabled:cursor-not-allowed; font-family: var(--app-font); }
-  /* Action buttons wear the game's own button chrome (same 3-slice sprites as .poe-btn),
-     site-wide. Primary (.btn-action) gets the glowing gold label; .btn-dark the standard one. */
+  /* Action buttons share the CSS game-button look (.poe-btn). Primary (.btn-action) gets the
+     gold rim + glowing label; .btn-dark is the standard dark one. */
   .btn-action, .btn-dark {
-    @apply btn relative rounded-none;
-    border: none;
+    @apply btn;
+    border-radius: 3px;
     font-family: var(--display-font);
     font-weight: 400;
     letter-spacing: 0.03em;
-    background: url('/assets/ui/buttongenericnormalmiddle.webp') repeat-x;
-    background-size: auto 100%;
-    text-shadow: 0 1px 2px rgb(0 0 0 / 0.85);
+    border: 1px solid rgb(var(--c-accent2) / 0.5);
+    background: linear-gradient(180deg, rgb(var(--c-panel-light)), rgb(var(--c-panel)));
+    box-shadow: inset 0 1px 0 rgb(255 235 180 / 0.06), 0 1px 2px rgb(0 0 0 / 0.45);
+    text-shadow: 0 1px 1px rgb(0 0 0 / 0.7);
   }
-  .btn-action::before, .btn-action::after, .btn-dark::before, .btn-dark::after {
-    content: '';
-    @apply pointer-events-none absolute bottom-0 top-0 w-[26px];
-    background-size: auto 100%;
-    background-repeat: no-repeat;
-  }
-  .btn-action::before, .btn-dark::before { left: -9px; background-image: url('/assets/ui/buttongenericnormalleft.webp'); }
-  .btn-action::after, .btn-dark::after { right: -9px; background-image: url('/assets/ui/buttongenericnormalright.webp'); background-position: right; }
-  .btn-action:hover:not(:disabled), .btn-dark:hover:not(:disabled) { background-image: url('/assets/ui/buttongenerichovermiddle.webp'); }
-  .btn-action:hover:not(:disabled)::before, .btn-dark:hover:not(:disabled)::before { background-image: url('/assets/ui/buttongenerichoverleft.webp'); }
-  .btn-action:hover:not(:disabled)::after, .btn-dark:hover:not(:disabled)::after { background-image: url('/assets/ui/buttongenerichoverright.webp'); }
-  .btn-action:active:not(:disabled), .btn-dark:active:not(:disabled) { background-image: url('/assets/ui/buttongenericpressedmiddle.webp'); }
-  .btn-action:active:not(:disabled)::before, .btn-dark:active:not(:disabled)::before { background-image: url('/assets/ui/buttongenericpressedleft.webp'); }
-  .btn-action:active:not(:disabled)::after, .btn-dark:active:not(:disabled)::after { background-image: url('/assets/ui/buttongenericpressedright.webp'); }
-  .btn-action { color: rgb(var(--c-accent-light)); text-shadow: 0 0 8px rgb(var(--c-accent) / 0.55), 0 1px 2px rgb(0 0 0 / 0.85); }
-  .btn-action:hover:not(:disabled) { color: rgb(var(--c-accent-light)); filter: brightness(1.08); }
+  .btn-action:hover:not(:disabled), .btn-dark:hover:not(:disabled) { filter: brightness(1.09); border-color: rgb(var(--c-accent) / 0.8); }
+  .btn-action:active:not(:disabled), .btn-dark:active:not(:disabled) { background: linear-gradient(180deg, rgb(var(--c-panel)), rgb(var(--c-panel-light))); box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.5); }
+  .btn-action { border-color: rgb(var(--c-accent) / 0.85); color: rgb(var(--c-accent-light)); text-shadow: 0 0 8px rgb(var(--c-accent) / 0.5), 0 1px 1px rgb(0 0 0 / 0.7); }
+  .btn-action:hover:not(:disabled) { color: rgb(var(--c-accent-light)); }
   .btn-dark { color: rgb(var(--c-text-bright)); }
   .btn-dark:hover:not(:disabled) { color: rgb(var(--c-heading)); }
   .btn-ghost { @apply btn text-poe-text; }

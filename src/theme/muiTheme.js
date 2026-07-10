@@ -28,36 +28,35 @@ export const muiTheme = createTheme({
   components: {
     MuiButton: {
       defaultProps: { disableElevation: true },
-      // Every MUI button wears the game's 3-slice button chrome (same sprites as .poe-btn /
-      // .btn-dark in index.css) — end caps ride on pseudo-elements, the middle stretches.
+      // Every MUI button wears the CSS game-button look (matches .poe-btn in index.css):
+      // dark leather gradient, bronze rim, gold smallcaps label — no textures.
       styleOverrides: {
         root: {
-          textTransform: 'none', fontWeight: 400, borderRadius: 0,
+          textTransform: 'none', fontWeight: 400, borderRadius: 3,
           fontFamily: 'var(--display-font)', letterSpacing: '0.03em',
           whiteSpace: 'nowrap',
-          position: 'relative', border: 'none', overflow: 'visible',
           color: V('--c-text-bright'),
-          background: "url('/assets/ui/buttongenericnormalmiddle.webp') repeat-x",
-          backgroundSize: 'auto 100%',
-          textShadow: '0 1px 2px rgb(0 0 0 / 0.85)',
-          '&::before, &::after': {
-            content: '""', position: 'absolute', top: 0, bottom: 0, width: 26,
-            backgroundSize: 'auto 100%', backgroundRepeat: 'no-repeat', pointerEvents: 'none',
+          border: `1px solid ${V('--c-accent2', '0.5')}`,
+          background: `linear-gradient(180deg, ${V('--c-panel-light')}, ${V('--c-panel')})`,
+          boxShadow: 'inset 0 1px 0 rgb(255 235 180 / 0.06), 0 1px 2px rgb(0 0 0 / 0.45)',
+          textShadow: '0 1px 1px rgb(0 0 0 / 0.7)',
+          '&:hover': {
+            borderColor: V('--c-accent', '0.8'),
+            background: `linear-gradient(180deg, ${V('--c-panel-light')}, ${V('--c-panel')})`,
+            filter: 'brightness(1.09)', color: V('--c-heading'),
           },
-          '&::before': { left: -9, backgroundImage: "url('/assets/ui/buttongenericnormalleft.webp')" },
-          '&::after': { right: -9, backgroundImage: "url('/assets/ui/buttongenericnormalright.webp')", backgroundPosition: 'right' },
-          '&:hover': { backgroundImage: "url('/assets/ui/buttongenerichovermiddle.webp')", color: V('--c-heading') },
-          '&:hover::before': { backgroundImage: "url('/assets/ui/buttongenerichoverleft.webp')" },
-          '&:hover::after': { backgroundImage: "url('/assets/ui/buttongenerichoverright.webp')" },
-          '&:active': { backgroundImage: "url('/assets/ui/buttongenericpressedmiddle.webp')" },
-          '&:active::before': { backgroundImage: "url('/assets/ui/buttongenericpressedleft.webp')" },
-          '&:active::after': { backgroundImage: "url('/assets/ui/buttongenericpressedright.webp')" },
+          '&:active': { boxShadow: 'inset 0 2px 4px rgb(0 0 0 / 0.5)' },
         },
         outlined: {
           color: V('--c-text-bright'),
           '&:hover': { color: V('--c-heading') },
         },
-        text: { color: V('--c-text'), '&:hover': { color: V('--c-heading') } },
+        // Text buttons stay chrome-less (menus, links).
+        text: {
+          border: 'none', background: 'none', boxShadow: 'none', textShadow: 'none',
+          color: V('--c-text'),
+          '&:hover': { background: V('--c-text', '0.06'), color: V('--c-heading') },
+        },
       },
       // Primary CTA keeps the same game chrome — the label glows gold instead of a new skin.
       variants: [
@@ -72,15 +71,11 @@ export const muiTheme = createTheme({
       ],
     },
     MuiButtonGroup: {
-      // Split buttons render as ONE long game button: inner end-caps are hidden and a thin
-      // dark seam divides the segments.
+      // Grouped buttons sit side by side as individual game buttons (that's how the game
+      // lays out SAVE / DEFAULTS / CLOSE) — just a hairline of breathing room between.
       styleOverrides: {
-        grouped: {
-          border: 'none',
-          '&.MuiButtonGroup-firstButton, &.MuiButtonGroup-middleButton': { borderRight: '1px solid rgba(0,0,0,0.55)' },
-          '&.MuiButtonGroup-firstButton::after, &.MuiButtonGroup-middleButton::after': { display: 'none' },
-          '&.MuiButtonGroup-lastButton::before, &.MuiButtonGroup-middleButton::before': { display: 'none' },
-        },
+        root: { gap: 2 },
+        grouped: { minWidth: 0 },
       },
     },
     // The game's Options-panel tab strip: dark raised tabs, the active one brighter with a

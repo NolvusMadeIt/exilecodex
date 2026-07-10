@@ -14,10 +14,11 @@ const LS_MF_RESET = 'nolvus-manualfilter-reset-v1'
 
 const FilterCtx = createContext(null)
 
-const DEFAULT_NAME = "Exile Codex"
-// Fall back to our brand name for any empty/legacy filter name; filters still carrying the
-// pre-rebrand default name follow the app to its new one.
-const migrateName = (n) => (!n || n === "Nolvus's Filter") ? DEFAULT_NAME : n
+const DEFAULT_NAME = 'Unnamed.filter'
+// The default name is deliberately a nudge — "Unnamed.filter" prompts the user to name their
+// work (imports always take the imported file's name). Filters still carrying an old default
+// name ("Nolvus's Filter", "Exile Codex") follow along.
+const migrateName = (n) => (!n || n === "Nolvus's Filter" || n === 'Exile Codex') ? DEFAULT_NAME : n
 
 // Bump the patch component of a semver. 0.0.9 -> 0.0.10, 0.9.99 -> 0.9.100. We never
 // auto-bump minor/major — semantic upgrades are the user's call.

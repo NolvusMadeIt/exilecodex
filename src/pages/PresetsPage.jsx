@@ -23,12 +23,17 @@ function strictnessRows(p) {
   ]
 }
 
+// Loot doesn't drop in a tidy column — stagger the labels like drops on the ground.
+const SCATTER = ['0%', '12%', '4%', '16%', '7%', '2%']
+
 function StrictnessPreview({ profile }) {
   return (
-    <div className="label-ground mt-1.5 flex flex-col items-start gap-[3px] rounded-sm px-2 py-2">
-      {strictnessRows(profile).map((r) => (
-        <ItemLabel key={r.name} text={r.name} textColor={r.color} borderColor={r.border}
-          fontSize={22} showBeam={false} hidden={!r.show} />
+    <div className="label-ground mt-1.5 flex flex-col items-start gap-[3px] rounded-sm px-2 py-2 overflow-hidden">
+      {strictnessRows(profile).map((r, i) => (
+        <span key={r.name} style={{ marginLeft: SCATTER[i % SCATTER.length] }}>
+          <ItemLabel text={r.name} textColor={r.color} borderColor={r.border}
+            fontSize={20} showBeam={false} hidden={!r.show} />
+        </span>
       ))}
     </div>
   )
@@ -42,11 +47,13 @@ const PREVIEW_TIERS = [
   { tier: 'C', text: 'Chaos Orb', shape: 'circle' },
 ]
 
+const STYLE_SCATTER = ['6%', '30%', '0%']
+
 function StylePreview({ styleId }) {
   const preset = STYLE_PRESETS[styleId] || {}
   return (
-    <div className="label-ground mt-2 flex flex-col items-start gap-1.5 rounded-sm px-2.5 py-2.5">
-      {PREVIEW_TIERS.map(({ tier, text, shape }) => {
+    <div className="label-ground mt-2 flex flex-col items-start gap-1.5 rounded-sm px-2.5 py-2.5 overflow-hidden">
+      {PREVIEW_TIERS.map(({ tier, text, shape }, i) => {
         const base = DROP_TIERS.find((t) => t.id === tier)
         const s = preset[tier] || {}
         const beam = s.beam === 'None' ? null : (s.beam || base.beam)

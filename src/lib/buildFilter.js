@@ -58,7 +58,7 @@ function catchAll(settings) {
 }
 
 function header(settings, opts) {
-  const name = (settings.name || "Exile Codex").trim()
+  const name = (settings.name || 'Unnamed.filter').trim()
   const ver = settings.version || '0.0.1'
   const sName = strictnessLevel(settings.strictness).name
   const stName = styleInfo(settings.style).name

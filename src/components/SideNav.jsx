@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Button } from '@mui/material'
 import {
-  Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked,
+  Home, Star, SlidersHorizontal, ListOrdered, Pencil, Shirt, Eye, Settings, BookMarked,
   GraduationCap, Users, ScrollText, ChevronDown, ChevronRight, FolderCog, LineChart, Wrench,
 } from 'lucide-react'
 import { useRouter } from '../lib/router.jsx'
@@ -124,15 +124,16 @@ export function SideNav({ mobileOpen = false, onClose }) {
     borderRadius: '6px',
     '&:hover': { backgroundColor: 'rgb(var(--c-text) / 0.05)', backgroundImage: 'none', color: 'rgb(var(--c-heading))' },
     // Nav rows are navigation, not action buttons — strip the game button chrome the global
-    // MuiButton override applies (sprite background + end caps + smallcaps face).
+    // MuiButton override applies (border-image + smallcaps face).
     background: active ? 'rgb(var(--c-accent) / 0.10)' : 'transparent',
     backgroundImage: 'none',
+    border: 'none',
+    borderImage: 'none',
     textShadow: 'none',
     fontFamily: 'var(--app-font)',
     fontWeight: 500,
     letterSpacing: 0,
-    '&::before, &::after': { display: 'none' },
-    '&:hover::before, &:hover::after': { display: 'none' },
+    '&:hover': { backgroundColor: 'rgb(var(--c-text) / 0.05)', backgroundImage: 'none', borderImage: 'none', color: 'rgb(var(--c-heading))' },
   })
 
   return (
@@ -143,6 +144,12 @@ export function SideNav({ mobileOpen = false, onClose }) {
       ? 'flex fixed inset-y-0 left-0 z-40 bg-[#12100c] shadow-2xl'
       : 'hidden'} md:flex md:static md:z-auto md:bg-black/20 w-[220px] shrink-0 border-r border-poe-line flex-col py-2 overflow-y-auto`}>
       <div className="flex flex-col gap-0.5 px-2">
+        {/* Home — always first, always one click away */}
+        <Button onClick={() => navigate('/presets')} startIcon={<Home size={16} />}
+          sx={rowSx(path === '/' || path === '/presets')} disableRipple>
+          {t('Home')}
+        </Button>
+        <div className="h-px bg-poe-line/50 mx-1 my-1" />
         {marked.map((g) => {
           const GIcon = g.icon
           const isOpen = open.has(g.id)

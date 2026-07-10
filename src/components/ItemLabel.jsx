@@ -36,7 +36,7 @@ export function ItemLabel({
   beam, showBeam = true, minimap, minimapShape = 'circle', hidden = false,
 }) {
   const scale = 0.5 // the game's 32px default, halved for UI density
-  const size = Math.max(12, Math.round(fontSize * scale))
+  const size = Math.max(10, Math.round(fontSize * scale))
   // Beam names arrive both lowercase (tier data) and Capitalized (filter values) — accept both.
   const beamCss = beam && (BEAM_CSS[beam] || BEAM_CSS[String(beam).charAt(0).toUpperCase() + String(beam).slice(1).toLowerCase()])
   return (

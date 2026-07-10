@@ -55,8 +55,7 @@ export function SettingsPage() {
         })}
       </div>
 
-      <div className="poe-frame-ornate !mt-0">
-      <div className="px-1 py-1">
+      <div className="panel !mt-0 p-5">
 
       {tab === 'plugins' && <PluginsTab />}
 
@@ -270,7 +269,6 @@ export function SettingsPage() {
       </div>
       )}
 
-      </div>
       </div>
     </div>
   )
