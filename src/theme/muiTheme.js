@@ -83,20 +83,32 @@ export const muiTheme = createTheme({
         },
       },
     },
+    // The game's Options-panel tab strip: dark raised tabs, the active one brighter with a
+    // gold smallcaps label (reference: owner's game screenshots).
     MuiTab: {
       styleOverrides: {
         root: {
-          textTransform: 'none', fontWeight: 500, minHeight: 46, fontSize: 13.5,
-          letterSpacing: '0.01em', color: V('--c-text'), fontFamily: SORA,
-          '&:hover': { color: V('--c-heading') },
-          '&.Mui-selected': { color: V('--c-accent') },
+          textTransform: 'none', fontWeight: 400, minHeight: 40, fontSize: 13.5,
+          letterSpacing: '0.05em', color: V('--c-text'), fontFamily: 'var(--display-font)',
+          backgroundColor: 'rgb(0 0 0 / 0.35)',
+          border: `1px solid ${V('--c-line')}`,
+          borderBottom: 'none',
+          borderRadius: '3px 3px 0 0',
+          marginRight: 3,
+          textShadow: '0 1px 2px rgb(0 0 0 / 0.8)',
+          '&:hover': { color: V('--c-heading'), backgroundColor: 'rgb(0 0 0 / 0.2)' },
+          '&.Mui-selected': {
+            color: V('--c-accent'),
+            backgroundColor: V('--c-panel-light'),
+            boxShadow: `inset 0 1px 0 ${V('--c-accent', '0.35')}`,
+          },
         },
       },
     },
     MuiTabs: {
       styleOverrides: {
-        root: { minHeight: 46 },
-        indicator: { backgroundColor: V('--c-accent'), height: 2, borderRadius: 2 },
+        root: { minHeight: 40 },
+        indicator: { backgroundColor: V('--c-accent'), height: 2, borderRadius: 0 },
       },
     },
     MuiIconButton: {

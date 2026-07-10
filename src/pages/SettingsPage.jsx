@@ -40,20 +40,23 @@ export function SettingsPage() {
         <p className="text-[12px] text-poe-text mt-1">Theme, filter meta, plugins, and custom comments. These apply across every filter you build.</p>
       </div>
 
-      {/* Settings tabs — made prominent (larger, bolder, accent underline, more padding). */}
-      <div className="flex gap-2 border-b border-poe-line/60">
+      {/* The game's Options-panel structure: raised dark tabs over one ornate carved frame. */}
+      <div className="flex gap-1 px-6">
         {[['general', 'General'], ['plugins', 'Plugins']].map(([id, label]) => {
           const on = tab === id
           return (
             <button key={id} onClick={() => setTab(id)}
-              className={`px-5 h-11 text-[15px] font-semibold border-b-2 -mb-px transition-colors ${on
-                ? 'border-poe-gold text-poe-gold bg-poe-gold/[0.06]'
-                : 'border-transparent text-poe-text/80 hover:text-poe-heading hover:bg-poe-text/[0.04]'}`}>
+              className={`px-6 h-10 text-[14px] font-display tracking-wide rounded-t border border-b-0 transition-colors ${on
+                ? 'border-poe-line bg-poe-panel-light text-poe-gold shadow-[inset_0_1px_0_rgb(var(--c-accent)/0.35)]'
+                : 'border-poe-line/60 bg-black/40 text-poe-text/80 hover:text-poe-heading hover:bg-black/25'}`}>
               {t(label)}
             </button>
           )
         })}
       </div>
+
+      <div className="poe-frame-ornate !mt-0">
+      <div className="px-1 py-1">
 
       {tab === 'plugins' && <PluginsTab />}
 
@@ -266,6 +269,9 @@ export function SettingsPage() {
       </section>
       </div>
       )}
+
+      </div>
+      </div>
     </div>
   )
 }

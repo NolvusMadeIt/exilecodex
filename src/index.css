@@ -262,6 +262,123 @@ body {
   .poe-btn-gold { color: rgb(var(--c-accent-light)); text-shadow: 0 0 8px rgb(var(--c-accent) / 0.55), 0 1px 2px rgb(0 0 0 / 0.85); }
   .poe-btn-gold:hover:not(:disabled) { color: rgb(var(--c-accent-light)); filter: brightness(1.08); }
 
+  /* --- Ornate carved frame — the game's own 8-piece border (composited to a 9-patch by
+     scripts/build-ui-cuts.py) around major panels. Center stays the panel's own surface. */
+  .poe-frame-ornate {
+    border: 40px solid transparent;
+    border-image: url('/assets/ui/cut/ornateframe.png') 92 / 40px stretch;
+    background: linear-gradient(180deg, rgb(var(--c-panel) / 0.9), rgb(var(--c-bg) / 0.95));
+    background-clip: padding-box;
+  }
+
+  /* --- Main-menu button — the game's stacked menu bars (reference: owner's screenshots).
+     Dark gradient bar, black edge, gold hairline inner frame with corner accents, glowing
+     smallcaps gold label. Original CSS calibrated to the game's look. */
+  .poe-btn-menu {
+    @apply relative inline-flex h-[42px] cursor-pointer select-none items-center justify-center whitespace-nowrap px-6 transition-[filter] disabled:cursor-not-allowed disabled:opacity-40;
+    font-family: var(--display-font);
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    color: rgb(var(--c-accent-light));
+    text-shadow: 0 0 10px rgb(var(--c-accent) / 0.4), 0 1px 2px rgb(0 0 0 / 0.9);
+    background:
+      radial-gradient(ellipse 75% 130% at 50% 110%, rgb(70 52 30 / 0.5), transparent 65%),
+      linear-gradient(180deg, #18140e 0%, #0d0a07 48%, #191208 100%);
+    border: 1px solid #000;
+    box-shadow:
+      inset 0 0 0 1px rgb(var(--c-accent) / 0.4),
+      inset 0 0 0 2px rgb(0 0 0 / 0.65),
+      inset 0 12px 16px -12px rgb(255 220 150 / 0.14),
+      0 2px 6px -2px rgb(0 0 0 / 0.8);
+  }
+  .poe-btn-menu::before {
+    /* corner accents: short gold ticks in all four corners */
+    content: '';
+    @apply pointer-events-none absolute inset-[3px];
+    background:
+      linear-gradient(rgb(var(--c-accent) / 0.8), rgb(var(--c-accent) / 0.8)) left 0 top 0 / 8px 1px,
+      linear-gradient(rgb(var(--c-accent) / 0.8), rgb(var(--c-accent) / 0.8)) left 0 top 0 / 1px 8px,
+      linear-gradient(rgb(var(--c-accent) / 0.8), rgb(var(--c-accent) / 0.8)) right 0 top 0 / 8px 1px,
+      linear-gradient(rgb(var(--c-accent) / 0.8), rgb(var(--c-accent) / 0.8)) right 0 top 0 / 1px 8px,
+      linear-gradient(rgb(var(--c-accent) / 0.8), rgb(var(--c-accent) / 0.8)) left 0 bottom 0 / 8px 1px,
+      linear-gradient(rgb(var(--c-accent) / 0.8), rgb(var(--c-accent) / 0.8)) left 0 bottom 0 / 1px 8px,
+      linear-gradient(rgb(var(--c-accent) / 0.8), rgb(var(--c-accent) / 0.8)) right 0 bottom 0 / 8px 1px,
+      linear-gradient(rgb(var(--c-accent) / 0.8), rgb(var(--c-accent) / 0.8)) right 0 bottom 0 / 1px 8px;
+    background-repeat: no-repeat;
+  }
+  .poe-btn-menu:hover:not(:disabled) { filter: brightness(1.18); }
+  .poe-btn-menu:active:not(:disabled) { filter: brightness(0.9); }
+
+  /* --- Game-styled form controls, app-wide (reference: the Options panel) --------------- */
+  /* Dropdowns: dark inset box with the game's gold triangle (real sprite). */
+  select:not([multiple]) {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url('/assets/ui/buttontriangledownnormal.webp');
+    background-repeat: no-repeat;
+    background-position: right 7px center;
+    background-size: 15px 12px;
+    padding-right: 26px;
+  }
+  select:not([multiple]):hover { background-image: url('/assets/ui/buttontriangledownhover.webp'); }
+
+  /* Radios wear the game's round ornate check. */
+  input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin: 0;
+    cursor: pointer;
+    vertical-align: -4px;
+    background: url('/assets/ui/checkboxunchecked.webp') center / contain no-repeat;
+  }
+  input[type="radio"]:checked { background-image: url('/assets/ui/checkboxchecked.webp'); }
+  input[type="radio"]:hover:not(:disabled) { filter: brightness(1.18); }
+  input[type="radio"]:focus-visible { outline: 2px solid rgb(var(--c-accent) / 0.6); outline-offset: 2px; }
+
+  /* Sliders: dark groove, gold diamond thumb. */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 20px;
+    background: transparent;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 5px;
+    background: linear-gradient(180deg, #060504, #201a12);
+    border: 1px solid rgb(var(--c-line));
+    border-radius: 2px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 13px;
+    height: 13px;
+    margin-top: -5px;
+    transform: rotate(45deg);
+    background: linear-gradient(135deg, rgb(var(--c-accent-light)), rgb(var(--c-accent2)));
+    border: 1px solid #000;
+    box-shadow: inset 0 0 0 1px rgb(255 235 180 / 0.5), 0 1px 3px rgb(0 0 0 / 0.8);
+  }
+  input[type="range"]::-moz-range-track {
+    height: 5px;
+    background: linear-gradient(180deg, #060504, #201a12);
+    border: 1px solid rgb(var(--c-line));
+    border-radius: 2px;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 13px;
+    height: 13px;
+    transform: rotate(45deg);
+    background: linear-gradient(135deg, rgb(var(--c-accent-light)), rgb(var(--c-accent2)));
+    border: 1px solid #000;
+    box-shadow: inset 0 0 0 1px rgb(255 235 180 / 0.5), 0 1px 3px rgb(0 0 0 / 0.8);
+    border-radius: 0;
+  }
+
   /* --- Semantic game colors — stats colored to their nature, app-wide ------------------- */
   :root {
     --el-fire: 227 88 60; --el-cold: 96 176 233; --el-lightning: 245 210 92; --el-chaos: 208 118 221;

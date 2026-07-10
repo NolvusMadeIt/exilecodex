@@ -54,7 +54,7 @@ function DesktopOnly({ plugin }) {
         <p className="text-[12px] text-poe-text/70 mt-2">{plugin.description}</p>
         <div className="mt-4">
           <a href="https://github.com/NolvusMadeIt/nolvusfilter-releases/releases/latest" target="_blank" rel="noreferrer"
-            className="btn-dark h-8 text-[12px] inline-flex items-center px-3">Get the desktop app</a>
+            className="poe-btn-menu !w-auto text-[12.5px]">Get the desktop app</a>
         </div>
       </div>
     </div>
