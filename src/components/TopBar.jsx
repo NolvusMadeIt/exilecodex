@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { IconButton, Tooltip } from '@mui/material'
-import { HelpCircle, Menu, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { HelpCircle } from 'lucide-react'
 import { useFilter } from '../store/FilterStore.jsx'
-import { usePrefs } from '../store/Prefs.jsx'
 import { useRouter } from '../lib/router.jsx'
 import { FilterSelector } from './FilterSelector.jsx'
 import { HelpLegend } from './HelpLegend.jsx'
@@ -15,31 +14,16 @@ import { useT } from '../i18n/index.js'
 // The filter chip (name / version / Change) only belongs where you're working ON the filter.
 const STUDIO_ROUTES = new Set(['/', '/presets', '/quick-editor', '/quick-filters', '/tier-lists', '/custom-rules', '/cosmetic', '/editor', '/preview'])
 
-export function TopBar({ onToggleNav }) {
+export function TopBar() {
   const { active } = useFilter()
-  const { prefs, update } = usePrefs()
   const { path, navigate } = useRouter()
   const t = useT()
   const [selectorOpen, setSelectorOpen] = useState(false)
   const [legendOpen, setLegendOpen] = useState(false)
   const inStudio = STUDIO_ROUTES.has(path)
-  const collapsed = !!prefs.navCollapsed
 
   return (
     <header className="flex items-center gap-2 md:gap-3 h-14 px-3 md:px-4 border-b border-poe-line bg-black/40 backdrop-blur-sm shrink-0">
-      {/* Nav drawer toggle — only below md, where the rail is hidden */}
-      <button onClick={onToggleNav} aria-label="Open navigation"
-        className="md:hidden grid place-items-center w-8 h-8 rounded border border-poe-line text-poe-text hover:text-poe-gold hover:border-poe-gold-dim/60 shrink-0">
-        <Menu size={16} />
-      </button>
-      {/* Collapse the side nav for full-width content — desktop only */}
-      <button onClick={() => update({ navCollapsed: !collapsed })}
-        aria-label={collapsed ? 'Show side panel' : 'Hide side panel'}
-        title={collapsed ? 'Show side panel' : 'Hide side panel'}
-        className="hidden md:grid place-items-center w-8 h-8 rounded border border-poe-line text-poe-text hover:text-poe-gold hover:border-poe-gold-dim/60 shrink-0">
-        {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
-      </button>
-
       {/* Brand — icon + gold wordmark, doubles as the home button */}
       <button onClick={() => navigate('/presets')} className="flex items-center gap-2.5 group shrink-0" aria-label="Exile Codex — home" title="Exile Codex — home">
         <img src="/128.png" alt="Exile Codex" draggable={false}

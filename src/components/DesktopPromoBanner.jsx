@@ -1,18 +1,20 @@
 import React, { useState } from 'react'
 import { Monitor, Download } from 'lucide-react'
 import { desktopApi, DOWNLOAD_URL } from '../lib/desktop.js'
+import { usePrefs } from '../store/Prefs.jsx'
 
 const KEY = 'nolvus-promo-dismissed'
 
 // Slim bottom bar (web only) pitching the desktop app's in-game overlay. Hidden inside the
-// desktop app, and permanently dismissible — a one-time "I already have it" for people who
-// downloaded it elsewhere (the web can't detect an installed app).
+// desktop app, in Developer mode, and permanently dismissible — a one-time "I already have it"
+// for people who downloaded it elsewhere (the web can't detect an installed app).
 export function DesktopPromoBanner() {
+  const { prefs } = usePrefs()
   const isDesktop = !!desktopApi?.isDesktop
   const [dismissed, setDismissed] = useState(() => {
     try { return localStorage.getItem(KEY) === '1' } catch { return false }
   })
-  if (isDesktop || dismissed) return null
+  if (isDesktop || dismissed || prefs.devMode) return null
 
   const dismiss = () => {
     try { localStorage.setItem(KEY, '1') } catch {}
