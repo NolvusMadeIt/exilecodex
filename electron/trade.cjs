@@ -133,6 +133,27 @@ async function price({ query, league, poesessid }) {
   return { total, listings: f.json.result || [] }
 }
 
+// Merchant/trade history for the signed-in account (the Currency Exchange history feed the
+// Merchant History plugin renders). Same transport, same identity rules, same classification
+// ladder as price(). The response contract mirrors what the vendored history renderer expects
+// ({ ok, status, data, headers, … }) — GGG's rate-limit headers ride along verbatim so the
+// renderer's own rate-limit UI keeps working.
+async function history({ league, poesessid }) {
+  if (!league) return { ok: false, error: 'no-league' }
+  if (poesessid) await setPoesessid(poesessid)
+  const names = await cookieNames()
+  if (!names.has('POESESSID')) return { ok: false, status: 401, error: 'no-auth' }
+  const hasClearance = names.has('cf_clearance')
+
+  const res = await spaced(() => netReq('GET', `https://${HOST}/api/trade2/history/${encodeURIComponent(league)}`))
+  const c = classifyResponse(res)
+  if (c.kind === 'cloudflare') return { ok: false, status: res.status, error: 'cloudflare', ray: c.cfRay, hasClearance, headers: res.headers }
+  if (c.kind === 'auth') return { ok: false, status: res.status, error: c.message || 'auth', headers: res.headers }
+  if (c.kind === 'rate') return { ok: false, status: 429, error: 'rate', rateLimited: true, retryAfter: retryAfter(res), headers: res.headers }
+  if (c.kind !== 'ok') return { ok: false, status: res.status, error: c.message || 'history', headers: res.headers }
+  return { ok: true, status: res.status, data: res.json ?? res.text, headers: res.headers }
+}
+
 // Open a real pathofexile.com session window on our partition. It loads the /trade2 page so
 // Cloudflare's challenge for the trade path is solved (capturing cf_clearance) AND the user can sign
 // in (capturing POESESSID). Uses the SAME UA as net.request so the cf_clearance it earns validates.
@@ -175,6 +196,7 @@ function login() {
 
 function registerTrade(ipcMain) {
   ipcMain.handle('trade:price', (_e, args) => price(args || {}).catch((err) => ({ error: 'exception', detail: String(err?.message || err) })))
+  ipcMain.handle('trade:history', (_e, args) => history(args || {}).catch((err) => ({ ok: false, error: 'exception', detail: String(err?.message || err) })))
   ipcMain.handle('trade:login', () => login().catch((err) => ({ ok: false, detail: String(err?.message || err) })))
   ipcMain.handle('trade:hasSession', async () => {
     const names = await cookieNames()
@@ -182,4 +204,4 @@ function registerTrade(ipcMain) {
   })
 }
 
-module.exports = { price, login, registerTrade, classifyResponse }
+module.exports = { price, history, login, registerTrade, classifyResponse }

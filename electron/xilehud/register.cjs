@@ -3,10 +3,12 @@
 // broadcast to all windows on 'xile:item-copied'; renderers opt in through the nolvusXile
 // preload bridge (the Modifiers page auto-analyzes the item exactly like a manual paste).
 const { ClipboardMonitor } = require('./clipboard-monitor.cjs')
+const { registerHistoryStore } = require('./history-store.cjs')
 
 let monitor = null
 
 function registerXileClipboard(ipcMain, getWindows) {
+  registerHistoryStore(ipcMain)
   monitor = new ClipboardMonitor() // upstream behavior: starts polling immediately
   monitor.on('poe2-item-copied', (text) => {
     for (const w of getWindows()) {

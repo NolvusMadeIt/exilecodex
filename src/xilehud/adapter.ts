@@ -79,4 +79,26 @@ export function installXileShim(): void {
   // Upstream opens mod tiers in a separate popout window; in-page the tier list is already
   // expandable, so this is a deliberate no-op rather than a broken feature.
   api.openModPopout = api.openModPopout || (() => {})
+
+  // Merchant history (desktop only): map the vendored renderer's electronAPI names onto OUR
+  // bridges — storage via nolvusXile (per-league JSON in userData), network + session via
+  // nolvusTrade (our hardened transport; never XileHUD's session layer). On web these bridges
+  // don't exist and the history plugin is desktopOnly, so none of this registers.
+  const trade = (w as unknown as { nolvusTrade?: Record<string, (...a: unknown[]) => Promise<Record<string, unknown>>> }).nolvusTrade
+  const xile = (w as unknown as { nolvusXile?: Record<string, (...a: unknown[]) => Promise<unknown>> }).nolvusXile
+  if (trade && xile) {
+    api.historyLoad = api.historyLoad || ((league: string) => xile.historyLoad(league))
+    api.historySave = api.historySave || ((store: unknown, league?: string) => xile.historySave(store, league))
+    api.poeFetchHistory = api.poeFetchHistory || ((league: string) => trade.history({ league }))
+    api.poeGetSession = api.poeGetSession || (async () => {
+      const s = await trade.hasSession()
+      return { loggedIn: !!s?.hasSession }
+    })
+    api.poeLogin = api.poeLogin || (async () => {
+      const r = await trade.login()
+      return { loggedIn: !!(r?.ok || r?.hasSession) }
+    })
+    // We don't persist GGG's rate-limit headers between runs (they ride each live response).
+    api.poeGetSavedRateLimitHeaders = api.poeGetSavedRateLimitHeaders || (() => null)
+  }
 }

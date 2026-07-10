@@ -46,6 +46,7 @@ contextBridge.exposeInMainWorld('nolvusDesktop', {
 contextBridge.exposeInMainWorld('nolvusTrade', {
   isDesktop: true,
   price: (args) => ipcRenderer.invoke('trade:price', args),
+  history: (args) => ipcRenderer.invoke('trade:history', args),
   login: () => ipcRenderer.invoke('trade:login'),
   hasSession: () => ipcRenderer.invoke('trade:hasSession'),
 })
@@ -83,6 +84,8 @@ contextBridge.exposeInMainWorld('nolvusXile', {
   clipboardStart: () => ipcRenderer.send('xile:clipboard:start'),
   clipboardStop: () => ipcRenderer.send('xile:clipboard:stop'),
   clipboardReset: () => ipcRenderer.send('xile:clipboard:reset'),
+  historyLoad: (league) => ipcRenderer.invoke('xile:history:load', league),
+  historySave: (store, league) => ipcRenderer.invoke('xile:history:save', store, league),
   onItemCopied: (cb) => {
     const handler = (_e, text) => cb(text)
     ipcRenderer.on('xile:item-copied', handler)
