@@ -24,10 +24,15 @@ are original implementations.
 
 ## Grinding Gear Games
 
-Path of Exile and Path of Exile 2 are trademarks of Grinding Gear Games. Item and game images
-are loaded at runtime from Grinding Gear Games' public CDN (`web.poecdn.com`) and are not
-redistributed with this application. This is an unofficial fan-made tool, not affiliated with
-or endorsed by Grinding Gear Games.
+Path of Exile and Path of Exile 2 are trademarks of Grinding Gear Games. This is an unofficial
+fan-made tool, not affiliated with or endorsed by Grinding Gear Games.
+
+- The window/button UI textures under `public/assets/ui/` are Grinding Gear Games' game
+  interface art (extracted game assets), © Grinding Gear Games, used here — as across the PoE
+  fan-tool ecosystem — to give a game-companion tool the game's own look. They are not claimed
+  as part of this project's GPL-licensed work and would be removed promptly on GGG's request.
+- Item, currency and skill images are loaded from Grinding Gear Games' public CDN
+  (`web.poecdn.com`) or cached locally from it.
 
 ## Data sources
 
