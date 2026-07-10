@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import { useSettings } from "../store/settings";
 import { fetchCurrencies } from "../../../lib/market/client";
-import { fmtNum } from "../../../lib/market/format";
+import { fmtNum, denominate } from "../../../lib/market/format";
 
 // A stock-style scrolling ticker banner (the exiledtools ticker, in our theme): the most-traded
 // currencies scroll left-to-right with price + 24h change. It ALWAYS shows currencies regardless
@@ -25,6 +25,7 @@ export default function MarketTicker({
     queryFn: () => fetchCurrencies(league!, base, "currency"),
   });
 
+  const divinePrice = data?.divinePrice ?? 1;
   const items = (data?.rows ?? [])
     .filter((r) => r.volume > 0)
     .sort((a, b) => b.volume - a.volume)
@@ -45,6 +46,7 @@ export default function MarketTicker({
         <div className="ticker-track flex items-center gap-7 py-2 pr-7">
           {seq.map((r, i) => {
             const up = r.change24h >= 0;
+            const p = denominate(r.value, base, divinePrice);
             return (
               <button
                 key={i}
@@ -56,7 +58,7 @@ export default function MarketTicker({
                 <img src={r.iconPath} alt="" width={18} height={18} className="shrink-0" />
                 <span className="text-[12.5px] text-poe-text-bright">{r.name}</span>
                 <span className="tabular-nums text-[12.5px] text-poe-text">
-                  {fmtNum(r.value)} <span className="text-[10px] text-poe-text/45">{unit}</span>
+                  {fmtNum(p.amount)} <span className="text-[10px] text-poe-text/45">{p.unit}</span>
                 </span>
                 <span className={`tabular-nums text-[11.5px] ${up ? "text-emerald-400" : "text-red-400"}`}>
                   {up ? "▲" : "▼"} {Math.abs(r.change24h).toFixed(1)}%

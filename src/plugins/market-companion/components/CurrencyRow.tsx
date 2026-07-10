@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { CurrencyRow as Row, BaseCurrency } from "../../../lib/market/types";
-import { fmtNum, fmtCompact } from "../../../lib/market/format";
+import { fmtNum, fmtCompact, denominate } from "../../../lib/market/format";
 import { buyUrl, sellUrl } from "../../../lib/market/trade";
 import { useWatch, isWatched } from "../store/watch";
 
@@ -31,6 +31,8 @@ export default function CurrencyRow({
   const toExalted = (v: number) => (base === "divine" ? v * divinePrice : v);
   const fromExalted = (ex: number) => (base === "divine" && divinePrice > 0 ? ex / divinePrice : ex);
   const unit = base === "divine" ? "div" : "ex";
+  // Show the price in the unit players actually quote (div for expensive, ex for cheap).
+  const price = denominate(row.value, base, divinePrice);
 
   return (
     <>
@@ -49,12 +51,14 @@ export default function CurrencyRow({
             <span className={`truncate ${selected ? "text-poe-text-bright" : "text-poe-text"}`}>{row.name}</span>
           </span>
         </td>
-        <td className="text-right tabular-nums text-poe-text-bright">{fmtNum(row.value)}</td>
+        <td className="text-right tabular-nums text-poe-text-bright">
+          {fmtNum(price.amount)} <span className="text-[10px] text-poe-text/45">{price.unit}</span>
+        </td>
         <td className={`text-right tabular-nums ${pos ? "text-emerald-400" : "text-red-400"}`}>
           {pos ? "+" : ""}
           {row.change24h.toFixed(1)}%
         </td>
-        <td className="text-right tabular-nums text-poe-text">{fmtCompact(row.volume)}</td>
+        <td className="text-right tabular-nums text-poe-text">{fmtCompact(row.volume)}<span className="text-[10px] text-poe-text/40">/d</span></td>
 
         <td className="px-1">
           <span className="flex items-center justify-center gap-0.5">

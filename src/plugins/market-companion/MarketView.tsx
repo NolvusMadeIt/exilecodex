@@ -121,18 +121,11 @@ export default function MarketView() {
           </option>
         ))}
       </select>
-      <span className="ml-2 text-[10px] uppercase tracking-[0.18em] text-poe-text/60">Base</span>
-      <div className="flex overflow-hidden rounded border border-poe-line">
-        {BASES.map((b) => (
-          <button
-            key={b.id}
-            onClick={() => setBase(b.id)}
-            className={`px-2.5 py-1 text-sm ${base === b.id ? "bg-white/[0.08] text-poe-gold" : "text-poe-text/60 hover:text-poe-gold"}`}
-          >
-            {b.label}
-          </button>
-        ))}
-      </div>
+      {/* Prices auto-show in the unit players actually quote — no base toggle needed. */}
+      <span className="ml-auto text-[11px] text-poe-text/45">
+        Prices in <span className="text-poe-text/70">Divine (div)</span> or <span className="text-poe-text/70">Exalt (ex)</span>
+        {data?.divinePrice ? <> · 1 div ≈ <span className="text-poe-gold">{fmtNum(data.divinePrice)}</span> ex</> : null}
+      </span>
     </div>
   );
 

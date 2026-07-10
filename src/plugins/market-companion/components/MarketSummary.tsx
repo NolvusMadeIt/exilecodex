@@ -29,7 +29,6 @@ function Metric({
 
 export default function MarketSummary({ count }: { count: number }) {
   const { league, base } = useSettings();
-  const unit = base === "divine" ? "div" : "ex";
 
   const { data } = useQuery({
     queryKey: ["summary", league, base],
@@ -43,15 +42,20 @@ export default function MarketSummary({ count }: { count: number }) {
       ? new Date(data.epoch * 1000).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
       : "—";
 
+  // Whole-economy aggregates are huge, so show them in Divine (the high-value unit) rather than
+  // billions of Exalt.
+  const dp = data?.divinePrice || 1;
+  const inDiv = (v: number) => (base === "divine" ? v : v / dp);
+
   return (
     <div className="panel flex flex-wrap items-center divide-x divide-poe-line">
       <div className="px-4 py-2">
         <div className="gold-heading text-sm tracking-[0.12em]">{league ?? "—"}</div>
         <div className="text-[10px] uppercase tracking-[0.18em] text-poe-text/60">Currency Exchange</div>
       </div>
-      <Metric label="Market Cap" value={data ? fmtCompact(data.marketCap) : "—"} unit={unit} accent />
-      <Metric label="24h Volume" value={data ? fmtCompact(data.volume) : "—"} unit={unit} />
-      <Metric label="Divine" value={data ? fmtNum(data.divinePrice) : "—"} unit="ex" />
+      <Metric label="Total market value" value={data ? fmtCompact(inDiv(data.marketCap)) : "—"} unit="div" accent />
+      <Metric label="Traded / day" value={data ? fmtCompact(inDiv(data.volume)) : "—"} unit="div" />
+      <Metric label="1 Divine =" value={data ? fmtNum(data.divinePrice) : "—"} unit="ex" />
       <Metric label="Tracked" value={`${count}`} />
       <Metric label="Updated" value={updated} />
     </div>

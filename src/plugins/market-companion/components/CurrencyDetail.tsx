@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSettings } from "../store/settings";
 import PriceChart from "./PriceChart";
-import { fmtNum, fmtCompact, fmtPct } from "../../../lib/market/format";
+import { fmtNum, fmtCompact, fmtPct, denominate } from "../../../lib/market/format";
 import { buyUrl, sellUrl } from "../../../lib/market/trade";
 import { fetchDetail } from "../../../lib/market/client";
 import { computeSignal } from "../../../lib/market/signal";
@@ -68,9 +68,20 @@ export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
 
   const s = data.stats;
   const signal = computeSignal(s);
-  const unit = data.baseLabel === "Divine" ? "div" : "ex";
-  const altUnit = data.baseLabel === "Divine" ? "ex" : "div";
-  const altValue = data.baseLabel === "Divine" ? s.current * data.divinePrice : s.current / data.divinePrice;
+  // The item's natural unit (div for expensive, ex for cheap); every price on this panel uses it.
+  const baseId = data.baseLabel === "Divine" ? "divine" : "exalted";
+  const priced = denominate(s.current, baseId, data.divinePrice);
+  const unit = priced.unit;
+  // Convert any base-value (in baseLabel units) into the item's natural display unit.
+  const inUnit = (v: number) => {
+    const ex = baseId === "divine" ? v * data.divinePrice : v;
+    return unit === "div" ? ex / data.divinePrice : ex;
+  };
+  const altUnit = unit === "div" ? "ex" : "div";
+  const altValue = unit === "div" ? priced.amount * data.divinePrice : priced.amount / data.divinePrice;
+  // Convert the chart series into the item's natural unit so the axis reads in div/ex, not millions.
+  const chartCandles = chart.candles.map((c) => ({ ...c, open: inUnit(c.open), high: inUnit(c.high), low: inUnit(c.low), close: inUnit(c.close) }));
+  const chartPoints = chart.points.map((p) => ({ ...p, value: inUnit(p.value) }));
   const hasChart =
     (chart.kind === "candle" && chart.candles.length > 0) || (chart.kind === "area" && chart.points.length > 0);
 
@@ -84,10 +95,10 @@ export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
         </div>
         <div className="ml-auto text-right">
           <div className="tabular-nums text-2xl text-poe-text-bright">
-            {fmtNum(s.current)} <span className="text-sm text-poe-text/50">{unit}</span>
+            {fmtNum(priced.amount)} <span className="text-sm text-poe-text/50">{unit}</span>
           </div>
           <div className="tabular-nums text-[11px] text-poe-text/50" title={`Same value in ${altUnit === "div" ? "Divine" : "Exalted"} Orbs`}>
-            ≈ {fmtNum(altValue)} {altUnit}
+            ≈ {fmtCompact(altValue)} {altUnit}
           </div>
           <div className="mt-0.5">
             <Change v={s.change24h} big />
@@ -152,7 +163,7 @@ export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
         >
           ⓘ About
         </button>
-        <span className="ml-auto text-[10px] uppercase tracking-[0.15em] text-poe-text/60">{data.baseLabel} · per unit</span>
+        <span className="ml-auto text-[10px] uppercase tracking-[0.15em] text-poe-text/60">{unit} · per unit</span>
       </div>
 
       <div className="relative min-h-0 flex-1 px-1 py-1">
@@ -161,20 +172,20 @@ export default function CurrencyDetail({ apiId }: { apiId: string | null }) {
             <WikiPanel name={data.name} />
           </div>
         ) : hasChart ? (
-          <PriceChart kind={chart.kind} candles={chart.candles} points={chart.points} unit={unit} />
+          <PriceChart kind={chart.kind} candles={chartCandles} points={chartPoints} unit={unit} />
         ) : (
           <div className="grid h-full place-items-center text-poe-text/60 text-sm">No {tf} data for this currency</div>
         )}
       </div>
 
       <div className="grid grid-cols-2 gap-px border-t border-poe-line bg-poe-line sm:grid-cols-4">
-        <Stat label="Day Open" value={fmtNum(s.open)} hint="Price when the latest day started" />
-        <Stat label="Latest" value={fmtNum(s.close)} hint="Most recent price (latest day's close)" />
-        <Stat label="24h High" value={fmtNum(s.high24h)} hint="Highest price in the last 24 hours" />
-        <Stat label="24h Low" value={fmtNum(s.low24h)} hint="Lowest price in the last 24 hours" />
+        <Stat label={`Day Open (${unit})`} value={fmtNum(inUnit(s.open))} hint="Price when the latest day started" />
+        <Stat label={`Latest (${unit})`} value={fmtNum(inUnit(s.close))} hint="Most recent price (latest day's close)" />
+        <Stat label={`24h High (${unit})`} value={fmtNum(inUnit(s.high24h))} hint="Highest price in the last 24 hours" />
+        <Stat label={`24h Low (${unit})`} value={fmtNum(inUnit(s.low24h))} hint="Lowest price in the last 24 hours" />
         <Stat label="7-Day" value={fmtPct(s.change7d)} tone={s.change7d >= 0 ? "gain" : "loss"} hint="Price move over the past 7 days" />
         <Stat label="30-Day" value={fmtPct(s.change30d)} tone={s.change30d >= 0 ? "gain" : "loss"} hint="Price move over the past 30 days" />
-        <Stat label="Traded 24h" value={fmtCompact(s.volume24h)} hint="How many were traded in the last 24 hours" />
+        <Stat label="Traded / day" value={fmtCompact(s.volume24h)} hint="How many were traded in the last 24 hours — higher means easier to buy or sell" />
         <Stat label="For Sale" value={fmtCompact(s.listed)} hint="How many are listed for sale right now" />
       </div>
     </div>

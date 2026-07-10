@@ -29,8 +29,9 @@ export default function CurrencyTable({
     [rows, sort, dir],
   );
 
-  const head = (k: SortKey, label: string, align = "text-left") => (
+  const head = (k: SortKey, label: string, align = "text-left", title?: string) => (
     <th
+      title={title}
       className={`${align} cursor-pointer select-none px-2 py-2 text-[11px] uppercase tracking-[0.15em] text-poe-gold-dim hover:text-poe-gold`}
       onClick={() => {
         if (sort === k) setDir((d) => (d === 1 ? -1 : 1));
@@ -51,9 +52,9 @@ export default function CurrencyTable({
               Currency
             </span>
           </th>
-          {head("value", "Value", "text-right")}
-          {head("change24h", "24h", "text-right")}
-          {head("volume", "Vol", "text-right")}
+          {head("value", "Price", "text-right", "Current price, shown in Divine (div) for expensive items or Exalt (ex) for cheaper ones")}
+          {head("change24h", "24h", "text-right", "Price change over the last 24 hours")}
+          {head("volume", "Traded / day", "text-right", "How many traded in the last 24 hours — higher means easier to buy or sell quickly")}
           <th className="px-1 py-2 text-center text-[11px] uppercase tracking-[0.15em] text-poe-gold-dim">Watch</th>
           <th className="px-2 py-2 pr-3 text-right text-[11px] uppercase tracking-[0.15em] text-poe-gold-dim">Trade</th>
         </tr>

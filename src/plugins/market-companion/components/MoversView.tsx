@@ -3,7 +3,7 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { ArrowLeft, TrendingUp, TrendingDown, Activity } from "lucide-react";
 import { useSettings } from "../store/settings";
 import { fetchCurrencies } from "../../../lib/market/client";
-import { fmtNum, fmtCompact } from "../../../lib/market/format";
+import { fmtNum, fmtCompact, denominate } from "../../../lib/market/format";
 import { rankMovers, type RankedMover } from "../lib/signals";
 import SellCallBadge from "./SellCallBadge";
 import Sparkline from "./Sparkline";
@@ -27,7 +27,7 @@ export default function MoversView({ onBack, onSelect }: { onBack: () => void; o
 
   // Movers are a whole-market read, so pull the biggest categories in one query and pool them.
   const cats = ["currency", "fragments", "essences", "runes"];
-  const { data: pooled = [], isLoading: loading, isError: error } = useQuery({
+  const { data, isLoading: loading, isError: error } = useQuery({
     queryKey: ["movers", league, base],
     enabled: !!league,
     refetchInterval: refreshMs || false,
@@ -37,9 +37,11 @@ export default function MoversView({ onBack, onSelect }: { onBack: () => void; o
       const seen = new Set<string>();
       const out = [];
       for (const res of results) for (const r of res?.rows ?? []) if (!seen.has(r.apiId)) (seen.add(r.apiId), out.push(r));
-      return out;
+      return { rows: out, divinePrice: results.find((r) => r?.divinePrice)?.divinePrice ?? 1 };
     },
   });
+  const pooled = data?.rows ?? [];
+  const divinePrice = data?.divinePrice ?? 1;
 
   const movers = useMemo(() => rankMovers(pooled, kind, 12), [pooled, kind]);
 
@@ -84,9 +86,9 @@ export default function MoversView({ onBack, onSelect }: { onBack: () => void; o
               <tr className="border-b border-poe-line">
                 <th className="py-2 pl-4 text-left font-medium">#</th>
                 <th className="py-2 text-left font-medium">Item</th>
-                <th className="py-2 text-right font-medium">Rate</th>
+                <th className="py-2 text-right font-medium">Price</th>
                 <th className="py-2 text-right font-medium">24h</th>
-                <th className="hidden py-2 text-right font-medium sm:table-cell">Vol/d</th>
+                <th className="hidden py-2 text-right font-medium sm:table-cell" title="How many traded in the last 24 hours — higher means easier to buy or sell">Traded/day</th>
                 <th className="hidden py-2 text-center font-medium md:table-cell">Trend</th>
                 <th className="py-2 pr-4 text-right font-medium">Call</th>
               </tr>
@@ -108,7 +110,7 @@ export default function MoversView({ onBack, onSelect }: { onBack: () => void; o
                       </span>
                     </td>
                     <td className="text-right tabular-nums text-poe-text-bright">
-                      {fmtNum(m.row.value)} <span className="text-[10px] text-poe-text/40">{unit}</span>
+                      {(() => { const p = denominate(m.row.value, base, divinePrice); return <>{fmtNum(p.amount)} <span className="text-[10px] text-poe-text/40">{p.unit}</span></>; })()}
                     </td>
                     <td className={`text-right tabular-nums ${pos ? "text-emerald-400" : "text-red-400"}`}>
                       {pos ? "+" : ""}
