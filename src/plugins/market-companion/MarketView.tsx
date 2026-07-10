@@ -6,6 +6,7 @@ import CurrencyDetail from "./components/CurrencyDetail";
 import MarketSummary from "./components/MarketSummary";
 import WatchlistView from "./components/WatchlistView";
 import MoversView from "./components/MoversView";
+import MarketTicker from "./components/MarketTicker";
 import { EmptyState, ErrorState } from "./components/States";
 import { fmtNum } from "../../lib/market/format";
 import { fetchLeagues, fetchCategories, fetchCurrencies } from "../../lib/market/client";
@@ -228,6 +229,8 @@ export default function MarketView() {
 
   return (
     <div className="flex h-[calc(100vh-128px)] min-h-0 flex-col gap-3">
+      {/* Live ticker of the most-traded currencies — always currencies, whatever the table shows. */}
+      {league && <MarketTicker onSelect={openDetail} />}
       {controls}
       {view === "market" && league && rows.length > 0 && <MarketSummary count={rows.length} />}
       {body}

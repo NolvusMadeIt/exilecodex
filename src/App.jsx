@@ -14,6 +14,7 @@ import { PresetsPage } from './pages/PresetsPage.jsx'
 
 // Lazy-loaded pages — keeps the initial bundle small (Presets ships immediately,
 // the rest stream in on first navigation).
+const TickerStandalone = lazy(() => import('./plugins/market-companion/TickerStandalone.tsx'))
 const QuickEditorPage  = lazy(() => import('./pages/QuickEditorPage.jsx').then(m => ({ default: m.QuickEditorPage })))
 const TierListsPage    = lazy(() => import('./pages/TierListsPage.jsx').then(m => ({ default: m.TierListsPage })))
 const CustomRulesPage  = lazy(() => import('./pages/CustomRulesPage.jsx').then(m => ({ default: m.CustomRulesPage })))
@@ -113,6 +114,8 @@ function HomePage() {
 function AppShell() {
   const { path } = useRouter()
   if (path === '/home') return <HomePage />
+  // The popped-out market ticker — a thin, chrome-less window with just the scrolling banner.
+  if (path === '/ticker') return <Suspense fallback={null}><TickerStandalone /></Suspense>
   if (path.startsWith('/overlay/')) {
     return <OverlayShell pluginId={path.slice('/overlay/'.length)} />
   }

@@ -322,6 +322,17 @@ body {
     border-radius: 0;
   }
 
+  /* Market ticker (MarketTicker.tsx) — a stock-style scroll of the most-traded currencies.
+     The track is duplicated, so a -50% translate loops seamlessly; hovering the banner pauses. */
+  @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .ticker-track {
+    width: max-content;
+    animation: ticker-scroll 60s linear infinite;
+    will-change: transform;
+  }
+  .ticker-banner:hover .ticker-track { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
   /* Ground behind item-label previews — the game's dark texture under a vignette, so labels
      sit on "the floor" the way drops do in-game (reference: FilterBlade-style previews). */
   .label-ground {
