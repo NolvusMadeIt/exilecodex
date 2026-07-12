@@ -1082,3 +1082,148 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
   font-size: 11.5px; line-height: 1.55; pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,.5);
 }
 .ectree-tip b { color: var(--ec-gold); }
+
+/* ============================================================================
+   Crafting bench (Crafting plugin — window.ecCraft / craft-engine.js)
+   A Craft-of-Exile-style simulator: base picker, item tooltip, currency /
+   essence / omen grids, live mod pool with weights, history + backtrack.
+   ========================================================================== */
+.cx-loading { padding: 46px 12px; text-align: center; color: var(--ec-text-soft); font-size: 12.5px; }
+.cx-root { display: flex; flex-direction: column; gap: 10px; position: relative; }
+
+/* top base-picker bar */
+.cx-top { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap;
+  padding: 10px 12px; background: var(--ec-panel-2); border: 1px solid var(--ec-border-soft); border-radius: 10px; }
+.cx-field { display: flex; flex-direction: column; gap: 3px; }
+.cx-field > label { font-size: 9.5px; text-transform: uppercase; letter-spacing: .1em; color: var(--ec-muted); }
+.cx-field.cx-grow { flex: 1 1 200px; min-width: 160px; }
+.cx-field.cx-ilvl { width: 92px; }
+.cx-reset { margin-left: auto; align-self: flex-end; }
+.cx-btn { border: 1px solid var(--ec-border); background: var(--ec-panel-3); color: var(--ec-gold-dim);
+  border-radius: 7px; padding: 6px 10px; cursor: pointer; font-size: 13px; }
+.cx-btn:hover { color: var(--ec-gold); border-color: var(--ec-gold-dim); }
+
+/* two-column layout */
+.cx-cols { display: flex; gap: 10px; align-items: flex-start; }
+.cx-left { flex: 0 0 42%; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.cx-right { flex: 1 1 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+@media (max-width: 820px) { .cx-cols { flex-direction: column; } .cx-left { flex-basis: auto; width: 100%; } }
+
+.cx-card { background: var(--ec-panel-2); border: 1px solid var(--ec-border-soft); border-radius: 10px; overflow: hidden; }
+.cx-cardhead { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 8px 12px; font-size: 10.5px; text-transform: uppercase; letter-spacing: .12em; color: var(--ec-text-soft);
+  background: var(--ec-panel-3); border-bottom: 1px solid var(--ec-border-soft); }
+
+/* item tooltip card */
+.cx-itemhead { display: flex; gap: 11px; align-items: center; padding: 11px 12px 8px; }
+.cx-itemimg { width: 46px; height: 46px; object-fit: contain; flex: 0 0 auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); }
+.cx-itemtitle { min-width: 0; }
+.cx-itemname { font-size: 15px; font-weight: 600; line-height: 1.15; letter-spacing: .01em; }
+.cx-itemsub { font-size: 11px; color: var(--ec-text-soft); margin-top: 2px; }
+.cx-r-normal .cx-itemname { color: #d4cdbb; }
+.cx-r-magic  .cx-itemname { color: #8f9ff4; }
+.cx-r-rare   .cx-itemname { color: #e5d16a; }
+.cx-r-normal { border-color: #4a4638; } .cx-r-normal .cx-cardhead { color: #b8b09a; }
+.cx-r-magic  { border-color: #40477e; }
+.cx-r-rare   { border-color: #7a6a2c; }
+.cx-corrupt  { border-color: #7a241c !important; box-shadow: inset 0 0 0 1px rgba(150,40,30,.4); }
+.cx-implicits { padding: 0 12px 6px; border-bottom: 1px dashed var(--ec-border-soft); margin-bottom: 4px; }
+.cx-imp { font-size: 12px; color: #8f9ff4; text-align: center; line-height: 1.5; }
+.cx-slotcounts { display: flex; gap: 8px; padding: 6px 12px; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+.cx-slotcounts > span { flex: 1; text-align: center; padding: 3px 0; border-radius: 5px; border: 1px solid var(--ec-border-soft); }
+.cx-pfx { color: #9ab3d8; background: rgba(58,90,134,.14); }
+.cx-sfx { color: #d8b483; background: rgba(122,90,46,.14); }
+.cx-modlist { padding: 6px 8px 8px; display: flex; flex-direction: column; gap: 4px; }
+.cx-emptymods { padding: 16px 8px; text-align: center; font-size: 11.5px; color: var(--ec-muted); }
+.cx-mod { display: flex; gap: 8px; align-items: flex-start; padding: 6px 8px; border-radius: 7px; background: var(--ec-panel-3); border: 1px solid transparent; }
+.cx-mod:hover { border-color: var(--ec-border-soft); }
+.cx-mbadge, .cx-pbadge { flex: 0 0 auto; width: 18px; height: 18px; border-radius: 4px; display: grid; place-items: center;
+  font-size: 10px; font-weight: 700; color: #fff; margin-top: 1px; }
+.cx-b-prefix { background: #3a5a86; } .cx-b-suffix { background: #7a5a2e; }
+.cx-mbody { min-width: 0; flex: 1; }
+.cx-mtext { font-size: 12.5px; color: var(--ec-text-strong); line-height: 1.35; }
+.cx-mmeta { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-top: 3px; }
+.cx-tier { font-size: 9.5px; color: var(--ec-gold-dim); text-transform: uppercase; letter-spacing: .04em; }
+.cx-mtag { font-size: 9px; color: var(--ec-text-soft); background: var(--ec-panel); border: 1px solid var(--ec-border-soft);
+  border-radius: 4px; padding: 0 5px; line-height: 15px; }
+.cx-fract { color: #d8b483; font-size: 11px; } .cx-guar { color: var(--ec-gold); font-size: 11px; }
+.cx-itemactions { padding: 6px 10px 9px; text-align: right; }
+.cx-linkbtn { background: none; border: none; color: var(--ec-text-soft); cursor: pointer; font-size: 11px; }
+.cx-linkbtn:hover { color: var(--ec-red-text); }
+
+/* active craft tags */
+.cx-ctags { display: flex; flex-wrap: wrap; gap: 5px; padding: 9px 12px; }
+.cx-ctag { font-size: 10.5px; color: var(--ec-text); background: var(--ec-panel-3); border: 1px solid var(--ec-border-soft);
+  border-radius: 20px; padding: 2px 6px 2px 9px; display: inline-flex; align-items: center; gap: 5px; }
+.cx-ctag b { background: var(--ec-gold-bg); color: var(--ec-gold); border-radius: 10px; font-size: 9.5px; padding: 0 5px; line-height: 15px; }
+
+/* history */
+.cx-histempty { padding: 16px 12px; font-size: 11.5px; color: var(--ec-muted); text-align: center; }
+.cx-hcount { font-size: 9.5px; color: var(--ec-muted); letter-spacing: .04em; }
+.cx-hlist { max-height: 260px; overflow-y: auto; padding: 6px; display: flex; flex-direction: column; gap: 5px; }
+.cx-hstep { border: 1px solid var(--ec-border-soft); border-radius: 7px; background: var(--ec-panel-3); padding: 6px 8px; }
+.cx-hhead { display: flex; align-items: center; gap: 7px; }
+.cx-hnum { flex: 0 0 auto; width: 17px; height: 17px; border-radius: 50%; background: var(--ec-gold-bg); color: var(--ec-gold);
+  font-size: 9.5px; font-weight: 700; display: grid; place-items: center; }
+.cx-hlabel { flex: 1; min-width: 0; font-size: 11.5px; color: var(--ec-text-strong); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cx-backtrack { flex: 0 0 auto; background: none; border: 1px solid var(--ec-border-soft); border-radius: 5px; color: var(--ec-text-soft);
+  cursor: pointer; font-size: 10px; padding: 1px 6px; }
+.cx-backtrack:hover { color: var(--ec-gold); border-color: var(--ec-gold-dim); }
+.cx-hlog { font-size: 10.5px; color: var(--ec-text-soft); padding: 2px 0 0 24px; line-height: 1.4; }
+
+/* crafting step (currency / essence / omen) */
+.cx-tabs { display: flex; gap: 3px; padding: 8px 10px 0; }
+.cx-tab { flex: 1; border: 1px solid var(--ec-border-soft); border-bottom: none; background: var(--ec-panel-3); color: var(--ec-text-soft);
+  border-radius: 7px 7px 0 0; padding: 6px 4px; cursor: pointer; font-size: 11.5px; }
+.cx-tab:hover { color: var(--ec-gold); }
+.cx-tab.active { background: var(--ec-gold-bg); color: var(--ec-gold); border-color: var(--ec-gold-dim); }
+.cx-stepbody { padding: 10px; border-top: 1px solid var(--ec-border-soft); }
+.cx-activeomen { padding: 6px 12px; font-size: 11px; color: var(--ec-text); background: rgba(201,164,92,.08); border-top: 1px solid var(--ec-border-soft); }
+.cx-activeomen b { color: var(--ec-gold); }
+.cx-omenclear { margin-left: 6px; background: none; border: none; color: var(--ec-text-soft); cursor: pointer; font-size: 10px; text-decoration: underline; }
+.cx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 6px; }
+.cx-omengrid { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); }
+.cx-cell { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 7px 4px 5px;
+  border: 1px solid var(--ec-border-soft); border-radius: 8px; background: var(--ec-panel-3); cursor: pointer; transition: .12s; }
+.cx-cell:hover:not(.disabled) { border-color: var(--ec-gold-dim); background: var(--ec-panel); transform: translateY(-1px); }
+.cx-cell.on { border-color: var(--ec-gold); background: var(--ec-gold-bg); box-shadow: 0 0 0 1px var(--ec-gold-dim); }
+.cx-cell.disabled { opacity: .32; cursor: not-allowed; }
+.cx-cell img { width: 34px; height: 34px; object-fit: contain; }
+.cx-cellname { font-size: 9px; line-height: 1.15; text-align: center; color: var(--ec-text-soft); max-height: 22px; overflow: hidden; }
+.cx-cell.on .cx-cellname { color: var(--ec-gold); }
+.cx-essgroup { margin-bottom: 10px; }
+.cx-essgrouphead { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--ec-gold-dim); margin: 2px 0 5px; }
+.cx-hint { font-size: 10.5px; color: var(--ec-muted); margin-top: 9px; line-height: 1.5; }
+.cx-hint b { color: var(--ec-text-soft); }
+
+/* mod pool */
+.cx-poolweight { font-size: 9.5px; color: var(--ec-muted); text-transform: none; letter-spacing: 0; }
+.cx-poolctl { display: flex; gap: 8px; align-items: center; padding: 8px 10px; }
+.cx-poolside { border: 1px solid var(--ec-border-soft); background: var(--ec-panel-3); color: var(--ec-text-soft);
+  border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 11px; }
+.cx-poolside.on { background: var(--ec-gold-bg); color: var(--ec-gold); border-color: var(--ec-gold-dim); }
+.cx-poolsearch { flex: 1; display: flex; align-items: center; gap: 6px; padding: 4px 9px; background: var(--ec-panel-3);
+  border: 1px solid var(--ec-border-soft); border-radius: 7px; color: var(--ec-text-soft); }
+.cx-poolsearch input { flex: 1; background: none; border: none; outline: none; color: var(--ec-text); font-size: 12px; }
+.cx-pooltags { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 0 10px 8px; }
+.cx-pooltaglbl { font-size: 10px; color: var(--ec-muted); text-transform: uppercase; letter-spacing: .06em; margin-right: 2px; }
+.cx-poolTag { border: 1px solid var(--ec-border-soft); background: var(--ec-panel-3); color: var(--ec-text-soft);
+  border-radius: 5px; padding: 1px 7px; cursor: pointer; font-size: 10px; }
+.cx-poolTag:hover { color: var(--ec-gold); } .cx-poolTag.on { background: var(--ec-gold-bg); color: var(--ec-gold); border-color: var(--ec-gold-dim); }
+.cx-poollist { max-height: 42vh; overflow-y: auto; padding: 4px 8px 8px; display: flex; flex-direction: column; gap: 3px; }
+.cx-prow { display: flex; gap: 8px; align-items: center; padding: 5px 8px; border-radius: 7px; background: var(--ec-panel-3); border: 1px solid transparent; }
+.cx-prow:hover { border-color: var(--ec-border-soft); background: var(--ec-panel); }
+.cx-pbody { flex: 1; min-width: 0; }
+.cx-ptext { font-size: 12px; color: var(--ec-text-strong); line-height: 1.3; }
+.cx-pmeta { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-top: 2px; }
+.cx-pmore { font-size: 9.5px; color: var(--ec-muted); }
+.cx-pw { flex: 0 0 auto; text-align: right; min-width: 48px; }
+.cx-pw b { display: block; font-size: 12px; color: var(--ec-gold); }
+.cx-pw span { font-size: 9.5px; color: var(--ec-muted); }
+
+/* transient error toast */
+.cx-flash { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%) translateY(8px); z-index: 40;
+  background: var(--ec-red-bg); border: 1px solid var(--ec-red-border); color: var(--ec-red-text);
+  font-size: 11.5px; padding: 7px 14px; border-radius: 8px; opacity: 0; pointer-events: none; transition: .2s;
+  box-shadow: 0 6px 20px rgba(0,0,0,.5); max-width: 80%; text-align: center; }
+.cx-flash.show { opacity: 1; transform: translateX(-50%) translateY(0); }

@@ -5,15 +5,16 @@ Complete source code: https://github.com/NolvusMadeIt/exilecodex
 
 ## XileHUD
 
-Portions of this application — the item/modifier database modules under `src/xilehud/` and the
-game data files under `public/xilehud/` — are derived from the
+Portions of this application — the game-data files under `app/media/xilehud/` (item, modifier,
+currency, essence, omen and base data) and the crafting-bench icon set under
+`app/media/xilehud/crafting/` (vendored from XileHUD's `bundled-images/`) — are derived from the
 **[XileHUD](https://github.com/XileHUD/poe_overlay)** project, © the XileHUD contributors,
-used under the terms of the GPL-3.0 license. Vendored files carry an origin banner and retain
-their upstream history; modifications (theming to this app's design tokens, a fetch-based data
-adapter replacing Electron IPC, React mounting) are noted in those banners and visible in this
+used under the terms of the GPL-3.0 license. The crafting images are copied locally (not
+hotlinked); modifications (theming to this app's design tokens, a fetch-based data adapter, and
+the Lua/Bootstrap re-implementation of the Modifiers/Crafting views) are visible in this
 repository's history.
 
-The in-app Item Database and related modules display a "Powered by XileHUD" credit.
+The in-app Item Database, Crafting bench and related modules display a "Powered by XileHUD" credit.
 
 ## ExileCompass
 
@@ -31,8 +32,11 @@ fan-made tool, not affiliated with or endorsed by Grinding Gear Games.
   interface art (extracted game assets), © Grinding Gear Games, used here — as across the PoE
   fan-tool ecosystem — to give a game-companion tool the game's own look. They are not claimed
   as part of this project's GPL-licensed work and would be removed promptly on GGG's request.
-- Item, currency and skill images are loaded from Grinding Gear Games' public CDN
-  (`web.poecdn.com`) or cached locally from it.
+- Item, currency and skill images are Grinding Gear Games' game art, sourced from GGG's public
+  CDN (`web.poecdn.com` / `cdn.poe2db.tw`) — either loaded from it or cached/vendored locally
+  (e.g. the crafting-bench icons under `app/media/xilehud/crafting/`, via XileHUD's asset bundle).
+  They are not claimed as part of this project's GPL-licensed work and would be removed promptly
+  on GGG's request.
 
 ## Typography
 

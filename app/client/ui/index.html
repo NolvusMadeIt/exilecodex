@@ -42,6 +42,9 @@
   <!-- PoE2 passive tree canvas renderer (Build Planner Tree tab), over the vendored tree.json. -->
   <script src="./js/tree-render.js"></script>
 
+  <!-- PoE2 crafting bench engine + UI (Crafting plugin), over the bundled XileHUD dataset. -->
+  <script src="./js/craft-engine.js"></script>
+
   <!--
     The load order below is the app's "TOC" (like a WoW addon .toc file):
     core libraries first, then every plugin, then init.lua mounts the UI.
@@ -66,8 +69,8 @@
   <script type="application/lua" src="../../addons/price-check/plugin.lua"></script>
   <script type="application/lua" src="../../addons/filter-editor/plugin.lua"></script>
   <script type="application/lua" src="../../addons/xile-items/plugin.lua"></script>
-  <script type="application/lua" src="../../addons/xile-modifiers/plugin.lua"></script>
-  <script type="application/lua" src="../../addons/xile-crafting/plugin.lua"></script>
+  <!-- Modifiers + Crafting reference plugins merged into the interactive Crafting bench below. -->
+  <script type="application/lua" src="../../addons/crafting/plugin.lua"></script>
   <script type="application/lua" src="../../addons/xile-character/plugin.lua"></script>
   <script type="application/lua" src="../../addons/xile-tools/plugin.lua"></script>
   <script type="application/lua" src="../../addons/xile-history/plugin.lua"></script>
