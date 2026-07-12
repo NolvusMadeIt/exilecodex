@@ -20,6 +20,28 @@ local function shell()
   return nil
 end
 
+-- Developer mode is a *session* unlock (tap About six times). On the desktop it
+-- lives in the shell's main process, so it survives a window<->overlay switch
+-- but relocks when the app fully closes. In the browser build it falls back to
+-- sessionStorage (per tab). It is deliberately NOT an ec.* pref, so it never
+-- persists to SavedVariables across launches.
+local function dev_unlocked()
+  local sh = shell()
+  if sh ~= nil and sh.getDevUnlocked ~= nil then
+    local ok, v = pcall(function() return sh:getDevUnlocked() end)
+    if ok then return v and true or false end
+  end
+  local ok, v = pcall(function() return window.sessionStorage:getItem("ecDevUnlocked") end)
+  return ok and v == "1"
+end
+local function set_dev_unlocked(v)
+  local sh = shell()
+  if sh ~= nil and sh.setDevUnlocked ~= nil then
+    pcall(function() sh:setDevUnlocked(v and true or false) end)
+  end
+  pcall(function() window.sessionStorage:setItem("ecDevUnlocked", v and "1" or "0") end)
+end
+
 -- ---------------------------------------------------------------- themes
 
 local THEME_VARS = {
@@ -157,7 +179,7 @@ local GROUPS = {
   { id = "about", name = "About", icon = "bi-info-circle" },
 }
 
-local title_taps = 0
+local about_taps = 0
 local body_el = nil
 
 -- our stable client id for settings sync (matches app_settings.client_id)
@@ -530,7 +552,8 @@ RENDER.overlay = function(pane)
     '<input id="set-ov-hotkey" class="form-control form-control-sm" style="max-width:130px" value="',
     ui.store_get("ec.overlay.hotkey") or "Shift+Alt+F", '">',
     '</div>',
-    '<div class="ec-muted mt-1" style="font-size:11px">Enable arms the show/hide hotkey (works while PoE2 is focused). Run PoE2 in Borderless so the overlay can sit on top.</div>',
+    '<div class="ec-muted mt-1" style="font-size:11px"><b>Off (default):</b> ExileCodex runs as a normal resizable window. '
+      .. '<b>On:</b> it reloads as a transparent, click-through overlay on top of the game — the show/hide hotkey arms (works while PoE2 is focused); run PoE2 in Borderless so the overlay can sit on top. Switching reloads the app.</div>',
   }))
   bind_toggle(pane, "#set-ov-on", "ec.overlay.enabled", push_overlay)
   bind_store(pane, "#set-ov-side", "ec.overlay.side")
@@ -659,8 +682,33 @@ RENDER.about = function(pane)
 end
 
 RENDER.developer = function(pane)
-  pane.innerHTML = sec(T("Developer"), nil, toggle_html("set-devmode", "Developer mode", ui.store_get("ec.devMode") == "1"))
+  pane.innerHTML = sec(T("Developer"), "session", table.concat({
+    toggle_html("set-devmode", "Developer mode", ui.store_get("ec.devMode") == "1"),
+    '<div class="ec-muted mt-2" style="font-size:11px">Unlocked for this session. It relocks automatically when ExileCodex is fully closed (window or overlay).</div>',
+    '<button id="set-devlock" class="btn btn-ec-ghost btn-sm mt-2"><i class="bi bi-lock"></i> Relock now</button>',
+  }))
   bind_toggle(pane, "#set-devmode", "ec.devMode")
+  ui.on(pane:querySelector("#set-devlock"), "click", function()
+    set_dev_unlocked(false)
+    ui.store_set("ec.settings.group", "general")
+    S.mount(body_el)
+  end)
+end
+
+-- A themed, self-dismissing "unlocked" toast (PoE-flavoured), shown on the
+-- easter egg. Uses a pure CSS animation so no timers are needed.
+local function show_dev_unlock()
+  local el = document:createElement("div")
+  el.className = "ec-devtoast"
+  el.innerHTML = table.concat({
+    '<i class="bi bi-unlock-fill"></i>',
+    '<div><div class="ec-devtoast-title">Developer mode unlocked</div>',
+    '<div class="ec-devtoast-sub">The veil parts. The Developer panel is yours — until the app is closed.</div></div>',
+  })
+  document.body:appendChild(el)
+  ui.on(el, "animationend", function()
+    if el.parentNode ~= nil and el.parentNode ~= js.null then el.parentNode:removeChild(el) end
+  end)
 end
 
 -- ---------------------------------------------------------------- widget
@@ -668,7 +716,7 @@ end
 local function groups_list()
   local list = {}
   for _, grp in ipairs(GROUPS) do list[#list + 1] = grp end
-  if ui.store_get("ec.devUnlocked") == "1" then
+  if dev_unlocked() then
     list[#list + 1] = { id = "developer", name = "Developer", icon = "bi-bug" }
   end
   return list
@@ -708,20 +756,35 @@ function S.mount(body)
   parts[#parts + 1] = '</div>'
   parts[#parts + 1] = '<div id="set-pane" class="set-pane"></div>'
   parts[#parts + 1] = '</div>'
+  -- Footer: the version / launcher hint (retired from the floating corner).
+  -- Shown in the normal desktop window only — never over the game overlay.
+  local sh = shell()
+  local is_overlay = sh ~= nil and sh.mode ~= nil and tostring(sh.mode) == "overlay"
+  if not is_overlay then
+    parts[#parts + 1] = '<div class="set-footer">ExileCodex ' .. codex.VERSION .. ' &middot; Alt+1 launcher</div>'
+  end
   body.innerHTML = table.concat(parts)
 
   ui.each(body, ".set-nav-btn", function(btn)
-    ui.on(btn, "click", function() select_group(ui.attr(btn, "data-group")) end)
-  end)
-
-  ui.on(body:querySelector("#set-title"), "click", function()
-    if ui.store_get("ec.devUnlocked") == "1" then return end
-    title_taps = title_taps + 1
-    if title_taps >= 7 then
-      ui.store_set("ec.devUnlocked", "1")
-      ui.store_set("ec.settings.group", "developer")
-      S.mount(body)
-    end
+    ui.on(btn, "click", function()
+      local id = ui.attr(btn, "data-group")
+      -- Easter egg: six clicks on About unlocks the Developer section for this
+      -- session (only counts real clicks, resets if you visit another group).
+      if id == "about" and not dev_unlocked() then
+        about_taps = about_taps + 1
+        if about_taps >= 6 then
+          about_taps = 0
+          set_dev_unlocked(true)
+          show_dev_unlock()
+          ui.store_set("ec.settings.group", "developer")
+          S.mount(body)
+          return
+        end
+      elseif id ~= "about" then
+        about_taps = 0
+      end
+      select_group(id)
+    end)
   end)
 
   select_group(current)

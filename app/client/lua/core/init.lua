@@ -291,8 +291,9 @@ W.onchange = sync_rail
 render_rail()
 orb_load()
 
-local corner = ui.byId("corner")
-corner.innerHTML = 'ExileCodex ' .. VERSION .. ' &middot; Alt+1 launcher'
+-- The version / launcher hint now lives in the Settings panel footer (shown
+-- in desktop-window mode only, not in the game overlay) — see settings.lua.
+-- The floating corner label is retired.
 
 local start = ui.store_get("ec.default_view") or "campaign-guide"
 if codex.registry.find(start) then

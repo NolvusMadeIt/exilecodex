@@ -62,6 +62,29 @@ ipcMain.on('ec:save-vars', (_e, json) => {
   try { fs.writeFileSync(varsFile(), json) } catch { /* disk full / locked — keep running */ }
 })
 
+// ---- Window mode (default) vs game-overlay mode --------------------------
+// The app launches as a NORMAL, framed, resizable WINDOW by default. Turning on
+// "Enable game overlay" (Settings → Game overlay) recreates the window as the
+// transparent, click-through, always-on-top overlay — and back. The chosen mode
+// is read from the durable SavedVariables at startup, and the renderer is told
+// which mode it's in via a ?shell=<mode> query param + the get-mode bridge.
+let win = null
+let currentMode = 'window'
+function readSavedMode() {
+  try {
+    const vars = JSON.parse(fs.readFileSync(varsFile(), 'utf8'))
+    return vars['ec.overlay.enabled'] === '1' ? 'overlay' : 'window'
+  } catch { return 'window' }
+}
+ipcMain.on('ec:get-mode', (e) => { e.returnValue = currentMode })
+
+// Developer mode is a *session* unlock (Settings → tap About six times). It's
+// held in main-process memory so it survives a window↔overlay switch (which
+// recreates the renderer) but relocks when the whole app is closed.
+let devUnlocked = false
+ipcMain.on('ec:dev-get', (e) => { e.returnValue = devUnlocked })
+ipcMain.on('ec:dev-set', (_e, v) => { devUnlocked = !!v })
+
 const MIME = {
   '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
   '.lua': 'text/x-lua', '.json': 'application/json',
@@ -100,46 +123,73 @@ app.whenReady().then(async () => {
   const port = await serveRepo()
   console.log(`ExileCodex desktop shell: serving on http://127.0.0.1:${port}`)
 
-  const wa = screen.getPrimaryDisplay().workArea
-  const win = new BrowserWindow({
-    x: wa.x,
-    y: wa.y,
-    width: wa.width,
-    height: wa.height,
-    frame: false,
-    transparent: true,
-    backgroundColor: '#00000000',
-    hasShadow: false,
-    resizable: false,
-    movable: false,
-    alwaysOnTop: true,
-    icon: path.join(ROOT, 'app', 'media', 'brand', '128.png'),
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.cjs'),
-      contextIsolation: true,
-      nodeIntegration: false,
-      sandbox: true,
-    },
-  })
+  currentMode = readSavedMode()
 
-  // Screen-saver level keeps the overlay above borderless games (PoE2 in
-  // Borderless), and we reassert on blur — interacting with settings or the
-  // game must never let the overlay sink behind the game window.
-  win.setAlwaysOnTop(true, 'screen-saver', 1)
-  win.on('blur', () => win.setAlwaysOnTop(true, 'screen-saver', 1))
+  // The two window personalities. Overlay = transparent, click-through,
+  // always-on-top, covering the work area. Window = a normal framed, opaque,
+  // resizable desktop window centred on the primary display.
+  function windowOpts(mode) {
+    const base = {
+      icon: path.join(ROOT, 'app', 'media', 'brand', '128.png'),
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.cjs'),
+        contextIsolation: true,
+        nodeIntegration: false,
+        sandbox: true,
+      },
+    }
+    const wa = screen.getPrimaryDisplay().workArea
+    if (mode === 'overlay') {
+      return {
+        ...base, x: wa.x, y: wa.y, width: wa.width, height: wa.height,
+        frame: false, transparent: true, backgroundColor: '#00000000', hasShadow: false,
+        resizable: false, movable: false, alwaysOnTop: true,
+      }
+    }
+    const w = Math.min(1360, wa.width - 80), h = Math.min(900, wa.height - 80)
+    return {
+      ...base, width: w, height: h, minWidth: 900, minHeight: 600, center: true,
+      frame: true, transparent: false, backgroundColor: '#0e0d0b', hasShadow: true,
+      resizable: true, movable: true, alwaysOnTop: false,
+    }
+  }
 
-  // Default to pass-through: if hover detection ever breaks, the failure mode
-  // is "orb not clickable", never "invisible wall over the desktop".
-  win.setIgnoreMouseEvents(true, { forward: true })
+  function createWindow(mode) {
+    currentMode = mode
+    win = new BrowserWindow(windowOpts(mode))
+    if (mode === 'overlay') {
+      // Screen-saver level keeps the overlay above borderless games (PoE2 in
+      // Borderless); reassert on blur so it never sinks behind the game.
+      win.setAlwaysOnTop(true, 'screen-saver', 1)
+      win.on('blur', () => { if (!win.isDestroyed()) win.setAlwaysOnTop(true, 'screen-saver', 1) })
+      // Default to pass-through: if hover detection ever breaks, the failure
+      // mode is "orb not clickable", never "invisible wall over the desktop".
+      win.setIgnoreMouseEvents(true, { forward: true })
+    }
+    // external links (Buy/Sell on the trade site, wiki, etc.) open in the system browser
+    win.webContents.setWindowOpenHandler(({ url }) => {
+      if (/^https?:\/\//.test(url)) shell.openExternal(url)
+      return { action: 'deny' }
+    })
+    // Tell the renderer which personality it is (drives transparent-vs-painted
+    // background + whether to arm click-through hover tracking).
+    win.loadURL(`http://127.0.0.1:${port}/app/client/ui/index.html?shell=${mode}`)
+    return win
+  }
 
-  // external links (Buy/Sell on the trade site, wiki, etc.) open in the system browser
-  win.webContents.setWindowOpenHandler(({ url }) => {
-    if (/^https?:\/\//.test(url)) shell.openExternal(url)
-    return { action: 'deny' }
-  })
+  // Switch personalities by recreating the window (transparent is immutable
+  // after creation). Create the new one BEFORE destroying the old so
+  // window-all-closed never fires mid-switch and quits the app.
+  function switchMode(mode) {
+    if (mode === currentMode && win && !win.isDestroyed()) return
+    const old = win
+    createWindow(mode)
+    if (old && !old.isDestroyed()) old.destroy()
+  }
 
   ipcMain.on('ec:mouse-through', (_e, flag) => {
-    win.setIgnoreMouseEvents(!!flag, { forward: true })
+    // Only the overlay is ever click-through; a normal window stays solid.
+    if (currentMode === 'overlay' && win && !win.isDestroyed()) win.setIgnoreMouseEvents(!!flag, { forward: true })
   })
   ipcMain.on('ec:quit', () => app.quit())
 
@@ -281,10 +331,16 @@ app.whenReady().then(async () => {
 
   ipcMain.on('ec:overlay-config', (_e, cfg) => {
     cfg = cfg || {}
-    // "Enable game overlay" arms the show/hide hotkey; off = always visible.
-    setOverlayHotkey(cfg.enabled ? (cfg.hotkey || 'Shift+Alt+F') : null)
-    if (cfg.display) placeOnDisplay(cfg.display)
-    if (!win.isVisible()) win.show()
+    // "Enable game overlay" ON -> become the overlay; OFF -> a normal window.
+    // Recreating the window is the "reload as an overlay" the toggle promises.
+    const want = cfg.enabled ? 'overlay' : 'window'
+    switchMode(want)
+    // The global show/hide hotkey + display pinning only apply to the overlay.
+    setOverlayHotkey(want === 'overlay' ? (cfg.hotkey || 'Shift+Alt+F') : null)
+    if (want === 'overlay') {
+      if (cfg.display) placeOnDisplay(cfg.display)
+      if (win && !win.isVisible()) win.show()
+    }
   })
 
   // Report the available monitors so Settings can offer a real display picker.
@@ -296,7 +352,7 @@ app.whenReady().then(async () => {
     }))
   })
 
-  win.loadURL(`http://127.0.0.1:${port}/app/client/ui/index.html`)
+  createWindow(currentMode)
 })
 
 app.on('will-quit', () => globalShortcut.unregisterAll())

@@ -125,10 +125,15 @@ window.ecHtml = {
   },
 }
 
-// Desktop shell (windowless overlay) wiring. In the browser build none of this
-// runs and the page keeps its own painted background.
+// Desktop shell wiring. In the browser build none of this runs and the page
+// keeps its own painted background. The shell launches in one of two modes:
+//   window  (default) — a normal framed, opaque, resizable app window; keeps
+//                        the painted background, no click-through.
+//   overlay           — transparent, click-through, always-on-top over the game.
 if (window.exileShell) {
-  document.body.classList.add('shell')
+  var _shellMode = window.exileShell.mode || 'window'
+  // Only the overlay makes the body transparent; the window keeps the painted bg.
+  document.body.classList.add(_shellMode === 'overlay' ? 'shell' : 'shell-window')
 
   // WoW SavedVariables: load the durable settings file into localStorage BEFORE
   // the Lua UI reads any pref (boot.js runs before the fengari scripts), then
@@ -159,27 +164,30 @@ if (window.exileShell) {
     window.addEventListener('beforeunload', function () { if (_saveTimer) { clearTimeout(_saveTimer); _saveTimer = null } _flushVars() })
   }
 
-  // Mouse pass-through: the shell window covers the whole work area but only
-  // the orb/menu/widgets are real UI. When the cursor is over empty space,
-  // clicks fall through to whatever is underneath (the shell forwards
-  // mousemove even while ignoring input, so we can detect re-entry).
-  var through = null
-  function overUI(t) {
-    return !!(t && t.closest && t.closest('.ec-widget, #orb, #rail, #boot-error'))
-  }
-  function updateThrough(e) {
-    if (e.buttons) return // never flip modes mid-drag
-    // While a widget control has focus (open <select> dropdown, text input),
-    // never re-enable pass-through — the native dropdown popup sits outside
-    // the page, and flipping modes under it made settings feel like they
-    // "kept closing".
-    var ae = document.activeElement
-    var focusHeld = !!(ae && ae.closest && ae.closest('.ec-widget, #rail'))
-    var want = !(overUI(e.target) || focusHeld)
-    if (want !== through) {
-      through = want
-      window.exileShell.setMouseThrough(want)
+  // Mouse pass-through — OVERLAY MODE ONLY. The overlay covers the whole work
+  // area but only the orb/menu/widgets are real UI; over empty space, clicks
+  // fall through to the game underneath (the shell forwards mousemove even while
+  // ignoring input, so we can detect re-entry). A normal window is fully solid,
+  // so this is skipped entirely there.
+  if (_shellMode === 'overlay') {
+    var through = null
+    function overUI(t) {
+      return !!(t && t.closest && t.closest('.ec-widget, #orb, #rail, #boot-error'))
     }
+    function updateThrough(e) {
+      if (e.buttons) return // never flip modes mid-drag
+      // While a widget control has focus (open <select> dropdown, text input),
+      // never re-enable pass-through — the native dropdown popup sits outside
+      // the page, and flipping modes under it made settings feel like they
+      // "kept closing".
+      var ae = document.activeElement
+      var focusHeld = !!(ae && ae.closest && ae.closest('.ec-widget, #rail'))
+      var want = !(overUI(e.target) || focusHeld)
+      if (want !== through) {
+        through = want
+        window.exileShell.setMouseThrough(want)
+      }
+    }
+    document.addEventListener('mousemove', updateThrough, true)
   }
-  document.addEventListener('mousemove', updateThrough, true)
 }

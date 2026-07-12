@@ -9,6 +9,14 @@ contextBridge.exposeInMainWorld('exileShell', {
   version: process.versions.electron,
   platform: process.platform,
   supabase,
+  // Which personality the shell launched: 'window' (normal app window, default)
+  // or 'overlay' (transparent click-through). Drives the renderer's background
+  // + whether it arms click-through hover tracking.
+  mode: ipcRenderer.sendSync('ec:get-mode') || 'window',
+  // Developer mode: a session unlock held in the main process (survives a
+  // window<->overlay switch, relocks when the app fully closes).
+  getDevUnlocked: () => !!ipcRenderer.sendSync('ec:dev-get'),
+  setDevUnlocked: (v) => ipcRenderer.send('ec:dev-set', !!v),
   // Windowless overlay: let clicks pass through empty space (true) or reach
   // our UI (false). Driven by cursor tracking in boot.js.
   setMouseThrough: (flag) => ipcRenderer.send('ec:mouse-through', !!flag),
