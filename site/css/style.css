@@ -88,16 +88,23 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; color: var(--parchme
   white-space: nowrap;
 }
 .btn i { font-style: normal; }
+/* Primary CTA = Path of Exile 2's own beveled button art (up / hover / down),
+   stretched to fit any label. */
 .btn-ember {
-  color: #1a0f06; font-weight: 700;
-  background: linear-gradient(180deg, var(--ember-soft) 0%, var(--ember) 55%, #c9520f 100%);
-  box-shadow: 0 10px 30px -8px rgba(229, 102, 26, 0.55), inset 0 1px 0 rgba(255, 220, 180, 0.5);
+  color: var(--gold-bright); font-weight: 700; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+  background: url("../img/ui/btn.webp") center / 100% 100% no-repeat;
+  border: 0; border-radius: 2px;
+  box-shadow: 0 12px 26px -14px rgba(0, 0, 0, 0.85);
 }
-.btn-ember:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -8px rgba(229, 102, 26, 0.7), inset 0 1px 0 rgba(255, 220, 180, 0.6); }
+.btn-ember:hover { background-image: url("../img/ui/btn-hover.webp"); color: #fff5e2; transform: translateY(-1px); }
+.btn-ember:active { background-image: url("../img/ui/btn-down.webp"); transform: translateY(1px); box-shadow: 0 4px 14px -10px rgba(0, 0, 0, 0.8); }
+/* Secondary = a dark stone slab with a gold hairline, so it reads as the same UI kit. */
 .btn-ghost {
-  color: var(--parchment); background: rgba(201, 164, 92, 0.05); border-color: var(--line-strong);
+  color: var(--parchment); border-color: var(--line-strong); border-radius: 3px;
+  background: linear-gradient(180deg, rgba(28, 23, 16, 0.9), rgba(12, 10, 7, 0.9));
+  box-shadow: inset 0 1px 0 rgba(201, 164, 92, 0.14), 0 6px 18px -10px rgba(0, 0, 0, 0.7);
 }
-.btn-ghost:hover { border-color: var(--gold); background: rgba(201, 164, 92, 0.10); transform: translateY(-2px); }
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold-bright); transform: translateY(-1px); }
 .btn-lg { padding: 16px 34px; font-size: 16px; }
 
 /* ── Nav ──────────────────────────────────────────────────── */
@@ -157,15 +164,16 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; color: var(--parchme
 }
 @keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-12px); } }
 
+/* Screenshots sit inside the game's ornate bronze frame (border-image 9-slice). */
 .appframe {
-  position: relative; z-index: 2; width: 100%; border-radius: 12px; overflow: hidden;
-  border: 1px solid var(--line-strong); background: var(--panel-solid);
-  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(0,0,0,0.5);
+  position: relative; z-index: 2; width: 100%;
+  border: 22px solid transparent;
+  border-image: url("../img/ui/frame.webp") 56 / 22px stretch;
+  background: #0a0806;
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.85);
   transform: perspective(1400px) rotateY(-7deg) rotateX(3deg); margin-top: 70px;
 }
-.appframe .bar { display: flex; align-items: center; gap: 7px; padding: 9px 12px; background: #0d0b09; border-bottom: 1px solid var(--line); }
-.appframe .bar span { width: 10px; height: 10px; border-radius: 50%; background: #2a2620; }
-.appframe .bar span:first-child { background: var(--ember); }
+.appframe .bar { display: none; }
 .appframe img { display: block; width: 100%; }
 
 /* ── Section scaffolding ──────────────────────────────────── */
@@ -173,7 +181,9 @@ section { position: relative; padding: 78px 0; }
 .section-head { max-width: 640px; margin-bottom: 46px; }
 .section-head h2 { font-size: clamp(30px, 4vw, 44px); margin-top: 14px; }
 .section-head p { font-size: 17px; color: var(--muted); margin: 16px 0 0; }
-.rule { height: 1px; background: linear-gradient(90deg, transparent, var(--line-strong), transparent); border: 0; margin: 0 auto; max-width: var(--maxw); }
+/* Section separator = the game's ornate loading-screen border strip. */
+.rule { height: 26px; border: 0; margin: 4px auto; max-width: var(--maxw);
+  background: url("../img/ui/divider.webp") repeat-x center / auto 100%; opacity: 0.9; }
 
 /* Feature spotlight (Market) */
 .spotlight { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 44px; align-items: center; }
@@ -188,15 +198,17 @@ section { position: relative; padding: 78px 0; }
 /* Feature grid (the other shipping plugins) */
 .fgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .fcard {
-  position: relative; padding: 28px; border-radius: 14px; overflow: hidden;
-  background: var(--panel); border: 1px solid var(--line);
-  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+  position: relative; padding: 28px; border-radius: 4px; overflow: hidden;
+  background: linear-gradient(180deg, rgba(24, 19, 13, 0.72), rgba(12, 10, 7, 0.6));
+  border: 1px solid var(--line-strong);
+  box-shadow: inset 0 1px 0 rgba(201, 164, 92, 0.10), 0 6px 20px -12px rgba(0, 0, 0, 0.6);
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
-.fcard:hover { transform: translateY(-4px); border-color: var(--line-strong); background: rgba(26, 21, 15, 0.72); }
+.fcard:hover { transform: translateY(-4px); border-color: var(--gold); box-shadow: inset 0 1px 0 rgba(201, 164, 92, 0.18), 0 14px 30px -14px rgba(0, 0, 0, 0.7); }
 .fcard .ic {
-  width: 46px; height: 46px; border-radius: 11px; display: grid; place-items: center;
-  font-size: 22px; color: var(--ember); background: rgba(229, 102, 26, 0.10);
-  border: 1px solid rgba(229, 102, 26, 0.25); margin-bottom: 16px;
+  width: 46px; height: 46px; border-radius: 5px; display: grid; place-items: center;
+  font-size: 22px; color: var(--gold-bright); background: linear-gradient(180deg, rgba(40, 31, 18, 0.9), rgba(20, 15, 9, 0.9));
+  border: 1px solid var(--line-strong); box-shadow: inset 0 1px 0 rgba(201, 164, 92, 0.18); margin-bottom: 16px;
 }
 .fcard h3 { font-size: 21px; }
 .fcard p { margin: 10px 0 0; font-size: 14.5px; color: var(--muted); }
@@ -204,7 +216,9 @@ section { position: relative; padding: 78px 0; }
 
 /* Pillars (how / why) */
 .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.pillar { padding: 30px 26px; border-radius: 14px; border: 1px solid var(--line); background: linear-gradient(180deg, rgba(20,16,11,0.5), rgba(12,10,7,0.4)); }
+.pillar { padding: 30px 26px; border-radius: 4px; border: 1px solid var(--line-strong);
+  background: linear-gradient(180deg, rgba(22,17,11,0.6), rgba(12,10,7,0.5));
+  box-shadow: inset 0 1px 0 rgba(201,164,92,0.09), 0 4px 16px -12px rgba(0,0,0,0.5); }
 .pillar .pn { font-family: var(--display); font-size: 15px; color: var(--ember); letter-spacing: 0.1em; }
 .pillar h3 { font-size: 20px; margin: 12px 0 10px; }
 .pillar p { font-size: 14.5px; color: var(--muted); margin: 0; }
@@ -230,11 +244,13 @@ section { position: relative; padding: 78px 0; }
 /* Download band */
 .cta-band { text-align: center; }
 .cta-inner {
-  max-width: 820px; margin: 0 auto; padding: 60px 40px; border-radius: 20px;
-  border: 1px solid var(--line-strong); position: relative; overflow: hidden;
+  max-width: 820px; margin: 0 auto; padding: 52px 46px; position: relative;
+  border: 28px solid transparent;
+  border-image: url("../img/ui/frame.webp") 56 / 28px stretch;
+  background-clip: padding-box;
   background:
     radial-gradient(600px 300px at 50% -20%, rgba(229, 102, 26, 0.18), transparent 65%),
-    linear-gradient(180deg, rgba(24, 18, 12, 0.7), rgba(12, 9, 7, 0.7));
+    linear-gradient(180deg, rgba(24, 18, 12, 0.9), rgba(12, 9, 7, 0.9));
 }
 .cta-inner h2 { font-size: clamp(30px, 4.4vw, 48px); }
 .cta-inner p { color: var(--text); font-size: 17px; margin: 16px auto 30px; max-width: 40em; }
