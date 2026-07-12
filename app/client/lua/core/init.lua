@@ -15,7 +15,7 @@ local VERSION = codex.VERSION
 
 local function plugins_body(body)
   local parts = {}
-  for _, p in ipairs(codex.registry.plugins) do
+  for _, p in ipairs(codex.registry.visible()) do
     parts[#parts + 1] = table.concat({
       '<div class="ec-panel d-flex align-items-center gap-3 p-2 mb-2">',
       '<i class="bi ', p.icon or 'bi-puzzle', '" style="font-size:20px;color:var(--ec-gold)"></i>',
@@ -89,7 +89,7 @@ end
 
 local function render_rail()
   local parts = {}
-  for _, p in ipairs(codex.registry.plugins) do
+  for _, p in ipairs(codex.registry.visible()) do
     parts[#parts + 1] = rail_button(p.id, p.icon or "bi-puzzle", p.name)
   end
   parts[#parts + 1] = rail_button("__plugins", "bi-puzzle", "Plugins")
@@ -301,12 +301,12 @@ local reopened = false
 local openlist = ui.store_get("ec.openwidgets")
 if openlist and openlist ~= "" then
   for id in openlist:gmatch("[^,]+") do
-    if codex.registry.find(id) then W.open_plugin(id); reopened = true end
+    if codex.registry.is_visible(id) then W.open_plugin(id); reopened = true end
   end
 end
 if not reopened then
   local start = ui.store_get("ec.default_view") or "campaign-guide"
-  if codex.registry.find(start) then W.open_plugin(start) else W.open_plugin("campaign-guide") end
+  if codex.registry.is_visible(start) then W.open_plugin(start) else W.open_plugin("campaign-guide") end
 end
 sync_rail()
 

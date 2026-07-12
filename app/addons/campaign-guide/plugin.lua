@@ -61,6 +61,7 @@ codex.registry.register{
   icon = "bi-signpost-split",
   order = 10,
   status = "alpha",
+  published = true,
   -- Zygor's viewer defaults to a compact ~260-300px frame (MIN_WIDTH=260)
   width = 300,
   flush = true,

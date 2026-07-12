@@ -35,6 +35,7 @@ codex.registry.register{
   icon = "bi-hammer",
   order = 31,
   status = "alpha",
+  published = true,
   width = 1060,
   desc = "An interactive PoE2 crafting bench — pick a base, apply currency, essences and omens, watch the mod pool and weights, roll and backtrack. Merges the old Modifiers + Crafting references.",
   mount = mount,

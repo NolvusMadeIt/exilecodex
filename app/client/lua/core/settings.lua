@@ -270,7 +270,7 @@ RENDER.general = function(pane)
     (function()
       local opts = {}
       local current = ui.store_get("ec.default_view") or "campaign-guide"
-      for _, p in ipairs(codex.registry.plugins) do
+      for _, p in ipairs(codex.registry.visible()) do
         opts[#opts + 1] = '<option value="' .. p.id .. '"' .. (p.id == current and ' selected' or '') .. '>' .. p.name .. '</option>'
       end
       return table.concat(opts)
@@ -752,11 +752,16 @@ end
 
 RENDER.about = function(pane)
   local parts = {}
+  local U = codex.update or {}
+  local ver = (U.version and U.version()) or codex.VERSION
+  local desktop = U.available and U.available()
   parts[#parts + 1] = sec(T("Updates"), T("desktop shell"), table.concat({
-    '<div class="d-flex align-items-center gap-2">',
-    '<span style="font-size:12px;color:var(--ec-text)">', T("Current version"), ' <span style="color:var(--ec-gold);font-family:monospace">v', codex.VERSION, '</span></span>',
-    '<button class="btn btn-ec-ghost btn-sm" disabled><i class="bi bi-arrow-repeat"></i> ', T("Check for updates"), '</button>',
+    '<div class="d-flex align-items-center gap-2 flex-wrap">',
+    '<span style="font-size:12px;color:var(--ec-text)">', T("Current version"), ' <span style="color:var(--ec-gold);font-family:monospace">v', esc(ver), '</span></span>',
+    desktop and ('<button id="set-checkupd" class="btn btn-ec-ghost btn-sm"><i class="bi bi-arrow-repeat"></i> ' .. T("Check for updates") .. '</button>') or '',
+    '<span id="set-updstatus" class="ec-muted" style="font-size:11.5px"></span>',
     '</div>',
+    (not desktop) and ('<div class="ec-muted mt-1" style="font-size:11px">' .. T("Automatic updates are available in the desktop app.") .. '</div>') or '',
   }))
   parts[#parts + 1] = sec(T("Credits and licenses"), nil, table.concat({
     '<div class="ec-dim" style="font-size:11px;line-height:1.7">',
@@ -768,6 +773,27 @@ RENDER.about = function(pane)
     '</div>',
   }))
   pane.innerHTML = table.concat(parts)
+
+  if desktop then
+    local btn = pane:querySelector("#set-checkupd")
+    if btn ~= js.null then ui.on(btn, "click", function() codex.update.check() end) end
+    local function paint_status()
+      local s = pane:querySelector("#set-updstatus")
+      if s == nil or s == js.null or not s.isConnected then return end
+      local st = codex.update.status
+      local txt = ""
+      if st == "checking" then txt = T("Checking for updates…")
+      elseif st == "available" then txt = T("Downloading update…")
+      elseif st == "progress" then txt = T("Downloading") .. " " .. tostring(codex.update.percent or 0) .. "%"
+      elseif st == "downloaded" then txt = T("Update ready — restart to apply.")
+      elseif st == "none" then txt = T("You're on the latest version.")
+      elseif st == "error" then txt = T("Update check failed — try again later.")
+      end
+      s.textContent = txt
+    end
+    paint_status()
+    if codex.update.on_change then codex.update.on_change(paint_status) end
+  end
 end
 
 RENDER.developer = function(pane)

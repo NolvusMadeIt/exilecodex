@@ -554,6 +554,7 @@ codex.registry.register{
   icon = "bi-vector-pen",
   order = 12,
   status = "alpha",
+  published = true,
   width = 700,
   desc = "Create your own guides: real goals (kill / talk / go to / collect...), acts, counts and level triggers, image links, save and share. Community publishing via Supabase.",
   mount = function(body) codex.forge.mount(body) end,

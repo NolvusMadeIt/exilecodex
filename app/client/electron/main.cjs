@@ -6,6 +6,7 @@
 // (fengari fetches .lua files via XHR, which file:// would block) and will grow
 // the Client.txt watcher and clipboard hooks that the browser build can't do.
 const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, screen, dialog, globalShortcut, shell } = require('electron')
+const { autoUpdater } = require('electron-updater')
 const http = require('http')
 const fs = require('fs')
 const os = require('os')
@@ -73,6 +74,8 @@ let win = null
 let tray = null
 let isQuitting = false
 let currentMode = 'window'
+let updateReady = false      // an update has downloaded and is ready to install on restart
+let updaterInited = false
 app.on('before-quit', () => { isQuitting = true })
 function readSavedMode() {
   try {
@@ -89,6 +92,7 @@ function setSavedVar(key, value) {
   try { fs.writeFileSync(varsFile(), JSON.stringify(vars)) } catch { /* ignore */ }
 }
 ipcMain.on('ec:get-mode', (e) => { e.returnValue = currentMode })
+ipcMain.on('ec:app-version', (e) => { e.returnValue = app.getVersion() })
 
 // Developer mode is a *session* unlock (Settings → tap About six times). It's
 // held in main-process memory so it survives a window↔overlay switch (which
@@ -425,6 +429,40 @@ app.whenReady().then(async () => {
     }))
   })
 
+  // ---- Auto-update -------------------------------------------------------
+  // electron-updater reads latest.yml from the PUBLIC releases repo (source stays
+  // private). Downloads in the background; the renderer shows a "restart to
+  // update" toast, and it also installs on the next quit. Only runs when packaged
+  // — in dev there's no app-update.yml and checkForUpdates() would throw.
+  function sendUpdate(payload) {
+    if (win && !win.isDestroyed()) win.webContents.send('ec:update-event', payload)
+  }
+  function initUpdater() {
+    if (updaterInited || !app.isPackaged) return
+    updaterInited = true
+    try {
+      autoUpdater.autoDownload = true
+      autoUpdater.autoInstallOnAppQuit = true
+      autoUpdater.on('checking-for-update', () => sendUpdate({ type: 'checking' }))
+      autoUpdater.on('update-available', (info) => sendUpdate({ type: 'available', version: info && info.version }))
+      autoUpdater.on('update-not-available', () => sendUpdate({ type: 'none' }))
+      autoUpdater.on('download-progress', (p) => sendUpdate({ type: 'progress', percent: Math.round((p && p.percent) || 0) }))
+      autoUpdater.on('update-downloaded', (info) => {
+        updateReady = true
+        sendUpdate({ type: 'downloaded', version: info && info.version })
+        if (tray) tray.setContextMenu(buildTrayMenu())
+      })
+      autoUpdater.on('error', (err) => sendUpdate({ type: 'error', message: String((err && err.message) || err) }))
+      autoUpdater.checkForUpdates().catch(() => {})
+    } catch { /* non-fatal */ }
+  }
+  function installUpdate() {
+    isQuitting = true
+    try { autoUpdater.quitAndInstall(false, true) } catch { app.quit() }
+  }
+  ipcMain.on('ec:update-check', () => { if (app.isPackaged) autoUpdater.checkForUpdates().catch(() => {}) })
+  ipcMain.on('ec:update-install', () => installUpdate())
+
   // ---- System tray -------------------------------------------------------
   // A hidden-app tray icon: toggle the window, switch window<->overlay (kept in
   // sync with the in-app setting), and jump into any Settings section.
@@ -455,6 +493,10 @@ app.whenReady().then(async () => {
     return Menu.buildFromTemplate([
       { label: 'Show / Hide ExileCodex', click: () => { if (win && !win.isDestroyed()) { if (win.isVisible()) win.hide(); else { win.show(); win.focus() } } } },
       { type: 'separator' },
+      updateReady
+        ? { label: 'Restart to update', click: () => installUpdate() }
+        : { label: 'Check for updates…', click: () => { openSettings('about'); if (app.isPackaged) autoUpdater.checkForUpdates().catch(() => {}) } },
+      { type: 'separator' },
       { label: 'Window mode', type: 'radio', checked: currentMode === 'window', click: () => syncMode('window') },
       { label: 'Game overlay', type: 'radio', checked: currentMode === 'overlay', click: () => syncMode('overlay') },
       { type: 'separator' },
@@ -477,6 +519,8 @@ app.whenReady().then(async () => {
   } catch { /* tray unavailable on this platform — non-fatal */ }
 
   createWindow(currentMode)
+  // Kick off the update check once the UI is ready to receive the events.
+  win.webContents.once('did-finish-load', () => initUpdater())
 })
 
 app.on('will-quit', () => globalShortcut.unregisterAll())

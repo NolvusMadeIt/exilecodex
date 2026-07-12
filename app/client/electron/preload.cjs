@@ -43,4 +43,11 @@ contextBridge.exposeInMainWorld('exileShell', {
   // WoW-style SavedVariables: durable per-user settings file.
   loadVars: () => ipcRenderer.sendSync('ec:load-vars') || '',
   saveVars: (json) => ipcRenderer.send('ec:save-vars', String(json || '')),
+  // Auto-update (electron-updater). appVersion is the installed build; onUpdate
+  // streams { type:'checking'|'available'|'none'|'progress'|'downloaded'|'error', ... };
+  // checkForUpdate() re-checks on demand; installUpdate() restarts into the new build.
+  appVersion: ipcRenderer.sendSync('ec:app-version') || '',
+  onUpdate: (cb) => ipcRenderer.on('ec:update-event', (_e, ev) => cb(ev)),
+  checkForUpdate: () => ipcRenderer.send('ec:update-check'),
+  installUpdate: () => ipcRenderer.send('ec:update-install'),
 })

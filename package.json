@@ -11,6 +11,7 @@
     "app": "electron .",
     "dist": "electron-builder --win nsis --x64",
     "dist:portable": "electron-builder --win portable --x64",
+    "dist:publish": "electron-builder --win nsis --x64 --publish always",
     "pack": "electron-builder --dir"
   },
   "build": {
@@ -24,7 +25,6 @@
       "app/**/*",
       "package.json",
       "!**/*.map",
-      "!**/node_modules/**",
       "!concept1/**",
       "!.env.local"
     ],
@@ -42,17 +42,26 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "artifactName": "ExileCodex-Setup-${version}.${ext}"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "NolvusMadeIt",
+        "repo": "exilecodex-releases",
+        "releaseType": "release"
+      }
+    ]
   },
   "dependencies": {
-    "bootstrap": "^5.3.3",
-    "bootstrap-icons": "^1.11.3",
-    "fengari-web": "^0.1.4",
-    "http-server": "^14.1.1"
+    "electron-updater": "^6.3.9"
   },
   "devDependencies": {
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "electron": "^33.4.11",
     "electron-builder": "^26.15.3",
+    "fengari-web": "^0.1.4",
+    "http-server": "^14.1.1",
     "monaco-editor": "^0.52.2"
   }
 }

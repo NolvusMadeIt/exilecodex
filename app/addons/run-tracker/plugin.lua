@@ -427,6 +427,7 @@ codex.registry.register{
   icon = "bi-stopwatch",
   order = 15,
   status = "alpha",
+  published = true,
   width = 230,
   desc = "A LiveSplit-style PoE2 campaign speedrun timer — auto-splits on zones/levels, removes load time, tracks PB + gold splits. History lives in the guide toolbar; settings in Settings → Run Tracker.",
   mount = mount,

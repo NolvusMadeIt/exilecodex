@@ -546,6 +546,7 @@ codex.registry.register{
   icon = "bi-graph-up-arrow",
   order = 20,
   status = "alpha",
+  published = true,
   width = 640,
   desc = "Live PoE2 currency market — prices, 24h moves, volume and sparklines from the Currency Exchange.",
   mount = mount,
