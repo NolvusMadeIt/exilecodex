@@ -47,7 +47,7 @@
       {
         "provider": "github",
         "owner": "NolvusMadeIt",
-        "repo": "exilecodex-releases",
+        "repo": "exilecodex",
         "releaseType": "release"
       }
     ]
