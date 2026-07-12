@@ -18,7 +18,7 @@ local M = codex.guide
 
 -- three viewer regions so the picker (and its inline forge) survive body
 -- re-renders: the tab bar and the step body are rebuilt; the picker is not.
-local viewer_el, gbar_el, gbody_el, tstrip_el, gfoot_el = nil, nil, nil, nil, nil
+local viewer_el, gbar_el, gbody_el, tstrip_el, gfoot_el, gdock_el = nil, nil, nil, nil, nil, nil
 local guides_menu_open = false
 local history_open = false
 
@@ -860,6 +860,7 @@ function M.mount(host)
     '<div id="ec-viewer" class="ec-viewer">',
     '<div id="ec-tstrip" class="ec-toolstrip"></div>',
     '<div id="ec-gbody"></div>',
+    '<div id="ec-tracker-dock" class="ec-tracker-dock d-none"></div>',
     '<div id="ec-gfoot" class="ec-gfoot"></div>',
     '<div id="ec-gbar" class="ec-gbar ec-gbar-foot"></div>',
     '</div>',
@@ -869,8 +870,25 @@ function M.mount(host)
   gbar_el = host:querySelector("#ec-gbar")
   gbody_el = host:querySelector("#ec-gbody")
   gfoot_el = host:querySelector("#ec-gfoot")
+  gdock_el = host:querySelector("#ec-tracker-dock")
   render_toolstrip()
   M.render()
+  M.refresh_dock()
+end
+
+-- Show / hide the docked Run Tracker (above the Speedrun footer). Driven by the
+-- tracker's attach/detach and re-run whenever the guide (re)mounts.
+function M.refresh_dock()
+  if not gdock_el or gdock_el == js.null then return end
+  local docked = (ui.store_get("ec.tracker.dock") == "1") and codex.tracker ~= nil
+  if docked then
+    gdock_el.classList:remove("d-none")
+    if codex.tracker.mount_into then codex.tracker.mount_into(gdock_el) end
+  else
+    gdock_el.classList:add("d-none")
+    gdock_el.innerHTML = ""
+    if codex.tracker and codex.tracker.unmount then codex.tracker.unmount() end
+  end
 end
 
 function M.open(id)

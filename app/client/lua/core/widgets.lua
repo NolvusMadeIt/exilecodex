@@ -36,7 +36,18 @@ local function desktop()
   return ui.byId("desktop")
 end
 
+-- Remember which plugins are open (positions/sizes are already saved per widget)
+-- so a relaunch can restore the whole workspace.
+local function save_open_list()
+  local ids = {}
+  for id in pairs(W.open) do
+    if codex.registry and codex.registry.find and codex.registry.find(id) then ids[#ids + 1] = id end
+  end
+  ui.store_set("ec.openwidgets", table.concat(ids, ","))
+end
+
 local function notify()
+  save_open_list()
   if W.onchange then W.onchange() end
 end
 
@@ -143,6 +154,7 @@ function W.spawn(spec)
     '<div class="ec-widget-title">',
     '<i class="bi ', spec.icon or "bi-app", '" style="color:', spec.color or "var(--ec-gold)", ';font-size:13px"></i>',
     '<span class="t">', codex.T and codex.T(spec.title or spec.id) or (spec.title or spec.id), '</span>',
+    (spec.on_attach and '<button data-act="attach" title="Attach to Guide"><i class="bi bi-pin-angle"></i></button>' or ''),
     '<button data-act="collapse" title="Collapse"><i class="bi bi-chevron-up"></i></button>',
     (spec.wiki and '<button data-act="help" title="Help / wiki"><i class="bi bi-question-circle"></i></button>' or ''),
     '<button data-act="close" title="Close"><i class="bi bi-x-lg"></i></button>',
@@ -171,6 +183,10 @@ function W.spawn(spec)
     fr.classList:toggle("collapsed")
     save_state(spec.id, fr)
   end)
+  if spec.on_attach then
+    local ab = fr:querySelector('[data-act="attach"]')
+    if ab ~= js.null then ui.on(ab, "click", function() spec.on_attach() end) end
+  end
   if spec.wiki then
     local hb = fr:querySelector('[data-act="help"]')
     if hb ~= js.null then
@@ -292,7 +308,7 @@ end
 function W.open_plugin(pid)
   local p = codex.registry.find(pid)
   if not p then return end
-  W.spawn{ id = pid, title = p.name, icon = p.icon, color = p.color, width = p.width, flush = p.flush, wiki = p.wiki, mount = p.mount, on_close = p.on_close }
+  W.spawn{ id = pid, title = p.name, icon = p.icon, color = p.color, width = p.width, flush = p.flush, wiki = p.wiki, mount = p.mount, on_close = p.on_close, on_attach = p.on_attach }
 end
 
 function W.toggle_plugin(pid)

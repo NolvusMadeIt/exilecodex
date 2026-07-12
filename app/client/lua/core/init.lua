@@ -295,11 +295,18 @@ orb_load()
 -- in desktop-window mode only, not in the game overlay) — see settings.lua.
 -- The floating corner label is retired.
 
-local start = ui.store_get("ec.default_view") or "campaign-guide"
-if codex.registry.find(start) then
-  W.open_plugin(start)
-else
-  W.open_plugin("campaign-guide")
+-- Restore the whole workspace: reopen every plugin that was open last session
+-- (each at its remembered position/size). Falls back to the default view.
+local reopened = false
+local openlist = ui.store_get("ec.openwidgets")
+if openlist and openlist ~= "" then
+  for id in openlist:gmatch("[^,]+") do
+    if codex.registry.find(id) then W.open_plugin(id); reopened = true end
+  end
+end
+if not reopened then
+  local start = ui.store_get("ec.default_view") or "campaign-guide"
+  if codex.registry.find(start) then W.open_plugin(start) else W.open_plugin("campaign-guide") end
 end
 sync_rail()
 

@@ -325,6 +325,8 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .ec-gbar-foot { border-top: 1px solid var(--ec-border-soft); }
 /* Pinned progress footer, just above the tab bar. */
 .ec-gfoot { flex: 0 0 auto; }
+/* Docked Run Tracker (attach-to-guide) — sits above the progress footer + tabs. */
+.ec-tracker-dock { flex: 0 0 auto; border-top: 1px solid var(--ec-border-soft); padding: 8px 8px 6px; background: var(--ec-panel-3); }
 .ec-tab-add {
   background: transparent; border: none; color: #9a9a9a; font-size: 12px;
   padding: 0 8px; cursor: pointer; align-self: stretch;

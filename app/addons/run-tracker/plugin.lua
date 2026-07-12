@@ -287,6 +287,7 @@ render = function()
         '<button class="rt-ib" data-act="split" title="Split (F9)"><i class="bi bi-scissors"></i></button>',
         '<button class="rt-ib" data-act="stop" title="Stop &amp; save (F7)"><i class="bi bi-flag-fill"></i></button>',
         '<button class="rt-ib ghost" data-act="reset" title="Reset (F8)"><i class="bi bi-arrow-counterclockwise"></i></button>',
+        (dock_on() and '<button class="rt-ib ghost" data-act="detach" title="Detach to a floating window"><i class="bi bi-box-arrow-up-right"></i></button>' or ''),
       '</div>',
     '</div>',
   })
@@ -299,7 +300,7 @@ wire = function(host)
       local a = ui.attr(b, "data-act")
       if a == "start" then act_start() elseif a == "pause" then act_pause()
       elseif a == "split" then act_split() elseif a == "stop" then act_stop()
-      elseif a == "reset" then act_reset() end
+      elseif a == "reset" then act_reset() elseif a == "detach" then API.detach() end
     end)
   end)
 end
@@ -361,12 +362,22 @@ API.render_history = render_history
 -- ------------------------------------------------------- dock into the guide
 API.mount_into = function(el) T.dock = el; if dock_on() then render() end end
 API.unmount = function() T.dock = nil end
-API.remount = function()
-  -- toggling dock: repaint both the widget body and any dock slot
-  render()
-  if codex.widgets and codex.widgets.is_open and codex.widgets.is_open("run-tracker") then end
-end
 API.is_docked = function() return dock_on() end
+-- Attach: dock the tracker under the guide's Speedrun footer + hide the widget.
+API.attach = function()
+  ui.store_set("ec.tracker.dock", "1")
+  if codex.widgets then
+    if not codex.widgets.is_open("campaign-guide") then codex.widgets.open_plugin("campaign-guide") end
+    codex.widgets.close("run-tracker")
+  end
+  if codex.guide and codex.guide.refresh_dock then codex.guide.refresh_dock() end
+end
+API.detach = function()
+  ui.store_set("ec.tracker.dock", "0")
+  T.dock = nil
+  if codex.guide and codex.guide.refresh_dock then codex.guide.refresh_dock() end
+  if codex.widgets then codex.widgets.open_plugin("run-tracker") end
+end
 
 -- ------------------------------------------------------------------ hotkeys
 local hk_bound = false
@@ -405,4 +416,5 @@ codex.registry.register{
   desc = "A LiveSplit-style PoE2 campaign speedrun timer — auto-splits on zones/levels, removes load time, tracks PB + gold splits. History lives in the guide toolbar; settings in Settings → Run Tracker.",
   mount = mount,
   on_close = on_close,
+  on_attach = API.attach,
 }
