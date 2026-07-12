@@ -190,7 +190,9 @@ local function on_zone_ts(name, ms)
     r.loadMs = (r.loadMs or 0) + math.max(0, ms - r.pendingLoad); r.pendingLoad = nil
   end
   local town = is_town(name)
-  if not r and autostart_on() and not town then start_run(name); r = T.run end
+  -- Start on the FIRST detected area of any kind (camp, hideout, map, zone) —
+  -- the timer is driven entirely by Client.txt, never a bare button press.
+  if not r and autostart_on() then start_run(name); r = T.run end
   if r then
     if town and pausetown_on() then pause_timer() else resume_timer() end
     try_split_zone(name)
@@ -201,7 +203,14 @@ local function on_level_ts(n, _ms) try_split_level(n) end
 local function on_load(ms) local r = T.run; if r and loadremoval_on() and ms then r.pendingLoad = ms end end
 
 -- ------------------------------------------------------------ manual actions
-local function act_start() if T.run then resume_timer() else start_run((codex.detect and codex.detect.area) or "Run") end; save_run(); render() end
+-- The timer never starts from nothing: manual start only resumes an existing run
+-- or begins one if Client.txt has already put us in an area. Otherwise it waits.
+local function act_start()
+  if T.run then resume_timer()
+  elseif codex.detect and codex.detect.area and tostring(codex.detect.area) ~= "" then start_run(tostring(codex.detect.area))
+  else return end
+  save_run(); render()
+end
 local function act_pause() local r = T.run; if not r then return end; if r.paused then resume_timer() else pause_timer() end; save_run(); render() end
 local function act_split() if T.run then do_split((codex.detect and codex.detect.area) or ("Split " .. (#T.run.segs + 1))) end end
 local function act_reset() T.run = nil; save_run(); render() end
@@ -274,7 +283,8 @@ render = function()
   local host = dock_on() and T.dock or T.body
   if not host or not host.isConnected then return end
   local r = T.run
-  local status = r and (r.paused and '<span class="rt-pill paused">Paused</span>' or '<span class="rt-pill rec">● REC</span>') or '<span class="rt-pill idle">Idle</span>'
+  local idleTxt = (codex.detect and codex.detect.available) and 'Waiting for zone' or 'Idle'
+  local status = r and (r.paused and '<span class="rt-pill paused">Paused</span>' or '<span class="rt-pill rec">● REC</span>') or ('<span class="rt-pill idle">' .. idleTxt .. '</span>')
   local zone = (r and codex.detect and codex.detect.area) and ('<span class="rt-zc">' .. esc(codex.detect.area) .. '</span>') or ''
   local loadchip = (r and loadremoval_on() and (r.loadMs or 0) > 0) and ('<span class="rt-lc" title="Load time removed">' .. MINUS .. fmt(r.loadMs, false) .. '</span>') or ''
   -- Docked in the guide, keep it minimal: just the timer + controls (no splits).

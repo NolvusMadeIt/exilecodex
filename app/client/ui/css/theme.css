@@ -134,6 +134,13 @@ h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter
    the resize grip sets an explicit height + maxHeight:none to override it. */
 .ec-widget-body { padding: 10px; overflow: auto; max-height: 72vh; display: flex; flex-direction: column; }
 .ec-widget-body.flush { padding: 0; }
+/* App-wide fill: a plugin that renders a single root wrapper has it stretch to
+   fill the body (content scrolls, footers pin to the bottom — no dead space when
+   the window is dragged taller). Multi-child bodies (settings, guide, filter
+   editor) are handled explicitly and are untouched by :only-child. */
+.ec-widget-body > :only-child { flex: 1 1 auto; min-height: 0; }
+/* stub/"port pending" placeholders centre in the filled body */
+.ec-stub-wrap { display: flex; align-items: center; justify-content: center; }
 .ec-widget.collapsed .ec-widget-body { display: none; }
 .ec-widget.collapsed { min-width: 200px; }
 .ec-widget.collapsed .ec-widget-title { border-bottom: none; border-radius: 9px; }
@@ -1139,9 +1146,11 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .cx-btn:hover { color: var(--ec-gold); border-color: var(--ec-gold-dim); }
 
 /* two-column layout */
-.cx-cols { display: flex; gap: 10px; align-items: flex-start; }
-.cx-left { flex: 0 0 42%; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.cx-right { flex: 1 1 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.cx-cols { display: flex; gap: 10px; align-items: stretch; }
+.cx-left { flex: 0 0 42%; display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; }
+.cx-right { flex: 1 1 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; }
+.cx-poolcard { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.cx-histcard { flex: 1 1 auto; min-height: 0; }
 @media (max-width: 820px) { .cx-cols { flex-direction: column; } .cx-left { flex-basis: auto; width: 100%; } }
 
 .cx-card { background: var(--ec-panel-2); border: 1px solid var(--ec-border-soft); border-radius: 10px; overflow: hidden; }
@@ -1245,7 +1254,7 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .cx-poolTag { border: 1px solid var(--ec-border-soft); background: var(--ec-panel-3); color: var(--ec-text-soft);
   border-radius: 5px; padding: 1px 7px; cursor: pointer; font-size: 10px; }
 .cx-poolTag:hover { color: var(--ec-gold); } .cx-poolTag.on { background: var(--ec-gold-bg); color: var(--ec-gold); border-color: var(--ec-gold-dim); }
-.cx-poollist { max-height: 42vh; overflow-y: auto; padding: 4px 8px 8px; display: flex; flex-direction: column; gap: 3px; }
+.cx-poollist { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 4px 8px 8px; display: flex; flex-direction: column; gap: 3px; }
 .cx-prow { display: flex; gap: 8px; align-items: center; padding: 5px 8px; border-radius: 7px; background: var(--ec-panel-3); border: 1px solid transparent; }
 .cx-prow:hover { border-color: var(--ec-border-soft); background: var(--ec-panel); }
 .cx-pbody { flex: 1; min-width: 0; }

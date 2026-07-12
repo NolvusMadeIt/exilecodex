@@ -62,7 +62,8 @@ end
 -- Placeholder page for plugins that haven't been ported from concept1 yet.
 function ui.stub_page(opts)
   return table.concat({
-    '<div class="ec-panel p-4 mx-auto mt-4" style="max-width:600px">',
+    '<div class="ec-stub-wrap">',
+    '<div class="ec-panel p-4" style="max-width:600px">',
     '<div class="d-flex align-items-center gap-3 mb-2">',
     '<i class="bi ', opts.icon or 'bi-puzzle', '" style="font-size:28px;color:var(--ec-gold)"></i>',
     '<div>',
@@ -72,6 +73,7 @@ function ui.stub_page(opts)
     '<p class="ec-dim mb-2" style="font-size:13px;line-height:1.7">', opts.desc or '', '</p>',
     '<p class="ec-muted mb-0" style="font-size:12px">This plugin is being rebuilt in Lua. ',
     'Reference implementation: <code style="color:var(--ec-blue)">', opts.source or '', '</code></p>',
+    '</div>',
     '</div>',
   })
 end
