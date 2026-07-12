@@ -1,0 +1,46 @@
+<div class="wiki-doc">
+  <h2>Waystone search regex — a plain guide</h2>
+  <p class="wiki-lead">The in-game stash and vendor search box can match text against the mods on your items.
+  A "regex" is just a search pattern. On Waystones (and Tablets) it's the fastest way to find the ones
+  worth running and skip the rest — no squinting at every mod line.</p>
+
+  <h3>The five rules that matter</h3>
+  <ul class="wiki-rules">
+    <li><b>It matches any text on the item</b> — mod lines, names — and it's not case-sensitive.</li>
+    <li><b>Spaces count.</b> The search treats a space like any other character, so <code>pack siz</code>
+      and <code>packsiz</code> are different. Keep your spacing exact.</li>
+    <li><b>250 characters max</b> per search. The builder shows your count so you don't overrun it.</li>
+    <li><b class="wiki-or">|</b> means <b>OR</b>. <code>"rarity|pack siz"</code> matches a Waystone that has
+      Item Rarity <i>or</i> Pack Size.</li>
+    <li><b>Two quoted groups mean AND</b>, and <b class="wiki-ex">!</b> in front of a group <b>excludes</b> it.
+      <code>"rarity" !"extra fire"</code> = has Rarity, but hide the extra-fire ones.</li>
+  </ul>
+
+  <h3>Why it helps</h3>
+  <p>When your stash is full of Waystones, you want the juicy ones fast: high <b>Item Rarity</b>, big
+  <b>Pack Size</b>, more <b>Magic/Rare monsters</b> — and you want to steer clear of dangerous rolls like
+  extra elemental damage or big monster-life boosts. A good regex highlights exactly those in one keystroke.</p>
+
+  <h3>Worked examples</h3>
+  <table class="wiki-eg">
+    <tr><td><code>"rarity|pack siz"</code></td><td>Highlight Waystones with Item Rarity <i>or</i> Pack Size.</td></tr>
+    <tr><td><code>"rarity" "pack siz"</code></td><td>Only Waystones that have <i>both</i> (each quoted group must match).</td></tr>
+    <tr><td><code>"magic mons|rare mons"</code></td><td>Extra monster density — more packs to kill.</td></tr>
+    <tr><td><code>"rarity" !"extra fire"</code></td><td>Rarity rolls, but exclude ones that deal extra Fire damage.</td></tr>
+    <tr><td><code>"m rar.*([6-9].|\d..)%"</code></td><td>Advanced: Waystones with 60%+ Item Rarity (numeric matching).</td></tr>
+  </table>
+
+  <h3>Using this builder</h3>
+  <ol class="wiki-steps">
+    <li>Toggle the mods you want under <b>Loot &amp; rewards</b> and <b>Monster density</b> — green chips are
+      included and joined with <code>|</code>.</li>
+    <li>Toggle mods under <b>Exclude</b> to hide dangerous rolls — they get wrapped in <code>!"…"</code> for you.</li>
+    <li>The box at the top shows the finished regex and its <b>character count</b>. Hit <b>Copy</b> and paste it
+      into the in-game search.</li>
+    <li><b>Save preset</b> keeps a setup (e.g. "juice", "safe farm") on this device so you can reload it later.</li>
+  </ol>
+
+  <p class="wiki-src">Regex rules verified against
+    <a href="https://vulkk.com/2026/05/29/path-of-exile-2-regex-system-explained/" target="_blank" rel="noopener">Vulkk's PoE2 regex guide</a>
+    (opens in your browser). Explanations here are our own.</p>
+</div>

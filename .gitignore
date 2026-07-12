@@ -1,6 +1,21 @@
 node_modules
 dist
 
+# Generated third-party bundles (copied from node_modules on install)
+app/client/ui/vendor/
+
+# Generated passive-tree sprites (28MB, regenerate with scripts/build-tree-{sprites,backgrounds}.cjs)
+app/media/tree/0_5/sprites/
+
+# Vite dev cache
+.vite/
+
+# Webdriver / automation browser profiles (not source)
+tools/webdriver/
+
+# Old app kept for reference only — new Lua/Bootstrap app lives at the repo root
+concept1/
+
 # Local-only tooling / scratch
 .claude
 mcps

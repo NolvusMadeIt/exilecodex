@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <title>ExileCodex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="../../media/brand/128.png">
+  <link rel="stylesheet" href="./vendor/bootstrap.min.css">
+  <link rel="stylesheet" href="./vendor/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="./css/theme.css">
+</head>
+<body>
+  <!-- The desktop: widgets float here, like addon frames over the game. -->
+  <div id="desktop"></div>
+
+  <!-- The core app: an Overwolf-style launcher orb. Drag it anywhere; click it
+       to unfold the menu; Alt+1 hides/shows the orb (open widgets stay put). -->
+  <button id="orb" class="ec-orb" title="ExileCodex — click for menu · drag to move · Alt+1 show/hide">
+    <img src="../../media/brand/128.png" alt="ExileCodex">
+  </button>
+  <nav id="rail" class="ec-orbmenu d-none" aria-label="ExileCodex menu"></nav>
+
+  <div id="corner" class="ec-corner"></div>
+  <div id="ec-tooltip" class="ec-tooltip d-none"></div>
+  <div id="boot-error" class="ec-booterror d-none"></div>
+
+  <script src="./vendor/bootstrap.bundle.min.js"></script>
+  <script src="./js/boot.js"></script>
+  <script src="./vendor/fengari-web.js"></script>
+
+  <!-- Monaco editor for the Filter Editor plugin. Loaded lazily (only when that plugin first mounts)
+       so the 14 MB bundle never touches app startup. loader.js installs the AMD require/define
+       globals, so it must come AFTER fengari-web.js — otherwise fengari's UMD build would register
+       as an AMD module instead of assigning to window and the Lua runtime would never appear. -->
+  <script src="./vendor/monaco/vs/loader.js"></script>
+  <script src="./js/poe2-filter-lang.js"></script>
+  <script src="./js/monaco-boot.js"></script>
+
+  <!-- PoE2 filter BUILD engine (Quick Filters -> generated .filter). Pure logic, no deps. -->
+  <script src="./js/filter-build.js"></script>
+
+  <!-- PoE2 passive tree canvas renderer (Build Planner Tree tab), over the vendored tree.json. -->
+  <script src="./js/tree-render.js"></script>
+
+  <!--
+    The load order below is the app's "TOC" (like a WoW addon .toc file):
+    core libraries first, then every plugin, then init.lua mounts the UI.
+  -->
+  <script type="application/lua" src="../lua/core/ui.lua"></script>
+  <script type="application/lua" src="../lua/core/i18n.lua"></script>
+  <script type="application/lua" src="../lua/core/json.lua"></script>
+  <script type="application/lua" src="../lua/core/registry.lua"></script>
+  <script type="application/lua" src="../lua/core/widgets.lua"></script>
+  <script type="application/lua" src="../lua/core/wiki.lua"></script>
+  <script type="application/lua" src="../lua/core/guide.lua"></script>
+  <script type="application/lua" src="../lua/core/detect.lua"></script>
+  <script type="application/lua" src="../lua/core/settings.lua"></script>
+
+  <script type="application/lua" src="../../addons/campaign-guide/guides/campaign-acts.lua"></script>
+  <script type="application/lua" src="../../addons/campaign-guide/guides/campaign-i18n.lua"></script>
+  <script type="application/lua" src="../../addons/campaign-guide/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/guide-forge/plugin.lua"></script>
+  <!-- Build Planner temporarily disabled (WIP — PoB-style tree). Re-enable by uncommenting. -->
+  <!-- <script type="application/lua" src="../../addons/build-planner/plugin.lua"></script> -->
+  <script type="application/lua" src="../../addons/market-companion/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/price-check/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/filter-editor/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/xile-items/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/xile-modifiers/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/xile-crafting/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/xile-character/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/xile-tools/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/xile-history/plugin.lua"></script>
+
+  <script type="application/lua" src="../lua/core/init.lua"></script>
+</body>
+</html>
