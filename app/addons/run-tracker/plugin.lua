@@ -84,9 +84,12 @@ local function active_set()
   return BUILTIN[id] or BUILTIN.acts
 end
 
--- towns / hideouts: never a split, and where the timer auto-pauses
-local TOWN_WORDS = { "hideout", "encampment", "refuge", "caravan", "kingsmarch", "ziggurat encampment", " town" }
+-- towns / hideouts: never a split, and where the timer auto-pauses. Delegates to
+-- the single classifier in codex.detect so one keyword list is used app-wide;
+-- the local table is only a fallback if detect somehow isn't loaded yet.
+local TOWN_WORDS = { "hideout", "encampment", "refuge", "caravan", "kingsmarch", "ziggurat encampment", " town", "ardura" }
 local function is_town(area)
+  if codex.detect and codex.detect.classify then return codex.detect.classify(area) ~= "other" end
   if not area or area == "" then return false end
   local a = tostring(area):lower()
   for _, w in ipairs(TOWN_WORDS) do if a:find(w, 1, true) then return true end end
@@ -190,9 +193,9 @@ local function on_zone_ts(name, ms)
     r.loadMs = (r.loadMs or 0) + math.max(0, ms - r.pendingLoad); r.pendingLoad = nil
   end
   local town = is_town(name)
-  -- Start on the FIRST detected area of any kind (camp, hideout, map, zone) —
-  -- the timer is driven entirely by Client.txt, never a bare button press.
-  if not r and autostart_on() then start_run(name); r = T.run end
+  -- Start on the first ACT zone / map — never in town or hideout (when auto-pause
+  -- is on). The timer is driven entirely by Client.txt, never a bare button press.
+  if not r and autostart_on() and not (pausetown_on() and town) then start_run(name); r = T.run end
   if r then
     if town and pausetown_on() then pause_timer() else resume_timer() end
     try_split_zone(name)

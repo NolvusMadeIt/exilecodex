@@ -6,7 +6,7 @@ local js = require "js"
 local window = js.global
 local ui = codex.ui
 
-codex.detect = { char = nil, cls = nil, level = nil, area = nil, active = false, available = false }
+codex.detect = { char = nil, cls = nil, level = nil, area = nil, kind = "other", active = false, available = false }
 local D = codex.detect
 
 local function shell()
@@ -16,6 +16,25 @@ end
 
 -- Detection (and therefore the run timer) is only possible in the desktop shell.
 D.available = shell() ~= nil
+
+-- Zone-kind classifier. The log only gives an area DISPLAY NAME, so we classify
+-- by name into { "town", "hideout", "other" }. This is the single source of truth
+-- for "should the timer pause here" (town/hideout) — the guide decides
+-- campaign-vs-map itself by whether the area matches a step. Name-based so it can
+-- be tuned without rebuilding the shell.
+local HIDEOUT_WORDS = { "hideout" }
+local TOWN_WORDS = { "encampment", "refuge", "caravan", "kingsmarch", "ardura", " town" }
+function D.classify(area)
+  if not area or area == "" then return "other" end
+  local a = tostring(area):lower()
+  for _, w in ipairs(HIDEOUT_WORDS) do if a:find(w, 1, true) then return "hideout" end end
+  for _, w in ipairs(TOWN_WORDS) do if a:find(w, 1, true) then return "town" end end
+  return "other"
+end
+-- true when the current (or given) area is a town/hideout, where the timer pauses.
+function D.is_town(area)
+  return D.classify(area ~= nil and area or D.area) ~= "other"
+end
 
 -- Zone-change listeners (the Run Tracker subscribes here). Each is called with
 -- the new area name whenever the player enters a different zone.
@@ -107,6 +126,7 @@ if sh and sh.onDetect ~= nil then
     local level_changed = new_level ~= nil and new_level ~= D.level
     D.level = new_level
     D.area = new_area
+    D.kind = D.classify(new_area)
 
     D.refresh()
     if codex.guide and codex.guide.maybe_autostart_timer then codex.guide.maybe_autostart_timer() end
@@ -153,6 +173,7 @@ window.ecDetectSimulate = function(_, area, level)
   local level_changed = new_level ~= nil and new_level ~= D.level
   if new_level ~= nil then D.level = new_level end
   if new_area ~= nil then D.area = new_area end
+  D.kind = D.classify(D.area)
   D.refresh()
   if codex.guide and codex.guide.maybe_autostart_timer then codex.guide.maybe_autostart_timer() end
   if zone_changed then emit_zone(new_area) end

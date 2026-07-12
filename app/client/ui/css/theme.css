@@ -700,9 +700,48 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
   display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ec-text-soft);
   background: var(--ec-panel-3); border: 1px solid var(--ec-border-soft); border-radius: 5px; padding: 5px 8px;
 }
-.gf-steps li .n { color: var(--ec-muted); min-width: 16px; text-align: center; }
-.gf-steps li .x { margin-left: auto; color: var(--ec-muted); cursor: pointer; }
-.gf-steps li .x:hover { color: var(--ec-red-text); }
+.gf-steps li .n { color: var(--ec-muted); min-width: 16px; text-align: center; flex: 0 0 auto; }
+.gf-steps li .grow { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gf-steps li .x { color: var(--ec-muted); cursor: pointer; flex: 0 0 auto; }
+.gf-steps li .x:hover { color: var(--ec-text-strong); }
+.gf-steps li .bi-x:hover { color: var(--ec-red-text); }
+
+/* forge goal editor — added goals + the row being typed */
+.gf-goals { display: flex; flex-direction: column; gap: 3px; }
+.gf-goal {
+  display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--ec-text-strong);
+  background: var(--ec-panel-3); border: 1px solid var(--ec-border-soft); border-radius: 5px; padding: 3px 7px;
+}
+.gf-goal .a {
+  flex: 0 0 auto; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--ec-gold-dim); min-width: 52px;
+}
+.gf-goal .t { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gf-goal .x { flex: 0 0 auto; color: var(--ec-muted); cursor: pointer; }
+.gf-goal .x:hover { color: var(--ec-red-text); }
+.gf-goaledit { display: flex; align-items: center; gap: 6px; }
+
+/* guide act bar — jump to / start on any act (Act 1 · 2 · 3 · Int 1 …) */
+.ec-actbar {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  padding: 5px 7px; background: var(--ec-panel-2); border-bottom: 1px solid #000;
+}
+.ec-actchip {
+  cursor: pointer; background: transparent; border: 1px solid var(--ec-border-soft);
+  border-radius: 6px; color: var(--ec-text-soft); font-size: 11px; font-weight: 600;
+  padding: 2px 8px; line-height: 1.5; transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+.ec-actchip:hover { background: rgba(255,255,255,0.06); color: #fff; border-color: var(--ec-border); }
+.ec-actchip.active { color: var(--ec-gold); background: var(--ec-gold-bg); border-color: var(--ec-gold-dim); }
+
+/* guide zone banner — where you are when it isn't the current step's zone */
+.zg-zonebanner {
+  display: flex; align-items: center; gap: 6px; font-size: 11px; padding: 4px 10px;
+  border-bottom: 1px solid var(--ec-border-soft);
+}
+.zg-zonebanner i { font-size: 12px; }
+.zg-zonebanner.town { color: var(--ec-gold-dim); background: rgba(120,95,40,0.12); }
+.zg-zonebanner.off { color: var(--ec-text-soft); background: rgba(255,255,255,0.03); }
 
 /* boot error banner */
 .ec-booterror {

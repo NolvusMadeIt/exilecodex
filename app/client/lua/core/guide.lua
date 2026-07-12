@@ -18,7 +18,7 @@ local M = codex.guide
 
 -- three viewer regions so the picker (and its inline forge) survive body
 -- re-renders: the tab bar and the step body are rebuilt; the picker is not.
-local viewer_el, gbar_el, gbody_el, tstrip_el, gfoot_el, gdock_el = nil, nil, nil, nil, nil, nil
+local viewer_el, gbar_el, gbody_el, tstrip_el, gfoot_el, gdock_el, actbar_el = nil, nil, nil, nil, nil, nil, nil
 local guides_menu_open = false
 local history_open = false
 
@@ -209,14 +209,37 @@ local function detection_live()
   return codex.detect ~= nil and codex.detect.active == true
 end
 
+-- Auto-pause in town / hideout — shared with the Run Tracker via ec.tracker.pausetown
+-- (default on). The timer runs in campaign zones + maps, pauses in town/hideout.
+local function pausetown_on() return ui.store_get("ec.tracker.pausetown") ~= "0" end
+local function in_town()
+  local d = codex.detect
+  return (d ~= nil and d.is_town ~= nil and d.is_town()) or false
+end
+
 function M.maybe_autostart_timer()
   if ui.store_get("ec.timer.auto") == "0" then return end
   if not detection_live() then return end
   if not M.active then return end
+  if pausetown_on() and in_town() then return end   -- don't start the clock in town/hideout
   if ui.store_get("ec.timer.run") == "1" then return end
   if (tonumber(ui.store_get("ec.timer.acc") or "0") or 0) ~= 0 then return end
   M.timer_start()
   if viewer_el then M.render() end
+end
+
+-- Keep the timer honest with the zone kind: run in campaign zones + maps, pause
+-- in town/hideout. Called on every detected zone change (before follow), so a
+-- fresh run auto-starts on the first act zone and resumes after a town stop.
+function M.sync_timer_zone()
+  if ui.store_get("ec.timer.auto") == "0" then return end
+  if not detection_live() then return end
+  local running = ui.store_get("ec.timer.run") == "1"
+  if pausetown_on() and in_town() then
+    if running then M.timer_pause() end
+  elseif not running and M.active then
+    M.timer_start()   -- start fresh (acc=0) or resume after a town pause (acc>0)
+  end
 end
 
 window:setInterval(function()
@@ -232,37 +255,60 @@ local function znorm(z)
   return z and (tostring(z):lower():gsub("^%s+", ""):gsub("%s+$", "")) or ""
 end
 
--- Client.txt zone detection: when the character enters a zone, the guide
--- follows — jump to that zone's step and (if auto-complete is on) tick its
--- traversal goals. Driven by codex.detect on every "You have entered" line.
+-- The log emits a FULL display name ("The Clearfell Encampment") while route
+-- steps use short names ("Clearfell"). Match if either normalized name contains
+-- the other (guarded to ≥4 chars so a tiny name can't match everything), plus a
+-- small override map for any zone that still mis-matches.
+local ZONE_OVERRIDES = {
+  -- ["log area (normalized)"] = "step zone (normalized)"
+}
+local function zone_matches(step_zone, want)
+  local sz = znorm(step_zone)
+  if sz == "" or want == "" then return false end
+  if sz == want then return true end
+  if ZONE_OVERRIDES[want] == sz then return true end
+  if #sz >= 4 and want:find(sz, 1, true) then return true end
+  if #want >= 4 and sz:find(want, 1, true) then return true end
+  return false
+end
+
+-- The step index for an area: first match at/after the current position, else
+-- the first anywhere. nil when the area isn't on this guide's route.
+local function step_for_area(g, area)
+  local want = znorm(area)
+  if want == "" then return nil end
+  for i = g.current, #g.steps do
+    if zone_matches(g.steps[i].zone, want) then return i end
+  end
+  for i = 1, #g.steps do
+    if zone_matches(g.steps[i].zone, want) then return i end
+  end
+  return nil
+end
+
+-- Client.txt zone detection: gate the timer on the zone kind, then (if follow is
+-- on) jump to that zone's step and tick its traversal goals. Always re-renders —
+-- even with no match — so the zone banner reflects town/hideout/off-route instead
+-- of the guide looking frozen. Driven by codex.detect on "You have entered".
 function M.on_zone(area)
   if not area or area == "" then return end
+  M.sync_timer_zone()
   if ui.store_get("ec.det.zone") == "0" then return end
   local g = M.active and M.guides[M.active]
   if not g then return end
-  local want = znorm(area)
 
-  -- first matching step at/after the current position, else the first anywhere
-  local target = nil
-  for i = g.current, #g.steps do
-    if znorm(g.steps[i].zone) == want then target = i break end
-  end
-  if not target then
-    for i = 1, #g.steps do
-      if znorm(g.steps[i].zone) == want then target = i break end
+  local target = step_for_area(g, area)
+  if target then
+    if target ~= g.current then
+      g.current = target
+      save_pos(g)
     end
-  end
-  if not target then return end
-
-  if target ~= g.current then
-    g.current = target
-    save_pos(g)
-  end
-  -- auto-complete traversal goals ("goto"/enter the zone) for the entered step
-  if ui.store_get("ec.det.advance") ~= "0" then
-    for gi, goal in ipairs(g.steps[target].goals) do
-      if goal.action == "goto" and not goal.count then
-        set_goal_state(g, target, gi, true)
+    -- auto-complete traversal goals ("goto"/enter the zone) for the entered step
+    if ui.store_get("ec.det.advance") ~= "0" then
+      for gi, goal in ipairs(g.steps[target].goals) do
+        if goal.action == "goto" and not goal.count then
+          set_goal_state(g, target, gi, true)
+        end
       end
     end
   end
@@ -665,6 +711,67 @@ end
 -- (and Guide Forge opens as its own popup window). The tab bar keeps only the
 -- open guides plus a shortcut button that jumps to that Settings group.
 
+-- ---------------------------------------------------------------- act navigator
+
+-- Shorten act labels so the whole bar fits a narrow guide ("Interlude 1" → "Int 1").
+local function act_display(a)
+  return (tostring(a):gsub("^Interlude", "Int"))
+end
+
+-- A compact act bar (Act 1 · 2 · 3 · 4 · Int 1 · 2 · 3) built from the loaded
+-- guide's distinct `act` values. Click an act to jump to / start on its first
+-- step. Works for built-in and custom guides; hidden when a guide has no acts.
+local function render_actbar(g)
+  if not actbar_el or actbar_el == js.null then return end
+  local order, first = {}, {}
+  for i, s in ipairs(g.steps) do
+    local a = s.act
+    if a and a ~= "" and first[a] == nil then first[a] = i; order[#order + 1] = a end
+  end
+  if #order < 2 then
+    actbar_el.classList:add("d-none"); actbar_el.innerHTML = ""; return
+  end
+  local cur_act = g.steps[g.current] and g.steps[g.current].act
+  local parts = {}
+  for _, a in ipairs(order) do
+    local cls = (a == cur_act) and "ec-actchip active" or "ec-actchip"
+    parts[#parts + 1] = '<button class="' .. cls .. '" data-gact="' .. esc(a)
+      .. '" title="' .. esc(tr(a)) .. '">' .. esc(act_display(tr(a))) .. '</button>'
+  end
+  actbar_el.innerHTML = table.concat(parts)
+  actbar_el.classList:remove("d-none")
+  ui.each(actbar_el, "[data-gact]", function(b)
+    ui.on(b, "click", function()
+      local a = ui.attr(b, "data-gact")
+      if first[a] then
+        g.current = first[a]
+        save_pos(g)
+        M.render()
+      end
+    end)
+  end)
+end
+
+-- The zone status banner: when detection is live and we're somewhere that isn't
+-- the current step's zone, say where we are (town/hideout/off-route) so the guide
+-- never looks stuck. Empty string when we're on-route in a campaign zone.
+local function zone_banner_html(g)
+  if not detection_live() then return "" end
+  local d = codex.detect
+  if not d or not d.area or d.area == "" then return "" end
+  local area = tostring(d.area)
+  local kind = d.kind or "other"
+  local pausedtxt = pausetown_on() and (' &middot; ' .. esc(tr("timer paused"))) or ''
+  if kind == "hideout" then
+    return '<div class="zg-zonebanner town"><i class="bi bi-house-door"></i> ' .. esc(tr("In hideout")) .. pausedtxt .. '</div>'
+  elseif kind == "town" then
+    return '<div class="zg-zonebanner town"><i class="bi bi-shop"></i> ' .. esc(area) .. pausedtxt .. '</div>'
+  end
+  local cur = g.steps[g.current]
+  if cur and cur.zone and zone_matches(cur.zone, znorm(area)) then return "" end
+  return '<div class="zg-zonebanner off"><i class="bi bi-signpost"></i> ' .. esc(tr("Off-route")) .. ' &middot; ' .. esc(area) .. '</div>'
+end
+
 -- ---------------------------------------------------------------- render body
 
 local function advance(g, items, pos)
@@ -680,6 +787,7 @@ function M.render()
   if not gbody_el then return end
   local g = M.active and M.guides[M.active] or nil
   if not g then
+    if actbar_el and actbar_el ~= js.null then actbar_el.classList:add("d-none") end
     gbody_el.innerHTML = '<div class="p-4 text-center" style="font-size:12px;color:var(--ec-text-soft)">'
       .. esc(tr("No guide open")) .. '<br><button id="ec-pick-empty" class="btn btn-ec btn-sm mt-2">'
       .. esc(tr("Pick a guide")) .. '</button></div>'
@@ -687,6 +795,8 @@ function M.render()
     if pe ~= js.null then ui.on(pe, "click", function() M.open_guides_menu() end) end
     return
   end
+
+  render_actbar(g)
 
   local items = visible_items(g)
   if #items == 0 then
@@ -727,6 +837,8 @@ function M.render()
     right,
     '</div>',
   })
+
+  parts[#parts + 1] = zone_banner_html(g)
 
   local nshow = tonumber(ui.store_get("ec.guide.next_steps") or "2") or 2
   parts[#parts + 1] = step_html(g, items[pos], true)
@@ -861,6 +973,7 @@ function M.mount(host)
   host.innerHTML = table.concat({
     '<div id="ec-viewer" class="ec-viewer">',
     '<div id="ec-tstrip" class="ec-toolstrip"></div>',
+    '<div id="ec-actbar" class="ec-actbar d-none"></div>',
     '<div id="ec-gbody"></div>',
     '<div id="ec-tracker-dock" class="ec-tracker-dock d-none"></div>',
     '<div id="ec-gfoot" class="ec-gfoot"></div>',
@@ -869,6 +982,7 @@ function M.mount(host)
   })
   viewer_el = host:querySelector("#ec-viewer")
   tstrip_el = host:querySelector("#ec-tstrip")
+  actbar_el = host:querySelector("#ec-actbar")
   gbar_el = host:querySelector("#ec-gbar")
   gbody_el = host:querySelector("#ec-gbody")
   gfoot_el = host:querySelector("#ec-gfoot")
