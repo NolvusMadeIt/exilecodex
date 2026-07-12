@@ -275,9 +275,29 @@ local function toolbar_html()
       '<button class="fe-tbtn fe-icon" data-act="font+" title="Larger font"><i class="bi bi-plus-lg"></i></button>',
       '<button class="fe-tbtn" data-act="size" title="Editor height (Small / Medium / Large)">Size: ', HLABEL[P.size], '</button>',
       '<span class="fe-spacer"></span>',
+      '<button class="fe-tbtn" data-act="output" title="Filter output options — syntax highlighting + custom top/bottom comments"><i class="bi bi-sliders"></i> Output</button>',
       '<button class="fe-tbtn fe-icon" data-act="find" title="Find (Ctrl+F)"><i class="bi bi-search"></i></button>',
       '<button class="fe-tbtn" data-act="copy" title="Copy filter"><i class="bi bi-clipboard"></i> Copy</button>',
       '<button class="fe-tbtn fe-gold" data-act="download" title="Download .filter"><i class="bi bi-download"></i> Download</button>',
+    '</div>',
+  })
+end
+
+-- Filter OUTPUT options (moved here from Settings → Filter output): syntax
+-- highlighting of the generated filter + custom top/bottom comment blocks.
+local function fe_esc(s)
+  return (tostring(s):gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"))
+end
+local function output_panel_html()
+  return table.concat({
+    '<div class="fe-output" id="fe-output" style="display:none">',
+      '<div class="fe-out-title">Filter output</div>',
+      '<label class="fe-out-check"><input type="checkbox" id="fe-out-syntax"',
+        ((ui.store_get("ec.filter.syntax") or "1") == "1") and " checked" or "", '> Syntax highlighting in the exported filter</label>',
+      '<label class="fe-out-lbl">Custom top comment</label>',
+      '<textarea id="fe-out-top" class="fe-out-ta" rows="3" placeholder="# Notes added to the top of every downloaded filter">', fe_esc(ui.store_get("ec.filter.top") or ""), '</textarea>',
+      '<label class="fe-out-lbl">Custom bottom comment</label>',
+      '<textarea id="fe-out-bot" class="fe-out-ta" rows="3" placeholder="# Notes added to the bottom">', fe_esc(ui.store_get("ec.filter.bottom") or ""), '</textarea>',
     '</div>',
   })
 end
@@ -306,6 +326,21 @@ local function wire_editor()
     P.wrap = not P.wrap; ui.store_set("ec.editor.wrap", P.wrap and "1" or "0")
     set_toggle('[data-act="wrap"]', P.wrap); apply_opts()
   end)
+  -- Filter output options (relocated from Settings)
+  click('[data-act="output"]', function()
+    local p = q("#fe-output")
+    if p ~= js.null then
+      local hidden = tostring(p.style.display) == "none"
+      p.style.display = hidden and "block" or "none"
+      set_toggle('[data-act="output"]', hidden)
+    end
+  end)
+  local syn = q("#fe-out-syntax")
+  if syn ~= js.null then ui.on(syn, "change", function() ui.store_set("ec.filter.syntax", syn.checked and "1" or "0") end) end
+  local topc = q("#fe-out-top")
+  if topc ~= js.null then ui.on(topc, "input", function() ui.store_set("ec.filter.top", tostring(topc.value)) end) end
+  local botc = q("#fe-out-bot")
+  if botc ~= js.null then ui.on(botc, "input", function() ui.store_set("ec.filter.bottom", tostring(botc.value)) end) end
   click('[data-act="minimap"]', function()
     P.minimap = not P.minimap; ui.store_set("ec.editor.minimap", P.minimap and "1" or "0")
     set_toggle('[data-act="minimap"]', P.minimap); apply_opts()
@@ -386,6 +421,7 @@ local function mount(el)
   el.innerHTML = table.concat({
     buildbar_html(),
     toolbar_html(),
+    output_panel_html(),
     '<div class="fe-qf" id="fe-qf" style="height:', HEIGHTS[P.size], ';display:none"></div>',
     '<div class="fe-host" id="fe-host" style="height:', HEIGHTS[P.size], '">',
       '<div class="fe-loading" id="fe-loading"><span class="spinner-border spinner-border-sm"></span> Loading editor…</div>',

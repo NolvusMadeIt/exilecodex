@@ -169,14 +169,18 @@ local LANGS = {
 local GROUPS = {
   { id = "general", name = "General", icon = "bi-sliders" },
   { id = "steps", name = "Step display", icon = "bi-list-check" },
+  { id = "tracker", name = "Run Tracker", icon = "bi-stopwatch" },
   { id = "guidewin", name = "Guide window", icon = "bi-window-stack" },
   { id = "display", name = "Display", icon = "bi-palette" },
   { id = "paths", name = "Game paths", icon = "bi-folder2-open" },
   { id = "detection", name = "Smart detection", icon = "bi-broadcast" },
   { id = "overlay", name = "Game overlay", icon = "bi-pip" },
-  { id = "filters", name = "Filter output", icon = "bi-funnel" },
-  { id = "sync", name = "Sync (Supabase)", icon = "bi-cloud" },
   { id = "about", name = "About", icon = "bi-info-circle" },
+}
+-- Groups revealed only when developer mode is unlocked (Settings → tap About 6×).
+local DEV_GROUPS = {
+  { id = "sync", name = "Sync (Supabase)", icon = "bi-cloud" },
+  { id = "developer", name = "Developer", icon = "bi-bug" },
 }
 
 local about_taps = 0
@@ -297,6 +301,90 @@ RENDER.general = function(pane)
   end)
 end
 
+-- Run Tracker (LiveSplit-style speedrun timer) config. The tracker plugin +
+-- the guide's History button read these same ec.tracker.* keys.
+local function rt_render_editor(pane)
+  local host = pane:querySelector("#set-rt-editor")
+  if host == js.null then return end
+  if (ui.store_get("ec.tracker.splitset") or "acts") ~= "custom" then host.innerHTML = ""; return end
+  local rules = (codex.tracker and codex.tracker.custom_rules and codex.tracker.custom_rules()) or {}
+  local rows = {}
+  for i, r in ipairs(rules) do
+    rows[#rows + 1] = table.concat({
+      '<div class="rt-erow" data-i="', i, '">',
+      '<input class="form-control form-control-sm rt-elabel" placeholder="Label" value="', esc(r.label or ""), '">',
+      '<select class="form-select form-select-sm rt-etype" style="max-width:82px">',
+      '<option value="zone"', (r.type == "zone" and " selected" or ""), '>Zone</option>',
+      '<option value="level"', (r.type == "level" and " selected" or ""), '>Level</option></select>',
+      '<input class="form-control form-control-sm rt-eval" placeholder="', r.type == "level" and "N" or "Zone name", '" value="', esc(r.type == "level" and tostring(r.n or "") or (r.match or "")), '">',
+      '<button class="btn btn-ec-ghost btn-sm rt-edel" title="Remove">&times;</button></div>',
+    })
+  end
+  host.innerHTML = '<div class="rt-editor">' .. table.concat(rows)
+    .. '<button id="rt-eadd" class="btn btn-ec-ghost btn-sm mt-1"><i class="bi bi-plus-lg"></i> Add split rule</button></div>'
+
+  local function collect()
+    local out = {}
+    ui.each(host, ".rt-erow", function(rowEl)
+      local ty = tostring(rowEl:querySelector(".rt-etype").value)
+      local label = tostring(rowEl:querySelector(".rt-elabel").value)
+      local val = tostring(rowEl:querySelector(".rt-eval").value)
+      if ty == "level" then out[#out + 1] = { type = "level", n = tonumber(val) or 0, label = label }
+      else out[#out + 1] = { type = "zone", match = val, label = label } end
+    end)
+    ui.store_set("ec.tracker.customrules", codex.json.encode(out))
+  end
+  ui.each(host, ".rt-erow input, .rt-erow select", function(el) ui.on(el, "change", collect) end)
+  ui.each(host, ".rt-edel", function(b) ui.on(b, "click", function()
+    local i = tonumber(ui.attr(b:closest(".rt-erow"), "data-i"))
+    if i then table.remove(rules, i); ui.store_set("ec.tracker.customrules", codex.json.encode(rules)); rt_render_editor(pane) end
+  end) end)
+  ui.on(host:querySelector("#rt-eadd"), "click", function()
+    rules[#rules + 1] = { type = "zone", match = "", label = "" }
+    ui.store_set("ec.tracker.customrules", codex.json.encode(rules)); rt_render_editor(pane)
+  end)
+end
+
+RENDER.tracker = function(pane)
+  local parts = {}
+  parts[#parts + 1] = sec(T("Timing"), nil, table.concat({
+    toggle_html("set-rt-autostart", "Auto-start the timer on entering a zone", (ui.store_get("ec.tracker.autostart") or "1") == "1"),
+    '<div class="mt-2"></div>',
+    toggle_html("set-rt-pausetown", "Auto-pause in town / hideout", (ui.store_get("ec.tracker.pausetown") or "1") == "1"),
+    '<div class="mt-2"></div>',
+    toggle_html("set-rt-loadremoval", "Remove load-screen time", (ui.store_get("ec.tracker.loadremoval") or "1") == "1",
+      "Desktop only. Subtracts the game's load time (the gap between requesting a zone and entering it) — the game-time speedrunners compare."),
+  }))
+  parts[#parts + 1] = sec(T("Auto-splitting"), nil, table.concat({
+    toggle_html("set-rt-autosplit", "Auto-split on zones / levels", (ui.store_get("ec.tracker.autosplit") or "1") == "1"),
+    '<div class="d-flex gap-2 mt-2 align-items-center"><span style="font-size:12px;color:var(--ec-text-soft)">Split set</span>',
+    '<select id="set-rt-splitset" class="form-select form-select-sm" style="max-width:200px">',
+    options_html({ { id = "acts", label = "Campaign — Acts" }, { id = "firstzone", label = "Every new zone" }, { id = "custom", label = "Custom…" } }, ui.store_get("ec.tracker.splitset") or "acts"),
+    '</select></div>',
+    '<div class="ec-muted mt-1" style="font-size:11px">Splits fire the first time you enter the target zone or reach the level. Towns and hideouts never split.</div>',
+    '<div id="set-rt-editor" class="mt-2"></div>',
+  }))
+  parts[#parts + 1] = sec(T("Records"), nil, table.concat({
+    '<button id="set-rt-pbreset" class="btn btn-ec-ghost btn-sm">Clear PB &amp; gold splits (current set)</button>',
+  }))
+  pane.innerHTML = table.concat(parts)
+  bind_toggle(pane, "#set-rt-autostart", "ec.tracker.autostart")
+  bind_toggle(pane, "#set-rt-pausetown", "ec.tracker.pausetown")
+  bind_toggle(pane, "#set-rt-loadremoval", "ec.tracker.loadremoval")
+  bind_toggle(pane, "#set-rt-autosplit", "ec.tracker.autosplit")
+  bind_store(pane, "#set-rt-splitset", "ec.tracker.splitset", "change", function() rt_render_editor(pane) end)
+  local pbr = pane:querySelector("#set-rt-pbreset")
+  ui.on(pbr, "click", function()
+    if ui.attr(pbr, "data-armed") == "1" then
+      if codex.tracker and codex.tracker.reset_pb then codex.tracker.reset_pb() end
+      pbr.innerHTML = "Cleared."
+    else
+      pbr:setAttribute("data-armed", "1"); pbr.innerHTML = "Click again to confirm"
+    end
+  end)
+  rt_render_editor(pane)
+end
+
 RENDER.steps = function(pane)
   local parts = {}
   parts[#parts + 1] = sec(T("Upcoming steps shown"), nil, table.concat({
@@ -358,8 +446,6 @@ RENDER.guidewin = function(pane)
     '<input id="set-gw-op" type="range" min="0.6" max="1" step="0.05" class="form-range mt-2" value="',
     ui.store_get("ec.guide.opacity") or "1", '">',
   }))
-  parts[#parts + 1] = sec(T("Fixed height"), nil,
-    toggle_html("set-gw-fixed", T("Fixed height"), ui.store_get("ec.guide.fixedheight") == "1"))
   parts[#parts + 1] = sec(T("Reset window"), nil,
     '<button id="set-gw-reset" class="btn btn-ec-ghost btn-sm">' .. T("Reset window") .. '</button>')
   pane.innerHTML = table.concat(parts)
@@ -378,7 +464,6 @@ RENDER.guidewin = function(pane)
     ui.store_set("ec.guide.opacity", tostring(opr.value))
     apply()
   end)
-  bind_toggle(pane, "#set-gw-fixed", "ec.guide.fixedheight", apply)
 
   ui.on(pane:querySelector("#set-gw-reset"), "click", function()
     for _, k in ipairs({ "ec.guide.width", "ec.guide.fontscale", "ec.guide.opacity",
@@ -484,6 +569,26 @@ RENDER.paths = function(pane)
   end
   if not sh then return end
 
+  -- Auto-locate any path that's still empty as soon as the pane opens, so the
+  -- common case needs zero clicks. Silent — only fills on a hit.
+  local AUTO = {
+    { id = "set-path-game", key = "ec.path.game", kind = "game" },
+    { id = "set-path-clienttxt", key = "ec.path.clienttxt", kind = "clienttxt" },
+    { id = "set-path-filters", key = "ec.path.filters", kind = "filters" },
+  }
+  for _, a in ipairs(AUTO) do
+    if (ui.store_get(a.key) or "") == "" then
+      sh:autoLocate(a.kind, ui.store_get("ec.path.game") or "", function(_, p)
+        if p ~= js.null and p ~= nil then
+          local input = pane:querySelector("#" .. a.id)
+          if input ~= js.null then input.value = tostring(p) end
+          ui.store_set(a.key, tostring(p))
+          if codex.detect then codex.detect.start() end
+        end
+      end)
+    end
+  end
+
   ui.each(pane, "[data-browse]", function(btn)
     ui.on(btn, "click", function()
       local target = ui.attr(btn, "data-browse")
@@ -579,23 +684,7 @@ RENDER.overlay = function(pane)
   end
 end
 
-RENDER.filters = function(pane)
-  local parts = {}
-  parts[#parts + 1] = sec(T("Filter output"), nil,
-    toggle_html("set-syntax", "Syntax highlighting", (ui.store_get("ec.filter.syntax") or "1") == "1"))
-  parts[#parts + 1] = sec(T("Custom comments"), nil, table.concat({
-    '<div class="d-flex gap-2">',
-    '<textarea id="set-topcmt" class="form-control form-control-sm" rows="5" placeholder="Top">',
-    ui.store_get("ec.filter.top") or "", '</textarea>',
-    '<textarea id="set-botcmt" class="form-control form-control-sm" rows="5" placeholder="Bottom">',
-    ui.store_get("ec.filter.bottom") or "", '</textarea>',
-    '</div>',
-  }))
-  pane.innerHTML = table.concat(parts)
-  bind_toggle(pane, "#set-syntax", "ec.filter.syntax")
-  bind_store(pane, "#set-topcmt", "ec.filter.top", "input")
-  bind_store(pane, "#set-botcmt", "ec.filter.bottom", "input")
-end
+-- (Filter output settings moved into the Filter Editor plugin's "Output" panel.)
 
 RENDER.sync = function(pane)
   local url, key, from_env = sb_config()
@@ -717,7 +806,7 @@ local function groups_list()
   local list = {}
   for _, grp in ipairs(GROUPS) do list[#list + 1] = grp end
   if dev_unlocked() then
-    list[#list + 1] = { id = "developer", name = "Developer", icon = "bi-bug" }
+    for _, grp in ipairs(DEV_GROUPS) do list[#list + 1] = grp end
   end
   return list
 end

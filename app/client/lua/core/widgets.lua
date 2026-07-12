@@ -58,6 +58,39 @@ function W.front(fr)
   fr.style.zIndex = W.z
 end
 
+-- Keep a widget fully within its container. Everything here is done in LAYOUT
+-- space (offsetWidth/offsetLeft + the offsetParent's clientWidth) so it stays
+-- correct under the global font `zoom` (ec.fontscale) — getBoundingClientRect
+-- would report zoomed coordinates that don't match the style.left we write.
+local MARGIN = 6
+local function bounds(fr)
+  local p = fr.offsetParent
+  if p ~= nil and p ~= js.null then return p.clientWidth, p.clientHeight end
+  return window.innerWidth, window.innerHeight
+end
+local function clamp_onscreen(fr)
+  if fr == nil or fr == js.null then return end
+  local pw, ph = bounds(fr)
+  local left, top = fr.offsetLeft, fr.offsetTop
+  local maxLeft = pw - fr.offsetWidth - MARGIN
+  local maxTop = ph - fr.offsetHeight - MARGIN
+  if maxLeft < MARGIN then maxLeft = MARGIN end
+  if maxTop < MARGIN then maxTop = MARGIN end
+  if left > maxLeft then left = maxLeft end
+  if left < MARGIN then left = MARGIN end
+  if top > maxTop then top = maxTop end
+  if top < MARGIN then top = MARGIN end
+  fr.style.left = math.floor(left) .. "px"
+  fr.style.top = math.floor(top) .. "px"
+end
+W.clamp_onscreen = clamp_onscreen
+
+-- When the app window resizes (window mode is resizable), pull every open widget
+-- back on-screen so nothing is ever stranded off the edge.
+window:addEventListener("resize", function()
+  for _, fr in pairs(W.open) do clamp_onscreen(fr) end
+end)
+
 local function save_state(id, fr)
   local collapsed = fr.classList:contains("collapsed") and 1 or 0
   local w = math.floor(fr.offsetWidth)
@@ -176,6 +209,7 @@ function W.spawn(spec)
     local h = fr.offsetHeight
     fr.style.top = math.max(8, math.floor((window.innerHeight - h) / 2)) .. "px"
   end
+  clamp_onscreen(fr) -- a restored position may be off-screen if the window shrank
   save_state(spec.id, fr)
 
   notify()
@@ -191,8 +225,19 @@ document:addEventListener("mousemove", function(_, ev)
       W.rdrag = nil
       return
     end
-    rd.fr.style.width = math.max(240, rd.sw + (ev.clientX - rd.sx)) .. "px"
-    rd.body.style.height = math.max(100, rd.sh + (ev.clientY - rd.sy)) .. "px"
+    -- cap the size so a bottom-right resize can't push the widget off-screen
+    local pw, ph = bounds(rd.fr)
+    local maxW = pw - rd.fr.offsetLeft - MARGIN
+    if maxW < 240 then maxW = 240 end
+    local chrome = rd.fr.offsetHeight - rd.body.offsetHeight
+    local maxBodyH = ph - rd.fr.offsetTop - chrome - MARGIN
+    if maxBodyH < 100 then maxBodyH = 100 end
+    local newW = math.max(240, rd.sw + (ev.clientX - rd.sx))
+    local newH = math.max(100, rd.sh + (ev.clientY - rd.sy))
+    if newW > maxW then newW = maxW end
+    if newH > maxBodyH then newH = maxBodyH end
+    rd.fr.style.width = math.floor(newW) .. "px"
+    rd.body.style.height = math.floor(newH) .. "px"
     rd.body.style.maxHeight = "none"
     W.reposition_anchored(rd.id)
     return
@@ -205,10 +250,18 @@ document:addEventListener("mousemove", function(_, ev)
     W.drag = nil
     return
   end
-  local nx = math.max(0, ev.clientX - d.dx)
-  local ny = math.max(0, ev.clientY - d.dy)
-  d.fr.style.left = nx .. "px"
-  d.fr.style.top = ny .. "px"
+  -- clamp the drag so the widget can never be dragged off-screen
+  local pw, ph = bounds(d.fr)
+  local nx = ev.clientX - d.dx
+  local ny = ev.clientY - d.dy
+  local maxX = pw - d.fr.offsetWidth - MARGIN
+  local maxY = ph - d.fr.offsetHeight - MARGIN
+  if maxX < MARGIN then maxX = MARGIN end
+  if maxY < MARGIN then maxY = MARGIN end
+  if nx < MARGIN then nx = MARGIN elseif nx > maxX then nx = maxX end
+  if ny < MARGIN then ny = MARGIN elseif ny > maxY then ny = maxY end
+  d.fr.style.left = math.floor(nx) .. "px"
+  d.fr.style.top = math.floor(ny) .. "px"
   W.reposition_anchored(d.id)
 end)
 

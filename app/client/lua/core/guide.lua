@@ -18,8 +18,9 @@ local M = codex.guide
 
 -- three viewer regions so the picker (and its inline forge) survive body
 -- re-renders: the tab bar and the step body are rebuilt; the picker is not.
-local viewer_el, gbar_el, gbody_el, tstrip_el = nil, nil, nil, nil
+local viewer_el, gbar_el, gbody_el, tstrip_el, gfoot_el = nil, nil, nil, nil, nil
 local guides_menu_open = false
+local history_open = false
 
 -- Zygor's action→icon vocabulary (their actionicons table), our own icons.
 local ACTION_ICONS = {
@@ -296,11 +297,21 @@ end
 local function tooltip_move(x, y)
   local t = ui.byId("ec-tooltip")
   if not t then return end
-  local tx, ty = x + 18, y + 14
-  if tx + 355 > window.innerWidth then tx = x - 355 end
-  if ty + 300 > window.innerHeight then ty = window.innerHeight - 300 end
-  t.style.left = tx .. "px"
-  t.style.top = ty .. "px"
+  -- #ec-tooltip is position:fixed inside <body>, which carries the global font
+  -- `zoom` (ec.fontscale). A fixed element's px offsets are in the zoomed space,
+  -- so a raw clientX would land at clientX*zoom — far from the cursor. Convert
+  -- the cursor's viewport coords into body space by dividing by the zoom.
+  local z = tonumber(tostring(document.body.style.zoom)) or 1
+  if z == 0 or z ~= z then z = 1 end
+  local cx, cy = x / z, y / z
+  local vw, vh = window.innerWidth / z, window.innerHeight / z
+  local tx, ty = cx + 18, cy + 14
+  if tx + 355 > vw then tx = cx - 355 end
+  if ty + 300 > vh then ty = vh - 300 end
+  if tx < 4 then tx = 4 end
+  if ty < 4 then ty = 4 end
+  t.style.left = math.floor(tx) .. "px"
+  t.style.top = math.floor(ty) .. "px"
 end
 
 local function tooltip_hide()
@@ -576,13 +587,33 @@ local function render_toolstrip()
     esc(tr("Guides")), ' <i class="bi bi-caret-down-fill"></i></button>',
     '<button class="ec-tsbtn accent" id="ec-create-btn"><i class="bi bi-plus-lg"></i> ',
     esc(tr("Create a guide")), '</button>',
+    '<button class="ec-tsbtn" id="ec-history-btn"><i class="bi bi-clock-history"></i> ',
+    esc(tr("History")), '</button>',
     '<div id="ec-guides-drop" class="ec-tsdrop d-none"></div>',
+    '<div id="ec-history-drop" class="ec-tsdrop ec-tsdrop-wide d-none"></div>',
   })
   ui.on(tstrip_el:querySelector("#ec-guides-btn"), "click", function(ev)
     ev:stopPropagation()
     if guides_menu_open then close_guides_menu() else M.open_guides_menu() end
   end)
   ui.on(tstrip_el:querySelector("#ec-create-btn"), "click", function() open_forge(nil) end)
+  -- Run history lives here (out of the tracker widget). The tracker owns the view.
+  local hbtn = tstrip_el:querySelector("#ec-history-btn")
+  if hbtn ~= js.null then
+    ui.on(hbtn, "click", function(ev)
+      ev:stopPropagation()
+      local drop = tstrip_el:querySelector("#ec-history-drop")
+      if drop == js.null then return end
+      close_guides_menu()
+      if drop.classList:contains("d-none") then
+        if codex.tracker and codex.tracker.render_history then codex.tracker.render_history(drop) end
+        drop.classList:remove("d-none")
+        history_open = true
+      else
+        drop.classList:add("d-none"); history_open = false
+      end
+    end)
+  end
 end
 
 -- ---------------------------------------------------------------- tabs
@@ -703,11 +734,17 @@ function M.render()
     parts[#parts + 1] = step_html(g, items[k], false)
   end
 
-  local pct = math.floor((pos - 1) / math.max(#items, 1) * 100 + 0.5)
-  parts[#parts + 1] = '<div class="zg-foot"><span>' .. esc(tr(g.title)) .. '</span><span style="color:var(--ec-green)">' .. pct .. '%</span></div>'
-  parts[#parts + 1] = '<div class="zg-progress"><div style="width:' .. pct .. '%"></div></div>'
-
   gbody_el.innerHTML = table.concat(parts)
+
+  -- The guide title + progress live in a pinned footer (above the tabs), not in
+  -- the scrolling steps region.
+  local pct = math.floor((pos - 1) / math.max(#items, 1) * 100 + 0.5)
+  if gfoot_el then
+    gfoot_el.innerHTML = table.concat({
+      '<div class="zg-foot"><span>' .. esc(tr(g.title)) .. '</span><span style="color:var(--ec-green)">' .. pct .. '%</span></div>',
+      '<div class="zg-progress"><div style="width:' .. pct .. '%"></div></div>',
+    })
+  end
 
   -- wiring
   local prev = gbody_el:querySelector("#ec-prev")
@@ -801,31 +838,37 @@ function M.apply_window()
   end
 
   if gbody_el then
-    if ui.store_get("ec.guide.fixedheight") == "1" then
-      gbody_el.style.maxHeight = "52vh"
-      gbody_el.style.overflowY = "auto"
-    else
-      gbody_el.style.maxHeight = ""
-      gbody_el.style.overflowY = ""
-    end
+    -- The steps region ALWAYS flex-fills the widget body and scrolls internally,
+    -- so the progress footer + tab bar stay pinned at the bottom no matter how
+    -- tall the widget is dragged. (A viewport max-height cap here used to strand
+    -- them mid-way once the widget grew past ~52vh.)
+    gbody_el.style.maxHeight = "none"
+    gbody_el.style.overflowY = "auto"
   end
+
+  -- A wider width or bigger font can push the window past an edge — pull it back.
+  if codex.widgets.clamp_onscreen then codex.widgets.clamp_onscreen(fr) end
   codex.widgets.reposition_anchored(GUIDE_WIDGET)
 end
 
 -- ---------------------------------------------------------------- mount + open
 
 function M.mount(host)
+  -- Guide tabs (the "Speedrun" switcher) sit at the BOTTOM, under the steps —
+  -- the body height-caps and scrolls internally so the tab bar stays a footer.
   host.innerHTML = table.concat({
     '<div id="ec-viewer" class="ec-viewer">',
     '<div id="ec-tstrip" class="ec-toolstrip"></div>',
-    '<div id="ec-gbar" class="ec-gbar"></div>',
     '<div id="ec-gbody"></div>',
+    '<div id="ec-gfoot" class="ec-gfoot"></div>',
+    '<div id="ec-gbar" class="ec-gbar ec-gbar-foot"></div>',
     '</div>',
   })
   viewer_el = host:querySelector("#ec-viewer")
   tstrip_el = host:querySelector("#ec-tstrip")
   gbar_el = host:querySelector("#ec-gbar")
   gbody_el = host:querySelector("#ec-gbody")
+  gfoot_el = host:querySelector("#ec-gfoot")
   render_toolstrip()
   M.render()
 end
@@ -880,8 +923,13 @@ end
 
 -- Click anywhere outside the tool strip closes the guides dropdown.
 document:addEventListener("click", function(_, ev)
-  if not guides_menu_open then return end
+  if not (guides_menu_open or history_open) then return end
   local t = ev.target
   if t and t.closest and t:closest("#ec-tstrip") ~= js.null then return end
   close_guides_menu()
+  if history_open and tstrip_el then
+    local d = tstrip_el:querySelector("#ec-history-drop")
+    if d ~= js.null then d.classList:add("d-none") end
+    history_open = false
+  end
 end)

@@ -30,6 +30,10 @@ contextBridge.exposeInMainWorld('exileShell', {
   // { char, cls, level, area, active } updates (zone changes + level-ups).
   watchClientTxt: (p) => ipcRenderer.send('ec:watch-clienttxt', p || ''),
   onDetect: (cb) => ipcRenderer.on('ec:detect', (_e, data) => cb(data)),
+  // Speedrun events with the log's ms uptime counter: {type:'zone'|'level'|'load', ms, ...}
+  onDetectEvent: (cb) => ipcRenderer.on('ec:detect-event', (_e, ev) => cb(ev)),
+  // Tray commands: {cmd:'settings', group} — open the Settings panel to a group.
+  onTray: (cb) => ipcRenderer.on('ec:tray', (_e, msg) => cb(msg)),
   // Game overlay: arm the global show/hide hotkey + pin to a display.
   setOverlayConfig: (enabled, hotkey, display) =>
     ipcRenderer.send('ec:overlay-config', {

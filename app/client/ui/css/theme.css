@@ -110,16 +110,17 @@ h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter
 /* ---- widgets ---- */
 .ec-widget {
   position: absolute; display: flex; flex-direction: column; min-width: 240px;
+  max-width: calc(100vw - 12px); max-height: calc(100vh - 12px);
   background: var(--ec-panel); border: 1px solid var(--ec-border); border-radius: 9px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
 }
 .ec-widget-title {
   display: flex; align-items: center; gap: 8px; padding: 7px 10px;
   background: var(--ec-panel-2); border-bottom: 1px solid var(--ec-border-soft);
-  border-radius: 9px 9px 0 0; cursor: move; user-select: none;
+  border-radius: 9px 9px 0 0; cursor: move; user-select: none; overflow: hidden;
 }
 .ec-widget-title .t {
-  flex: 1; font-size: 12px; font-weight: 500; color: var(--ec-text);
+  flex: 1; min-width: 0; font-size: 12px; font-weight: 500; color: var(--ec-text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .ec-widget-title button {
@@ -127,7 +128,11 @@ h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter
   font-size: 13px; padding: 0 3px; cursor: pointer;
 }
 .ec-widget-title button:hover { color: var(--ec-gold); }
-.ec-widget-body { padding: 10px; overflow: auto; max-height: 72vh; }
+/* Flex column so a plugin's main scroll region can fill the body when the widget
+   is resized taller (no dead space). Plugins mark that region with `flex:1;
+   min-height:0` (e.g. .mkt-tablewrap). max-height keeps un-resized widgets sane;
+   the resize grip sets an explicit height + maxHeight:none to override it. */
+.ec-widget-body { padding: 10px; overflow: auto; max-height: 72vh; display: flex; flex-direction: column; }
 .ec-widget-body.flush { padding: 0; }
 .ec-widget.collapsed .ec-widget-body { display: none; }
 .ec-widget.collapsed { min-width: 200px; }
@@ -183,7 +188,10 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
    Values lifted from the real addon: black ~50–80% translucent surfaces,
    white goal text, #222 active tab, green #00cc01 progress, red progress-backed
    goal rows, 8px rounded steps, 12px step numbers. Icons are our own. */
-.ec-viewer { background: var(--ec-panel-2); overflow: hidden; color: var(--ec-text-strong); }
+.ec-viewer { background: var(--ec-panel-2); overflow: hidden; color: var(--ec-text-strong);
+  flex: 1; min-height: 0; display: flex; flex-direction: column; }
+/* Steps fill the middle and scroll; the tab bar (gbar) stays pinned at the bottom. */
+#ec-gbody { flex: 1; min-height: 0; overflow-y: auto; }
 .ec-viewer .ec-tabs { display: flex; background: rgba(0, 0, 0, 0.9); border-bottom: 1px solid #000; }
 .ec-viewer .ec-tab {
   display: inline-flex; align-items: center; gap: 5px;
@@ -313,6 +321,10 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 
 /* guide tab bar: the ＋ picker button */
 .ec-gbar { position: relative; }
+/* When the guide tab bar sits at the bottom (footer), separate it with a top border. */
+.ec-gbar-foot { border-top: 1px solid var(--ec-border-soft); }
+/* Pinned progress footer, just above the tab bar. */
+.ec-gfoot { flex: 0 0 auto; }
 .ec-tab-add {
   background: transparent; border: none; color: #9a9a9a; font-size: 12px;
   padding: 0 8px; cursor: pointer; align-self: stretch;
@@ -453,7 +465,7 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
   flex: 0 0 auto; border: 1px solid var(--ec-border-soft); }
 
 /* ── Market Companion — live currency market ────────────────────────────── */
-.mkt-wrap { display: flex; flex-direction: column; gap: 8px; }
+.mkt-wrap { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; }
 .mkt-ticker { overflow: hidden; border: 1px solid var(--ec-border-soft); border-radius: 7px;
   background: var(--ec-panel-2); height: 27px; display: flex; align-items: center; }
 .mkt-tickrun { display: inline-flex; white-space: nowrap; animation: mkt-marquee 55s linear infinite; }
@@ -478,7 +490,7 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
   background: var(--ec-panel-3); border: 1px solid var(--ec-border-soft); color: var(--ec-text-soft); }
 .mkt-search { flex: 1; background: transparent; border: none; outline: none; color: var(--ec-text); font-size: 12.5px; }
 
-.mkt-tablewrap { max-height: 58vh; overflow-y: auto; border: 1px solid var(--ec-border-soft); border-radius: 8px; }
+.mkt-tablewrap { flex: 1; min-height: 0; overflow-y: auto; border: 1px solid var(--ec-border-soft); border-radius: 8px; }
 .mkt-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .mkt-table thead th { position: sticky; top: 0; z-index: 1; background: var(--ec-panel-2); }
 .mkt-th { text-align: left; padding: 6px 10px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
@@ -736,6 +748,21 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .fe-foot .fe-spacer { flex: 1; }
 .fe-foot .fe-sel { color: var(--ec-text-strong); }
 .fe-foot .fe-lang { color: var(--ec-gold-dim); }
+
+/* Filter output options panel (toolbar "Output" dropdown) */
+.fe-output {
+  padding: 10px 12px; background: var(--ec-panel-2); border-bottom: 1px solid var(--ec-border-soft);
+  display: flex; flex-direction: column; gap: 7px;
+}
+.fe-out-title { font-size: 10.5px; text-transform: uppercase; letter-spacing: .1em; color: var(--ec-gold-dim); }
+.fe-out-check { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--ec-text); cursor: pointer; }
+.fe-out-check input { accent-color: var(--ec-gold); }
+.fe-out-lbl { font-size: 11px; color: var(--ec-text-soft); margin: 2px 0 -3px; }
+.fe-out-ta {
+  width: 100%; background: var(--ec-panel-3); border: 1px solid var(--ec-border-soft); border-radius: 6px;
+  color: var(--ec-text); font-size: 12px; font-family: ui-monospace, monospace; padding: 6px 8px; resize: vertical;
+}
+.fe-out-ta:focus { outline: none; border-color: var(--ec-gold-dim); }
 
 /* builder bar: strictness / style / catch-all + Live/Manual mode */
 .fe-buildbar {
@@ -1251,3 +1278,61 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
   88%  { opacity: 1; transform: translate(-50%, 0); }
   100% { opacity: 0; transform: translate(-50%, -10px); }
 }
+
+/* ============================================================================
+   Run Tracker — compact LiveSplit-style column (app/addons/run-tracker)
+   ========================================================================== */
+.rt-ls { display: flex; flex-direction: column; gap: 6px; font-variant-numeric: tabular-nums; }
+.rt-splits { display: flex; flex-direction: column; gap: 1px; }
+.rt-hint2 { padding: 12px 6px; text-align: center; font-size: 11px; color: var(--ec-muted); }
+.rt-split { display: flex; align-items: baseline; gap: 6px; padding: 3px 7px; border-radius: 4px; border-left: 2px solid transparent; }
+.rt-split.rt-live { background: rgba(90,120,200,.20); border-left-color: #6e8be0; }
+.rt-sn { flex: 1; min-width: 0; font-size: 11.5px; color: #9aa0a8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rt-split.rt-live .rt-sn { color: #edeff2; }
+.rt-sd { flex: 0 0 auto; font-size: 11px; min-width: 42px; text-align: right; color: var(--ec-muted); }
+.rt-sd.ahead { color: #4ce64c; } .rt-sd.behind { color: #e63c3c; }
+.rt-stime { flex: 0 0 auto; font-size: 11.5px; min-width: 46px; text-align: right; color: #c7cbd1; }
+.rt-split:not(.rt-done):not(.rt-live) .rt-stime { color: #6b7079; }
+.rt-gold { color: #d4af37 !important; }
+
+.rt-time { font-size: 30px; font-weight: 700; line-height: 1.05; text-align: right; color: #c7cbd1; padding: 2px 4px 0; letter-spacing: .01em; }
+.rt-time.rt-t-ahead { color: #4ce64c; } .rt-time.rt-t-behind { color: #e63c3c; }
+.rt-time.rt-t-gold { color: #d4af37; } .rt-time.rt-t-paused { color: #8a8f98; }
+
+.rt-statusline { display: flex; align-items: center; gap: 6px; padding: 0 4px; }
+.rt-pill { font-size: 9px; text-transform: uppercase; letter-spacing: .07em; padding: 1px 7px; border-radius: 20px; }
+.rt-pill.rec { color: #e3564e; background: rgba(227,86,78,.12); }
+.rt-pill.paused { color: #8a8f98; background: rgba(138,143,152,.12); }
+.rt-pill.idle { color: var(--ec-muted); }
+.rt-zc { flex: 1; min-width: 0; font-size: 10.5px; color: var(--ec-text-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rt-lc { flex: 0 0 auto; font-size: 10px; color: #b89a4a; }
+
+.rt-bar { display: flex; gap: 4px; padding: 2px 2px 0; }
+.rt-ib { flex: 1; display: grid; place-items: center; border: 1px solid var(--ec-border-soft); background: var(--ec-panel-3);
+  color: var(--ec-text-soft); border-radius: 5px; padding: 5px 0; cursor: pointer; font-size: 13px; }
+.rt-ib:hover { color: var(--ec-gold); border-color: var(--ec-gold-dim); }
+.rt-ib.ghost { flex: 0 0 34px; }
+
+/* Run history — rendered inside the guide toolbar's wide dropdown */
+.ec-tsdrop-wide { width: 340px; max-height: 62vh; overflow-y: auto; }
+.rt-hhdr { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-bottom: 1px solid var(--ec-border-soft); font-size: 11.5px; color: var(--ec-text-soft); }
+.rt-hhdr b { color: var(--ec-gold); font-variant-numeric: tabular-nums; }
+.rt-clearpb { background: none; border: 1px solid var(--ec-border-soft); color: var(--ec-text-soft); border-radius: 5px; font-size: 10px; padding: 1px 7px; cursor: pointer; }
+.rt-clearpb:hover { color: var(--ec-red-text); border-color: var(--ec-red-border); }
+.rt-hempty { padding: 16px 10px; text-align: center; font-size: 11.5px; color: var(--ec-muted); }
+.rt-hrow { border-bottom: 1px solid var(--ec-border-soft); }
+.rt-hhead { display: flex; align-items: center; gap: 8px; padding: 6px 10px; cursor: pointer; }
+.rt-hhead:hover { background: rgba(255,255,255,.03); }
+.rt-htot { font-size: 12.5px; font-weight: 600; color: var(--ec-gold); font-variant-numeric: tabular-nums; }
+.rt-hmeta { flex: 1; font-size: 10px; color: var(--ec-text-soft); }
+.rt-hchev { color: var(--ec-muted); font-size: 11px; transition: transform .12s; }
+.rt-hrow.open .rt-hchev { transform: rotate(180deg); }
+.rt-htrash { background: none; border: none; color: var(--ec-muted); cursor: pointer; font-size: 12px; padding: 0 2px; }
+.rt-htrash:hover { color: var(--ec-red-text); }
+.rt-hsegs { background: var(--ec-panel-2); padding: 2px 0 4px; }
+.rt-hseg { display: flex; justify-content: space-between; padding: 2px 12px; font-size: 11px; color: var(--ec-text-soft); font-variant-numeric: tabular-nums; }
+/* custom split-set editor (Settings → Run Tracker) */
+.rt-editor { display: flex; flex-direction: column; gap: 5px; }
+.rt-erow { display: flex; gap: 5px; align-items: center; }
+.rt-erow .rt-elabel, .rt-erow .rt-eval { flex: 1; min-width: 0; }
+.rt-edel { padding: 2px 9px; line-height: 1; }

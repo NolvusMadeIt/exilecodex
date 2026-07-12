@@ -302,3 +302,19 @@ else
   W.open_plugin("campaign-guide")
 end
 sync_rail()
+
+-- Tray → renderer: the system-tray menu can open Settings (optionally to a
+-- specific group). Mode switches are handled entirely in the shell (recreate).
+do
+  local sh = js.global.exileShell
+  if sh ~= nil and sh ~= js.null and sh.onTray ~= nil then
+    sh:onTray(function(_, msg)
+      if msg == nil or msg == js.null then return end
+      if tostring(msg.cmd) == "settings" then
+        local g = msg.group
+        local group = (g ~= nil and g ~= js.null and tostring(g) ~= "") and tostring(g) or nil
+        if codex.settings and codex.settings.open then codex.settings.open(group) end
+      end
+    end)
+  end
+end

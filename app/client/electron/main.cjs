@@ -5,13 +5,14 @@
 // enters/leaves UI. Also serves the repo over a loopback-only HTTP server
 // (fengari fetches .lua files via XHR, which file:// would block) and will grow
 // the Client.txt watcher and clipboard hooks that the browser build can't do.
-const { app, BrowserWindow, ipcMain, screen, dialog, globalShortcut, shell } = require('electron')
+const { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain, screen, dialog, globalShortcut, shell } = require('electron')
 const http = require('http')
 const fs = require('fs')
 const os = require('os')
 const path = require('path')
 
 const ROOT = path.resolve(__dirname, '..', '..', '..')
+const BRAND_ICON = path.join(ROOT, 'app', 'media', 'brand', 'logo_v2.png')
 
 // Single-instance lock: a second launch must NOT spawn a competing HTTP server
 // on a random port — that changes the origin and wipes localStorage (every
@@ -69,12 +70,23 @@ ipcMain.on('ec:save-vars', (_e, json) => {
 // is read from the durable SavedVariables at startup, and the renderer is told
 // which mode it's in via a ?shell=<mode> query param + the get-mode bridge.
 let win = null
+let tray = null
+let isQuitting = false
 let currentMode = 'window'
+app.on('before-quit', () => { isQuitting = true })
 function readSavedMode() {
   try {
     const vars = JSON.parse(fs.readFileSync(varsFile(), 'utf8'))
     return vars['ec.overlay.enabled'] === '1' ? 'overlay' : 'window'
   } catch { return 'window' }
+}
+// Persist an ec.* pref straight into the SavedVariables file (so a tray-driven
+// mode switch is remembered and the app UI reflects it after the reload).
+function setSavedVar(key, value) {
+  let vars = {}
+  try { vars = JSON.parse(fs.readFileSync(varsFile(), 'utf8')) || {} } catch { vars = {} }
+  vars[key] = value
+  try { fs.writeFileSync(varsFile(), JSON.stringify(vars)) } catch { /* ignore */ }
 }
 ipcMain.on('ec:get-mode', (e) => { e.returnValue = currentMode })
 
@@ -130,7 +142,8 @@ app.whenReady().then(async () => {
   // resizable desktop window centred on the primary display.
   function windowOpts(mode) {
     const base = {
-      icon: path.join(ROOT, 'app', 'media', 'brand', '128.png'),
+      title: 'ExileCodex',
+      icon: BRAND_ICON,
       webPreferences: {
         preload: path.join(__dirname, 'preload.cjs'),
         contextIsolation: true,
@@ -166,6 +179,13 @@ app.whenReady().then(async () => {
       // mode is "orb not clickable", never "invisible wall over the desktop".
       win.setIgnoreMouseEvents(true, { forward: true })
     }
+    // Closing the window hides to the tray instead of quitting (the app lives in
+    // the tray; "Quit" there really exits). Mode switches destroy the window
+    // programmatically, which sets isQuitting-like intent via `destroy()` (no
+    // close event), so this only intercepts a real user close.
+    win.on('close', (e) => {
+      if (!isQuitting) { e.preventDefault(); win.hide() }
+    })
     // external links (Buy/Sell on the trade site, wiki, etc.) open in the system browser
     win.webContents.setWindowOpenHandler(({ url }) => {
       if (/^https?:\/\//.test(url)) shell.openExternal(url)
@@ -185,6 +205,7 @@ app.whenReady().then(async () => {
     const old = win
     createWindow(mode)
     if (old && !old.isDestroyed()) old.destroy()
+    if (tray) tray.setContextMenu(buildTrayMenu()) // reflect the new mode's radio
   }
 
   ipcMain.on('ec:mouse-through', (_e, flag) => {
@@ -203,17 +224,45 @@ app.whenReady().then(async () => {
   // Scan the usual suspects for PoE2 installs / logs / filter folders.
   ipcMain.handle('ec:auto-locate', (_e, req) => {
     const exists = (p) => { try { return fs.existsSync(p) } catch { return false } }
-    const gameDirs = [
-      'C:\\Program Files (x86)\\Grinding Gear Games\\Path of Exile 2',
-      'C:\\Program Files\\Grinding Gear Games\\Path of Exile 2',
-      'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Path of Exile 2',
-      'C:\\SteamLibrary\\steamapps\\common\\Path of Exile 2',
-      'D:\\SteamLibrary\\steamapps\\common\\Path of Exile 2',
-      'D:\\Steam\\steamapps\\common\\Path of Exile 2',
-      'D:\\Games\\Path of Exile 2',
-      'D:\\Grinding Gear Games\\Path of Exile 2',
-      'E:\\SteamLibrary\\steamapps\\common\\Path of Exile 2',
+    // Every fixed drive C:..Z: (cheap — non-existent roots fail fast).
+    const drives = []
+    for (let c = 67; c <= 90; c++) {
+      const d = String.fromCharCode(c) + ':\\'
+      if (exists(d)) drives.push(d)
+    }
+    // The install layouts PoE2 uses under any drive root.
+    const layouts = [
+      'Program Files (x86)\\Grinding Gear Games\\Path of Exile 2',
+      'Program Files\\Grinding Gear Games\\Path of Exile 2',
+      'Grinding Gear Games\\Path of Exile 2',
+      'Program Files (x86)\\Steam\\steamapps\\common\\Path of Exile 2',
+      'Program Files\\Steam\\steamapps\\common\\Path of Exile 2',
+      'Steam\\steamapps\\common\\Path of Exile 2',
+      'SteamLibrary\\steamapps\\common\\Path of Exile 2',
+      'Games\\Path of Exile 2',
+      'Path of Exile 2',
     ]
+    const gameDirs = []
+    for (const d of drives) for (const l of layouts) gameDirs.push(d + l)
+    // Steam custom libraries — read libraryfolders.vdf so we find installs on
+    // drives/paths the layouts above don't guess.
+    try {
+      const vdfs = []
+      for (const d of drives) {
+        vdfs.push(d + 'Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf')
+        vdfs.push(d + 'Steam\\steamapps\\libraryfolders.vdf')
+        vdfs.push(d + 'SteamLibrary\\steamapps\\libraryfolders.vdf')
+      }
+      for (const vp of vdfs) {
+        if (!exists(vp)) continue
+        const vdf = fs.readFileSync(vp, 'utf8')
+        for (const m of vdf.matchAll(/"path"\s*"([^"]+)"/g)) {
+          const lib = m[1].replace(/\\\\/g, '\\')
+          gameDirs.push(path.join(lib, 'steamapps', 'common', 'Path of Exile 2'))
+        }
+      }
+    } catch { /* unreadable vdf — fall back to the guessed layouts */ }
+
     const kind = req && req.kind
     if (kind === 'game') return gameDirs.find(exists) || null
     if (kind === 'clienttxt') {
@@ -225,8 +274,14 @@ app.whenReady().then(async () => {
       return null
     }
     if (kind === 'filters') {
-      const p = path.join(os.homedir(), 'Documents', 'My Games', 'Path of Exile 2')
-      return exists(p) ? p : null
+      // "My Games" may sit under Documents or OneDrive-redirected Documents.
+      const home = os.homedir()
+      const cands = [
+        path.join(home, 'Documents', 'My Games', 'Path of Exile 2'),
+        path.join(home, 'OneDrive', 'Documents', 'My Games', 'Path of Exile 2'),
+        path.join(home, 'OneDrive', 'My Games', 'Path of Exile 2'),
+      ]
+      return cands.find(exists) || null
     }
     return null
   })
@@ -244,22 +299,39 @@ app.whenReady().then(async () => {
     if (!win.isDestroyed()) win.webContents.send('ec:detect', { ...detect })
   }
 
-  function parseLines(text) {
+  // Speedrun tracker feed: besides the deduped snapshot, emit per-line events
+  // WITH the log's 3rd-token millisecond uptime counter (monotonic, ms-precise)
+  // so the renderer can auto-split and remove load time. `Got Instance Details`
+  // marks a load start; `You have entered` marks its end (and a zone change).
+  const RE_LEVEL = /^\S+ \S+ (\d+).* : (.+?) \((.+?)\) is now level (\d+)/
+  const RE_ZONE = /^\S+ \S+ (\d+).*You have entered (.+)\.\s*$/
+  const RE_LOAD = /^\S+ \S+ (\d+).*Got Instance Details/
+  function emitEvent(ev) {
+    if (win && !win.isDestroyed()) win.webContents.send('ec:detect-event', ev)
+  }
+
+  function parseLines(text, seed) {
     for (const line of text.split(/\r?\n/)) {
-      const lv = line.match(/\] : (.+?) \((.+?)\) is now level (\d+)/)
-      if (lv) { detect.char = lv[1]; detect.cls = lv[2]; detect.level = Number(lv[3]) }
-      const zone = line.match(/\] : You have entered (.+?)\.\s*$/)
-      if (zone) { detect.area = zone[1] }
+      let m
+      if ((m = line.match(RE_LEVEL))) {
+        detect.char = m[2]; detect.cls = m[3]; detect.level = Number(m[4])
+        if (!seed) emitEvent({ type: 'level', level: detect.level, char: detect.char, cls: detect.cls, ms: Number(m[1]) })
+      } else if ((m = line.match(RE_ZONE))) {
+        detect.area = m[2]
+        if (!seed) emitEvent({ type: 'zone', name: m[2], ms: Number(m[1]) })
+      } else if ((m = line.match(RE_LOAD))) {
+        if (!seed) emitEvent({ type: 'load', ms: Number(m[1]) })
+      }
     }
   }
 
-  function readAppended(from, to) {
+  function readAppended(from, to, seed) {
     try {
       const fd = fs.openSync(watchPath, 'r')
       const buf = Buffer.alloc(to - from)
       fs.readSync(fd, buf, 0, to - from, from)
       fs.closeSync(fd)
-      parseLines(buf.toString('utf8'))
+      parseLines(buf.toString('utf8'), seed)
     } catch { /* file busy / gone — ignore this tick */ }
   }
 
@@ -277,8 +349,9 @@ app.whenReady().then(async () => {
     watchPath = p
     try {
       const size = fs.statSync(p).size
-      // seed from the tail so we already know name/level/area at launch
-      readAppended(Math.max(0, size - 262144), size)
+      // seed from the tail so we already know name/level/area at launch.
+      // seed=true suppresses events so historical lines don't fire bogus splits.
+      readAppended(Math.max(0, size - 262144), size, true)
       watchSize = size
     } catch { watchSize = 0 }
     detect.active = true
@@ -286,7 +359,7 @@ app.whenReady().then(async () => {
     watchListener = (curr) => {
       if (curr.size < watchSize) watchSize = 0 // log rotated / truncated
       if (curr.size > watchSize) {
-        readAppended(watchSize, curr.size)
+        readAppended(watchSize, curr.size, false)
         watchSize = curr.size
         pushDetect()
       }
@@ -351,6 +424,57 @@ app.whenReady().then(async () => {
       label: `Display ${i + 1}${d.id === primary.id ? ' (primary)' : ''} — ${d.size.width}×${d.size.height}`,
     }))
   })
+
+  // ---- System tray -------------------------------------------------------
+  // A hidden-app tray icon: toggle the window, switch window<->overlay (kept in
+  // sync with the in-app setting), and jump into any Settings section.
+  const SETTINGS_GROUPS = [
+    { id: 'general', label: 'General' },
+    { id: 'steps', label: 'Step display' },
+    { id: 'tracker', label: 'Run Tracker' },
+    { id: 'guidewin', label: 'Guide window' },
+    { id: 'display', label: 'Display' },
+    { id: 'paths', label: 'Game paths' },
+    { id: 'detection', label: 'Smart detection' },
+    { id: 'overlay', label: 'Game overlay' },
+    { id: 'about', label: 'About' },
+  ]
+  function openSettings(group) {
+    if (!win || win.isDestroyed()) return
+    win.show(); win.focus()
+    const send = () => win.webContents.send('ec:tray', { cmd: 'settings', group: group || '' })
+    if (win.webContents.isLoading()) win.webContents.once('did-finish-load', send)
+    else send()
+  }
+  function syncMode(mode) {
+    if (mode === currentMode) return
+    setSavedVar('ec.overlay.enabled', mode === 'overlay' ? '1' : '0') // keep the in-app toggle in sync
+    switchMode(mode) // recreates the window; also rebuilds the tray menu
+  }
+  function buildTrayMenu() {
+    return Menu.buildFromTemplate([
+      { label: 'Show / Hide ExileCodex', click: () => { if (win && !win.isDestroyed()) { if (win.isVisible()) win.hide(); else { win.show(); win.focus() } } } },
+      { type: 'separator' },
+      { label: 'Window mode', type: 'radio', checked: currentMode === 'window', click: () => syncMode('window') },
+      { label: 'Game overlay', type: 'radio', checked: currentMode === 'overlay', click: () => syncMode('overlay') },
+      { type: 'separator' },
+      { label: 'Settings', submenu: [
+        { label: 'Open Settings…', click: () => openSettings('') },
+        { type: 'separator' },
+        ...SETTINGS_GROUPS.map((g) => ({ label: g.label, click: () => openSettings(g.id) })),
+      ] },
+      { type: 'separator' },
+      { label: 'Quit ExileCodex', click: () => app.quit() },
+    ])
+  }
+  try {
+    let img = nativeImage.createFromPath(BRAND_ICON)
+    if (!img.isEmpty()) img = img.resize({ width: 16, height: 16 })
+    tray = new Tray(img)
+    tray.setToolTip('ExileCodex')
+    tray.setContextMenu(buildTrayMenu())
+    tray.on('click', () => { if (win && !win.isDestroyed()) { win.show(); win.focus() } })
+  } catch { /* tray unavailable on this platform — non-fatal */ }
 
   createWindow(currentMode)
 })

@@ -1,7 +1,7 @@
 {
   "name": "exilecodex",
   "version": "2.0.0-alpha.0",
-  "description": "ExileCodex — a WoW-addon-style companion app for Path of Exile 2. Lua plugin engine, Bootstrap UI.",
+  "description": "ExileCodex",
   "private": true,
   "main": "app/client/electron/main.cjs",
   "scripts": {
@@ -9,8 +9,8 @@
     "postinstall": "node scripts/copy-vendor.cjs",
     "dev": "http-server -p 4400 -c-1 .",
     "app": "electron .",
-    "dist": "electron-builder --win nsis",
-    "dist:portable": "electron-builder --win portable",
+    "dist": "electron-builder --win nsis --x64",
+    "dist:portable": "electron-builder --win portable --x64",
     "pack": "electron-builder --dir"
   },
   "build": {
@@ -35,7 +35,7 @@
       "target": [
         "nsis"
       ],
-      "icon": "app/media/brand/460.png"
+      "icon": "app/media/brand/logo_v2.png"
     },
     "nsis": {
       "oneClick": false,

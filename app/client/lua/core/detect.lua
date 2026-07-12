@@ -17,6 +17,25 @@ end
 -- Detection (and therefore the run timer) is only possible in the desktop shell.
 D.available = shell() ~= nil
 
+-- Zone-change listeners (the Run Tracker subscribes here). Each is called with
+-- the new area name whenever the player enters a different zone.
+D.zone_listeners = {}
+function D.on_zone_change(fn) D.zone_listeners[#D.zone_listeners + 1] = fn end
+local function emit_zone(area)
+  if codex.guide and codex.guide.on_zone then codex.guide.on_zone(area) end
+  for _, fn in ipairs(D.zone_listeners) do pcall(fn, area) end
+end
+
+-- Timestamped speedrun events (Run Tracker: auto-split + load removal). These
+-- carry the log's ms uptime counter so load time can be subtracted precisely.
+D.zone_ts_listeners = {}
+D.level_ts_listeners = {}
+D.load_listeners = {}
+function D.on_zone_ts(fn) D.zone_ts_listeners[#D.zone_ts_listeners + 1] = fn end
+function D.on_level_ts(fn) D.level_ts_listeners[#D.level_ts_listeners + 1] = fn end
+function D.on_load(fn) D.load_listeners[#D.load_listeners + 1] = fn end
+local function fire(list, a, b) for _, fn in ipairs(list) do pcall(fn, a, b) end end
+
 local function s_or_nil(v)
   if v == nil or v == js.null then return nil end
   local s = tostring(v)
@@ -90,10 +109,26 @@ if sh and sh.onDetect ~= nil then
     D.area = new_area
 
     D.refresh()
-    if codex.guide then
-      if codex.guide.maybe_autostart_timer then codex.guide.maybe_autostart_timer() end
-      if zone_changed and codex.guide.on_zone then codex.guide.on_zone(new_area) end
-      if level_changed and codex.guide.on_level then codex.guide.on_level(new_level) end
+    if codex.guide and codex.guide.maybe_autostart_timer then codex.guide.maybe_autostart_timer() end
+    if zone_changed then emit_zone(new_area) end
+    if level_changed and codex.guide and codex.guide.on_level then codex.guide.on_level(new_level) end
+  end)
+end
+
+-- Timestamped events (load / zone / level with the log ms counter) → the Run
+-- Tracker's load-removal + auto-split. Additive to the snapshot channel above.
+if sh and sh.onDetectEvent ~= nil then
+  sh:onDetectEvent(function(_, ev)
+    if ev == nil or ev == js.null then return end
+    local t = tostring(ev.type)
+    local ms = (ev.ms ~= nil and ev.ms ~= js.null) and tonumber(ev.ms) or nil
+    if t == "zone" then
+      fire(D.zone_ts_listeners, s_or_nil(ev.name), ms)
+    elseif t == "level" then
+      local lv = (ev.level ~= nil and ev.level ~= js.null) and tonumber(ev.level) or nil
+      fire(D.level_ts_listeners, lv, ms)
+    elseif t == "load" then
+      fire(D.load_listeners, ms)
     end
   end)
 end
@@ -102,7 +137,14 @@ D.start()
 
 -- Debug/test hook: simulate a Client.txt push from the JS console (or a test):
 --   window.ecDetectSimulate("Clearfell", 5)   -- enter a zone / set a level
--- Drives the same auto-follow path as a real detection push.
+--   window.ecTrackerSimLoad(1200)             -- simulate a 1200ms load screen
+-- Drives the same auto-follow + tracker paths as a real detection push.
+local sim_ms = 0
+local sim_pending_load = 0
+window.ecTrackerSimLoad = function(_, ms)
+  sim_pending_load = tonumber(ms) or 0
+  fire(D.load_listeners, sim_ms)  -- load START now; the next zone ends it `ms` later
+end
 window.ecDetectSimulate = function(_, area, level)
   D.active = true
   local new_area = s_or_nil(area)
@@ -112,9 +154,13 @@ window.ecDetectSimulate = function(_, area, level)
   if new_level ~= nil then D.level = new_level end
   if new_area ~= nil then D.area = new_area end
   D.refresh()
-  if codex.guide then
-    if codex.guide.maybe_autostart_timer then codex.guide.maybe_autostart_timer() end
-    if zone_changed and codex.guide.on_zone then codex.guide.on_zone(new_area) end
-    if level_changed and codex.guide.on_level then codex.guide.on_level(new_level) end
-  end
+  if codex.guide and codex.guide.maybe_autostart_timer then codex.guide.maybe_autostart_timer() end
+  if zone_changed then emit_zone(new_area) end
+  if level_changed and codex.guide and codex.guide.on_level then codex.guide.on_level(new_level) end
+  -- also drive the timestamped tracker listeners (synthetic ms clock). A pending
+  -- simulated load lands its full duration on this zone's timestamp.
+  if sim_pending_load > 0 then sim_ms = sim_ms + sim_pending_load; sim_pending_load = 0
+  else sim_ms = sim_ms + 50 end
+  if zone_changed then fire(D.zone_ts_listeners, new_area, sim_ms) end
+  if level_changed then fire(D.level_ts_listeners, new_level, sim_ms) end
 end
