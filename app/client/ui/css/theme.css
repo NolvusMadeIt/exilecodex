@@ -171,12 +171,19 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .ec-dim { color: var(--ec-gold-dim); }
 .ec-muted { color: var(--ec-muted); }
 
+/* Primary action buttons use Path of Exile 2's own button art (up/hover/press). */
 .btn-ec {
-  --bs-btn-bg: var(--ec-gold); --bs-btn-color: #141210; --bs-btn-border-color: var(--ec-gold);
-  --bs-btn-hover-bg: #dbb76b; --bs-btn-hover-color: #141210; --bs-btn-hover-border-color: #dbb76b;
-  --bs-btn-active-bg: #b8944e; --bs-btn-active-color: #141210;
-  font-weight: 500;
+  --bs-btn-bg: transparent; --bs-btn-border-color: transparent;
+  --bs-btn-color: #efe4cb; --bs-btn-hover-color: #fff5e2; --bs-btn-active-color: #fff5e2;
+  --bs-btn-hover-bg: transparent; --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-bg: transparent; --bs-btn-active-border-color: transparent;
+  --bs-btn-disabled-bg: transparent; --bs-btn-disabled-border-color: transparent;
+  background-image: url('../../../media/ui/button_up.png');
+  background-size: 100% 100%; background-repeat: no-repeat; background-position: center;
+  border: 0; border-radius: 3px; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
 }
+.btn-ec:hover { background-image: url('../../../media/ui/button_hover.png'); }
+.btn-ec:active, .btn-ec.active { background-image: url('../../../media/ui/button_onpress.png'); }
 .btn-ec-ghost {
   --bs-btn-bg: transparent; --bs-btn-color: var(--ec-gold-dim); --bs-btn-border-color: var(--ec-border);
   --bs-btn-hover-bg: var(--ec-panel); --bs-btn-hover-color: var(--ec-gold); --bs-btn-hover-border-color: var(--ec-border);
