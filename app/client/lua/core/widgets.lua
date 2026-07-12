@@ -159,7 +159,7 @@ function W.spawn(spec)
   local flush = spec.flush and " flush" or ""
   fr.innerHTML = table.concat({
     '<div class="ec-widget-title">',
-    '<i class="bi ', spec.icon or "bi-app", '" style="color:', spec.color or "var(--ec-gold)", ';font-size:13px"></i>',
+    '<i class="bi ', spec.icon or "bi-app", '" style="color:', spec.color or "var(--ec-gold)", ';font-size:16px"></i>',
     '<span class="t">', codex.T and codex.T(spec.title or spec.id) or (spec.title or spec.id), '</span>',
     (spec.on_attach and '<button data-act="attach" title="Attach to Guide"><i class="bi bi-pin-angle"></i></button>' or ''),
     '<button data-act="collapse" title="Collapse"><i class="bi bi-chevron-up"></i></button>',

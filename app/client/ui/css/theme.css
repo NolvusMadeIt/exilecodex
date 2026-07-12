@@ -126,10 +126,12 @@ h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter
     url('../../../media/ui/windowtitlebarmiddle.png') center center / auto 100% repeat-x;
 }
 .ec-widget-title .t {
-  flex: 1; min-width: 0; font-size: 12px; font-weight: 600; color: var(--ec-text-strong);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  flex: 1; min-width: 0; text-align: center;
+  font-family: "Fontin SmallCaps", "Fontin", serif; font-size: 14px; font-weight: 400;
+  letter-spacing: 0.05em; color: #e9dcc0; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.ec-widget-title > i.bi { flex: 0 0 auto; }
 .ec-widget-title button {
   background: none; border: none; color: var(--ec-gold-dim);
   font-size: 13px; padding: 0 3px; cursor: pointer;
@@ -172,10 +174,11 @@ h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter
 .ec-widget.collapsed .ec-widget-body { display: none; }
 .ec-widget.collapsed { min-width: 200px; }
 .ec-widget.collapsed .ec-widget-title { border-bottom: none; border-radius: 9px; }
-.ec-widget-grip { position: absolute; right: 1px; bottom: 1px; width: 15px; height: 15px; cursor: nwse-resize; opacity: 0.45; }
+.ec-widget-grip { position: absolute; right: 0; bottom: 0; width: 24px; height: 24px; cursor: nwse-resize; opacity: 0.65; z-index: 3; }
 .ec-widget-grip::before {
-  content: ""; position: absolute; right: 4px; bottom: 4px; width: 8px; height: 8px;
-  border-right: 2px solid var(--ec-gold-dim); border-bottom: 2px solid var(--ec-gold-dim);
+  content: ""; position: absolute; right: 4px; bottom: 4px; width: 12px; height: 12px;
+  border-right: 2px solid var(--ec-gold); border-bottom: 2px solid var(--ec-gold);
+  box-shadow: 5px 5px 0 -2px var(--ec-gold-dim);
 }
 .ec-widget-grip:hover { opacity: 1; }
 .ec-widget.collapsed .ec-widget-grip { display: none; }
@@ -199,23 +202,26 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .ec-dim { color: var(--ec-gold-dim); }
 .ec-muted { color: var(--ec-muted); }
 
-/* Primary action buttons use Path of Exile 2's own button art (up/hover/press). */
-.btn-ec {
+/* All buttons use PoE2's own button art (up / hover / press). Light small-caps
+   game type sits ON the texture — never bold enough to overpower it — and a
+   min-height keeps the art from squashing on small buttons. */
+.btn-ec, .btn-ec-ghost {
   --bs-btn-bg: transparent; --bs-btn-border-color: transparent;
-  --bs-btn-color: #efe4cb; --bs-btn-hover-color: #fff5e2; --bs-btn-active-color: #fff5e2;
+  --bs-btn-color: #e7d9bb; --bs-btn-hover-color: #fff3da; --bs-btn-active-color: #fff3da;
   --bs-btn-hover-bg: transparent; --bs-btn-hover-border-color: transparent;
   --bs-btn-active-bg: transparent; --bs-btn-active-border-color: transparent;
-  --bs-btn-disabled-bg: transparent; --bs-btn-disabled-border-color: transparent;
+  --bs-btn-disabled-bg: transparent; --bs-btn-disabled-border-color: transparent; --bs-btn-disabled-color: #8f836a;
+  --bs-btn-padding-y: 5px; --bs-btn-padding-x: 18px;
   background-image: url('../../../media/ui/button_up.png');
   background-size: 100% 100%; background-repeat: no-repeat; background-position: center;
-  border: 0; border-radius: 3px; font-weight: 600; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+  border: 0; border-radius: 3px; min-height: 32px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: "Fontin SmallCaps", "Fontin", var(--bs-body-font-family);
+  font-weight: 400; letter-spacing: 0.03em; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
 }
-.btn-ec:hover { background-image: url('../../../media/ui/button_hover.png'); }
-.btn-ec:active, .btn-ec.active { background-image: url('../../../media/ui/button_onpress.png'); }
-.btn-ec-ghost {
-  --bs-btn-bg: transparent; --bs-btn-color: var(--ec-gold-dim); --bs-btn-border-color: var(--ec-border);
-  --bs-btn-hover-bg: var(--ec-panel); --bs-btn-hover-color: var(--ec-gold); --bs-btn-hover-border-color: var(--ec-border);
-}
+.btn-ec:hover, .btn-ec-ghost:hover { background-image: url('../../../media/ui/button_hover.png'); }
+.btn-ec:active, .btn-ec.active, .btn-ec-ghost:active { background-image: url('../../../media/ui/button_onpress.png'); }
+.btn-ec.btn-sm, .btn-ec-ghost.btn-sm { --bs-btn-padding-x: 13px; min-height: 30px; font-size: 12.5px; }
 .form-select, .form-control {
   background-color: var(--ec-panel-3); border-color: var(--ec-border); color: var(--ec-text);
 }
