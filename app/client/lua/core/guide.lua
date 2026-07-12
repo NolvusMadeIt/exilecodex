@@ -822,8 +822,10 @@ function M.apply_window()
   local fr = codex.widgets.open[GUIDE_WIDGET]
   if fr == nil or fr == js.null then return end
 
-  local w = tonumber(ui.store_get("ec.guide.width") or "")
-  if w and w >= 240 then fr.style.width = w .. "px" end
+  -- Width/height are owned by the widget engine now (grip resize is saved +
+  -- restored per widget), so we no longer override the width here — otherwise a
+  -- size the player dragged would be reset on every mount. The "Width" slider
+  -- drives M.set_width() which resizes the live widget + persists it.
 
   if viewer_el then
     local fs = tonumber(ui.store_get("ec.guide.fontscale") or "1") or 1
@@ -889,6 +891,18 @@ function M.refresh_dock()
     gdock_el.innerHTML = ""
     if codex.tracker and codex.tracker.unmount then codex.tracker.unmount() end
   end
+end
+
+-- Width slider (Settings → Guide window) resizes the live widget and persists it
+-- through the widget engine, so grip-resizes and the slider share one source.
+function M.set_width(px)
+  local fr = codex.widgets.open[GUIDE_WIDGET]
+  if fr == nil or fr == js.null then return end
+  local w = math.max(240, math.floor(tonumber(px) or 300))
+  fr.style.width = w .. "px"
+  ui.store_set("ec.guide.width", tostring(w))
+  if codex.widgets.clamp_onscreen then codex.widgets.clamp_onscreen(fr) end
+  if codex.widgets.save then codex.widgets.save(GUIDE_WIDGET) end
 end
 
 function M.open(id)

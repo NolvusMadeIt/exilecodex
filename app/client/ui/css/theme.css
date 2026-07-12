@@ -71,13 +71,13 @@ h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter
 .ec-orb {
   position: fixed; width: 46px; height: 46px; z-index: 2100;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(20, 18, 16, 0.95); border: 1px solid var(--ec-gold);
-  border-radius: 50%; cursor: pointer; padding: 0;
+  background: transparent; border: none;
+  border-radius: 50%; cursor: pointer; padding: 0; overflow: hidden;
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65);
-  opacity: 0.55; transition: opacity 0.15s, transform 0.25s;
+  opacity: 0.72; transition: opacity 0.15s, transform 0.25s;
 }
 .ec-orb:hover { opacity: 1; }
-.ec-orb img { width: 30px; height: 30px; pointer-events: none; }
+.ec-orb img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; pointer-events: none; }
 .ec-orb.tuck-left { transform: translateX(-55%); }
 .ec-orb.tuck-right { transform: translateX(55%); }
 .ec-orb.tuck-left:hover, .ec-orb.tuck-right:hover { transform: translateX(0); }
@@ -558,14 +558,14 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 @media (max-width: 520px) { .mkt-stats { grid-template-columns: repeat(2, 1fr); } }
 
 /* ── XileHUD data plugins (Modifiers, Item DB, …) shared list styling ────── */
-.xdb-wrap { display: flex; flex-direction: column; gap: 8px; }
+.xdb-wrap { display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto; min-height: 0; }
 .xdb-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .xdb-sides { display: inline-flex; gap: 2px; border: 1px solid var(--ec-border-soft); border-radius: 7px; padding: 2px; }
 .xdb-sidebtn { border: none; background: transparent; cursor: pointer; border-radius: 5px; padding: 3px 11px;
   font-size: 11.5px; color: var(--ec-text-soft); }
 .xdb-sidebtn:hover { color: var(--ec-gold); }
 .xdb-sidebtn.active { background: var(--ec-gold-bg); color: var(--ec-gold); }
-.xdb-list { max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+.xdb-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
 .xdb-count { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ec-text-soft); padding: 2px 2px 0; }
 .xdb-state { padding: 34px 12px; text-align: center; font-size: 12.5px; color: var(--ec-text-soft); }
 
@@ -659,9 +659,11 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .conn.on { color: var(--ec-text-strong); }
 .conn.on i { color: #5fb95f; }
 
-/* settings — Zygor's options window: group sidebar + content pane (700×500) */
-.set-wrap { display: flex; height: 500px; max-height: 70vh; }
+/* settings — Zygor's options window: group sidebar + content pane. Fills the
+   widget body (grows with the window); the pane scrolls, footer stays pinned. */
+.set-wrap { display: flex; flex: 1 1 auto; min-height: 340px; }
 .set-footer {
+  flex: 0 0 auto;
   padding: 7px 14px; border-top: 1px solid var(--ec-border-soft);
   font-size: 10.5px; color: var(--ec-muted); text-align: right; letter-spacing: .02em;
 }
@@ -1121,7 +1123,8 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
    essence / omen grids, live mod pool with weights, history + backtrack.
    ========================================================================== */
 .cx-loading { padding: 46px 12px; text-align: center; color: var(--ec-text-soft); font-size: 12.5px; }
-.cx-root { display: flex; flex-direction: column; gap: 10px; position: relative; }
+.cx-root { display: flex; flex-direction: column; gap: 10px; position: relative; flex: 1 1 auto; min-height: 0; }
+.cx-cols { flex: 1 1 auto; min-height: 0; }
 
 /* top base-picker bar */
 .cx-top { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap;

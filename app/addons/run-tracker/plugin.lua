@@ -277,9 +277,11 @@ render = function()
   local status = r and (r.paused and '<span class="rt-pill paused">Paused</span>' or '<span class="rt-pill rec">● REC</span>') or '<span class="rt-pill idle">Idle</span>'
   local zone = (r and codex.detect and codex.detect.area) and ('<span class="rt-zc">' .. esc(codex.detect.area) .. '</span>') or ''
   local loadchip = (r and loadremoval_on() and (r.loadMs or 0) > 0) and ('<span class="rt-lc" title="Load time removed">' .. MINUS .. fmt(r.loadMs, false) .. '</span>') or ''
+  -- Docked in the guide, keep it minimal: just the timer + controls (no splits).
+  local docked = dock_on()
   host.innerHTML = table.concat({
-    '<div class="rt-ls">',
-      '<div class="rt-splits">', split_rows(), '</div>',
+    '<div class="rt-ls', docked and ' rt-docked' or '', '">',
+      (not docked) and ('<div class="rt-splits">' .. split_rows() .. '</div>') or '',
       '<div class="rt-time', timer_color(), '" id="rt-time">', fmt(adjusted_ms(), true), '</div>',
       '<div class="rt-statusline">', status, zone, loadchip, '</div>',
       '<div class="rt-bar">',

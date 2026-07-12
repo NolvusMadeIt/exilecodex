@@ -123,6 +123,13 @@ local function load_state(id)
     (w ~= "" and tonumber(w) or nil), (h ~= "" and tonumber(h) or nil)
 end
 
+-- Persist a widget's current position/size on demand (e.g. the guide's Width
+-- slider resizes the live widget, then calls this to remember it).
+function W.save(id)
+  local fr = W.open[id]
+  if fr then save_state(id, fr) end
+end
+
 -- Spawn a widget: { id, title, icon, width, flush, mount = function(body) end }.
 -- If it's already open it just comes to the front.
 function W.spawn(spec)

@@ -392,6 +392,7 @@ RENDER.steps = function(pane)
     options_html({
       { id = "0", label = "0" }, { id = "1", label = "1" },
       { id = "2", label = "2" }, { id = "3", label = "3" },
+      { id = "4", label = "4" }, { id = "5", label = "5" },
     }, ui.store_get("ec.guide.next_steps") or "2"),
     '</select>',
   }))
@@ -452,10 +453,9 @@ RENDER.guidewin = function(pane)
 
   local wr = pane:querySelector("#set-gw-width")
   ui.on(wr, "input", function()
-    ui.store_set("ec.guide.width", tostring(wr.value))
     local v = pane:querySelector("#set-gw-width-v")
     if v ~= js.null then v.innerHTML = tostring(wr.value) end
-    apply()
+    if codex.guide and codex.guide.set_width then codex.guide.set_width(wr.value) end
   end)
   bind_store(pane, "#set-gw-font", "ec.guide.fontscale", "change", apply)
   bind_toggle(pane, "#set-gw-opon", "ec.guide.opacity_on", apply)
