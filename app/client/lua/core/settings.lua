@@ -766,9 +766,9 @@ RENDER.about = function(pane)
   parts[#parts + 1] = sec(T("Credits and licenses"), nil, table.concat({
     '<div class="ec-dim" style="font-size:11px;line-height:1.7">',
     'Open source under <a href="https://github.com/NolvusMadeIt/exilecodex/blob/main/LICENSE" target="_blank" rel="noopener">GPL-3.0</a>. ',
-    'Item Database, Modifiers, Crafting, Character and Map Regex are powered by ',
-    '<a href="https://github.com/XileHUD/poe_overlay" target="_blank" rel="noopener">XileHUD</a> (GPL-3.0). ',
-    'Market and price data via poe2scout; articles via the PoE2 Wiki. Full details in ATTRIBUTION.md.',
+    'Game data, item information and icons are sourced from community projects, including ',
+    '<a href="https://github.com/XileHUD/poe_overlay" target="_blank" rel="noopener">XileHUD</a>, ',
+    'poe2scout (market prices) and the PoE2 Wiki. Full details in ATTRIBUTION.md.',
     '<div class="ec-muted mt-1">Unofficial fan-made tool — not affiliated with or endorsed by Grinding Gear Games.</div>',
     '</div>',
   }))

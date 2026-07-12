@@ -5,16 +5,14 @@ Complete source code: https://github.com/NolvusMadeIt/exilecodex
 
 ## XileHUD
 
-Portions of this application — the game-data files under `app/media/xilehud/` (item, modifier,
-currency, essence, omen and base data) and the crafting-bench icon set under
-`app/media/xilehud/crafting/` (vendored from XileHUD's `bundled-images/`) — are derived from the
-**[XileHUD](https://github.com/XileHUD/poe_overlay)** project, © the XileHUD contributors,
-used under the terms of the GPL-3.0 license. The crafting images are copied locally (not
-hotlinked); modifications (theming to this app's design tokens, a fetch-based data adapter, and
-the Lua/Bootstrap re-implementation of the Modifiers/Crafting views) are visible in this
-repository's history.
+The bundled PoE2 game-data files under `app/media/gamedata/` (item, modifier, currency, essence,
+omen and base data) and the crafting-bench icon set under `app/media/gamedata/crafting/` were
+sourced from the **[XileHUD](https://github.com/XileHUD/poe_overlay)** project, © the XileHUD
+contributors, and are used under the terms of the GPL-3.0 license. The icons are copied locally
+(not hotlinked); our own work (theming, a fetch-based data adapter, and the Lua/Bootstrap
+re-implementation of the data views) is visible in this repository's history.
 
-The in-app Item Database, Crafting bench and related modules display a "Powered by XileHUD" credit.
+The in-app About screen credits XileHUD as one of the sources of this bundled game data.
 
 ## ExileCompass
 
@@ -34,7 +32,7 @@ fan-made tool, not affiliated with or endorsed by Grinding Gear Games.
   as part of this project's GPL-licensed work and would be removed promptly on GGG's request.
 - Item, currency and skill images are Grinding Gear Games' game art, sourced from GGG's public
   CDN (`web.poecdn.com` / `cdn.poe2db.tw`) — either loaded from it or cached/vendored locally
-  (e.g. the crafting-bench icons under `app/media/xilehud/crafting/`, via XileHUD's asset bundle).
+  (e.g. the crafting-bench icons under `app/media/gamedata/crafting/`, via XileHUD's asset bundle).
   They are not claimed as part of this project's GPL-licensed work and would be removed promptly
   on GGG's request.
 

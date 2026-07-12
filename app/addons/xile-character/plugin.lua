@@ -1,11 +1,11 @@
--- Character — the PoE2 gem + ascendancy reference from the bundled XileHUD
--- dataset (GPL-3.0, see ATTRIBUTION.md): skill / support / spirit / lineage
+-- Character — the PoE2 gem + ascendancy reference from the bundled game data
+-- (see ATTRIBUTION.md): skill / support / spirit / lineage
 -- gems and every ascendancy passive, searchable. Fresh Lua view over the same
 -- data the old app used.
 local js = require "js"
 local window = js.global
 local ui = codex.ui
-local DATA = "../../media/xilehud/poe2/rise-of-the-abyssal/"
+local DATA = "../../media/gamedata/poe2/rise-of-the-abyssal/"
 
 local TABS = {
   { id = "skill", label = "Skill", src = "gems", key = "skill" },

@@ -564,7 +564,7 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .mkt-wiki-load { padding: 30px 12px; text-align: center; color: var(--ec-text-soft); font-size: 12.5px; }
 @media (max-width: 520px) { .mkt-stats { grid-template-columns: repeat(2, 1fr); } }
 
-/* ── XileHUD data plugins (Modifiers, Item DB, …) shared list styling ────── */
+/* ── Game-data plugins (Item DB, Character, …) shared list styling ────────── */
 .xdb-wrap { display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto; min-height: 0; }
 .xdb-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .xdb-sides { display: inline-flex; gap: 2px; border: 1px solid var(--ec-border-soft); border-radius: 7px; padding: 2px; }

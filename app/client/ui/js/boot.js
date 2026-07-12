@@ -107,7 +107,7 @@ if (window.exileShell && window.exileShell.supabase && window.exileShell.supabas
   if (window.exileShell.supabase.key) window.ecMarket.key = window.exileShell.supabase.key
 }
 
-// Generic local-JSON fetch for the data-driven plugins (XileHUD datasets under
+// Generic local-JSON fetch for the data-driven plugins (bundled game data under
 // app/media). Returns the parsed object so fengari doesn't parse big files.
 window.ecJson = {
   get: function (url, cb) {

@@ -1,11 +1,11 @@
--- Item Database — browse every PoE2 unique item from the bundled XileHUD
--- dataset (GPL-3.0, see ATTRIBUTION.md), grouped Weapon / Armour / Other,
+-- Item Database — browse every PoE2 unique item from the bundled game data
+-- (see ATTRIBUTION.md), grouped Weapon / Armour / Other,
 -- searchable, each showing its base type and full mod text. Fresh Lua view
 -- over the same data the old app used.
 local js = require "js"
 local window = js.global
 local ui = codex.ui
-local DATA = "../../media/xilehud/poe2/rise-of-the-abyssal/"
+local DATA = "../../media/gamedata/poe2/rise-of-the-abyssal/"
 
 local TABS = { "Weapon", "Armour", "Other" }
 local LABELS = { Weapon = "Weapons", Armour = "Armour", Other = "Other" }

@@ -7,16 +7,16 @@
  * ecFilterBuild / ecTree / ecMonaco — it keeps the 100+-mod pool math and the
  * stateful roll/history logic off the Lua<->JS bridge.
  *
- * Data: the bundled XileHUD dataset under app/media/xilehud/poe2/rise-of-the-abyssal/
+ * Data: the bundled PoE2 game data under app/media/gamedata/poe2/rise-of-the-abyssal/
  *   - per-category mod pools (Bows.json, Body_Armours_str.json, ...): the prefix/
  *     suffix ladders with tiers, ilvl gates and weights.
  *   - Currency.json / Essences.json / Omens.json / Bases.json: the crafting bench.
- * Icons: app/media/xilehud/crafting/<imageLocal> (vendored from XileHUD, GPL-3.0).
+ * Icons: app/media/gamedata/crafting/<imageLocal> (bundled locally; see ATTRIBUTION.md).
  */
 ;(function () {
   'use strict'
-  var DATA = '../../media/xilehud/poe2/rise-of-the-abyssal/'
-  var IMG = '../../media/xilehud/crafting/'
+  var DATA = '../../media/gamedata/poe2/rise-of-the-abyssal/'
+  var IMG = '../../media/gamedata/crafting/'
 
   // ------------------------------------------------------------------ helpers
   function esc (s) {
