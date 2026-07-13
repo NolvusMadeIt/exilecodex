@@ -31,6 +31,8 @@ local function pausetown_on() return flag("ec.tracker.pausetown", "1") end
 local function loadremoval_on() return flag("ec.tracker.loadremoval", "1") end
 local function autosplit_on() return flag("ec.tracker.autosplit", "1") end
 local function dock_on() return flag("ec.tracker.dock", "0") end
+-- Simple (just a stopwatch) vs Record (LiveSplit splits + PB + save). Default simple.
+local function record_mode() return ui.store_get("ec.tracker.mode") == "record" end
 
 local function now_ms()
   local ok, v = pcall(function() return window.Date:now() end)
@@ -61,10 +63,11 @@ local function znorm(s) return (tostring(s or ""):lower():gsub("^%s+", ""):gsub(
 -- ------------------------------------------------------------- split sets
 local BUILTIN = {
   acts = { id = "acts", name = "Campaign — Acts", mode = "rules", rules = {
+    -- each split fires when you enter the NEXT act's first zone (= previous act done)
     { type = "zone", match = "Vastiri Outskirts", label = "Act 1" },
     { type = "zone", match = "Sandswept Marsh", label = "Act 2" },
     { type = "zone", match = "Kingsmarch", label = "Act 3" },
-    { type = "zone", match = "The Ziggurat Refuge", label = "Campaign" },
+    { type = "zone", match = "Blackwood", label = "Act 4" },
   } },
   firstzone = { id = "firstzone", name = "Every new zone", mode = "firstzone", rules = {} },
 }
@@ -290,22 +293,40 @@ render = function()
   local status = r and (r.paused and '<span class="rt-pill paused">Paused</span>' or '<span class="rt-pill rec">● REC</span>') or ('<span class="rt-pill idle">' .. idleTxt .. '</span>')
   local zone = (r and codex.detect and codex.detect.area) and ('<span class="rt-zc">' .. esc(codex.detect.area) .. '</span>') or ''
   local loadchip = (r and loadremoval_on() and (r.loadMs or 0) > 0) and ('<span class="rt-lc" title="Load time removed">' .. MINUS .. fmt(r.loadMs, false) .. '</span>') or ''
-  -- Docked in the guide, keep it minimal: just the timer + controls (no splits).
   local docked = dock_on()
-  host.innerHTML = table.concat({
-    '<div class="rt-ls', docked and ' rt-docked' or '', '">',
-      (not docked) and ('<div class="rt-splits">' .. split_rows() .. '</div>') or '',
-      '<div class="rt-time', timer_color(), '" id="rt-time">', fmt(adjusted_ms(), true), '</div>',
-      '<div class="rt-statusline">', status, zone, loadchip, '</div>',
-      '<div class="rt-bar">',
-        '<button class="rt-ib" data-act="', (r and not r.paused) and 'pause' or 'start', '" title="Start / pause (F6)"><i class="bi bi-', (r and not r.paused) and 'pause-fill' or 'play-fill', '"></i></button>',
-        '<button class="rt-ib" data-act="split" title="Split (F9)"><i class="bi bi-scissors"></i></button>',
-        '<button class="rt-ib" data-act="stop" title="Stop &amp; save (F7)"><i class="bi bi-flag-fill"></i></button>',
-        '<button class="rt-ib ghost" data-act="reset" title="Reset (F8)"><i class="bi bi-arrow-counterclockwise"></i></button>',
-        (dock_on() and '<button class="rt-ib ghost" data-act="detach" title="Detach to a floating window"><i class="bi bi-box-arrow-up-right"></i></button>' or ''),
+  -- Record mode shows splits; Simple mode (and the docked mini-view) is just a big
+  -- stopwatch. Both FILL the widget body so there's never dead space below.
+  local rec = record_mode() and not docked
+  local timerBlock = '<div class="rt-time' .. timer_color() .. '" id="rt-time">' .. fmt(adjusted_ms(), true) .. '</div>'
+  local statusBlock = '<div class="rt-statusline">' .. status .. zone .. loadchip .. '</div>'
+  local playBtn = '<button class="rt-ib rt-play" data-act="' .. ((r and not r.paused) and 'pause' or 'start')
+    .. '" title="Start / pause (F6)"><i class="bi bi-' .. ((r and not r.paused) and 'pause-fill' or 'play-fill') .. '"></i></button>'
+  local resetBtn = '<button class="rt-ib ghost" data-act="reset" title="Reset (F8)"><i class="bi bi-arrow-counterclockwise"></i></button>'
+  local detachBtn = docked and '<button class="rt-ib ghost" data-act="detach" title="Detach to a floating window"><i class="bi bi-box-arrow-up-right"></i></button>' or ''
+
+  if rec then
+    host.innerHTML = table.concat({
+      '<div class="rt-ls rt-record">',
+        '<div class="rt-splits">', split_rows(), '</div>',
+        '<div class="rt-foot">',
+          timerBlock, statusBlock,
+          '<div class="rt-bar">',
+            playBtn,
+            '<button class="rt-ib" data-act="split" title="Split (F9)"><i class="bi bi-scissors"></i></button>',
+            '<button class="rt-ib" data-act="stop" title="Stop &amp; save (F7)"><i class="bi bi-flag-fill"></i></button>',
+            resetBtn,
+          '</div>',
+        '</div>',
       '</div>',
-    '</div>',
-  })
+    })
+  else
+    host.innerHTML = table.concat({
+      '<div class="rt-ls rt-simple', docked and ' rt-docked' or '', '">',
+        '<div class="rt-hero">', timerBlock, statusBlock, '</div>',
+        '<div class="rt-bar">', playBtn, resetBtn, detachBtn, '</div>',
+      '</div>',
+    })
+  end
   wire(host)
 end
 
@@ -373,6 +394,8 @@ render_history = function(el)
   end)
 end
 API.render_history = render_history
+-- Let Settings re-render the tracker when the mode (simple/record) changes.
+API.rerender = function() render() end
 
 -- ------------------------------------------------------- dock into the guide
 API.mount_into = function(el) T.dock = el; if dock_on() then render() end end

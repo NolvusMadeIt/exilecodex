@@ -1417,36 +1417,50 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 /* ============================================================================
    Run Tracker — compact LiveSplit-style column (app/addons/run-tracker)
    ========================================================================== */
-.rt-ls { display: flex; flex-direction: column; gap: 6px; font-variant-numeric: tabular-nums; }
+/* Fills the widget body in BOTH modes so there's never dead space below. */
+.rt-ls { display: flex; flex-direction: column; height: 100%; min-height: 0; font-variant-numeric: tabular-nums; }
+/* Record mode: the splits list grows + scrolls; timer + controls pin as a footer. */
+.rt-record .rt-splits { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 2px 2px 4px; }
+.rt-record .rt-foot { flex: 0 0 auto; padding: 8px 4px 4px; border-top: 1px solid var(--ec-border-soft); }
+.rt-record .rt-time { text-align: right; }
+/* Simple mode (+ docked): a big centred stopwatch that fills the space. */
+.rt-simple .rt-hero { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+.rt-simple .rt-time { text-align: center; font-size: 52px; }
+.rt-simple .rt-statusline { justify-content: center; }
+.rt-simple.rt-docked .rt-time { font-size: 34px; }
+
 .rt-splits { display: flex; flex-direction: column; gap: 1px; }
 .rt-hint2 { padding: 12px 6px; text-align: center; font-size: 11px; color: var(--ec-muted); }
-.rt-split { display: flex; align-items: baseline; gap: 6px; padding: 3px 7px; border-radius: 4px; border-left: 2px solid transparent; }
+.rt-split { display: flex; align-items: baseline; gap: 6px; padding: 4px 8px; border-radius: 4px; border-left: 2px solid transparent; }
 .rt-split.rt-live { background: rgba(90,120,200,.20); border-left-color: #6e8be0; }
-.rt-sn { flex: 1; min-width: 0; font-size: 11.5px; color: #9aa0a8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rt-sn { flex: 1; min-width: 0; font-size: 12px; color: #9aa0a8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rt-split.rt-live .rt-sn { color: #edeff2; }
 .rt-sd { flex: 0 0 auto; font-size: 11px; min-width: 42px; text-align: right; color: var(--ec-muted); }
 .rt-sd.ahead { color: #4ce64c; } .rt-sd.behind { color: #e63c3c; }
-.rt-stime { flex: 0 0 auto; font-size: 11.5px; min-width: 46px; text-align: right; color: #c7cbd1; }
+.rt-stime { flex: 0 0 auto; font-size: 12px; min-width: 46px; text-align: right; color: #c7cbd1; }
 .rt-split:not(.rt-done):not(.rt-live) .rt-stime { color: #6b7079; }
 .rt-gold { color: #d4af37 !important; }
 
-.rt-time { font-size: 30px; font-weight: 700; line-height: 1.05; text-align: right; color: #c7cbd1; padding: 2px 4px 0; letter-spacing: .01em; }
+.rt-time { font-size: 34px; font-weight: 700; line-height: 1.05; color: #d7dae0; padding: 0 4px; letter-spacing: .01em; }
 .rt-time.rt-t-ahead { color: #4ce64c; } .rt-time.rt-t-behind { color: #e63c3c; }
 .rt-time.rt-t-gold { color: #d4af37; } .rt-time.rt-t-paused { color: #8a8f98; }
 
-.rt-statusline { display: flex; align-items: center; gap: 6px; padding: 0 4px; }
-.rt-pill { font-size: 9px; text-transform: uppercase; letter-spacing: .07em; padding: 1px 7px; border-radius: 20px; }
+.rt-statusline { display: flex; align-items: center; gap: 6px; padding: 4px 4px 0; }
+.rt-pill { font-size: 9px; text-transform: uppercase; letter-spacing: .07em; padding: 2px 8px; border-radius: 20px; }
 .rt-pill.rec { color: #e3564e; background: rgba(227,86,78,.12); }
 .rt-pill.paused { color: #8a8f98; background: rgba(138,143,152,.12); }
-.rt-pill.idle { color: var(--ec-muted); }
+.rt-pill.idle { color: var(--ec-muted); background: rgba(255,255,255,.03); }
 .rt-zc { flex: 1; min-width: 0; font-size: 10.5px; color: var(--ec-text-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rt-lc { flex: 0 0 auto; font-size: 10px; color: #b89a4a; }
 
-.rt-bar { display: flex; gap: 4px; padding: 2px 2px 0; }
-.rt-ib { flex: 1; display: grid; place-items: center; border: 1px solid var(--ec-border-soft); background: var(--ec-panel-3);
-  color: var(--ec-text-soft); border-radius: 5px; padding: 5px 0; cursor: pointer; font-size: 13px; }
-.rt-ib:hover { color: var(--ec-gold); border-color: var(--ec-gold-dim); }
-.rt-ib.ghost { flex: 0 0 34px; }
+.rt-bar { display: flex; gap: 6px; padding: 8px 2px 2px; flex: 0 0 auto; }
+.rt-ib { flex: 1; display: grid; place-items: center; min-height: 36px; border: 1px solid var(--ec-border-soft);
+  background: var(--ec-panel-3); color: var(--ec-text-soft); border-radius: 6px; cursor: pointer; font-size: 15px;
+  transition: color .12s, border-color .12s, background .12s; }
+.rt-ib:hover { color: var(--ec-gold); border-color: var(--ec-gold-dim); background: var(--ec-panel-2); }
+.rt-ib.ghost { flex: 0 0 42px; }
+.rt-ib.rt-play { color: var(--ec-gold); border-color: var(--ec-gold-dim); background: var(--ec-gold-bg); }
+.rt-ib.rt-play:hover { color: #e8cd8e; background: rgba(201,164,92,.18); }
 
 /* Run history — rendered inside the guide toolbar's wide dropdown */
 .ec-tsdrop-wide { width: 340px; max-height: 62vh; overflow-y: auto; }

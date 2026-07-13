@@ -347,6 +347,13 @@ end
 
 RENDER.tracker = function(pane)
   local parts = {}
+  parts[#parts + 1] = sec(T("Mode"), nil, table.concat({
+    '<div class="d-flex gap-2 align-items-center"><span style="font-size:12px;color:var(--ec-text-soft)">Tracker mode</span>',
+    '<select id="set-rt-mode" class="form-select form-select-sm" style="max-width:240px">',
+    options_html({ { id = "simple", label = "Simple timer" }, { id = "record", label = "Record runs (splits + PB)" } }, ui.store_get("ec.tracker.mode") or "simple"),
+    '</select></div>',
+    '<div class="ec-muted mt-1" style="font-size:11px">Simple = just a stopwatch. Record = LiveSplit-style splits, personal bests and saved runs. Either mode can auto-start when you step into an area.</div>',
+  }))
   parts[#parts + 1] = sec(T("Timing"), nil, table.concat({
     toggle_html("set-rt-autostart", "Auto-start the timer on entering a zone", (ui.store_get("ec.tracker.autostart") or "1") == "1"),
     '<div class="mt-2"></div>',
@@ -368,6 +375,9 @@ RENDER.tracker = function(pane)
     '<button id="set-rt-pbreset" class="btn btn-ec-ghost btn-sm">Clear PB &amp; gold splits (current set)</button>',
   }))
   pane.innerHTML = table.concat(parts)
+  bind_store(pane, "#set-rt-mode", "ec.tracker.mode", "change", function()
+    if codex.tracker and codex.tracker.rerender then codex.tracker.rerender() end
+  end)
   bind_toggle(pane, "#set-rt-autostart", "ec.tracker.autostart")
   bind_toggle(pane, "#set-rt-pausetown", "ec.tracker.pausetown")
   bind_toggle(pane, "#set-rt-loadremoval", "ec.tracker.loadremoval")
