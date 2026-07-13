@@ -43,3 +43,11 @@ supabase/functions/market/
 # Internal design notes
 /docs/superpowers/
 .cache/
+
+# pob-web: the 500MB build workspace stays out of git; the assembled bundle
+# (app/vendor/pobweb + the app/vendor/dist runtime) IS committed so the released
+# .exe ships a working, offline Build Planner. (`dist` on line 2 would otherwise
+# eat app/vendor/dist — re-include it explicitly.)
+/pobweb/
+!/app/vendor/dist/
+!/app/vendor/dist/**

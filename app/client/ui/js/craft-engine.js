@@ -511,6 +511,66 @@
   function cloneInst (m) { var o = {}; for (var k in m) o[k] = m[k]; return o }
   function prettyCat (c) { return String(c).replace(/_/g, ' ') }
 
+  // ------------------------------------------------- PoE2 clipboard item parser
+  // Turn the in-game "Copy Item" clipboard text into a structured item the
+  // bench can load: class, rarity, base type, item level and prefix/suffix mods.
+  // "10(8-11)% " means current value 10 with a 8-11 range — keep the current value.
+  function cleanRolls (s) {
+    return String(s == null ? '' : s)
+      .replace(/(-?\d+(?:\.\d+)?)\s*\((?:\d+(?:\.\d+)?)\s*[-—]\s*(?:\d+(?:\.\d+)?)\)/g, '$1')
+  }
+  var MOD_HEAD = /^\{\s*(Prefix|Suffix|Implicit|Enchant|Rune)\s+Modifier\s*(?:"([^"]*)")?\s*(?:\(Tier:\s*([^)]*)\))?\s*(?:[—-]\s*(.*?))?\s*\}\s*$/i
+  function parseItemText (text) {
+    var out = { className: null, rarity: null, displayName: null, baseType: null, ilvl: null, quality: 0, corrupted: false, mods: [], implicits: [] }
+    var lines = String(text == null ? '' : text).replace(/\r/g, '').split('\n')
+    var sep = /^\s*-{3,}\s*$/
+    var i, ln, rarityIdx = -1, nameLines = []
+    // scalar headers (scan anywhere — sections are dash-separated but order varies)
+    for (i = 0; i < lines.length; i++) {
+      ln = lines[i].trim()
+      var mCls = /^Item Class:\s*(.+)$/i.exec(ln); if (mCls) { out.className = mCls[1].trim(); continue }
+      var mRar = /^Rarity:\s*(.+)$/i.exec(ln); if (mRar) { out.rarity = mRar[1].trim().toLowerCase(); rarityIdx = i; continue }
+      var mIl = /^Item Level:\s*(\d+)/i.exec(ln); if (mIl) { out.ilvl = +mIl[1]; continue }
+      var mQ = /^Quality:\s*\+?(\d+)/i.exec(ln); if (mQ) { out.quality = +mQ[1]; continue }
+      if (/^Corrupted\s*$/i.test(ln)) { out.corrupted = true }
+    }
+    // name lines: everything between the Rarity line and the first dash separator
+    if (rarityIdx >= 0) {
+      for (i = rarityIdx + 1; i < lines.length; i++) {
+        if (sep.test(lines[i])) break
+        ln = lines[i].trim()
+        if (!ln || /^(Item Class|Rarity|Item Level|Quality|Requires|Sockets):/i.test(ln)) continue
+        nameLines.push(ln)
+      }
+    }
+    if (nameLines.length >= 2) { out.displayName = nameLines[0]; out.baseType = nameLines[nameLines.length - 1] }
+    else if (nameLines.length === 1) {
+      out.baseType = nameLines[0]
+      if (out.rarity === 'magic') out.displayName = nameLines[0] // full magic name; base resolved by contains-match
+    }
+    // modifier blocks: a "{ Prefix Modifier ... }" header then its stat line(s)
+    for (i = 0; i < lines.length; i++) {
+      var mh = MOD_HEAD.exec(lines[i].trim())
+      if (!mh) continue
+      var side = mh[1].toLowerCase()
+      var affName = mh[2] || ''
+      var tier = (mh[3] || '').trim()
+      var tags = (mh[4] || '').split(',').map(function (t) { return t.trim() }).filter(Boolean)
+      var stat = []
+      for (var j = i + 1; j < lines.length && stat.length < 2; j++) {
+        var s2 = lines[j].trim()
+        if (!s2 || sep.test(lines[j]) || MOD_HEAD.test(s2)) break
+        if (/^[A-Z][A-Za-z' ]*:\s/.test(s2) || /^(Corrupted|Note)\b/i.test(s2)) break
+        stat.push(cleanRolls(s2))
+      }
+      var txt = stat.join('\n')
+      var tierName = tier ? ('Tier ' + tier) : (affName || '')
+      if (side === 'prefix' || side === 'suffix') out.mods.push({ side: side, name: affName, tierName: tierName, tags: tags, text: txt })
+      else if (txt) out.implicits.push(txt) // implicit / enchant / rune → show as implicit line
+    }
+    return out
+  }
+
   // ============================================================ UI CONTROLLER
   // Curated bench: the currencies that actually alter an item's mods/quality,
   // in the order a crafter reaches for them. Everything else in Currency.json
@@ -527,7 +587,8 @@
     try { opts = optsJson ? JSON.parse(optsJson) : {} } catch (e) {}
     var st = {
       category: 'Bows', item: null, mods: [], history: [], future: [],
-      tab: 'currency', omen: null, poolTag: null, poolSide: 'all', q: ''
+      tab: 'currency', omen: null, poolTag: null, poolSide: 'all', q: '',
+      pasteOpen: false, exportOpen: false, _drag: null, _poolDisplay: []
     }
     host.innerHTML = '<div class="cx-loading">Loading the crafting bench…</div>'
 
@@ -568,12 +629,13 @@
       st.history.push({ label: ess.name + (st.omen ? ' + ' + st.omen.short : ''), snap: before, log: res.log })
       st.future = []; st.omen = null; render()
     }
-    function backtrackTo (idx) {
-      // restore the snapshot taken *before* step idx
-      var step = st.history[idx]
-      if (!step) return
+    // Crafting is RNG — you can't cherry-pick which step to revert, you just
+    // step back the last action. One undo button, pops the most recent step.
+    function undoLast () {
+      if (!st.history.length) return
+      var step = st.history.pop()
       st.item = cloneItem(step.snap)
-      st.history = st.history.slice(0, idx)
+      st.future = []
       render()
     }
     function resetItem () {
@@ -581,7 +643,281 @@
       st.history = []; st.future = []; st.omen = null; render()
     }
     function findBase (name) { var l = core.bases[st.category] || []; for (var i = 0; i < l.length; i++) if (l[i].name === name) return l[i]; return null }
-    function scour () { st.item.rarity = 'normal'; st.item.prefixes = []; st.item.suffixes = []; render() }
+    // Scour is now a targeted drag-onto-a-mod removal (deterministic — you pick the
+    // mod — unlike the game's random annul). See wireScourTool / wireModDrop.
+    function removeMod (side, idx) {
+      var arr = side === 'prefix' ? st.item.prefixes : st.item.suffixes
+      if (!arr || idx < 0 || idx >= arr.length) return
+      var before = cloneItem(st.item)
+      var m = arr[idx]
+      arr.splice(idx, 1)
+      st.history.push({ label: 'Scour', snap: before, log: ['Removed: ' + (m.text || '').replace(/<[^>]*>/g, '')] })
+      st.future = []
+      render()
+    }
+
+    // ---- paste-item importer ----
+    // Map a PoE2 "Item Class:" string to the bench's category key.
+    function classToCat (cls) {
+      if (!cls) return null
+      var norm = cls.trim()
+      var map = {
+        'Helmets': 'Helmets', 'Body Armours': 'Body_Armours', 'Gloves': 'Gloves', 'Boots': 'Boots',
+        'Shields': 'Shields', 'Bucklers': 'Bucklers', 'Foci': 'Foci', 'Quivers': 'Quivers',
+        'Amulets': 'Amulets', 'Rings': 'Rings', 'Belts': 'Belts',
+        'Wands': 'Wands', 'Sceptres': 'Sceptres', 'Staves': 'Staves', 'Quarterstaves': 'Quarterstaves',
+        'Bows': 'Bows', 'Crossbows': 'Crossbows', 'Spears': 'Spears', 'Flails': 'Flails',
+        'Claws': 'Claws', 'Daggers': 'Daggers', 'Traps': 'Traps', 'Fishing Rods': 'Fishing_Rods',
+        'One Hand Swords': 'One_Hand_Swords', 'One Hand Axes': 'One_Hand_Axes', 'One Hand Maces': 'One_Hand_Maces',
+        'Two Hand Swords': 'Two_Hand_Swords', 'Two Hand Axes': 'Two_Hand_Axes', 'Two Hand Maces': 'Two_Hand_Maces'
+      }
+      if (map[norm]) return map[norm]
+      var keys = Object.keys(core.bases)
+      var us = norm.replace(/\s+/g, '_').toLowerCase()
+      for (var i = 0; i < keys.length; i++) if (keys[i].toLowerCase() === us) return keys[i]
+      for (var j = 0; j < keys.length; j++) if (keys[j].toLowerCase().replace(/_/g, ' ') === norm.toLowerCase()) return keys[j]
+      return null
+    }
+    function findBaseInCat (cat, baseType) {
+      var list = core.bases[cat] || []
+      var bt = String(baseType || '').trim().toLowerCase()
+      if (!bt) return null
+      for (var i = 0; i < list.length; i++) if (list[i].name.toLowerCase() === bt) return list[i]
+      // magic/unique names embed the base — take the longest base name contained in the string
+      var best = null
+      for (var j = 0; j < list.length; j++) {
+        var n = list[j].name.toLowerCase()
+        if ((bt.indexOf(n) >= 0 || n.indexOf(bt) >= 0) && (!best || list[j].name.length > best.name.length)) best = list[j]
+      }
+      return best
+    }
+    // best-effort match of a pasted stat line to a real pool mod (so its family
+    // is honoured for further crafting). Returns {mod, tier} or null.
+    function matchPoolMod (mods, side, statText) {
+      var key = stripHtml(statText).toLowerCase().replace(/[+()0-9%.,\-—]/g, ' ').replace(/\s+/g, ' ').trim()
+      var words = key.split(' ').filter(function (w) { return w.length > 3 })
+      if (!words.length) return null
+      var best = null, bestScore = 0
+      for (var i = 0; i < mods.length; i++) {
+        var m = mods[i]
+        if (m.side !== side || m.domain !== 'normal') continue
+        var mt = (m.text || '').toLowerCase().replace(/[+()0-9%.,\-—]/g, ' ')
+        var shared = 0
+        for (var w = 0; w < words.length; w++) if (mt.indexOf(words[w]) >= 0) shared++
+        if (shared > bestScore) { bestScore = shared; best = m }
+      }
+      if (best && bestScore >= Math.max(2, Math.ceil(words.length * 0.6))) {
+        var elig = eligTiers(best, st.item.ilvl)
+        var tier = elig[elig.length - 1] || best.tiers[best.tiers.length - 1]
+        return { mod: best, tier: tier }
+      }
+      return null
+    }
+    function buildImportInst (mods, side, pm) {
+      var match = matchPoolMod(mods, side, pm.text)
+      if (match) {
+        var inst = instanceOf(match.mod, match.tier)
+        if (pm.text) inst.text = pm.text            // keep the exact rolled line
+        if (pm.tierName) inst.tierName = pm.tierName
+        inst.imported = true
+        return inst
+      }
+      return { family: 'import:' + side + ':' + (pm.name || pm.text), side: side, mod: pm.text, tags: pm.tags || [], tierName: pm.tierName || '', tierLvl: 0, text: pm.text, imported: true }
+    }
+    function applyParsedMods (item, p, mods) {
+      var isUnique = item.rarity === 'unique'
+      p.mods.forEach(function (pm) {
+        if (pm.side !== 'prefix' && pm.side !== 'suffix') return
+        if (!isUnique && sideFull(item, pm.side)) return
+        placeInstance(item, buildImportInst(mods, pm.side, pm))
+      })
+    }
+    function importFromText (text) {
+      var p = parseItemText(text)
+      if (!p.className && !p.rarity && !p.mods.length) { flash('Couldn\'t read an item from that text.'); return }
+      var cat = classToCat(p.className) || st.category
+      var base = findBaseInCat(cat, p.baseType)
+      var seed = base || (core.bases[cat] && core.bases[cat][0]) || { name: p.baseType || 'Unknown', imageLocal: '', properties: [], implicitMods: [] }
+      var it = newItem(cat, seed)
+      st.category = cat
+      it.base = base ? base.name : (p.baseType || it.base)
+      it.name = (p.displayName && p.displayName !== it.base) ? p.displayName : null
+      it.rarity = p.rarity || 'normal'
+      if (p.ilvl) it.ilvl = p.ilvl
+      if (p.quality) it.quality = p.quality
+      if (p.corrupted) it.corrupted = true
+      if (p.implicits.length) it.implicits = p.implicits
+      st.item = it
+      st.history = []; st.future = []; st.omen = null
+      loadModsFor(it, function (mods) {
+        st.mods = mods
+        applyParsedMods(it, p, mods)
+        st.pasteOpen = false
+        render()
+        if (!base && p.baseType) flash('Loaded — base “' + p.baseType + '” wasn\'t an exact match; using the closest.')
+      })
+    }
+    function pasteModal () {
+      if (!st.pasteOpen) return ''
+      return '<div class="cx-pastewrap"><div class="cx-pastebox">' +
+        '<div class="cx-pastehd">Paste item<span>Ctrl+C on an item in-game, then paste the text below and Import.</span></div>' +
+        '<textarea id="cx-pastebox-ta" class="cx-pastearea" spellcheck="false" placeholder="Item Class: Helmets&#10;Rarity: Rare&#10;Pandemonium Shelter&#10;Wicker Tiara&#10;--------&#10;Item Level: 11&#10;--------&#10;{ Prefix Modifier ... }&#10;..."></textarea>' +
+        '<div class="cx-pasteact"><button class="cx-btn" data-act="pastecancel">Cancel</button>' +
+        '<button class="cx-btn cx-pasteimport" data-act="import">Import item</button></div>' +
+        '</div></div>'
+    }
+
+    // ---- export for Path of Building ----
+    // Invert classToCat's map so the category key becomes a display Item Class.
+    function catToClass (cat) {
+      var inv = {
+        Body_Armours: 'Body Armours', Fishing_Rods: 'Fishing Rods',
+        One_Hand_Swords: 'One Hand Swords', One_Hand_Axes: 'One Hand Axes', One_Hand_Maces: 'One Hand Maces',
+        Two_Hand_Swords: 'Two Hand Swords', Two_Hand_Axes: 'Two Hand Axes', Two_Hand_Maces: 'Two Hand Maces'
+      }
+      return inv[cat] || prettyCat(cat)
+    }
+    // Build the standard PoE2 item-clipboard text (the exact format parseItemText
+    // reads, and the one PoB imports on paste) — essentially the inverse of the
+    // parser. NOT PoB's internal ModCache-ID "Edit Item Text" format.
+    function itemToText () {
+      var it = st.item, L = []
+      L.push('Item Class: ' + catToClass(it.category))
+      L.push('Rarity: ' + cap1(it.rarity))
+      if (it.name && it.name !== it.base) L.push(it.name)
+      L.push(it.base)
+      L.push('--------')
+      // properties (best-effort, from the base definition + current quality)
+      var props = [], baseDef = findBase(it.base)
+      if (baseDef) (baseDef.properties || []).forEach(function (p) {
+        if (p && p.name && p.value != null && p.value !== '') props.push(p.name + ': ' + p.value)
+      })
+      if (it.quality) props.push('Quality: +' + it.quality + '%')
+      if (props.length) { props.forEach(function (l) { L.push(l) }); L.push('--------') }
+      L.push('Item Level: ' + it.ilvl)
+      // implicits as their own advanced-format blocks so they round-trip
+      if (it.implicits && it.implicits.length) {
+        L.push('--------')
+        it.implicits.forEach(function (t) {
+          L.push('{ Implicit Modifier }')
+          stripHtml(t).split('\n').forEach(function (ln) { if (ln.trim()) L.push(ln) })
+        })
+      }
+      // explicit prefixes then suffixes
+      if (it.prefixes.length || it.suffixes.length) {
+        L.push('--------')
+        var emit = function (m, side) {
+          var word = side === 'prefix' ? 'Prefix' : 'Suffix'
+          var tnum = /(\d+)/.exec(m.tierName || '')
+          L.push('{ ' + word + ' Modifier' + (tnum ? ' (Tier: ' + tnum[1] + ')' : '') + ' }')
+          stripHtml(m.text || '').split('\n').forEach(function (ln) { if (ln.trim()) L.push(ln) })
+        }
+        it.prefixes.forEach(function (m) { emit(m, 'prefix') })
+        it.suffixes.forEach(function (m) { emit(m, 'suffix') })
+      }
+      if (it.corrupted) { L.push('--------'); L.push('Corrupted') }
+      return L.join('\n')
+    }
+    function exportModal () {
+      if (!st.exportOpen) return ''
+      return '<div class="cx-pastewrap"><div class="cx-pastebox">' +
+        '<div class="cx-pastehd">Export item<span>Standard item-clipboard text — paste it into Path of Building\'s import box.</span></div>' +
+        '<textarea id="cx-exportbox-ta" class="cx-pastearea" spellcheck="false" readonly>' + esc(itemToText()) + '</textarea>' +
+        '<div class="cx-pasteact"><button class="cx-btn" data-act="exportclose">Close</button>' +
+        '<button class="cx-btn cx-pasteimport" data-act="exportcopy">Copy</button></div>' +
+        '</div></div>'
+    }
+    function doExportCopy () {
+      var box = host.querySelector('#cx-exportbox-ta'); if (!box) return
+      var ok = function () { flash('Copied — paste into Path of Building.') }
+      var fallback = function () { try { box.focus(); box.select(); if (document.execCommand) document.execCommand('copy') } catch (_) {} ok() }
+      try {
+        if (window.navigator && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(box.value).then(ok, fallback)
+        } else fallback()
+      } catch (_) { fallback() }
+    }
+
+    // ---- drag-and-drop crafting ----
+    function clearDropHot () { var c = host.querySelector('.cx-itemcard'); if (c) c.classList.remove('cx-drophot') }
+    function rejectDrop (msg) {
+      flash(msg)
+      var c = host.querySelector('.cx-itemcard'); if (!c) return
+      c.classList.remove('cx-reject'); void c.offsetWidth; c.classList.add('cx-reject')
+      setTimeout(function () { c.classList.remove('cx-reject') }, 420)
+    }
+    // drop a possible-mod row onto the item to add that specific modifier
+    function addPoolModByIdx (idx) {
+      var entry = (st._poolDisplay || [])[idx]; if (!entry) return
+      var mod = entry.mod
+      if (st.item.rarity === 'normal') { rejectDrop('Only Magic or Rare items can take added modifiers.'); return }
+      if (st.item.rarity === 'unique') { rejectDrop('You can\'t craft on a Unique item.'); return }
+      if (sideFull(st.item, mod.side)) { rejectDrop('No open ' + mod.side + ' slot for that modifier.'); return }
+      if (familiesOn(st.item)[mod.family]) { rejectDrop('That modifier group is already on the item.'); return }
+      var before = cloneItem(st.item)
+      var inst = instanceOf(mod, rollTier(mod, st.item.ilvl))
+      placeInstance(st.item, inst)
+      st.history.push({ label: 'Add ' + (mod.side === 'prefix' ? 'prefix' : 'suffix') + ' (drag)', snap: before, log: ['+ ' + inst.text + '  [' + inst.tierName + ']'] })
+      st.future = []
+      render()
+    }
+    function wireItemDrop () {
+      var card = host.querySelector('.cx-itemcard'); if (!card) return
+      card.addEventListener('dragover', function (e) { if (st._drag && st._drag.kind !== 'scour') { e.preventDefault(); try { e.dataTransfer.dropEffect = 'copy' } catch (_) {} card.classList.add('cx-drophot') } })
+      card.addEventListener('dragenter', function (e) { if (st._drag && st._drag.kind !== 'scour') { e.preventDefault(); card.classList.add('cx-drophot') } })
+      card.addEventListener('dragleave', function (e) { if (!card.contains(e.relatedTarget)) card.classList.remove('cx-drophot') })
+      card.addEventListener('drop', function (e) {
+        e.preventDefault(); card.classList.remove('cx-drophot')
+        var d = st._drag; st._drag = null
+        if (!d) return
+        if (d.kind === 'cur') doCurrency(d.name)
+        else if (d.kind === 'mod') addPoolModByIdx(d.idx)
+      })
+    }
+    function wireCurrencyDrag () {
+      var l = host.querySelectorAll('[data-cur]')
+      for (var i = 0; i < l.length; i++) (function (b) {
+        b.setAttribute('draggable', 'true')
+        b.addEventListener('dragstart', function (e) {
+          if (b.disabled) { e.preventDefault(); return }
+          st._drag = { kind: 'cur', name: b.getAttribute('data-cur') }
+          try { e.dataTransfer.setData('text/plain', b.getAttribute('data-cur')); e.dataTransfer.effectAllowed = 'copy' } catch (_) {}
+        })
+        b.addEventListener('dragend', function () { st._drag = null; clearDropHot() })
+      })(l[i])
+    }
+    function wirePoolRows () {
+      var l = host.querySelectorAll('[data-pool]')
+      for (var i = 0; i < l.length; i++) (function (b) {
+        b.addEventListener('dragstart', function (e) {
+          st._drag = { kind: 'mod', idx: +b.getAttribute('data-pool') }
+          try { e.dataTransfer.setData('text/plain', 'mod'); e.dataTransfer.effectAllowed = 'copy' } catch (_) {}
+        })
+        b.addEventListener('dragend', function () { st._drag = null; clearDropHot() })
+      })(l[i])
+    }
+    function clearModHot () { var l = host.querySelectorAll('.cx-modhot'); for (var i = 0; i < l.length; i++) l[i].classList.remove('cx-modhot') }
+    // Scour tool → drag onto a single mod on the item to remove exactly that mod.
+    function wireScourTool () {
+      var t = host.querySelector('.cx-scourtool'); if (!t) return
+      t.addEventListener('dragstart', function (e) {
+        st._drag = { kind: 'scour' }
+        try { e.dataTransfer.setData('text/plain', 'scour'); e.dataTransfer.effectAllowed = 'copy' } catch (_) {}
+      })
+      t.addEventListener('dragend', function () { st._drag = null; clearModHot() })
+    }
+    function wireModDrop () {
+      var l = host.querySelectorAll('[data-mod]')
+      for (var i = 0; i < l.length; i++) (function (el) {
+        el.addEventListener('dragover', function (e) { if (st._drag && st._drag.kind === 'scour') { e.preventDefault(); e.stopPropagation(); try { e.dataTransfer.dropEffect = 'copy' } catch (_) {} el.classList.add('cx-modhot') } })
+        el.addEventListener('dragleave', function () { el.classList.remove('cx-modhot') })
+        el.addEventListener('drop', function (e) {
+          if (!(st._drag && st._drag.kind === 'scour')) return
+          e.preventDefault(); e.stopPropagation(); el.classList.remove('cx-modhot'); st._drag = null
+          var p = (el.getAttribute('data-mod') || '').split(':'); removeMod(p[0], +p[1])
+        })
+      })(l[i])
+    }
 
     function flash (msg) {
       var el = host.querySelector('#cx-flash')
@@ -600,6 +936,7 @@
             '<div class="cx-left">' + itemCard() + tagsCard() + historyCard() + '</div>' +
             '<div class="cx-right">' + stepCard() + poolCard() + '</div>' +
           '</div>' +
+          pasteModal() + exportModal() +
           '<div id="cx-flash" class="cx-flash"></div>' +
         '</div>'
       wire()
@@ -615,35 +952,43 @@
         '<div class="cx-field"><label>Item class</label><select id="cx-cat" class="form-select form-select-sm" autocomplete="off">' + catOpts + '</select></div>' +
         '<div class="cx-field cx-grow"><label>Base</label><select id="cx-base" class="form-select form-select-sm" autocomplete="off">' + baseOpts + '</select></div>' +
         '<div class="cx-field cx-ilvl"><label>Item level</label><input id="cx-ilvl" type="number" min="1" max="100" value="' + st.item.ilvl + '" class="form-control form-control-sm" autocomplete="off"></div>' +
+        '<button class="cx-btn cx-paste" data-act="paste" title="Paste an item from the in-game clipboard"><i class="bi bi-clipboard-plus"></i></button>' +
+        '<button class="cx-btn cx-export" data-act="export" title="Export as item text for Path of Building"><i class="bi bi-box-arrow-up"></i></button>' +
         '<button class="cx-btn cx-reset" data-act="reset" title="Reset to a fresh base"><i class="bi bi-arrow-counterclockwise"></i></button>' +
         '</div>'
     }
 
     // ---- LEFT: current item ----
-    function modRow (m, side) {
+    function modRow (m, side, idx) {
       var badge = side === 'prefix' ? 'P' : 'S'
       var tags = (m.tags || []).slice(0, 4).map(function (t) { return '<span class="cx-mtag">' + esc(t) + '</span>' }).join('')
       var flags = (m.fractured ? '<i class="bi bi-lock-fill cx-fract" title="Fractured"></i>' : '') + (m.guaranteed ? '<i class="bi bi-stars cx-guar" title="Guaranteed by essence"></i>' : '')
-      return '<div class="cx-mod cx-' + side + '">' +
+      return '<div class="cx-mod cx-' + side + '" data-mod="' + side + ':' + idx + '" title="Drag Scour here to remove this modifier">' +
         '<span class="cx-mbadge cx-b-' + side + '">' + badge + '</span>' +
         '<div class="cx-mbody"><div class="cx-mtext">' + htmlText(m.text) + ' ' + flags + '</div>' +
         '<div class="cx-mmeta"><span class="cx-tier">' + esc(m.tierName || '') + '</span>' + tags + '</div></div></div>'
     }
     function itemCard () {
       var it = st.item, c = caps(it.rarity)
-      var pRows = it.prefixes.map(function (m) { return modRow(m, 'prefix') }).join('')
-      var sRows = it.suffixes.map(function (m) { return modRow(m, 'suffix') }).join('')
+      var pRows = it.prefixes.map(function (m, i) { return modRow(m, 'prefix', i) }).join('')
+      var sRows = it.suffixes.map(function (m, i) { return modRow(m, 'suffix', i) }).join('')
       var implicits = it.implicits.length ? '<div class="cx-implicits">' + it.implicits.map(function (t) { return '<div class="cx-imp">' + esc(t) + '</div>' }).join('') + '</div>' : ''
-      var empty = (!it.prefixes.length && !it.suffixes.length) ? '<div class="cx-emptymods">No modifiers yet — apply currency on the right.</div>' : ''
+      var empty = (!it.prefixes.length && !it.suffixes.length) ? '<div class="cx-emptymods">No modifiers yet — drag or click currency to apply.</div>' : ''
+      var title = esc(it.name || it.base)
+      var flavour = (it.name && it.name !== it.base) ? '<div class="cx-itembase">' + esc(it.base) + '</div>' : ''
+      var slots = (it.rarity === 'unique') ? '' :
+        '<div class="cx-slotcounts"><span class="cx-pfx">Prefixes ' + it.prefixes.length + '/' + c.p + '</span><span class="cx-sfx">Suffixes ' + it.suffixes.length + '/' + c.s + '</span></div>'
       return '<div class="cx-card cx-itemcard cx-r-' + it.rarity + (it.corrupted ? ' cx-corrupt' : '') + '">' +
-        '<div class="cx-itemhead">' +
-          '<img class="cx-itemimg" src="' + IMG + esc(it.img) + '" alt="" onerror="this.style.visibility=\'hidden\'">' +
-          '<div class="cx-itemtitle"><div class="cx-itemname">' + esc(it.base) + '</div>' +
-          '<div class="cx-itemsub">' + cap1(it.rarity) + ' · iLvl ' + it.ilvl + (it.quality ? ' · +' + it.quality + '% Q' : '') + (it.corrupted ? ' · Corrupted' : '') + '</div></div>' +
-        '</div>' + implicits +
-        '<div class="cx-slotcounts"><span class="cx-pfx">Prefixes ' + it.prefixes.length + '/' + c.p + '</span><span class="cx-sfx">Suffixes ' + it.suffixes.length + '/' + c.s + '</span></div>' +
-        '<div class="cx-modlist">' + pRows + sRows + empty + '</div>' +
-        '<div class="cx-itemactions"><button class="cx-linkbtn" data-act="scour"><i class="bi bi-eraser"></i> Scour</button></div>' +
+        '<div class="cx-itembody">' +
+          '<div class="cx-itemart"><img class="cx-itemimg" src="' + IMG + esc(it.img) + '" alt="" draggable="false" onerror="this.style.visibility=\'hidden\'"></div>' +
+          '<div class="cx-iteminfo">' +
+            '<div class="cx-itemtitle"><div class="cx-itemname">' + title + '</div>' + flavour +
+            '<div class="cx-itemsub">' + cap1(it.rarity) + ' · iLvl ' + it.ilvl + (it.quality ? ' · +' + it.quality + '% Q' : '') + (it.corrupted ? ' · Corrupted' : '') + '</div></div>' +
+            implicits + slots +
+            '<div class="cx-modlist">' + pRows + sRows + empty + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="cx-itemactions">' + ((it.prefixes.length + it.suffixes.length) ? '<span class="cx-scourhint">Drag <b>Scour</b> from the right onto a modifier to remove it</span>' : '') + '</div>' +
         '</div>'
     }
     // ---- LEFT: active craft tags (from the current item's mods) ----
@@ -660,10 +1005,13 @@
       if (!st.history.length) return '<div class="cx-card cx-histcard"><div class="cx-cardhead">Crafting History</div><div class="cx-histempty">Your steps will appear here.</div></div>'
       var rows = st.history.map(function (h, i) {
         var log = (h.log || []).map(function (l) { return '<div class="cx-hlog">' + esc(l) + '</div>' }).join('')
-        return '<div class="cx-hstep"><div class="cx-hhead"><span class="cx-hnum">' + (i + 1) + '</span><span class="cx-hlabel">' + esc(h.label) + '</span>' +
-          '<button class="cx-backtrack" data-back="' + i + '" title="Backtrack to before this step"><i class="bi bi-arrow-return-left"></i></button></div>' + log + '</div>'
+        return '<div class="cx-hstep"><div class="cx-hhead"><span class="cx-hnum">' + (i + 1) + '</span><span class="cx-hlabel">' + esc(h.label) + '</span></div>' + log + '</div>'
       }).reverse().join('')
-      return '<div class="cx-card cx-histcard"><div class="cx-cardhead">Crafting History <span class="cx-hcount">' + st.history.length + ' steps</span></div><div class="cx-hlist">' + rows + '</div></div>'
+      return '<div class="cx-card cx-histcard"><div class="cx-cardhead">Crafting History <span class="cx-hcount">' + st.history.length + ' steps</span></div>' +
+        '<div class="cx-hlist">' + rows + '</div>' +
+        '<div class="cx-histfoot"><button class="cx-undo" data-act="undo" title="Undo the most recent step — crafting is RNG, so you can only step back the last action">' +
+          '<i class="bi bi-arrow-counterclockwise"></i> Undo last step</button></div>' +
+        '</div>'
     }
 
     // ---- RIGHT: crafting step (currency / essence / omen) ----
@@ -675,6 +1023,9 @@
       var body = st.tab === 'currency' ? currencyGrid() : st.tab === 'essence' ? essenceGrid() : omenGrid()
       var active = st.omen ? '<div class="cx-activeomen">Active Omen: <b>' + esc(st.omen.short) + '</b> <button class="cx-omenclear" data-act="clearomen">clear</button></div>' : ''
       return '<div class="cx-card cx-stepcard"><div class="cx-cardhead">Crafting Step</div>' +
+        '<div class="cx-tools"><div class="cx-scourtool" draggable="true" title="Drag onto a modifier on your item to remove just that one (you choose which)">' +
+          '<img src="' + IMG + 'currency/orb_of_annulment.webp" alt="" draggable="false" onerror="this.style.display=\'none\'"><span>Scour</span></div>' +
+          '<span class="cx-toolhint">drag onto a mod to remove it</span></div>' +
         '<div class="cx-tabs">' + tabs + '</div>' + active +
         '<div class="cx-stepbody">' + body + '</div></div>'
     }
@@ -730,14 +1081,16 @@
       var tagChips = topTags.map(function (t) { return '<button class="cx-poolTag' + (st.poolTag === t ? ' on' : '') + '" data-ptag="' + esc(t) + '">' + esc(t) + '</button>' }).join('')
 
       var ql = st.q.toLowerCase()
-      var rows = pool.list
+      var displayList = pool.list
         .filter(function (x) { return !ql || x.mod.text.toLowerCase().indexOf(ql) >= 0 || (x.mod.family || '').toLowerCase().indexOf(ql) >= 0 })
         .sort(function (a, b) { return b.eff - a.eff })
-        .map(function (x) {
+      st._poolDisplay = displayList
+      var rows = displayList
+        .map(function (x, i) {
           var m = x.mod, pct = pool.total ? (x.eff / pool.total * 100) : 0
           var elig = eligTiers(m, st.item.ilvl)
           var top = elig[elig.length - 1] || m.tiers[m.tiers.length - 1]
-          return '<div class="cx-prow">' +
+          return '<div class="cx-prow" data-pool="' + i + '" draggable="true" title="Drag onto the item to add this modifier">' +
             '<span class="cx-pbadge cx-b-' + m.side + '">' + (m.side === 'prefix' ? 'P' : 'S') + '</span>' +
             '<div class="cx-pbody"><div class="cx-ptext">' + htmlText(top ? top.text : m.text) + '</div>' +
             '<div class="cx-pmeta">' + (m.tags || []).slice(0, 3).map(function (t) { return '<span class="cx-mtag">' + esc(t) + '</span>' }).join('') +
@@ -773,17 +1126,25 @@
       each('[data-cur]', function (b) { b.addEventListener('click', function () { if (!this.disabled) doCurrency(this.getAttribute('data-cur')) }) })
       each('[data-ess]', function (b) { b.addEventListener('click', function () { var p = this.getAttribute('data-ess').split(':'); var g = groupsFor(p[0]); doEssence(g[+p[1]]) }) })
       each('[data-omen]', function (b) { b.addEventListener('click', function () { var o = core.omens[+this.getAttribute('data-omen')]; st.omen = (st.omen && st.omen.name === o.name) ? null : o; render() }) })
-      each('[data-back]', function (b) { b.addEventListener('click', function () { backtrackTo(+this.getAttribute('data-back')) }) })
       each('[data-ptag]', function (b) { b.addEventListener('click', function () { var t = this.getAttribute('data-ptag'); st.poolTag = t || null; render() }) })
       each('[data-pside]', function (b) { b.addEventListener('click', function () { st.poolSide = this.getAttribute('data-pside'); render() }) })
       var ps = $('#cx-psearch'); if (ps) ps.addEventListener('input', function () { st.q = this.value; var list = host.querySelector('.cx-poollist'); rerenderPool() })
       each('[data-act]', function (b) {
         b.addEventListener('click', function () {
           var a = this.getAttribute('data-act')
-          if (a === 'reset' || a === 'scour') { a === 'reset' ? resetItem() : scour() }
+          if (a === 'reset') resetItem()
           else if (a === 'clearomen') { st.omen = null; render() }
+          else if (a === 'undo') undoLast()
+          else if (a === 'paste') { st.pasteOpen = true; render(); var ta = host.querySelector('#cx-pastebox-ta'); if (ta) ta.focus() }
+          else if (a === 'pastecancel') { st.pasteOpen = false; render() }
+          else if (a === 'import') { var box = host.querySelector('#cx-pastebox-ta'); importFromText(box ? box.value : '') }
+          else if (a === 'export') { st.exportOpen = true; render(); var xa = host.querySelector('#cx-exportbox-ta'); if (xa) { xa.focus(); xa.select() } }
+          else if (a === 'exportclose') { st.exportOpen = false; render() }
+          else if (a === 'exportcopy') { doExportCopy() }
         })
       })
+      // drag-and-drop crafting: currency + pool-mod rows onto the item card
+      wireCurrencyDrag(); wirePoolRows(); wireItemDrop(); wireScourTool(); wireModDrop()
     }
     function groupsFor (tier) { return core.essences.filter(function (e) { return e.tier === tier }) }
     // light-touch pool re-render on search so the input keeps focus
@@ -799,6 +1160,7 @@
       each('[data-ptag]', function (b) { b.addEventListener('click', function () { var t = b.getAttribute('data-ptag'); st.poolTag = t || null; render() }) })
       each('[data-pside]', function (b) { b.addEventListener('click', function () { st.poolSide = b.getAttribute('data-pside'); render() }) })
       var ps = $('#cx-psearch'); if (ps) { ps.addEventListener('input', function () { st.q = this.value; rerenderPool() }); if (focus) { ps.focus(); ps.setSelectionRange(ps.value.length, ps.value.length) } }
+      wirePoolRows() // re-arm drag on the rebuilt pool rows
     }
 
     return { dispose: function () { clearTimeout(flash._t); host.innerHTML = '' } }

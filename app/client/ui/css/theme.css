@@ -132,6 +132,8 @@ h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .ec-widget-title > i.bi { flex: 0 0 auto; }
+.ec-widget-icon { width: 20px; height: 20px; object-fit: contain; flex: 0 0 auto; margin-right: 1px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .55)); }
 .ec-widget-title button {
   background: none; border: none; color: var(--ec-gold-dim);
   font-size: 13px; padding: 0 3px; cursor: pointer;
@@ -164,6 +166,8 @@ h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter
    the resize grip sets an explicit height + maxHeight:none to override it. */
 .ec-widget-body { padding: 10px; overflow: auto; max-height: 72vh; display: flex; flex-direction: column; }
 .ec-widget-body.flush { padding: 0; }
+/* Build Planner — pob-web (real PoB in WASM) fills the widget */
+.pobweb-frame { width: 100%; height: 72vh; min-height: 480px; border: none; display: block; background: #12100c; }
 /* App-wide fill: a plugin that renders a single root wrapper has it stretch to
    fill the body (content scrolls, footers pin to the bottom — no dead space when
    the window is dragged taller). Multi-child bodies (settings, guide, filter
@@ -1329,12 +1333,24 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
   padding: 10px 12px; background: var(--ec-panel-2); border: 1px solid var(--ec-border-soft); border-radius: 10px; }
 .cx-field { display: flex; flex-direction: column; gap: 3px; }
 .cx-field > label { font-size: 9.5px; text-transform: uppercase; letter-spacing: .1em; color: var(--ec-muted); }
-.cx-field.cx-grow { flex: 1 1 200px; min-width: 160px; }
+.cx-field.cx-grow { flex: 0 1 220px; min-width: 160px; max-width: 220px; }
 .cx-field.cx-ilvl { width: 92px; }
-.cx-reset { margin-left: auto; align-self: flex-end; }
-.cx-btn { border: 1px solid var(--ec-border); background: var(--ec-panel-3); color: var(--ec-gold-dim);
-  border-radius: 7px; padding: 6px 10px; cursor: pointer; font-size: 13px; }
-.cx-btn:hover { color: var(--ec-gold); border-color: var(--ec-gold-dim); }
+.cx-reset { margin-left: 2px; align-self: flex-end; }
+.cx-paste { margin-left: auto; align-self: flex-end; }
+/* flat, understated icon buttons (no boxed border) */
+.cx-btn { border: none; background: none; color: var(--ec-muted);
+  border-radius: 3px; padding: 5px 7px; cursor: pointer; font-size: 15px; line-height: 1; }
+.cx-btn:hover { color: var(--ec-gold); background: rgba(201, 164, 92, .10); }
+/* Scour tool (drag onto a single mod to remove it) */
+.cx-tools { display: flex; align-items: center; gap: 8px; padding: 8px 10px 0; }
+.cx-scourtool { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px 4px 6px; cursor: grab;
+  border: 1px solid var(--ec-border-soft); border-radius: 3px; background: var(--ec-panel-3); color: var(--ec-text-soft); font-size: 11.5px; }
+.cx-scourtool:hover { border-color: var(--ec-gold-dim); color: var(--ec-gold); }
+.cx-scourtool:active { cursor: grabbing; }
+.cx-scourtool img { width: 20px; height: 20px; object-fit: contain; }
+.cx-toolhint, .cx-scourhint { font-size: 10px; color: var(--ec-muted); }
+.cx-scourhint b { color: var(--ec-text-soft); }
+.cx-mod.cx-modhot { outline: 2px dashed var(--ec-red-text); outline-offset: -2px; background: rgba(227, 86, 78, .12); }
 
 /* two-column layout */
 .cx-cols { display: flex; gap: 10px; align-items: stretch; }
@@ -1350,12 +1366,18 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
   padding: 8px 12px; font-size: 10.5px; text-transform: uppercase; letter-spacing: .12em; color: var(--ec-text-soft);
   background: var(--ec-panel-3); border-bottom: 1px solid var(--ec-border-soft); }
 
-/* item tooltip card */
-.cx-itemhead { display: flex; gap: 11px; align-items: center; padding: 11px 12px 8px; }
-.cx-itemimg { width: 46px; height: 46px; object-fit: contain; flex: 0 0 auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); }
+/* item tooltip card — image-forward: big art on the left, all info on the right */
+.cx-itembody { display: flex; gap: 14px; align-items: flex-start; padding: 12px 12px 6px; }
+.cx-itemart { flex: 0 0 auto; }
+.cx-itemimg { width: 96px; height: 96px; object-fit: contain; flex: 0 0 auto; filter: drop-shadow(0 3px 6px rgba(0,0,0,.65)); }
+.cx-iteminfo { flex: 1 1 auto; min-width: 0; }
 .cx-itemtitle { min-width: 0; }
-.cx-itemname { font-size: 15px; font-weight: 600; line-height: 1.15; letter-spacing: .01em; }
+.cx-itemname { font-size: 16px; font-weight: 600; line-height: 1.15; letter-spacing: .01em; }
+.cx-itembase { font-size: 11.5px; color: var(--ec-text-soft); margin-top: 1px; font-style: italic; }
 .cx-itemsub { font-size: 11px; color: var(--ec-text-soft); margin-top: 2px; }
+.cx-r-unique .cx-itemname { color: #c0651e; }
+.cx-r-unique { border-color: #6b3a12; }
+@media (max-width: 480px) { .cx-itembody { flex-wrap: wrap; } .cx-itemimg { width: 72px; height: 72px; } }
 .cx-r-normal .cx-itemname { color: #d4cdbb; }
 .cx-r-magic  .cx-itemname { color: #8f9ff4; }
 .cx-r-rare   .cx-itemname { color: #e5d16a; }
@@ -1363,13 +1385,13 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .cx-r-magic  { border-color: #40477e; }
 .cx-r-rare   { border-color: #7a6a2c; }
 .cx-corrupt  { border-color: #7a241c !important; box-shadow: inset 0 0 0 1px rgba(150,40,30,.4); }
-.cx-implicits { padding: 0 12px 6px; border-bottom: 1px dashed var(--ec-border-soft); margin-bottom: 4px; }
-.cx-imp { font-size: 12px; color: #8f9ff4; text-align: center; line-height: 1.5; }
-.cx-slotcounts { display: flex; gap: 8px; padding: 6px 12px; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+.cx-implicits { padding: 0 0 6px; border-bottom: 1px dashed var(--ec-border-soft); margin: 4px 0; }
+.cx-imp { font-size: 12px; color: #8f9ff4; text-align: left; line-height: 1.5; }
+.cx-slotcounts { display: flex; gap: 8px; padding: 8px 0 4px; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
 .cx-slotcounts > span { flex: 1; text-align: center; padding: 3px 0; border-radius: 5px; border: 1px solid var(--ec-border-soft); }
 .cx-pfx { color: #9ab3d8; background: rgba(58,90,134,.14); }
 .cx-sfx { color: #d8b483; background: rgba(122,90,46,.14); }
-.cx-modlist { padding: 6px 8px 8px; display: flex; flex-direction: column; gap: 4px; }
+.cx-modlist { padding: 6px 0 4px; display: flex; flex-direction: column; gap: 4px; }
 .cx-emptymods { padding: 16px 8px; text-align: center; font-size: 11.5px; color: var(--ec-muted); }
 .cx-mod { display: flex; gap: 8px; align-items: flex-start; padding: 6px 8px; border-radius: 3px; background: var(--ec-panel-3); border: 1px solid transparent; }
 .cx-mod:hover { border-color: var(--ec-border-soft); }
@@ -1384,8 +1406,42 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
   border-radius: 4px; padding: 0 5px; line-height: 15px; }
 .cx-fract { color: #d8b483; font-size: 11px; } .cx-guar { color: var(--ec-gold); font-size: 11px; }
 .cx-itemactions { padding: 6px 10px 9px; text-align: right; }
-.cx-linkbtn { background: none; border: none; color: var(--ec-text-soft); cursor: pointer; font-size: 11px; }
+.cx-linkbtn { background: none; border: none; color: var(--ec-text-soft); cursor: pointer; font-size: 11px;
+  display: inline-flex; align-items: center; gap: 5px; }
 .cx-linkbtn:hover { color: var(--ec-red-text); }
+.cx-scourimg { width: 20px; height: 20px; object-fit: contain; flex: 0 0 auto;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.5)); }
+
+/* drag-and-drop crafting: item card is the drop target */
+.cx-itemcard { transition: box-shadow .12s, outline-color .12s; }
+.cx-itemcard.cx-drophot { outline: 2px dashed var(--ec-gold-dim); outline-offset: -3px;
+  box-shadow: inset 0 0 26px rgba(201,164,92,.16); }
+.cx-itemcard.cx-reject { animation: cx-shake .4s ease; }
+@keyframes cx-shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); } 40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); } 80% { transform: translateX(3px); }
+}
+.cx-cell[draggable="true"]:not(.disabled) { cursor: grab; }
+.cx-prow[draggable="true"] { cursor: grab; }
+.cx-prow[draggable="true"]:active { cursor: grabbing; }
+.cx-picon { width: 20px; height: 20px; object-fit: contain; flex: 0 0 auto; opacity: .82;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.4)); }
+
+/* paste-item importer */
+.cx-pastewrap { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.55); }
+.cx-pastebox { width: min(560px, 92%); max-height: 88%; display: flex; flex-direction: column; gap: 10px; padding: 14px;
+  background: var(--ec-panel-2); border: 1px solid var(--ec-gold-dim); border-radius: 6px; box-shadow: 0 14px 44px rgba(0,0,0,.6); }
+.cx-pastehd { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--ec-gold);
+  text-transform: uppercase; letter-spacing: .08em; }
+.cx-pastehd span { font-size: 10px; color: var(--ec-muted); text-transform: none; letter-spacing: 0; }
+.cx-pastearea { width: 100%; min-height: 220px; resize: vertical; padding: 9px 11px; outline: none;
+  background: var(--ec-panel-3); border: 1px solid var(--ec-border-soft); border-radius: 4px; color: var(--ec-text);
+  font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px; line-height: 1.45; }
+.cx-pastearea:focus { border-color: var(--ec-gold-dim); }
+.cx-pasteact { display: flex; justify-content: flex-end; gap: 8px; }
+.cx-pasteimport { color: var(--ec-gold); border-color: var(--ec-gold-dim); }
 
 /* active craft tags */
 .cx-ctags { display: flex; flex-wrap: wrap; gap: 5px; padding: 9px 12px; }
@@ -1402,10 +1458,13 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .cx-hnum { flex: 0 0 auto; width: 17px; height: 17px; border-radius: 50%; background: var(--ec-gold-bg); color: var(--ec-gold);
   font-size: 9.5px; font-weight: 700; display: grid; place-items: center; }
 .cx-hlabel { flex: 1; min-width: 0; font-size: 11.5px; color: var(--ec-text-strong); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cx-backtrack { flex: 0 0 auto; background: none; border: 1px solid var(--ec-border-soft); border-radius: 5px; color: var(--ec-text-soft);
-  cursor: pointer; font-size: 10px; padding: 1px 6px; }
-.cx-backtrack:hover { color: var(--ec-gold); border-color: var(--ec-gold-dim); }
 .cx-hlog { font-size: 10.5px; color: var(--ec-text-soft); padding: 2px 0 0 24px; line-height: 1.4; }
+/* one undo button, bottom-left — crafting is RNG so you only step back the last action */
+.cx-histfoot { display: flex; justify-content: flex-start; padding: 8px 10px; border-top: 1px solid var(--ec-border-soft); }
+.cx-undo { display: inline-flex; align-items: center; gap: 5px; background: var(--ec-panel-3); border: 1px solid var(--ec-border-soft);
+  border-radius: 4px; color: var(--ec-text-soft); cursor: pointer; font-size: 11px; padding: 4px 10px; }
+.cx-undo:hover { color: var(--ec-gold); border-color: var(--ec-gold-dim); }
+.cx-undo i { font-size: 12px; }
 
 /* crafting step (currency / essence / omen) */
 .cx-tabs { display: flex; gap: 3px; padding: 8px 10px 0; }

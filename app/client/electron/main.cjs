@@ -112,6 +112,8 @@ ipcMain.on('ec:dev-set', (_e, v) => { devUnlocked = !!v })
 const MIME = {
   '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
   '.lua': 'text/x-lua', '.json': 'application/json',
+  '.wasm': 'application/wasm', '.mjs': 'text/javascript', '.zip': 'application/zip',
+  '.data': 'application/octet-stream', '.zst': 'application/zstd', '.map': 'application/json',
   '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
   '.woff': 'font/woff', '.woff2': 'font/woff2', '.mp3': 'audio/mpeg',

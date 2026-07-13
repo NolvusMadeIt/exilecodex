@@ -157,9 +157,17 @@ function W.spawn(spec)
   fr.style.top = y .. "px"
 
   local flush = spec.flush and " flush" or ""
+  -- Icon may be a Bootstrap `bi-*` class OR an image path (.png/.webp/.jpg/.svg).
+  local ic = spec.icon or "bi-app"
+  local icon_el
+  if ic:find("%.png$") or ic:find("%.webp$") or ic:find("%.jpg$") or ic:find("%.svg$") then
+    icon_el = '<img class="ec-widget-icon" src="' .. ic .. '" alt="">'
+  else
+    icon_el = '<i class="bi ' .. ic .. '" style="color:' .. (spec.color or "var(--ec-gold)") .. ';font-size:16px"></i>'
+  end
   fr.innerHTML = table.concat({
     '<div class="ec-widget-title">',
-    '<i class="bi ', spec.icon or "bi-app", '" style="color:', spec.color or "var(--ec-gold)", ';font-size:16px"></i>',
+    icon_el,
     '<span class="t">', codex.T and codex.T(spec.title or spec.id) or (spec.title or spec.id), '</span>',
     (spec.on_attach and '<button data-act="attach" title="Attach to Guide"><i class="bi bi-pin-angle"></i></button>' or ''),
     '<button data-act="collapse" title="Collapse"><i class="bi bi-chevron-up"></i></button>',
