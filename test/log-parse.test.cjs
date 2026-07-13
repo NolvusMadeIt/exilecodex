@@ -40,6 +40,21 @@ test('load start line parses', () => {
   assert.deepStrictEqual(parseLogLine(line), { type: 'load', ms: 2577890 })
 })
 
+test('quest reward (turn-in) parses the permanent bonus text', () => {
+  const line = '2026/07/13 01:19:56 3045234 3ef231e0 [INFO Client 20032] : Omega_Druid_Avatar has received +10% to [Resistances|Cold Resistance].'
+  assert.deepStrictEqual(parseLogLine(line), { type: 'reward', ms: 3045234, text: '+10% to [Resistances|Cold Resistance]' })
+})
+
+test('attribute/spirit reward parses too', () => {
+  const line = '2026/07/13 01:30:00 3100000 3ef231e0 [INFO Client 20032] : Omega_Druid_Avatar has received +40 to [Spirit|Spirit].'
+  assert.deepStrictEqual(parseLogLine(line), { type: 'reward', ms: 3100000, text: '+40 to [Spirit|Spirit]' })
+})
+
+test('chat containing "has received" is NOT a reward event', () => {
+  const line = '2026/07/13 01:00:00 123456 3ef231e0 [INFO Client 20032] #Trader: wtb item, has received a few offers'
+  assert.strictEqual(parseLogLine(line), null)
+})
+
 test('chat that merely contains "entered" is NOT a zone event', () => {
   const line = "2026/06/27 22:37:35 1466742765 3ef231e0 [INFO Client 75424] #SuzakuMerc: first time i entered i spent 5min standing around"
   assert.strictEqual(parseLogLine(line), null)

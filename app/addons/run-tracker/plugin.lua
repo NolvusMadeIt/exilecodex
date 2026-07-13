@@ -95,7 +95,9 @@ API.custom_rules = function()
   return (type(r) == "table") and r or {}
 end
 local function active_set()
-  local id = ui.store_get("ec.tracker.splitset") or "acts"
+  -- Default to a split per NEW zone (not per act) — matches the per-zone headline
+  -- stopwatch. The cogwheel can switch back to act splits or a custom set.
+  local id = ui.store_get("ec.tracker.splitset") or "firstzone"
   if id == "custom" then
     return { id = "custom", name = "Custom", mode = "rules", rules = API.custom_rules() }
   end
@@ -138,6 +140,8 @@ local function raw_ms()
   return r.rawAccMs or 0
 end
 local function adjusted_ms() local r = T.run; if not r then return 0 end; return raw_ms() - (r.loadMs or 0) end
+-- Time spent in the CURRENT zone (headline stopwatch). Resets on every new area.
+local function seg_ms() local r = T.run; if not r then return 0 end; return math.max(0, adjusted_ms() - (r.zoneStartAdj or 0)) end
 API.adjusted_fmt = function() return fmt(adjusted_ms(), false) end
 
 local function pause_timer() local r = T.run; if r and r.running and not r.paused then r.rawAccMs = raw_ms(); r.paused = true end end
@@ -146,7 +150,10 @@ local function resume_timer() local r = T.run; if r and r.running and r.paused t
 local function start_run(zone)
   local n = now_ms()
   T.run = { running = true, paused = false, rawAccMs = 0, sinceWall = n, startedWall = n,
-    loadMs = 0, pendingLoad = nil, setId = active_set().id, curIdx = 1, visited = {}, segs = {} }
+    loadMs = 0, pendingLoad = nil, setId = active_set().id, curIdx = 1, visited = {}, segs = {},
+    -- per-zone stopwatch: the headline timer shows time in the CURRENT area and
+    -- resets to 0 every time you enter a new zone / waypoint / portal.
+    zoneStartAdj = 0, curZone = zone }
   save_run()
 end
 
@@ -215,7 +222,10 @@ local function on_zone_ts(name, ms)
   -- is on). The timer is driven entirely by Client.txt, never a bare button press.
   if not r and autostart_on() and not (pausetown_on() and town) then start_run(name); r = T.run end
   if r then
+    local changed = znorm(name) ~= znorm(r.curZone or "")
     if town and pausetown_on() then pause_timer() else resume_timer() end
+    -- reset the headline per-zone stopwatch the moment we enter a different area
+    if changed then r.zoneStartAdj = adjusted_ms(); r.curZone = name end
     try_split_zone(name)
   end
   render()
@@ -312,8 +322,13 @@ render = function()
   -- Record mode shows splits; Simple mode (and the docked mini-view) is just a big
   -- stopwatch. Both FILL the widget body so there's never dead space below.
   local rec = record_mode() and not docked
-  local timerBlock = '<div class="rt-time' .. timer_color() .. '" id="rt-time">' .. fmt(adjusted_ms(), true) .. '</div>'
-  local statusBlock = '<div class="rt-statusline">' .. status .. zone .. loadchip .. '</div>'
+  local tsz = tonumber(ui.store_get("ec.tracker.timepx") or "")
+  local tstyle = tsz and (' style="font-size:' .. math.floor(tsz) .. 'px"') or ''
+  -- Headline = time in the CURRENT zone (resets each area). Total run time is the
+  -- small chip beside it — that's the cumulative "counting acts" number.
+  local timerBlock = '<div class="rt-time' .. timer_color() .. '" id="rt-time"' .. tstyle .. '>' .. fmt(seg_ms(), true) .. '</div>'
+  local totchip = r and ('<span class="rt-tot" id="rt-total" title="Total run time (all zones)">' .. fmt(adjusted_ms(), false) .. ' total</span>') or ''
+  local statusBlock = '<div class="rt-statusline">' .. status .. zone .. totchip .. loadchip .. '</div>'
   local playBtn = '<button class="rt-ib rt-play" data-act="' .. ((r and not r.paused) and 'pause' or 'start')
     .. '" title="Start / pause (F6)"><i class="bi bi-' .. ((r and not r.paused) and 'pause-fill' or 'play-fill') .. '"></i></button>'
   local resetBtn = '<button class="rt-ib ghost" data-act="reset" title="Reset (F8)"><i class="bi bi-arrow-counterclockwise"></i></button>'
@@ -339,6 +354,7 @@ render = function()
     host.innerHTML = table.concat({
       '<div class="rt-ls rt-simple', docked and ' rt-docked' or '', '">',
         '<div class="rt-hero">', timerBlock, statusBlock, '</div>',
+        '<div class="rt-resize" data-resize="1" title="Drag up / down to resize the timer"><i class="bi bi-grip-horizontal"></i></div>',
         '<div class="rt-bar">', playBtn, resetBtn, detachBtn, '</div>',
       '</div>',
     })
@@ -356,6 +372,31 @@ wire = function(host)
       elseif a == "config" then API.open_config() end
     end)
   end)
+  -- timer resize grip: drag DOWN to shrink the big stopwatch (saved to prefs).
+  -- Pointer capture keeps move/up events flowing to the grip even off it, so no
+  -- document-level listeners leak on re-render.
+  local rz = host:querySelector("[data-resize]")
+  if rz ~= js.null then
+    local drag = { on = false, y0 = 0, px0 = 0 }
+    local function base_px() return dock_on() and 34 or 52 end
+    rz:addEventListener("pointerdown", function(_, ev)
+      drag.on = true
+      drag.y0 = ev.clientY
+      drag.px0 = tonumber(ui.store_get("ec.tracker.timepx") or "") or base_px()
+      pcall(function() rz:setPointerCapture(ev.pointerId) end)
+      ev:preventDefault()
+    end)
+    rz:addEventListener("pointermove", function(_, ev)
+      if not drag.on then return end
+      local np = math.max(16, math.min(72, drag.px0 - (ev.clientY - drag.y0)))
+      local tv = host:querySelector("#rt-time")
+      if tv ~= js.null then tv.style.fontSize = math.floor(np) .. "px" end
+      ui.store_set("ec.tracker.timepx", tostring(math.floor(np)))
+    end)
+    local function enddrag() drag.on = false end
+    rz:addEventListener("pointerup", enddrag)
+    rz:addEventListener("pointercancel", enddrag)
+  end
 end
 
 -- live tick — refresh the timer number + colour class (cheap; no full re-render)
@@ -364,9 +405,11 @@ local function tick()
   if not host or not host.isConnected then return end
   local tv = host:querySelector("#rt-time")
   if tv ~= js.null then
-    tv.innerHTML = fmt(adjusted_ms(), true)
+    tv.innerHTML = fmt(seg_ms(), true)
     tv.className = "rt-time" .. timer_color()
   end
+  local tot = host:querySelector("#rt-total")
+  if tot ~= js.null then tot.innerHTML = fmt(adjusted_ms(), false) .. " total" end
 end
 
 -- ---------------------------------------------------- history (guide toolbar)

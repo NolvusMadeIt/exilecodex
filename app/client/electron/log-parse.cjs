@@ -17,15 +17,25 @@ const RE_LEVEL = /^\S+ \S+ (\d+).* : (.+?) \((.+?)\) is now level (\d+)/
 const RE_ZONE_LOAD = /^\S+ \S+ (\d+).*\[LOADING SCREEN\] \((.+?)\) Duration = /
 const RE_ZONE_ENTERED = /^\S+ \S+ (\d+).*You have entered (.+)\.\s*$/
 const RE_LOAD = /^\S+ \S+ (\d+).*Got Instance Details/
+// Permanent quest reward, logged when you TURN IN a quest (the closest thing PoE2
+// writes to a "quest complete" event — boss kills + turn-ins themselves are not
+// logged). e.g. `: Omega has received +10% to [Resistances|Cold Resistance].`
+// The reward text still carries the game's [Tag|Display] wiki-links; the guide
+// normalises those when matching against a step's reward.
+const RE_REWARD = /^\S+ \S+ (\d+).* : \S+ has received (.+?)\.?\s*$/
 
 // Parse one Client.txt line into a typed event, or null if it isn't one we track.
-//   { type: 'level', ms, char, cls, level }
-//   { type: 'zone',  ms, name }
-//   { type: 'load',  ms }
+//   { type: 'level',  ms, char, cls, level }
+//   { type: 'zone',   ms, name }
+//   { type: 'load',   ms }
+//   { type: 'reward', ms, text }
 function parseLogLine(line) {
   let m
   if ((m = line.match(RE_LEVEL))) {
     return { type: 'level', ms: Number(m[1]), char: m[2], cls: m[3], level: Number(m[4]) }
+  }
+  if ((m = line.match(RE_REWARD))) {
+    return { type: 'reward', ms: Number(m[1]), text: m[2] }
   }
   if ((m = line.match(RE_ZONE_LOAD)) || (m = line.match(RE_ZONE_ENTERED))) {
     return { type: 'zone', ms: Number(m[1]), name: m[2] }

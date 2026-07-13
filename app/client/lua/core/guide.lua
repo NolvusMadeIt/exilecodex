@@ -21,6 +21,7 @@ local M = codex.guide
 local viewer_el, gbar_el, gbody_el, tstrip_el, gfoot_el, gdock_el, actbar_el = nil, nil, nil, nil, nil, nil, nil
 local guides_menu_open = false
 local history_open = false
+local other_menu_open = false
 
 -- Zygor's action→icon vocabulary (their actionicons table), our own icons.
 local ACTION_ICONS = {
@@ -114,14 +115,36 @@ local function tr(s)
   return codex.T(s)
 end
 
+-- Colour a bracketed term by its KIND (from the codex.terms entity DB), or by its
+-- image path as a fallback (zone maps in the step's own images table).
+local KIND_CLASS = { boss = "ec-t-boss", town = "ec-t-town", item = "ec-t-item", zone = "ec-t-zone" }
+local function src_kind(src)
+  src = tostring(src or "")
+  if src:find("/maps/", 1, true) then return "zone" end
+  if src:find("/bosses/", 1, true) then return "boss" end
+  if src:find("/towns/", 1, true) then return "town" end
+  if src:find("/items/", 1, true) then return "item" end
+  return nil
+end
+
 local function rich_text(text, images)
   local txt = esc(tr(text))
+  -- Brighten standalone numbers FIRST (before any HTML with digits in its paths is
+  -- inserted below), wiki-style: "activate 3 seals", "+10%".
+  txt = txt:gsub("(%d+%%?)", '<span class="ec-t-num">%1</span>')
   txt = txt:gsub("%[(.-)%]", function(name)
-    local src = images and images[name]
-    if src then
-      return '<span class="ec-imglink" data-img="' .. src .. '" data-name="' .. name .. '">' .. name .. '</span>'
+    -- Prefer the shared entity DB (bosses / towns / items); fall back to the step's
+    -- own image (zone maps) so [Zone] still shows the layout.
+    local term = codex.terms and codex.terms[name]
+    local src = (images and images[name]) or (term and term.img)
+    local kind = (term and term.kind) or src_kind(src)
+    local cls = KIND_CLASS[kind] or "ec-t-term"
+    local has_tip = (src and src ~= "") or (term and term.flavor and term.flavor ~= "")
+    if has_tip then
+      return '<span class="ec-imglink ' .. cls .. '" data-name="' .. esc(name) .. '"'
+        .. ((src and src ~= "") and (' data-img="' .. src .. '"') or '') .. '>' .. name .. '</span>'
     end
-    return name
+    return '<span class="' .. cls .. '">' .. name .. '</span>'
   end)
   return txt
 end
@@ -298,18 +321,31 @@ function M.on_zone(area)
   if not g then return end
 
   local target = step_for_area(g, area)
-  if target then
-    if target ~= g.current then
-      g.current = target
-      save_pos(g)
-    end
-    -- auto-complete traversal goals ("goto"/enter the zone) for the entered step
+  -- Auto-follow only ever moves FORWARD. Re-entering a cleared zone or porting
+  -- back to town must NOT rewind the guide (the timer pauses in town on its own);
+  -- step_for_area can return an earlier step, so guard on target >= current.
+  if target and target >= g.current then
     if ui.store_get("ec.det.advance") ~= "0" then
+      -- Catch up: entering a later zone means the earlier campaign steps are done,
+      -- so tick their mandatory objectives — the kills / turn-ins you did in the
+      -- zones you've now left, which the log can't observe directly.
+      for si = g.current, target - 1 do
+        for gi, goal in ipairs(g.steps[si].goals) do
+          if goal.action ~= "note" and not goal.optional then
+            set_goal_state(g, si, gi, goal.count or true)
+          end
+        end
+      end
+      -- auto-complete traversal goals ("goto"/enter the zone) for the entered step
       for gi, goal in ipairs(g.steps[target].goals) do
         if goal.action == "goto" and not goal.count then
           set_goal_state(g, target, gi, true)
         end
       end
+    end
+    if target ~= g.current then
+      g.current = target
+      save_pos(g)
     end
   end
   M.render()
@@ -331,13 +367,63 @@ function M.on_level(level)
   M.render()
 end
 
+-- The log's reward text keeps the game's [Tag|Display] wiki-links and phrasing
+-- ("+10% to [Resistances|Cold Resistance]") while a step's reward reads
+-- "Permanent: +10% Cold Resistance". Normalise both to a bare key
+-- ("10 cold resistance") so they compare equal regardless of markup / filler.
+local function reward_key(s)
+  s = tostring(s or ""):lower()
+  s = s:gsub("%[[^%]|]*|([^%]]*)%]", "%1")   -- [Tag|Display] -> Display
+  s = s:gsub("%[([^%]]*)%]", "%1")           -- [Display]     -> Display
+  s = s:gsub("permanent", " ")
+  s = s:gsub("[%+%%:%.,'`]", " ")            -- drop punctuation, keep digits/letters
+  s = s:gsub(" to ", " ")                     -- filler word
+  s = s:gsub("%s+", " "):gsub("^ ", ""):gsub(" $", "")
+  return s
+end
+
+-- Client.txt quest reward (turn-in): PoE2 logs the permanent bonus a quest grants
+-- — the ONLY "quest complete" signal it emits (boss kills + turn-ins themselves
+-- are never logged). Tick the tracked goals of the step whose reward matches,
+-- searching from the current step first so a reward repeated later in the campaign
+-- (e.g. a second +10% res) lands on the right step. Driven by codex.detect.
+function M.on_reward(text)
+  if not text or text == "" or ui.store_get("ec.det.advance") == "0" then return end
+  local g = M.active and M.guides[M.active]
+  if not g then return end
+  local key = reward_key(text)
+  if key == "" then return end
+  local function mark(i)
+    for gi, goal in ipairs(g.steps[i].goals) do
+      if goal.action ~= "note" and not goal.optional then
+        set_goal_state(g, i, gi, goal.count or true)
+      end
+    end
+    M.render()
+  end
+  for i = g.current, #g.steps do
+    if g.steps[i].reward and reward_key(g.steps[i].reward) == key then return mark(i) end
+  end
+  for i = 1, #g.steps do
+    if g.steps[i].reward and reward_key(g.steps[i].reward) == key then return mark(i) end
+  end
+end
+
 -- ---------------------------------------------------------------- tooltip
 
+-- Wiki-style tooltip: NAME header + image + flavour text. Image comes from the
+-- caller (data-img) or the entity DB; flavour + kind come from codex.terms.
 local function tooltip_show(src, name)
   local t = ui.byId("ec-tooltip")
   if not t then return end
-  t.innerHTML = '<div class="ec-tip-name">' .. esc(name) .. '</div><img src="' .. src .. '" alt="">'
-  t.classList:remove("d-none")
+  local term = codex.terms and codex.terms[name]
+  local img = (src and src ~= "") and src or (term and term.img)
+  local flavor = term and term.flavor
+  local parts = { '<div class="ec-tip-name">' .. esc(name) .. '</div>' }
+  if img and img ~= "" then parts[#parts + 1] = '<img src="' .. img .. '" alt="">' end
+  if flavor and flavor ~= "" then parts[#parts + 1] = '<div class="ec-tip-desc">' .. esc(flavor) .. '</div>' end
+  t.className = "ec-tooltip" .. (term and term.kind and (" tip-" .. term.kind) or "")
+  t.innerHTML = table.concat(parts)
 end
 
 local function tooltip_move(x, y)
@@ -478,8 +564,11 @@ end
 
 local function wire_imglinks(root)
   ui.each(root, ".ec-imglink", function(link)
-    local src = ui.attr(link, "data-img")
     local name = ui.attr(link, "data-name") or ""
+    local src = ui.attr(link, "data-img")
+    -- resolve the image from the entity DB when the span carries only flavour text
+    local term = codex.terms and codex.terms[name]
+    local img = (src and src ~= "") and src or (term and term.img)
     link:addEventListener("mouseenter", function(_, ev)
       tooltip_show(src, name)
       tooltip_move(ev.clientX, ev.clientY)
@@ -491,7 +580,7 @@ local function wire_imglinks(root)
     link:addEventListener("click", function(_, ev)
       ev:stopPropagation()
       tooltip_hide()
-      M.pin(src, name)
+      if img and img ~= "" then M.pin(img, name) end
     end)
   end)
 end
@@ -516,17 +605,13 @@ local function goal_html(g, si, gi, goal, step, live)
       .. '%, rgba(118,14,6,0.5) ' .. pct .. '%)"'
   end
 
-  local count = ""
-  if goal.count then
-    count = ' <span class="zgoal-count">(' .. (tonumber(v) or 0) .. '/' .. goal.count .. ')</span>'
-  end
   local opt = goal.optional and '<span class="ec-optional-badge">opt</span>' or ""
 
   local wire = live and (' data-si="' .. si .. '" data-gi="' .. gi .. '"') or ""
   return table.concat({
     '<div class="', cls, '"', bg, wire, '>',
     '<i class="bi ', icon, ' zgoal-ico"></i>',
-    '<span class="zgoal-text">', rich_text(goal.text, step.images), count, opt, '</span>',
+    '<span class="zgoal-text">', rich_text(goal.text, step.images), opt, '</span>',
     '</div>',
   })
 end
@@ -557,6 +642,58 @@ local function step_html(g, it, live)
     end
   end
   parts[#parts + 1] = '</div>'
+  return table.concat(parts)
+end
+
+-- Wiki-style: render one step as a single NUMBERED line (actions joined by ·),
+-- terms coloured + hover-tooltipped, our tips as dimmed sub-lines, reward inline
+-- in blue. The whole line is the checkbox: clicking toggles the step's mandatory
+-- objectives (auto-detection still ticks them individually).
+local function step_line(g, si, step, num)
+  local cur = (si == g.current)
+  local done = step_complete(g, si, step)
+  local cls = "zg-line"
+  if done then cls = cls .. " done" end
+  if cur then cls = cls .. " cur" end
+  if step.optional then cls = cls .. " opt" end
+
+  local segs = {}
+  for gi, goal in ipairs(step.goals) do
+    if goal.action ~= "note" then
+      local t = rich_text(goal.text, step.images)
+      if goal.optional then t = t .. ' <span class="ec-optional-badge">opt</span>' end
+      segs[#segs + 1] = t
+    end
+  end
+  local body = table.concat(segs, ' <span class="zg-sep">&middot;</span> ')
+  if step.reward and step.reward ~= "" and ui.store_get("ec.guide.show_rewards") ~= "0" then
+    local rw = tostring(tr(step.reward))
+    rw = rw:gsub("^Permanent:%s*", ""):gsub("^Permanent%s*", "")
+    body = body .. ' <span class="zg-rwd">(' .. rich_text(rw, step.images) .. ')</span>'
+  end
+
+  local parts = {
+    '<div class="' .. cls .. '" data-si="' .. si .. '">',
+    '<span class="zg-num">' .. num .. '.</span>',
+    '<span class="zg-linetext">' .. body .. '</span>',
+    '</div>',
+  }
+  if ui.store_get("ec.guide.show_notes") ~= "0" then
+    for _, goal in ipairs(step.goals) do
+      if goal.action == "note" then
+        parts[#parts + 1] = '<div class="zg-linetip">' .. rich_text(goal.text, step.images) .. '</div>'
+      end
+    end
+  end
+  if cur and step.images then
+    local thumbs = {}
+    for name, src in pairs(step.images) do
+      thumbs[#thumbs + 1] = '<div class="zg-map-thumb" data-map="' .. esc(src) .. '" data-name="' .. esc(name)
+        .. '"><img src="' .. esc(src) .. '" alt=""><span class="cap">' .. esc(name) .. '</span>'
+        .. '<i class="zoom bi bi-arrows-fullscreen"></i></div>'
+    end
+    if #thumbs > 0 then parts[#parts + 1] = '<div class="zg-map">' .. table.concat(thumbs) .. '</div>' end
+  end
   return table.concat(parts)
 end
 
@@ -597,17 +734,30 @@ local function build_guides_menu()
   local drop = tstrip_el and tstrip_el:querySelector("#ec-guides-drop")
   if not drop or drop == js.null then return end
   local parts = { '<div class="ec-tsdrop-sec">' .. esc(tr("Default guides")) .. '</div>' }
+  local acts = route_acts()
   for _, e in ipairs(M.catalog) do
     if e.group ~= "Custom" and not e.hidden then
-      parts[#parts + 1] = '<div class="ec-tsdrop-item" data-open="' .. e.id .. '">'
-        .. '<img class="lead" src="../../media/icons/presets/campaign.webp" alt="">' .. esc(tr(e.title))
-        .. (e.patch and ('<span class="badge2">v' .. esc(e.patch) .. '</span>') or '') .. '</div>'
+      local isCampaign = e.group == "Campaign"
+      if isCampaign then
+        -- Campaign / Speedrun are accordion CATEGORY headers (toggle only, they do
+        -- not open a guide) — you open a guide by clicking one of its acts below.
+        parts[#parts + 1] = '<div class="ec-tsdrop-cat" data-acctoggle="' .. esc(e.id) .. '">'
+          .. '<i class="bi bi-caret-down-fill acc-caret"></i>'
+          .. '<img class="lead" src="../../media/icons/presets/campaign.webp" alt="">' .. esc(tr(e.title))
+          .. (e.patch and ('<span class="badge2">v' .. esc(e.patch) .. '</span>') or '') .. '</div>'
+        parts[#parts + 1] = '<div class="ec-tsdrop-acc" data-accbody="' .. esc(e.id) .. '">'
+        for _, a in ipairs(acts) do
+          parts[#parts + 1] = '<div class="ec-tsdrop-item ec-tsdrop-sub" data-openact="' .. esc(a)
+            .. '" data-openguide="' .. esc(e.id) .. '">'
+            .. '<i class="bi bi-caret-right-fill lead"></i>' .. esc(tr(a)) .. '</div>'
+        end
+        parts[#parts + 1] = '</div>'
+      else
+        parts[#parts + 1] = '<div class="ec-tsdrop-item" data-open="' .. e.id .. '">'
+          .. '<img class="lead" src="../../media/icons/presets/campaign.webp" alt="">' .. esc(tr(e.title))
+          .. (e.patch and ('<span class="badge2">v' .. esc(e.patch) .. '</span>') or '') .. '</div>'
+      end
     end
-  end
-  -- jump straight to any act / interlude of the campaign
-  for _, a in ipairs(route_acts()) do
-    parts[#parts + 1] = '<div class="ec-tsdrop-item ec-tsdrop-sub" data-openact="' .. esc(a) .. '">'
-      .. '<i class="bi bi-caret-right-fill lead"></i>' .. esc(tr(a)) .. '</div>'
   end
   local mine = my_guides_list()
   parts[#parts + 1] = '<div class="ec-tsdrop-sec">' .. esc(tr("My guides")) .. '</div>'
@@ -623,11 +773,26 @@ local function build_guides_menu()
   parts[#parts + 1] = '<div class="ec-tsdrop-item create" data-manage="1"><i class="bi bi-sliders2 lead"></i>' .. esc(tr("Manage my guides")) .. '</div>'
   drop.innerHTML = table.concat(parts)
 
+  -- accordion: clicking a category header collapses/expands its act list
+  ui.each(drop, "[data-acctoggle]", function(el)
+    ui.on(el, "click", function(ev)
+      ev:stopPropagation()
+      local id = ui.attr(el, "data-acctoggle")
+      local body = drop:querySelector('[data-accbody="' .. id .. '"]')
+      if body ~= js.null then body.classList:toggle("d-none") end
+      el.classList:toggle("collapsed")
+    end)
+  end)
   ui.each(drop, "[data-open]", function(el)
     ui.on(el, "click", function() M.open(ui.attr(el, "data-open")) close_guides_menu() end)
   end)
   ui.each(drop, "[data-openact]", function(el)
-    ui.on(el, "click", function() M.open_at_act("campaign-league-start", ui.attr(el, "data-openact")) close_guides_menu() end)
+    ui.on(el, "click", function()
+      local gid = ui.attr(el, "data-openguide")
+      if not gid or gid == "" then gid = "campaign-league-start" end
+      M.open_at_act(gid, ui.attr(el, "data-openact"))
+      close_guides_menu()
+    end)
   end)
   ui.each(drop, "[data-opencustom]", function(el)
     ui.on(el, "click", function() M.open("custom-" .. ui.attr(el, "data-opencustom")) close_guides_menu() end)
@@ -647,40 +812,68 @@ function M.open_guides_menu()
   if d and d ~= js.null then d.classList:remove("d-none") end
 end
 
+-- Close the "Other" menu + the run-history panel it opens.
+local function close_other_menu()
+  other_menu_open = false
+  if not tstrip_el then return end
+  local d = tstrip_el:querySelector("#ec-other-drop")
+  if d and d ~= js.null then d.classList:add("d-none") end
+  local h = tstrip_el:querySelector("#ec-history-drop")
+  if h and h ~= js.null then h.classList:add("d-none") end
+  history_open = false
+end
+
 local function render_toolstrip()
   if not tstrip_el then return end
+  -- "Create a guide" and "History" now live under a single "Other" menu.
   tstrip_el.innerHTML = table.concat({
     '<button class="ec-tsbtn" id="ec-guides-btn"><i class="bi bi-signpost-split"></i> ',
     esc(tr("Guides")), ' <i class="bi bi-caret-down-fill"></i></button>',
-    '<button class="ec-tsbtn accent" id="ec-create-btn"><i class="bi bi-plus-lg"></i> ',
-    esc(tr("Create a guide")), '</button>',
-    '<button class="ec-tsbtn" id="ec-history-btn"><i class="bi bi-clock-history"></i> ',
-    esc(tr("History")), '</button>',
+    '<button class="ec-tsbtn" id="ec-other-btn"><i class="bi bi-three-dots"></i> ',
+    esc(tr("Other")), ' <i class="bi bi-caret-down-fill"></i></button>',
     '<div id="ec-guides-drop" class="ec-tsdrop d-none"></div>',
+    '<div id="ec-other-drop" class="ec-tsdrop d-none"></div>',
     '<div id="ec-history-drop" class="ec-tsdrop ec-tsdrop-wide d-none"></div>',
   })
   ui.on(tstrip_el:querySelector("#ec-guides-btn"), "click", function(ev)
     ev:stopPropagation()
+    close_other_menu()
     if guides_menu_open then close_guides_menu() else M.open_guides_menu() end
   end)
-  ui.on(tstrip_el:querySelector("#ec-create-btn"), "click", function() open_forge(nil) end)
-  -- Run history lives here (out of the tracker widget). The tracker owns the view.
-  local hbtn = tstrip_el:querySelector("#ec-history-btn")
-  if hbtn ~= js.null then
-    ui.on(hbtn, "click", function(ev)
-      ev:stopPropagation()
-      local drop = tstrip_el:querySelector("#ec-history-drop")
-      if drop == js.null then return end
-      close_guides_menu()
-      if drop.classList:contains("d-none") then
-        if codex.tracker and codex.tracker.render_history then codex.tracker.render_history(drop) end
-        drop.classList:remove("d-none")
-        history_open = true
-      else
-        drop.classList:add("d-none"); history_open = false
-      end
+
+  ui.on(tstrip_el:querySelector("#ec-other-btn"), "click", function(ev)
+    ev:stopPropagation()
+    close_guides_menu()
+    local drop = tstrip_el:querySelector("#ec-other-drop")
+    if drop == js.null then return end
+    if not drop.classList:contains("d-none") then close_other_menu(); return end
+    -- (re)build the little menu each open so its wiring is fresh
+    drop.innerHTML = table.concat({
+      '<div class="ec-tsdrop-item create" data-other="create"><i class="bi bi-plus-lg lead"></i>' .. esc(tr("Create a guide")) .. '</div>',
+      '<div class="ec-tsdrop-item" data-other="history"><i class="bi bi-clock-history lead"></i>' .. esc(tr("History")) .. '</div>',
+    })
+    ui.each(drop, "[data-other]", function(it)
+      ui.on(it, "click", function(ev2)
+        if ev2 and ev2.stopPropagation then ev2:stopPropagation() end
+        local which = ui.attr(it, "data-other")
+        if which == "create" then
+          close_other_menu(); open_forge(nil)
+        elseif which == "history" then
+          -- toggle the wide run-history panel; keep the Other menu open above it
+          local hd = tstrip_el:querySelector("#ec-history-drop")
+          if hd == js.null then return end
+          if hd.classList:contains("d-none") then
+            if codex.tracker and codex.tracker.render_history then codex.tracker.render_history(hd) end
+            hd.classList:remove("d-none"); history_open = true
+          else
+            hd.classList:add("d-none"); history_open = false
+          end
+        end
+      end)
     end)
-  end
+    drop.classList:remove("d-none")
+    other_menu_open = true
+  end)
 end
 
 -- ---------------------------------------------------------------- tabs
@@ -734,9 +927,32 @@ end
 
 -- ---------------------------------------------------------------- act navigator
 
--- Shorten act labels so the whole bar fits a narrow guide ("Interlude 1" → "Int 1").
+-- Abbreviate act labels to save bar space ("Act 3" → "A3", "Interlude 2" → "I2",
+-- "Endgame" → "EG"). The full label lives in the chip's title (hover tooltip).
 local function act_display(a)
-  return (tostring(a):gsub("^Interlude", "Int"))
+  local s = tostring(a)
+  local n = s:match("^Act (%d+)$"); if n then return "A" .. n end
+  n = s:match("^Interlude (%d+)$"); if n then return "I" .. n end
+  if s == "Endgame" then return "EG" end
+  return (s:gsub("^Interlude", "Int"))
+end
+
+-- Reset the current act: clear every objective in its steps and jump to its first
+-- step. Wired to the ↺ button on the act bar.
+function M.reset_act(g)
+  local a = g.steps[g.current] and g.steps[g.current].act
+  if not a then return end
+  local firstIdx
+  for i, s in ipairs(g.steps) do
+    if s.act == a then
+      if not firstIdx then firstIdx = i end
+      for gi, goal in ipairs(s.goals) do
+        if goal.action ~= "note" then set_goal_state(g, i, gi, nil) end
+      end
+    end
+  end
+  if firstIdx then g.current = firstIdx; save_pos(g) end
+  M.render()
 end
 
 -- A compact act bar (Act 1 · 2 · 3 · 4 · Int 1 · 2 · 3) built from the loaded
@@ -759,6 +975,8 @@ local function render_actbar(g)
     parts[#parts + 1] = '<button class="' .. cls .. '" data-gact="' .. esc(a)
       .. '" title="' .. esc(tr(a)) .. '">' .. esc(act_display(tr(a))) .. '</button>'
   end
+  parts[#parts + 1] = '<button class="ec-actchip ec-actreset" data-actreset="1" title="'
+    .. esc(tr("Reset this act")) .. '"><i class="bi bi-arrow-counterclockwise"></i></button>'
   actbar_el.innerHTML = table.concat(parts)
   actbar_el.classList:remove("d-none")
   ui.each(actbar_el, "[data-gact]", function(b)
@@ -771,6 +989,8 @@ local function render_actbar(g)
       end
     end)
   end)
+  local rb = actbar_el:querySelector("[data-actreset]")
+  if rb ~= js.null then ui.on(rb, "click", function() M.reset_act(g) end) end
 end
 
 -- The zone status banner: when detection is live and we're somewhere that isn't
@@ -861,10 +1081,14 @@ function M.render()
 
   parts[#parts + 1] = zone_banner_html(g)
 
-  local nshow = tonumber(ui.store_get("ec.guide.next_steps") or "2") or 2
-  parts[#parts + 1] = step_html(g, items[pos], true)
-  for k = pos + 1, math.min(pos + nshow, #items) do
-    parts[#parts + 1] = step_html(g, items[k], false)
+  -- Wiki-style: the whole current ACT as a numbered list of one-line steps.
+  local cur_act = g.steps[g.current] and g.steps[g.current].act
+  local lnum = 0
+  for si, step in ipairs(g.steps) do
+    if step.act == cur_act then
+      lnum = lnum + 1
+      parts[#parts + 1] = step_line(g, si, step, lnum)
+    end
   end
 
   gbody_el.innerHTML = table.concat(parts)
@@ -885,7 +1109,17 @@ function M.render()
   if prev ~= js.null then
     ui.on(prev, "click", function()
       if pos > 1 then
-        g.current = items[pos - 1].i
+        -- Zygor-style: the back arrow steps back ONE quest AND un-checks it, so
+        -- clicking left repeatedly walks the guide backwards, clearing objectives
+        -- as it goes (lets you replay an act without a full reset).
+        local ti = items[pos - 1].i
+        local step = g.steps[ti]
+        if step then
+          for gi, goal in ipairs(step.goals) do
+            if goal.action ~= "note" then set_goal_state(g, ti, gi, nil) end
+          end
+        end
+        g.current = ti
         save_pos(g)
         M.render()
       end
@@ -912,29 +1146,21 @@ function M.render()
     ui.on(trs, "click", function() M.timer_reset() M.render() end)
   end
 
-  ui.each(gbody_el, ".zgoal[data-si]", function(line)
+  ui.each(gbody_el, ".zg-line[data-si]", function(line)
     ui.on(line, "click", function()
       local si = tonumber(ui.attr(line, "data-si"))
-      local gi = tonumber(ui.attr(line, "data-gi"))
-      local goal = g.steps[si] and g.steps[si].goals[gi]
-      if not goal then return end
-      local v = goal_state(g, si, gi)
-      if goal.count then
-        local n = (tonumber(v) or 0) + 1
-        if n > goal.count then n = 0 end
-        set_goal_state(g, si, gi, n > 0 and n or nil)
-      else
-        set_goal_state(g, si, gi, (v ~= true) and true or nil)
+      local step = g.steps[si]
+      if not step then return end
+      local done = step_complete(g, si, step)
+      -- toggle the whole step: clear it if done, else mark every mandatory objective
+      for gi, goal in ipairs(step.goals) do
+        if goal.action ~= "note" and not goal.optional then
+          set_goal_state(g, si, gi, done and nil or (goal.count or true))
+        end
       end
+      g.current = si
+      save_pos(g)
       M.render()
-      if ui.store_get("ec.guide.autoadvance") ~= "0"
-        and si == g.current and step_complete(g, si, g.steps[si]) then
-        window:setTimeout(function()
-          if M.active == g.id and g.current == si and step_complete(g, si, g.steps[si]) then
-            advance(g, visible_items(g), pos)
-          end
-        end, 700)
-      end
     end)
   end)
 
@@ -945,6 +1171,17 @@ function M.render()
       M.pin(ui.attr(el, "data-map"), ui.attr(el, "data-name"))
     end)
   end)
+
+  -- Keep the next thing to do in view: after any (re)render — e.g. right after a
+  -- goal is crossed out or auto-completed — bring the current step's first
+  -- not-yet-done objective into view (falling back to the step itself once all
+  -- its objectives are done and it's about to advance). block:"nearest" only
+  -- moves when the target is off-screen, so it never fights you scrolling ahead.
+  -- Anchor the CURRENT step to the top so completed steps scroll off above it.
+  local nextEl = gbody_el:querySelector(".zg-line.cur")
+  if nextEl and nextEl ~= js.null then
+    pcall(function() nextEl:scrollIntoView(window.JSON:parse('{"block":"start","inline":"nearest"}')) end)
+  end
 end
 
 -- ---------------------------------------------------------------- window prefs
@@ -1099,15 +1336,11 @@ function M.restore_tabs(default_id)
   M.render()
 end
 
--- Click anywhere outside the tool strip closes the guides dropdown.
+-- Click anywhere outside the tool strip closes the guides / other dropdowns.
 document:addEventListener("click", function(_, ev)
-  if not (guides_menu_open or history_open) then return end
+  if not (guides_menu_open or history_open or other_menu_open) then return end
   local t = ev.target
   if t and t.closest and t:closest("#ec-tstrip") ~= js.null then return end
   close_guides_menu()
-  if history_open and tstrip_el then
-    local d = tstrip_el:querySelector("#ec-history-drop")
-    if d ~= js.null then d.classList:add("d-none") end
-    history_open = false
-  end
+  close_other_menu()
 end)

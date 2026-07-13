@@ -347,6 +347,8 @@ app.whenReady().then(async () => {
         if (!seed) emitEvent({ type: 'zone', name: ev.name, ms: ev.ms })
       } else if (ev.type === 'load') {
         if (!seed) emitEvent({ type: 'load', ms: ev.ms })
+      } else if (ev.type === 'reward') {
+        if (!seed) emitEvent({ type: 'reward', text: ev.text, ms: ev.ms })
       }
     }
   }

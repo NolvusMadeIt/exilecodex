@@ -130,7 +130,13 @@ if sh and sh.onDetect ~= nil then
 
     D.refresh()
     if codex.guide and codex.guide.maybe_autostart_timer then codex.guide.maybe_autostart_timer() end
-    if zone_changed then emit_zone(new_area) end
+    if zone_changed then
+      emit_zone(new_area)
+      -- The Run Tracker's zone label reads D.area; it renders on the timestamped
+      -- ZONE event, which arrives BEFORE this snapshot updates D.area — so it would
+      -- otherwise show the PREVIOUS zone. Re-render it now that D.area is current.
+      if codex.tracker and codex.tracker.rerender then codex.tracker.rerender() end
+    end
     if level_changed and codex.guide and codex.guide.on_level then codex.guide.on_level(new_level) end
   end)
 end
@@ -149,6 +155,9 @@ if sh and sh.onDetectEvent ~= nil then
       fire(D.level_ts_listeners, lv, ms)
     elseif t == "load" then
       fire(D.load_listeners, ms)
+    elseif t == "reward" then
+      -- Permanent quest reward (turn-in) → let the guide tick the matching step.
+      if codex.guide and codex.guide.on_reward then codex.guide.on_reward(s_or_nil(ev.text)) end
     end
   end)
 end

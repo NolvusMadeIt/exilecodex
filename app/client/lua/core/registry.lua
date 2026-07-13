@@ -10,7 +10,13 @@ codex.registry = { plugins = {} }
 
 function codex.registry.register(p)
   assert(p.id and p.name and p.mount, "plugin needs id, name and mount()")
-  table.insert(codex.registry.plugins, p)
+  -- Replace an existing entry with the same id (supports per-plugin hot-reload:
+  -- re-running a plugin's source swaps its registration instead of duplicating).
+  local replaced = false
+  for i, ex in ipairs(codex.registry.plugins) do
+    if ex.id == p.id then codex.registry.plugins[i] = p; replaced = true; break end
+  end
+  if not replaced then table.insert(codex.registry.plugins, p) end
   table.sort(codex.registry.plugins, function(a, b)
     return (a.order or 99) < (b.order or 99)
   end)

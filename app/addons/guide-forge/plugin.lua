@@ -204,7 +204,7 @@ local function pending_preview_html()
   for _, gl in ipairs(all) do
     local lbl = ACTION_LABEL[gl.action] or gl.action
     parts[#parts + 1] = '<div style="font-size:12.5px;margin:1px 0"><span class="ec-muted" style="font-size:9.5px;text-transform:uppercase">'
-      .. esc(lbl) .. '</span> ' .. preview_html(gl.text) .. (gl.count and (' <span class="ec-muted">(0/' .. gl.count .. ')</span>') or '') .. '</div>'
+      .. esc(lbl) .. '</span> ' .. preview_html(gl.text) .. '</div>'
   end
   if pending.reward ~= "" then
     parts[#parts + 1] = '<div style="color:var(--ec-gold);font-size:11.5px;margin-top:3px"><i class="bi bi-gift"></i> ' .. esc(pending.reward) .. '</div>'
@@ -237,10 +237,9 @@ local function wire(body)
   ui.on(opt_in, "change", function() pending.optional = opt_in.checked and true or false; repreview() end)
 
   -- the one goal row being typed mirrors into `goaldraft`
-  local ga, gt, gc, glv, go = q("#gf-gaction"), q("#gf-gtext"), q("#gf-gcount"), q("#gf-glevel"), q("#gf-gopt")
+  local ga, gt, glv, go = q("#gf-gaction"), q("#gf-gtext"), q("#gf-glevel"), q("#gf-gopt")
   ui.on(ga, "change", function() goaldraft.action = tostring(ga.value) end)
   ui.on(gt, "input", function() goaldraft.text = tostring(gt.value); repreview() end)
-  ui.on(gc, "input", function() goaldraft.count = tostring(gc.value) end)
   ui.on(glv, "input", function() goaldraft.reach_level = tostring(glv.value) end)
   ui.on(go, "change", function() goaldraft.optional = go.checked and true or false end)
 
@@ -249,7 +248,7 @@ local function wire(body)
     if text == "" then return false end
     pgoals[#pgoals + 1] = {
       action = goaldraft.action or "goal", text = text,
-      count = tonumber(goaldraft.count), reach_level = tonumber(goaldraft.reach_level),
+      reach_level = tonumber(goaldraft.reach_level),
       optional = goaldraft.optional and true or nil,
     }
     goaldraft = { action = "goal", text = "", count = "", reach_level = "", optional = false }
@@ -430,7 +429,6 @@ render = function(body)
     parts[#parts + 1] = '<div class="gf-goals mb-2">'
     for i, gl in ipairs(pgoals) do
       local tail = ''
-      if gl.count then tail = tail .. ' &times;' .. gl.count end
       if gl.reach_level then tail = tail .. ' @Lv' .. gl.reach_level end
       parts[#parts + 1] = '<div class="gf-goal"><span class="a">' .. esc(ACTION_LABEL[gl.action] or gl.action) .. '</span>'
         .. '<span class="t">' .. esc((tostring(gl.text):gsub("%[", ""):gsub("%]", ""))) .. tail
@@ -446,8 +444,7 @@ render = function(body)
   parts[#parts + 1] = '<input id="gf-gtext" class="form-control form-control-sm" placeholder="Goal text — wrap a word in [brackets] to link an image" value="' .. esc(goaldraft.text) .. '">'
   parts[#parts + 1] = '</div>'
   parts[#parts + 1] = '<div class="gf-goaledit mb-2">'
-  parts[#parts + 1] = '<input id="gf-gcount" class="form-control form-control-sm" type="number" min="1" placeholder="count" value="' .. esc(goaldraft.count) .. '" style="width:72px">'
-  parts[#parts + 1] = '<input id="gf-glevel" class="form-control form-control-sm" type="number" min="1" placeholder="reach Lv" value="' .. esc(goaldraft.reach_level) .. '" style="width:82px">'
+  parts[#parts + 1] = '<input id="gf-glevel" class="form-control form-control-sm" type="number" min="1" placeholder="reach level" value="' .. esc(goaldraft.reach_level) .. '" style="width:120px">'
   parts[#parts + 1] = '<div class="form-check m-0"><input id="gf-gopt" class="form-check-input" type="checkbox"' .. (goaldraft.optional and ' checked' or '') .. '><label class="form-check-label ec-dim" for="gf-gopt" style="font-size:11px">opt</label></div>'
   parts[#parts + 1] = '<span class="flex-grow-1"></span>'
   parts[#parts + 1] = '<button id="gf-addgoal" class="btn btn-ec-ghost btn-sm"><i class="bi bi-plus-lg"></i> goal</button>'

@@ -175,6 +175,7 @@ local GROUPS = {
   { id = "paths", name = "Game paths", icon = "bi-folder2-open" },
   { id = "detection", name = "Smart detection", icon = "bi-broadcast" },
   { id = "overlay", name = "Game overlay", icon = "bi-pip" },
+  { id = "plugins", name = "Plugins", icon = "bi-puzzle" },
   { id = "about", name = "About", icon = "bi-info-circle" },
 }
 -- Groups revealed only when developer mode is unlocked (Settings → tap About 6×).
@@ -758,6 +759,70 @@ RENDER.sync = function(pane)
       codex.widgets.refresh_all()
     end)
   end)
+end
+
+RENDER.plugins = function(pane)
+  local P = codex.plugins or {}
+  local function vstr(p) return tostring((P.version_of and P.version_of(p)) or p.version or codex.VERSION) end
+  local function rows_html()
+    local rows = {}
+    for _, p in ipairs(codex.registry.visible()) do
+      local up = P.updates and P.updates[p.id]
+      rows[#rows + 1] = table.concat({
+        '<div class="set-plugrow">',
+          '<i class="bi ', esc(p.icon or "bi-puzzle"), ' set-plugico"></i>',
+          '<div class="set-pluginfo"><div class="set-plugname">', esc(p.name), '</div>',
+          '<div class="set-plugver">v', esc(vstr(p)),
+            up and (' <i class="bi bi-arrow-right"></i> <span style="color:var(--ec-gold)">v' .. esc(tostring(up.latest)) .. '</span>') or '',
+          '</div></div>',
+          up and ('<button class="btn btn-ec btn-sm" data-plugapply="' .. esc(p.id) .. '">' .. T("Update") .. '</button>')
+             or '<span class="set-plugok"><i class="bi bi-check-lg"></i> ' .. T("Up to date") .. '</span>',
+        '</div>',
+      })
+    end
+    return table.concat(rows)
+  end
+  local parts = {}
+  parts[#parts + 1] = sec(T("Plugin updates"), T("per-plugin"), table.concat({
+    '<div class="d-flex align-items-center gap-2 flex-wrap">',
+    '<button id="set-plugcheck" class="btn btn-ec-ghost btn-sm"><i class="bi bi-arrow-repeat"></i> ' .. T("Check for updates") .. '</button>',
+    '<span id="set-plugstatus" class="ec-muted" style="font-size:11.5px"></span>',
+    '</div>',
+    '<div class="ec-muted mt-1" style="font-size:11px">' ..
+      T("Each plugin is versioned independently. When one falls behind the published version you're notified; applying reloads just that plugin, or warns before reloading the app if it can't reload on its own.") ..
+    '</div>',
+  }))
+  parts[#parts + 1] = sec(T("Installed plugins"), nil, '<div id="set-pluglist">' .. rows_html() .. '</div>')
+  pane.innerHTML = table.concat(parts)
+
+  local function wire_rows()
+    ui.each(pane, "[data-plugapply]", function(b)
+      ui.on(b, "click", function() if codex.plugins then codex.plugins.apply(ui.attr(b, "data-plugapply")) end end)
+    end)
+  end
+  wire_rows()
+  local cb = pane:querySelector("#set-plugcheck")
+  if cb ~= js.null then ui.on(cb, "click", function() if codex.plugins then codex.plugins.check() end end) end
+
+  local function paint()
+    if not pane.isConnected then return end
+    local list = pane:querySelector("#set-pluglist")
+    if list ~= nil and list ~= js.null then list.innerHTML = rows_html(); wire_rows() end
+    local s = pane:querySelector("#set-plugstatus")
+    if s ~= nil and s ~= js.null then
+      local st = (codex.plugins and codex.plugins.status) or "idle"
+      local txt = ""
+      if st == "checking" then txt = T("Checking…")
+      elseif st == "ok" then
+        local n = codex.plugins.update_count and codex.plugins.update_count() or 0
+        txt = (n > 0) and (tostring(n) .. " " .. T("update(s) available")) or T("All plugins up to date.")
+      elseif st == "error" then txt = T("Couldn't reach the update server.")
+      end
+      s.textContent = txt
+    end
+  end
+  paint()
+  if codex.plugins and codex.plugins.on_change then codex.plugins.on_change(paint) end
 end
 
 RENDER.about = function(pane)
