@@ -580,6 +580,19 @@ local function close_guides_menu()
   if d and d ~= js.null then d.classList:add("d-none") end
 end
 
+-- distinct act / interlude labels from the shipped campaign route, in order.
+local function route_acts()
+  local order, seen = {}, {}
+  local route = codex.campaign_route
+  if route and route.steps then
+    for _, s in ipairs(route.steps) do
+      local a = s.act
+      if a and a ~= "" and not seen[a] then seen[a] = true; order[#order + 1] = a end
+    end
+  end
+  return order
+end
+
 local function build_guides_menu()
   local drop = tstrip_el and tstrip_el:querySelector("#ec-guides-drop")
   if not drop or drop == js.null then return end
@@ -590,6 +603,11 @@ local function build_guides_menu()
         .. '<img class="lead" src="../../media/icons/presets/campaign.webp" alt="">' .. esc(tr(e.title))
         .. (e.patch and ('<span class="badge2">v' .. esc(e.patch) .. '</span>') or '') .. '</div>'
     end
+  end
+  -- jump straight to any act / interlude of the campaign
+  for _, a in ipairs(route_acts()) do
+    parts[#parts + 1] = '<div class="ec-tsdrop-item ec-tsdrop-sub" data-openact="' .. esc(a) .. '">'
+      .. '<i class="bi bi-caret-right-fill lead"></i>' .. esc(tr(a)) .. '</div>'
   end
   local mine = my_guides_list()
   parts[#parts + 1] = '<div class="ec-tsdrop-sec">' .. esc(tr("My guides")) .. '</div>'
@@ -607,6 +625,9 @@ local function build_guides_menu()
 
   ui.each(drop, "[data-open]", function(el)
     ui.on(el, "click", function() M.open(ui.attr(el, "data-open")) close_guides_menu() end)
+  end)
+  ui.each(drop, "[data-openact]", function(el)
+    ui.on(el, "click", function() M.open_at_act("campaign-league-start", ui.attr(el, "data-openact")) close_guides_menu() end)
   end)
   ui.each(drop, "[data-opencustom]", function(el)
     ui.on(el, "click", function() M.open("custom-" .. ui.attr(el, "data-opencustom")) close_guides_menu() end)
@@ -1036,6 +1057,17 @@ end
 
 function M.open_custom(i)
   M.open("custom-" .. i)
+end
+
+-- Open the campaign guide and jump straight to an act / interlude by label.
+function M.open_at_act(id, act)
+  M.open(id)
+  local g = M.guides[id]
+  if not g then return end
+  for i, s in ipairs(g.steps) do
+    if s.act == act then g.current = i; save_pos(g); break end
+  end
+  M.render()
 end
 
 -- Restore the tabs open at last close (or open default_id fresh). Called by the

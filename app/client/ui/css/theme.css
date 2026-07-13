@@ -202,6 +202,14 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .ec-dim { color: var(--ec-gold-dim); }
 .ec-muted { color: var(--ec-muted); }
 
+/* No focus rings / outlines ANYWHERE — mouse-driven overlay, the white outline +
+   glow is unwanted (hard requirement). Covers native outline + Bootstrap focus
+   shadows on buttons, inputs, selects and checkboxes. */
+*:focus, *:focus-visible { outline: none !important; }
+.btn, .btn-ec, .btn-ec-ghost { --bs-btn-focus-box-shadow: none !important; }
+.btn:focus, .btn:focus-visible { box-shadow: none !important; }
+.form-control:focus, .form-select:focus, .form-check-input:focus, .form-check-input:focus-visible { box-shadow: none !important; }
+
 /* All buttons use PoE2's own button art (up / hover / press). Light small-caps
    game type sits ON the texture — never bold enough to overpower it — and a
    min-height keeps the art from squashing on small buttons. */
@@ -532,6 +540,9 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .ec-tsdrop-item:hover { background: var(--ec-gold-bg); color: var(--ec-text-strong); }
 .ec-tsdrop-item i.lead { color: var(--ec-gold); font-size: 13px; width: 16px; text-align: center; flex: 0 0 auto; }
 .ec-tsdrop-item.custom i.lead { color: #c9b3ec; }
+.ec-tsdrop-item.ec-tsdrop-sub { padding: 4px 8px 4px 30px; font-size: 12px; color: var(--ec-text-soft); }
+.ec-tsdrop-item.ec-tsdrop-sub i.lead { font-size: 9px; color: var(--ec-gold-dim); width: 12px; }
+.ec-tsdrop-item.ec-tsdrop-sub:hover { color: var(--ec-gold-bright, var(--ec-gold)); }
 .ec-tsdrop-item .badge2 { margin-left: auto; font-size: 9px; color: var(--ec-gold-dim); font-weight: 600; }
 .ec-tsdrop-item.muted { color: var(--ec-text-soft); cursor: default; }
 .ec-tsdrop-item.muted:hover { background: transparent; color: var(--ec-text-soft); }

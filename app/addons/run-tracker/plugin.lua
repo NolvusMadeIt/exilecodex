@@ -74,6 +74,18 @@ local BUILTIN = {
   } },
   firstzone = { id = "firstzone", name = "Every new zone", mode = "firstzone", rules = {} },
 }
+
+-- Campaign segments the cogwheel lets you pick from (label + the zone whose first
+-- entry marks that segment done).
+local SEGMENTS = {
+  { label = "Act 1", zone = "Vastiri Outskirts" },
+  { label = "Act 2", zone = "Sandswept Marsh" },
+  { label = "Act 3", zone = "Kingsmarch" },
+  { label = "Act 4", zone = "Blackwood" },
+  { label = "Interlude 1", zone = "Khari Crossing" },
+  { label = "Interlude 2", zone = "Ashen Forest" },
+  { label = "Interlude 3", zone = "Kingsmarch" },
+}
 local function decode(key)
   local ok, v = pcall(function() return codex.json.decode(ui.store_get(key) or "") end)
   return ok and v or nil
@@ -318,6 +330,7 @@ render = function()
             '<button class="rt-ib" data-act="split" title="Split (F9)"><i class="bi bi-scissors"></i></button>',
             '<button class="rt-ib" data-act="stop" title="Stop &amp; save (F7)"><i class="bi bi-flag-fill"></i></button>',
             resetBtn,
+            '<button class="rt-ib ghost" data-act="config" title="Choose splits to record"><i class="bi bi-gear-fill"></i></button>',
           '</div>',
         '</div>',
       '</div>',
@@ -339,7 +352,8 @@ wire = function(host)
       local a = ui.attr(b, "data-act")
       if a == "start" then act_start() elseif a == "pause" then act_pause()
       elseif a == "split" then act_split() elseif a == "stop" then act_stop()
-      elseif a == "reset" then act_reset() elseif a == "detach" then API.detach() end
+      elseif a == "reset" then act_reset() elseif a == "detach" then API.detach()
+      elseif a == "config" then API.open_config() end
     end)
   end)
 end
@@ -399,6 +413,49 @@ end
 API.render_history = render_history
 -- Let Settings re-render the tracker when the mode (simple/record) changes.
 API.rerender = function() render() end
+
+-- The cogwheel: a dedicated little window to pick exactly which campaign segments
+-- (acts / interludes) get recorded as splits. Saves a custom split set.
+API.open_config = function()
+  local W = codex.widgets
+  if not W then return end
+  W.spawn{
+    id = "run-tracker-config", title = "Run Tracker — Splits", icon = "bi-sliders", width = 300,
+    mount = function(body)
+      local cur = API.custom_rules() or {}
+      local hasCustom = (ui.store_get("ec.tracker.splitset") == "custom") and #cur > 0
+      local selected = {}
+      for _, rule in ipairs(cur) do selected[rule.label or rule.match] = true end
+      local parts = {
+        '<div class="ec-dim mb-2" style="font-size:11px">Pick which campaign segments to record as splits. Or track every zone/map instead.</div>',
+      }
+      for i, seg in ipairs(SEGMENTS) do
+        local chk = (not hasCustom or selected[seg.label]) and ' checked' or ''
+        parts[#parts + 1] = '<div class="form-check mb-1"><input class="form-check-input rt-seg" type="checkbox" id="rtseg' .. i
+          .. '" data-label="' .. esc(seg.label) .. '" data-zone="' .. esc(seg.zone) .. '"' .. chk
+          .. '><label class="form-check-label" for="rtseg' .. i .. '" style="font-size:12.5px">' .. esc(seg.label) .. '</label></div>'
+      end
+      parts[#parts + 1] = '<div class="d-flex gap-2 mt-3"><button id="rt-cfg-save" class="btn btn-ec btn-sm">Save splits</button>'
+        .. '<button id="rt-cfg-every" class="btn btn-ec-ghost btn-sm" title="Split on every new zone, maps included">Every zone / map</button></div>'
+      body.innerHTML = table.concat(parts)
+      ui.on(body:querySelector("#rt-cfg-save"), "click", function()
+        local rules = {}
+        ui.each(body, ".rt-seg", function(cb)
+          if cb.checked then rules[#rules + 1] = { type = "zone", match = ui.attr(cb, "data-zone"), label = ui.attr(cb, "data-label") } end
+        end)
+        ui.store_set("ec.tracker.customrules", codex.json.encode(rules))
+        ui.store_set("ec.tracker.splitset", "custom")
+        W.close("run-tracker-config")
+        render()
+      end)
+      ui.on(body:querySelector("#rt-cfg-every"), "click", function()
+        ui.store_set("ec.tracker.splitset", "firstzone")
+        W.close("run-tracker-config")
+        render()
+      end)
+    end,
+  }
+end
 
 -- ------------------------------------------------------- dock into the guide
 API.mount_into = function(el) T.dock = el; if dock_on() then render() end end
