@@ -63,11 +63,14 @@ local function znorm(s) return (tostring(s or ""):lower():gsub("^%s+", ""):gsub(
 -- ------------------------------------------------------------- split sets
 local BUILTIN = {
   acts = { id = "acts", name = "Campaign — Acts", mode = "rules", rules = {
-    -- each split fires when you enter the NEXT act's first zone (= previous act done)
+    -- each split fires when you enter the NEXT segment's first zone (= previous done)
     { type = "zone", match = "Vastiri Outskirts", label = "Act 1" },
     { type = "zone", match = "Sandswept Marsh", label = "Act 2" },
     { type = "zone", match = "Kingsmarch", label = "Act 3" },
     { type = "zone", match = "Blackwood", label = "Act 4" },
+    { type = "zone", match = "Khari Crossing", label = "Interlude 1" },
+    { type = "zone", match = "Ashen Forest", label = "Interlude 2" },
+    { type = "zone", match = "Kingsmarch", label = "Interlude 3" },
   } },
   firstzone = { id = "firstzone", name = "Every new zone", mode = "firstzone", rules = {} },
 }
