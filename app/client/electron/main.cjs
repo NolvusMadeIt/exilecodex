@@ -161,6 +161,11 @@ app.whenReady().then(async () => {
         ...base, x: wa.x, y: wa.y, width: wa.width, height: wa.height,
         frame: false, transparent: true, backgroundColor: '#00000000', hasShadow: false,
         resizable: false, movable: false, alwaysOnTop: true,
+        // Non-activating: clicking the overlay UI must NOT steal foreground from
+        // the game, otherwise the first click back on the game is eaten by the
+        // window-activation and you have to click twice. Focus is re-enabled just
+        // while a text field is in use (see ec:overlay-focusable).
+        focusable: false,
       }
     }
     const w = Math.min(1360, wa.width - 80), h = Math.min(900, wa.height - 80)
@@ -212,6 +217,14 @@ app.whenReady().then(async () => {
     if (tray) tray.setContextMenu(buildTrayMenu()) // reflect the new mode's radio
   }
 
+  // Overlay text fields need real keyboard focus, which a non-activating window
+  // can't take. The renderer flips this on while an input is focused, off after.
+  ipcMain.on('ec:overlay-focusable', (_e, flag) => {
+    if (currentMode === 'overlay' && win && !win.isDestroyed()) {
+      win.setFocusable(!!flag)
+      if (flag) win.focus()
+    }
+  })
   ipcMain.on('ec:mouse-through', (_e, flag) => {
     // Only the overlay is ever click-through; a normal window stays solid.
     if (currentMode === 'overlay' && win && !win.isDestroyed()) win.setIgnoreMouseEvents(!!flag, { forward: true })

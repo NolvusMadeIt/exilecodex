@@ -189,5 +189,20 @@ if (window.exileShell) {
       }
     }
     document.addEventListener('mousemove', updateThrough, true)
+
+    // The overlay is non-activating (never steals foreground from the game — this
+    // is what fixes the "click twice" bug). Text fields still need real keyboard
+    // focus, so enable focus just while one is in use, then drop it again.
+    function isEditable(t) {
+      return !!(t && t.closest && t.closest('input, textarea, select, [contenteditable="true"], .monaco-editor'))
+    }
+    document.addEventListener('mousedown', function (e) {
+      if (isEditable(e.target)) window.exileShell.setOverlayFocusable(true)
+    }, true)
+    document.addEventListener('focusout', function () {
+      setTimeout(function () {
+        if (!isEditable(document.activeElement)) window.exileShell.setOverlayFocusable(false)
+      }, 0)
+    }, true)
   }
 }

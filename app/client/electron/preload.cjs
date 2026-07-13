@@ -20,6 +20,9 @@ contextBridge.exposeInMainWorld('exileShell', {
   // Windowless overlay: let clicks pass through empty space (true) or reach
   // our UI (false). Driven by cursor tracking in boot.js.
   setMouseThrough: (flag) => ipcRenderer.send('ec:mouse-through', !!flag),
+  // Overlay only: temporarily make the (non-activating) overlay focusable so a
+  // text field can take keyboard focus; dropped again when the field blurs.
+  setOverlayFocusable: (flag) => ipcRenderer.send('ec:overlay-focusable', !!flag),
   quit: () => ipcRenderer.send('ec:quit'),
   // Real page zoom — scales everything, unlike body font-size.
   setZoom: (factor) => webFrame.setZoomFactor(Number(factor) || 1),
