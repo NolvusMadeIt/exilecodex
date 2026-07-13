@@ -37,6 +37,9 @@ dist-electron
 /corefilters/
 /NeverSink-Filter-for-PoE2-0.10.1a/
 
+# Private Supabase edge function — kept local, not in the repo
+supabase/functions/market/
+
 # Internal design notes
 /docs/superpowers/
 .cache/

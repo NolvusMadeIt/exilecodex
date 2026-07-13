@@ -36,9 +36,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build web bundle
-        run: npm run build
-
       - name: Build installer & publish to the releases repo
         env:
           GH_TOKEN: ${{ secrets.RELEASES_TOKEN }}

@@ -1,6 +1,6 @@
 {
   "name": "exilecodex",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "description": "ExileCodex",
   "private": true,
   "main": "app/client/electron/main.cjs",
@@ -47,7 +47,7 @@
       {
         "provider": "github",
         "owner": "NolvusMadeIt",
-        "repo": "exilecodex",
+        "repo": "nolvusfilter-releases",
         "releaseType": "release"
       }
     ]
