@@ -53,4 +53,6 @@ contextBridge.exposeInMainWorld('exileShell', {
   onUpdate: (cb) => ipcRenderer.on('ec:update-event', (_e, ev) => cb(ev)),
   checkForUpdate: () => ipcRenderer.send('ec:update-check'),
   installUpdate: () => ipcRenderer.send('ec:update-install'),
+  setUpdateAuto: (flag) => ipcRenderer.send('ec:update-auto', !!flag),
+  downloadUpdate: () => ipcRenderer.send('ec:update-download'),
 })

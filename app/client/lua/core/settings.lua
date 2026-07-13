@@ -771,6 +771,8 @@ RENDER.about = function(pane)
     desktop and ('<button id="set-checkupd" class="btn btn-ec-ghost btn-sm"><i class="bi bi-arrow-repeat"></i> ' .. T("Check for updates") .. '</button>') or '',
     '<span id="set-updstatus" class="ec-muted" style="font-size:11.5px"></span>',
     '</div>',
+    desktop and ('<div class="mt-2">' .. toggle_html("set-updauto", "Automatically download updates",
+      (U.auto and U.auto()) or false, "When off, you're notified of a new version and download it yourself (a toast + this panel).") .. '</div>') or '',
     (not desktop) and ('<div class="ec-muted mt-1" style="font-size:11px">' .. T("Automatic updates are available in the desktop app.") .. '</div>') or '',
   }))
   parts[#parts + 1] = sec(T("Credits and licenses"), nil, table.concat({
@@ -787,13 +789,16 @@ RENDER.about = function(pane)
   if desktop then
     local btn = pane:querySelector("#set-checkupd")
     if btn ~= js.null then ui.on(btn, "click", function() codex.update.check() end) end
+    local autoTog = pane:querySelector("#set-updauto")
+    if autoTog ~= js.null then ui.on(autoTog, "change", function() codex.update.set_auto(autoTog.checked and true or false) end) end
     local function paint_status()
       local s = pane:querySelector("#set-updstatus")
       if s == nil or s == js.null or not s.isConnected then return end
       local st = codex.update.status
       local txt = ""
       if st == "checking" then txt = T("Checking for updates…")
-      elseif st == "available" then txt = T("Downloading update…")
+      elseif st == "available" then
+        txt = (codex.update.auto and codex.update.auto()) and T("Downloading update…") or T("Update available — press Download.")
       elseif st == "progress" then txt = T("Downloading") .. " " .. tostring(codex.update.percent or 0) .. "%"
       elseif st == "downloaded" then txt = T("Update ready — restart to apply.")
       elseif st == "none" then txt = T("You're on the latest version.")

@@ -91,6 +91,13 @@ function setSavedVar(key, value) {
   vars[key] = value
   try { fs.writeFileSync(varsFile(), JSON.stringify(vars)) } catch { /* ignore */ }
 }
+function getVar(key, def) {
+  try {
+    const vars = JSON.parse(fs.readFileSync(varsFile(), 'utf8')) || {}
+    const v = vars[key]
+    return (v === undefined || v === null) ? def : v
+  } catch { return def }
+}
 ipcMain.on('ec:get-mode', (e) => { e.returnValue = currentMode })
 ipcMain.on('ec:app-version', (e) => { e.returnValue = app.getVersion() })
 
@@ -443,10 +450,10 @@ app.whenReady().then(async () => {
   })
 
   // ---- Auto-update -------------------------------------------------------
-  // electron-updater reads latest.yml from the PUBLIC releases repo (source stays
-  // private). Downloads in the background; the renderer shows a "restart to
-  // update" toast, and it also installs on the next quit. Only runs when packaged
-  // — in dev there's no app-update.yml and checkForUpdates() would throw.
+  // electron-updater reads latest.yml from the public GitHub repo releases.
+  // "Automatically download updates" (ec.update.auto) decides whether a new
+  // version downloads in the background (then a "restart to update" toast) or
+  // just notifies you with a "download" toast. Only runs when packaged.
   function sendUpdate(payload) {
     if (win && !win.isDestroyed()) win.webContents.send('ec:update-event', payload)
   }
@@ -454,7 +461,7 @@ app.whenReady().then(async () => {
     if (updaterInited || !app.isPackaged) return
     updaterInited = true
     try {
-      autoUpdater.autoDownload = true
+      autoUpdater.autoDownload = getVar('ec.update.auto', '1') === '1'
       autoUpdater.autoInstallOnAppQuit = true
       autoUpdater.on('checking-for-update', () => sendUpdate({ type: 'checking' }))
       autoUpdater.on('update-available', (info) => sendUpdate({ type: 'available', version: info && info.version }))
@@ -475,6 +482,8 @@ app.whenReady().then(async () => {
   }
   ipcMain.on('ec:update-check', () => { if (app.isPackaged) autoUpdater.checkForUpdates().catch(() => {}) })
   ipcMain.on('ec:update-install', () => installUpdate())
+  ipcMain.on('ec:update-auto', (_e, flag) => { autoUpdater.autoDownload = !!flag })
+  ipcMain.on('ec:update-download', () => { if (app.isPackaged) autoUpdater.downloadUpdate().catch(() => {}) })
 
   // ---- System tray -------------------------------------------------------
   // A hidden-app tray icon: toggle the window, switch window<->overlay (kept in

@@ -43,6 +43,19 @@ function U.install()
   if sh and sh.installUpdate ~= nil then pcall(function() sh:installUpdate() end) end
 end
 
+-- "Automatically download updates" (default on). Off = check + notify only, you
+-- press Download on the toast / in Settings.
+function U.auto() return ui.store_get("ec.update.auto") ~= "0" end
+function U.set_auto(flag)
+  ui.store_set("ec.update.auto", flag and "1" or "0")
+  local sh = shell()
+  if sh and sh.setUpdateAuto ~= nil then pcall(function() sh:setUpdateAuto(flag and true or false) end) end
+end
+function U.download()
+  local sh = shell()
+  if sh and sh.downloadUpdate ~= nil then U.status = "progress"; emit(); pcall(function() sh:downloadUpdate() end) end
+end
+
 -- A dismissible bottom bar shown once an update has finished downloading.
 local function show_ready_toast(ver)
   local old = ui.byId("ec-update-toast")
@@ -63,8 +76,29 @@ local function show_ready_toast(ver)
   if db then ui.on(db, "click", function() el:remove() end) end
 end
 
+-- Shown when auto-download is OFF and a new version is available.
+local function show_available_toast(ver)
+  local old = ui.byId("ec-update-toast")
+  if old then old:remove() end
+  local el = document:createElement("div")
+  el.id = "ec-update-toast"
+  el.className = "ec-updatebar"
+  el.innerHTML = table.concat({
+    '<i class="bi bi-download ec-updatebar-ico"></i>',
+    '<span class="ec-updatebar-t">', codex.T("Update available"), (ver and (' &middot; v' .. tostring(ver)) or ''), '</span>',
+    '<button id="ec-update-dl" class="btn btn-ec btn-sm">', codex.T("Download"), '</button>',
+    '<i id="ec-update-dismiss" class="bi bi-x ec-updatebar-x" title="Later"></i>',
+  })
+  document.body:appendChild(el)
+  local dl = ui.byId("ec-update-dl")
+  if dl then ui.on(dl, "click", function() U.download(); el:remove() end) end
+  local dm = ui.byId("ec-update-dismiss")
+  if dm then ui.on(dm, "click", function() el:remove() end) end
+end
+
 -- Subscribe to shell update events (fengari hands the JS `this` first).
 local sh0 = shell()
+if sh0 and sh0.setUpdateAuto ~= nil then pcall(function() sh0:setUpdateAuto(U.auto()) end) end
 if sh0 and sh0.onUpdate ~= nil then
   sh0:onUpdate(function(_, ev)
     if ev == nil or ev == js.null then return end
@@ -72,6 +106,7 @@ if sh0 and sh0.onUpdate ~= nil then
     U.status = t
     if t == "available" then
       U.available_ver = (ev.version ~= nil and ev.version ~= js.null) and tostring(ev.version) or nil
+      if not U.auto() then show_available_toast(U.available_ver) end
     elseif t == "progress" then
       U.percent = tonumber(ev.percent) or 0
     elseif t == "downloaded" then
