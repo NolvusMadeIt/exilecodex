@@ -336,7 +336,7 @@ end
 local function tooltip_show(src, name)
   local t = ui.byId("ec-tooltip")
   if not t then return end
-  t.innerHTML = '<img src="' .. src .. '" alt=""><div class="ec-tip-name">' .. esc(name) .. '</div>'
+  t.innerHTML = '<div class="ec-tip-name">' .. esc(name) .. '</div><img src="' .. src .. '" alt="">'
   t.classList:remove("d-none")
 end
 

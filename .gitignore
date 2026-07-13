@@ -39,3 +39,4 @@ dist-electron
 
 # Internal design notes
 /docs/superpowers/
+.cache/
