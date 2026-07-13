@@ -11,6 +11,7 @@ const http = require('http')
 const fs = require('fs')
 const os = require('os')
 const path = require('path')
+const { parseLogLine } = require('./log-parse.cjs')
 
 const ROOT = path.resolve(__dirname, '..', '..', '..')
 const BRAND_ICON = path.join(ROOT, 'app', 'media', 'brand', 'logo_v2.png')
@@ -327,24 +328,25 @@ app.whenReady().then(async () => {
   // WITH the log's 3rd-token millisecond uptime counter (monotonic, ms-precise)
   // so the renderer can auto-split and remove load time. `Got Instance Details`
   // marks a load start; `You have entered` marks its end (and a zone change).
-  const RE_LEVEL = /^\S+ \S+ (\d+).* : (.+?) \((.+?)\) is now level (\d+)/
-  const RE_ZONE = /^\S+ \S+ (\d+).*You have entered (.+)\.\s*$/
-  const RE_LOAD = /^\S+ \S+ (\d+).*Got Instance Details/
   function emitEvent(ev) {
     if (win && !win.isDestroyed()) win.webContents.send('ec:detect-event', ev)
   }
 
+  // Line parsing lives in ./log-parse.cjs (pure + unit-tested). Here we just fold
+  // each parsed event into the detect snapshot and, unless seeding history on
+  // launch, forward it on the timestamped event channel.
   function parseLines(text, seed) {
     for (const line of text.split(/\r?\n/)) {
-      let m
-      if ((m = line.match(RE_LEVEL))) {
-        detect.char = m[2]; detect.cls = m[3]; detect.level = Number(m[4])
-        if (!seed) emitEvent({ type: 'level', level: detect.level, char: detect.char, cls: detect.cls, ms: Number(m[1]) })
-      } else if ((m = line.match(RE_ZONE))) {
-        detect.area = m[2]
-        if (!seed) emitEvent({ type: 'zone', name: m[2], ms: Number(m[1]) })
-      } else if ((m = line.match(RE_LOAD))) {
-        if (!seed) emitEvent({ type: 'load', ms: Number(m[1]) })
+      const ev = parseLogLine(line)
+      if (!ev) continue
+      if (ev.type === 'level') {
+        detect.char = ev.char; detect.cls = ev.cls; detect.level = ev.level
+        if (!seed) emitEvent({ type: 'level', level: ev.level, char: ev.char, cls: ev.cls, ms: ev.ms })
+      } else if (ev.type === 'zone') {
+        detect.area = ev.name
+        if (!seed) emitEvent({ type: 'zone', name: ev.name, ms: ev.ms })
+      } else if (ev.type === 'load') {
+        if (!seed) emitEvent({ type: 'load', ms: ev.ms })
       }
     }
   }
