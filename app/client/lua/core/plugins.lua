@@ -98,7 +98,7 @@ function P.check(cb)
     P.status = "error"; emit(); if cb then pcall(cb, false) end; return
   end
   P.status = "checking"; emit()
-  window.ecJson:get(P.manifest_url(), function(_, man)
+  window.ecJson:get(P.manifest_url(), function(man)
     if man == nil or man == js.null then
       P.status = "error"; emit(); if cb then pcall(cb, false) end; return
     end
@@ -173,7 +173,7 @@ function P.hot_reload(p)
   local info = P.updates[p.id]
   local src_url = (info and info.url) or p.src
   if not src_url or window.ecHtml == nil or window.ecHtml == js.null then P.warn_reload(p); return end
-  window.ecHtml:get(src_url, function(_, src)
+  window.ecHtml:get(src_url, function(src)
     if src == nil or src == js.null or tostring(src) == "" then P.warn_reload(p); return end
     pcall(function() p.on_unload() end)
     local chunk, err = load(tostring(src), "@" .. tostring(p.id))
@@ -228,12 +228,12 @@ function P.apply_silent(id, cb)
     if cb then pcall(cb, false, info, "unavailable") end
     return
   end
-  window.ecHtml:get(info.url, function(_, src)
+  window.ecHtml:get(info.url, function(src)
     if src == nil or src == js.null or tostring(src) == "" then
       if cb then pcall(cb, false, info, "download failed") end
       return
     end
-    sh:pluginWrite(id, info.latest, tostring(src)):then_(function(_, res)
+    sh:pluginWrite(id, info.latest, tostring(src)):then_(function(res)
       if res ~= nil and res ~= js.null and res.ok then
         overrides_cache = nil -- re-read installed versions next time
         P.updates[id] = nil
@@ -269,7 +269,7 @@ end
 -- shows real, independent per-plugin versions — not the app version).
 local function load_bundled_manifest()
   if window.ecJson == nil or window.ecJson == js.null then return end
-  window.ecJson:get("/app/plugins.manifest.json", function(_, man)
+  window.ecJson:get("/app/plugins.manifest.json", function(man)
     if man == nil or man == js.null then return end
     local list = man.plugins
     if list == nil or list == js.null then return end
