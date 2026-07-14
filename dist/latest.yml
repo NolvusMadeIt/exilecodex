@@ -1,8 +1,8 @@
-version: 2.1.6-alpha
+version: 2.1.7-alpha
 files:
-  - url: ExileCodex-Setup-2.1.6-alpha.exe
-    sha512: DCOLosCyPMNJGLRDQ77sN3U7BnxbLTFIf9fV/V65cPv64VpkVyrDImFo2Hgt+JHMmSAce6YACCiZASjgaoGXpw==
-    size: 310041289
-path: ExileCodex-Setup-2.1.6-alpha.exe
-sha512: DCOLosCyPMNJGLRDQ77sN3U7BnxbLTFIf9fV/V65cPv64VpkVyrDImFo2Hgt+JHMmSAce6YACCiZASjgaoGXpw==
-releaseDate: '2026-07-14T13:55:48.265Z'
+  - url: ExileCodex-Setup-2.1.7-alpha.exe
+    sha512: ADUq2EmD2XrDin5jVMpby9sDTpw0t0OuBjT7nNd2+lrnwawRwBi+H6YuVtD7Y+a8+ZtfFH1HQ+ff9NzUkjANvw==
+    size: 310041369
+path: ExileCodex-Setup-2.1.7-alpha.exe
+sha512: ADUq2EmD2XrDin5jVMpby9sDTpw0t0OuBjT7nNd2+lrnwawRwBi+H6YuVtD7Y+a8+ZtfFH1HQ+ff9NzUkjANvw==
+releaseDate: '2026-07-14T14:00:21.948Z'
