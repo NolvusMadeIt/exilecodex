@@ -6,7 +6,7 @@
   "private": true,
   "main": "app/client/electron/main.cjs",
   "scripts": {
-    "test": "node --test test/overlay-bootstrap.test.cjs test/log-parse.test.cjs",
+    "test": "node --test test/overlay-bootstrap.test.cjs test/log-parse.test.cjs test/site-landing.test.cjs",
     "postinstall": "node scripts/copy-vendor.cjs",
     "dev": "http-server -p 4400 -c-1 .",
     "app": "electron .",

@@ -3,245 +3,310 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ExileCodex — the Path of Exile 2 companion overlay</title>
-  <meta name="description" content="The Path of Exile 2 companion overlay: an auto-following campaign guide, a LiveSplit-style run tracker, a crafting bench and a live currency market — always over your game, never in your way.">
+  <meta name="color-scheme" content="dark">
+  <meta name="site-version" content="1.0.0">
+  <title>ExileCodex — Path of Exile 2 run telemetry</title>
+  <meta name="description" content="ExileCodex keeps campaign guidance, run timing, market context, builds, crafting and filter tools above Path of Exile 2 in one Windows companion.">
   <link rel="icon" href="img/logo.webp">
-  <meta property="og:title" content="ExileCodex — the Path of Exile 2 companion overlay">
-  <meta property="og:description" content="An auto-following campaign guide, run tracker, crafting bench and live market — always over PoE2, always a step ahead.">
+  <meta property="og:title" content="ExileCodex — Path of Exile 2 run telemetry">
+  <meta property="og:description" content="One companion shell for the route, the clock, the market, the build and the filter.">
   <meta property="og:image" content="img/hero.webp">
   <link rel="stylesheet" href="css/style.css">
-  <script>document.documentElement.className += " js";</script>
+  <script src="js/site.js" defer></script>
 </head>
 <body>
-  <div class="nav-scrim" id="navScrim"></div>
-  <header class="nav">
-    <a class="brand" href="#top">
-      <img class="mark" src="img/logo.webp" alt="ExileCodex">
-      <img class="word" src="img/wordmark.webp" alt="ExileCodex">
+  <a class="skip-link" href="#module-console">Skip to the module console</a>
+
+  <header class="system-bar" id="top">
+    <a class="brand-lockup" href="#top" aria-label="ExileCodex home">
+      <img class="brand-mark" src="img/logo.webp" alt="">
+      <img class="brand-word" src="img/wordmark.webp" alt="ExileCodex">
     </a>
-    <nav class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#how">How it works</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="#download">Download</a>
-    </nav>
-    <div class="nav-cta">
-      <a class="btn btn-ember" href="#download">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>
-        Download
-      </a>
+
+    <div class="build-facts" aria-label="Build information">
+      <span><b>Build</b> 2.1.3-alpha</span>
+      <span><b>Target</b> Windows 10 / 11 · x64</span>
     </div>
+
+    <nav class="system-nav" aria-label="Site sections">
+      <a href="#module-console">Console</a>
+      <a href="#module-ledger">Modules</a>
+      <a href="#operation">Operation</a>
+      <a href="#build-queue">Build queue</a>
+      <a href="#install">Install</a>
+    </nav>
+
+    <a class="bar-action" href="https://github.com/NolvusMadeIt/exilecodex/releases/latest" target="_blank" rel="noopener">
+      Get the build
+      <span aria-hidden="true">↘</span>
+    </a>
   </header>
 
-  <a id="top"></a>
-  <main class="wrap">
+  <main>
+    <section class="console-section" id="module-console" aria-labelledby="console-title">
+      <div class="console-heading page-gutter">
+        <div class="signal-code" aria-hidden="true">ECX / POE2 / ACTIVE</div>
+        <div class="console-statement">
+          <h1 id="console-title">Keep the run’s working information above the game.</h1>
+          <p>Route guidance, automatic splits, market context, crafting, builds and filter tools stay in one companion shell—ready when the game needs the whole screen.</p>
+        </div>
+        <div class="console-action">
+          <a class="primary-action" href="https://github.com/NolvusMadeIt/exilecodex/releases/latest" target="_blank" rel="noopener">
+            <span>Download for Windows</span>
+            <span aria-hidden="true">↓</span>
+          </a>
+          <p>Free during alpha · built-in updates</p>
+        </div>
+      </div>
 
-    <!-- ── Hero ─────────────────────────────────────────── -->
-    <section class="hero" id="hero">
-      <div class="hero-grid">
-        <div class="hero-copy reveal">
-          <span class="eyebrow">path of exile 2 · companion overlay</span>
-          <h1>Your whole run,<br><span class="glow">pinned over the game.</span></h1>
-          <p class="lead">ExileCodex lays a living campaign guide, a speedrun tracker, a crafting bench, a full Path of Building planner and a live market right over Path of Exile 2 — always a step ahead of you, and never in your way.</p>
-          <div class="hero-cta">
-            <a class="btn btn-ember btn-lg" href="https://github.com/NolvusMadeIt/exilecodex/releases/latest" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>
-              Download for Windows
-            </a>
-            <a class="btn btn-ghost btn-lg" href="#features">See what it does</a>
+      <div class="instrument page-gutter">
+        <div class="instrument-head">
+          <span>Module observation console</span>
+          <span>Real application captures</span>
+          <span class="system-state"><i aria-hidden="true"></i> build online</span>
+        </div>
+
+        <div class="module-tabs" role="tablist" aria-label="Product captures">
+          <button class="module-tab is-active" type="button" role="tab" id="tab-filter" aria-controls="module-panel" aria-selected="true" tabindex="0" data-module="filter">
+            <span>01</span> Filter setup
+          </button>
+          <button class="module-tab" type="button" role="tab" id="tab-market" aria-controls="module-panel" aria-selected="false" tabindex="-1" data-module="market">
+            <span>02</span> Currency market
+          </button>
+          <button class="module-tab" type="button" role="tab" id="tab-preview" aria-controls="module-panel" aria-selected="false" tabindex="-1" data-module="preview">
+            <span>03</span> Loot preview
+          </button>
+        </div>
+
+        <div class="module-panel" id="module-panel" role="tabpanel" aria-labelledby="tab-filter">
+          <figure class="capture-frame">
+            <div class="capture-registration" aria-hidden="true">
+              <span>CAPTURE / 01</span>
+              <span>1200 × 750</span>
+            </div>
+            <img id="moduleCapture" src="img/hero.webp" alt="Filter setup screen with presets, class selection, progression stage and generated filter output">
+            <figcaption>Real build capture · older filter branding is visible while the unified ExileCodex shell continues to replace it.</figcaption>
+          </figure>
+
+          <aside class="module-readout" aria-live="polite" aria-atomic="true">
+            <div class="readout-number" id="moduleNumber" aria-hidden="true">01</div>
+            <p class="readout-label">Observed module</p>
+            <h2 id="moduleTitle">Filter setup</h2>
+            <p id="moduleSummary">Start clean or import an existing filter, then shape class, progression and output without editing raw rules blind.</p>
+            <dl>
+              <div>
+                <dt>Input</dt>
+                <dd id="moduleInput">Filter file or clean baseline</dd>
+              </div>
+              <div>
+                <dt>Interaction</dt>
+                <dd id="moduleMode">Visual editor + generated output</dd>
+              </div>
+              <div>
+                <dt>Capture state</dt>
+                <dd id="moduleState">Alpha build · legacy name visible</dd>
+              </div>
+            </dl>
+            <a href="#module-ledger">Read the full module ledger <span aria-hidden="true">↓</span></a>
+          </aside>
+        </div>
+
+        <noscript>
+          <div class="capture-fallback">
+            <figure>
+              <img src="img/market.webp" alt="Currency market screen with a price table, selected Chaos Orb and historical chart">
+              <figcaption>Currency market · Real build capture with older filter branding.</figcaption>
+            </figure>
+            <figure>
+              <img src="img/preview.webp" alt="Loot preview screen showing item labels, beams and generated filter output">
+              <figcaption>Loot preview · Real build capture with older filter branding.</figcaption>
+            </figure>
           </div>
-          <div class="hero-meta">free · windows 10 / 11 · 64-bit · auto-updates</div>
-          <div class="chips">
-            <span class="chip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg> True in-game overlay</span>
-            <span class="chip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg> Follows you automatically</span>
-            <span class="chip"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg> Safe for your account</span>
+        </noscript>
+      </div>
+
+      <div class="capability-strip page-gutter" aria-label="Product summary">
+        <div><span>01</span><strong>One shell</strong><small>All companion tools</small></div>
+        <div><span>02</span><strong>Game-aware</strong><small>Zone and run context</small></div>
+        <div><span>03</span><strong>Local workflow</strong><small>No browser handoff</small></div>
+        <div><span>04</span><strong>Update path</strong><small>Built into the app</small></div>
+      </div>
+    </section>
+
+    <section class="ledger-section page-gutter" id="module-ledger" aria-labelledby="ledger-title">
+      <header class="section-index">
+        <p>01 / Module ledger</p>
+        <h2 id="ledger-title">The companion shell is the product.</h2>
+        <p>Each module owns one part of the run. They share the same desktop surface, release path and interaction language instead of sending you across disconnected tools.</p>
+      </header>
+
+      <div class="ledger" role="list" aria-label="ExileCodex modules">
+        <article class="ledger-row" role="listitem">
+          <span class="ledger-id">M-01</span>
+          <h3>Campaign guide</h3>
+          <p>Advances the route as zones change and keeps objectives, rewards and map context close to play.</p>
+          <span class="ledger-mode">Zone-aware overlay</span>
+          <span class="status status-ready">Available</span>
+        </article>
+        <article class="ledger-row" role="listitem">
+          <span class="ledger-id">M-02</span>
+          <h3>Guide Forge</h3>
+          <p>Builds step-by-step routes from goals, counts, level triggers and linked reference images.</p>
+          <span class="ledger-mode">Authoring + playback</span>
+          <span class="status status-ready">Available</span>
+        </article>
+        <article class="ledger-row" role="listitem">
+          <span class="ledger-id">M-03</span>
+          <h3>Run tracker</h3>
+          <p>Records automatic zone and level splits, load-time-aware runs, personal bests and gold splits.</p>
+          <span class="ledger-mode">Automatic timing</span>
+          <span class="status status-ready">Available</span>
+        </article>
+        <article class="ledger-row" role="listitem">
+          <span class="ledger-id">M-04</span>
+          <h3>Crafting bench</h3>
+          <p>Applies currency, essences and omens to real mod pools with weights, history and backtracking.</p>
+          <span class="ledger-mode">Interactive simulator</span>
+          <span class="status status-ready">Available</span>
+        </article>
+        <article class="ledger-row" role="listitem">
+          <span class="ledger-id">M-05</span>
+          <h3>Build planner</h3>
+          <p>Runs Path of Building inside the companion, including the passive tree, skills, items and calculations.</p>
+          <span class="ledger-mode">Embedded planner</span>
+          <span class="status status-ready">Available</span>
+        </article>
+        <article class="ledger-row" role="listitem">
+          <span class="ledger-id">M-06</span>
+          <h3>Currency market</h3>
+          <p>Places exchange values, movement, volume, watchlists and price history beside the rest of the run tools.</p>
+          <span class="ledger-mode">Market workstation</span>
+          <span class="status status-ready">Available</span>
+        </article>
+        <article class="ledger-row" role="listitem">
+          <span class="ledger-id">M-07</span>
+          <h3>Filter editor</h3>
+          <p>Creates, imports, previews and exports PoE2 filter rules through a visual workflow and raw output view.</p>
+          <span class="ledger-mode">Editor + preview</span>
+          <span class="status status-active">Alpha module</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="operation-section" id="operation" aria-labelledby="operation-title">
+      <div class="page-gutter operation-grid">
+        <header class="section-index section-index-light">
+          <p>02 / Operation</p>
+          <h2 id="operation-title">The run moves. The context follows.</h2>
+          <p>ExileCodex is designed around a continuous session rather than a sequence of marketing features.</p>
+        </header>
+
+        <ol class="operation-route">
+          <li>
+            <span class="route-code">BOOT</span>
+            <div><h3>Launch the companion</h3><p>One desktop shell brings the installed modules and local preferences into the session.</p></div>
+            <span class="route-state">Ready</span>
+          </li>
+          <li>
+            <span class="route-code">ZONE</span>
+            <div><h3>Enter an area</h3><p>Campaign and timing context can advance from the game state instead of waiting for manual housekeeping.</p></div>
+            <span class="route-state">Observed</span>
+          </li>
+          <li>
+            <span class="route-code">QUERY</span>
+            <div><h3>Open the tool the run needs</h3><p>Market, build, crafting and filter workflows stay inside the same companion surface.</p></div>
+            <span class="route-state">On demand</span>
+          </li>
+          <li>
+            <span class="route-code">SYNC</span>
+            <div><h3>Receive the next build</h3><p>The release and updater path keeps the alpha moving without rebuilding the setup by hand.</p></div>
+            <span class="route-state">Built in</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="queue-section page-gutter" id="build-queue" aria-labelledby="queue-title">
+      <header class="section-index">
+        <p>03 / Build queue</p>
+        <h2 id="queue-title">What is shipping, what is moving, what is planned.</h2>
+        <p>No invented dates or progress bars. The queue reports the current alpha line and the next named modules.</p>
+      </header>
+
+      <div class="queue-layout">
+        <div class="queue-table" role="table" aria-label="Build queue">
+          <div class="queue-head" role="row">
+            <span role="columnheader">Ref</span>
+            <span role="columnheader">Work item</span>
+            <span role="columnheader">State</span>
+            <span role="columnheader">Release</span>
+          </div>
+          <div class="queue-row" role="row">
+            <span role="cell">R-213</span>
+            <strong role="cell">ExileCodex desktop release</strong>
+            <span role="cell" class="status status-ready">Shipping</span>
+            <span role="cell">2.1.3-alpha</span>
+          </div>
+          <div class="queue-row" role="row">
+            <span role="cell">W-017</span>
+            <strong role="cell">Filter Editor</strong>
+            <span role="cell" class="status status-active">In development</span>
+            <span role="cell">Alpha line</span>
+          </div>
+          <div class="queue-row" role="row">
+            <span role="cell">W-018</span>
+            <strong role="cell">Price Check</strong>
+            <span role="cell" class="status">Planned</span>
+            <span role="cell">Unscheduled</span>
+          </div>
+          <div class="queue-row" role="row">
+            <span role="cell">W-019</span>
+            <strong role="cell">Uniques &amp; Gems</strong>
+            <span role="cell" class="status">Planned</span>
+            <span role="cell">Unscheduled</span>
           </div>
         </div>
-        <div class="hero-art reveal">
-          <div class="emblem-glow"></div>
-          <img class="emblem" src="img/logo.webp" alt="">
-          <div class="appframe">
-            <div class="bar"><span></span><span></span><span></span></div>
-            <img src="img/hero.webp" alt="ExileCodex running over Path of Exile 2">
-          </div>
+
+        <figure class="queue-evidence">
+          <div class="evidence-label"><span>Development evidence</span><span>W-017</span></div>
+          <img src="img/preview.webp" alt="Loot filter preview under development with item beams and generated output">
+          <figcaption>Filter Editor preview from an alpha build. The capture retains older filter branding while the unified product identity is in progress.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="install-section" id="install" aria-labelledby="install-title">
+      <div class="page-gutter install-grid">
+        <div class="install-record">
+          <p class="record-code">INSTALL / WINDOWS / X64</p>
+          <h2 id="install-title">Bring one companion into the next run.</h2>
+          <p>The public GitHub release is the source for the Windows installer. Install once; ExileCodex handles its built-in update path from there.</p>
+          <a class="primary-action install-action" href="https://github.com/NolvusMadeIt/exilecodex/releases/latest" target="_blank" rel="noopener" id="downloadBtn">
+            <span>Open the latest release</span>
+            <span aria-hidden="true">↘</span>
+          </a>
         </div>
+
+        <dl class="install-facts">
+          <div><dt>Current build</dt><dd>2.1.3-alpha</dd></div>
+          <div><dt>Platform</dt><dd>Windows 10 / 11 · 64-bit</dd></div>
+          <div><dt>Distribution</dt><dd>GitHub release installer</dd></div>
+          <div><dt>Updates</dt><dd>Built into ExileCodex</dd></div>
+          <div><dt>Alpha access</dt><dd>Free during alpha</dd></div>
+        </dl>
+
+        <a class="return-link" href="#module-console">Return to module console <span aria-hidden="true">↑</span></a>
       </div>
     </section>
   </main>
 
-  <hr class="rule">
-
-  <!-- ── Features ─────────────────────────────────────── -->
-  <section id="features">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="eyebrow">what ships today</span>
-        <h2>Five tools, one overlay.</h2>
-        <p>Everything below ships in the build you download today — one overlay, five tools, always right where you need them.</p>
-      </div>
-
-      <!-- Market spotlight -->
-      <div class="spotlight reveal">
-        <div class="spot-copy">
-          <span class="kicker">Market Companion</span>
-          <h3>The Currency Exchange, live on your desk.</h3>
-          <p>Real prices, 24-hour moves, volume and sparklines for every currency — with buy / sell signals and full candlestick history, so you know what a Divine is worth before you trade it.</p>
-          <ul class="spot-list">
-            <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg> Live prices &amp; 24h % from the Currency Exchange</li>
-            <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg> Volume, trend signals and 24h / 7d / 30d charts</li>
-            <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg> Watchlist the currencies you actually farm</li>
-          </ul>
-        </div>
-        <div class="appframe">
-          <div class="bar"><span></span><span></span><span></span></div>
-          <img src="img/market.webp" alt="ExileCodex Market Companion — live currency market">
-        </div>
-      </div>
-
-      <!-- The other four -->
-      <div class="fgrid" style="margin-top:34px">
-        <div class="fcard reveal">
-          <div class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2.2 5.3-5.3 2.2 2.2-5.3z" fill="currentColor" stroke="none"/></svg></div>
-          <h3>Campaign Guide</h3>
-          <p>A living leveling route that follows you from zone to zone — every act, every reward, moving itself forward as you play and quietly waiting while you're in town.</p>
-        </div>
-        <div class="fcard reveal">
-          <div class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l8 8-8 8-3 1 1-3z"/><path d="M12 8l4 4"/></svg></div>
-          <h3>Guide Forge</h3>
-          <p>Build your own step-by-step guides — real goals (kill, talk, collect…), counts, level triggers and image links — then run them in the same overlay.</p>
-        </div>
-        <div class="fcard reveal">
-          <div class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V8.5"/><path d="M9.5 2.5h5"/><path d="M18.5 6l1.5-1.5"/></svg></div>
-          <h3>Run Tracker</h3>
-          <p>A LiveSplit-style speedrun timer that splits itself on zones and levels, strips out load time, and tracks your personal bests and gold splits — completely hands-free.</p>
-        </div>
-        <div class="fcard reveal">
-          <div class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M14 3.5l6.5 6.5-2.5 2.5-6.5-6.5z"/><path d="M11.5 8.5l-8 8 2.5 2.5 8-8"/></svg></div>
-          <h3>Crafting Bench</h3>
-          <p>An interactive PoE2 crafting simulator: pick a base, apply currency, essences and omens, watch the mod pool and weights, roll and backtrack.</p>
-        </div>
-        <div class="fcard reveal">
-          <div class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><circle cx="12" cy="12" r="2.6"/><circle cx="5" cy="6" r="1.8"/><circle cx="19" cy="6" r="1.8"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="18.5" cy="18.5" r="1.8"/><path d="M12 9.4l-5.5-2M12 9.4l5.5-2M12 14.6l-5 3M12 14.6l5 3"/></svg></div>
-          <h3>Build Planner</h3>
-          <p>The real Path of Building, running right inside the overlay — the full PoE2 passive tree, skills, items and live calculations. No alt-tab, no second app.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <hr class="rule">
-
-  <!-- ── How it works ─────────────────────────────────── -->
-  <section id="how">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="eyebrow">the experience</span>
-        <h2>You'll forget it's not part of the game.</h2>
-      </div>
-      <div class="pillars">
-        <div class="pillar reveal">
-          <div class="pn">01</div>
-          <h3>Never alt-tab again</h3>
-          <p>It sits right on top of Path of Exile 2. Check your next step, a price, or your splits without ever looking away from the fight.</p>
-        </div>
-        <div class="pillar reveal">
-          <div class="pn">02</div>
-          <h3>It keeps up with you</h3>
-          <p>Walk into a new area and the guide's already on the right step, the map's already up, the timer's already running. You never stop to tell it anything.</p>
-        </div>
-        <div class="pillar reveal">
-          <div class="pn">03</div>
-          <h3>Safe by design</h3>
-          <p>Built to sit quietly beside the game and respect it. Play your way, on your own account, with nothing to look over your shoulder for.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <hr class="rule">
-
-  <!-- ── Roadmap ──────────────────────────────────────── -->
-  <section id="roadmap">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="eyebrow">on the anvil</span>
-        <h2>In development.</h2>
-        <p>These are being forged now and land through the built-in auto-updater — no reinstalling.</p>
-      </div>
-      <div class="road">
-        <div class="rcard reveal"><div class="rt">next up</div><h3>Filter Editor</h3><p>Build a loot filter visually, preview drops before you load, and pin it over the game.</p></div>
-        <div class="rcard reveal"><div class="rt">soon</div><h3>Price Check</h3><p>Hover an item, and see what it's worth — straight from the market.</p></div>
-        <div class="rcard reveal"><div class="rt">soon</div><h3>Uniques &amp; Gems</h3><p>Searchable databases for every unique item, gem and ascendancy.</p></div>
-      </div>
-      <div class="road-shot reveal">
-        <span class="label">Filter Editor · in development</span>
-        <img src="img/preview.webp" alt="ExileCodex Filter Editor preview">
-      </div>
-    </div>
-  </section>
-
-  <hr class="rule">
-
-  <!-- ── Download ─────────────────────────────────────── -->
-  <section class="cta-band" id="download">
-    <div class="wrap">
-      <div class="cta-inner reveal">
-        <span class="eyebrow" style="justify-content:center">get started</span>
-        <h2>Bring the Codex to your next run.</h2>
-        <p>Install once. It auto-updates itself, and the whole overlay is free while it's in alpha.</p>
-        <div class="cta-buttons">
-          <a class="btn btn-ember btn-lg" href="https://github.com/NolvusMadeIt/exilecodex/releases/latest" target="_blank" rel="noopener" id="downloadBtn" data-download="windows">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>
-            Download for Windows
-          </a>
-          <a class="btn btn-ghost btn-lg" href="#features">Explore the features</a>
-        </div>
-        <div class="cta-sub">windows 10 / 11 · 64-bit · v2.0.0-alpha · signed installer</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Footer ───────────────────────────────────────── -->
-  <footer>
-    <div class="wrap">
-      <div class="foot">
-        <a class="brand" href="#top"><img class="mark" src="img/logo.webp" alt="" style="width:30px;height:30px"><img class="word" src="img/wordmark.webp" alt="ExileCodex"></a>
-        <div class="foot-links">
-          <a href="#features">Features</a>
-          <a href="#how">How it works</a>
-          <a href="#roadmap">Roadmap</a>
-          <a href="#download">Download</a>
-        </div>
-      </div>
-      <p class="disclaimer">ExileCodex is a fan-made companion tool. It is not affiliated with, endorsed by, or sponsored by Grinding Gear Games. Path of Exile 2 and all related assets are the property of Grinding Gear Games.</p>
-    </div>
+  <footer class="site-footer page-gutter">
+    <a class="footer-brand" href="#top">
+      <img src="img/logo.webp" alt="">
+      <span>ExileCodex</span>
+    </a>
+    <p>Fan-made companion software. ExileCodex is not affiliated with, endorsed by, or sponsored by Grinding Gear Games. Path of Exile 2 and its related assets belong to Grinding Gear Games.</p>
+    <p class="footer-build">SITE / 1.0.0 · ECX / 2.1.3-alpha</p>
   </footer>
-
-  <script>
-    // solidify the nav after a little scroll
-    var scrim = document.getElementById('navScrim');
-    var onScroll = function () { scrim.classList.toggle('on', window.scrollY > 40); };
-    window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
-
-    // reveal-on-scroll — content-first with layered fallbacks so nothing can
-    // ever stay hidden: instant pass for above-the-fold, IO for the rest, and a
-    // hard timer that reveals everything even if the observer never fires.
-    var reveals = [].slice.call(document.querySelectorAll('.reveal'));
-    var show = function (el) { el.classList.add('in'); };
-    if (!('IntersectionObserver' in window)) {
-      reveals.forEach(show);
-    } else {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
-      }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
-      reveals.forEach(function (el) { io.observe(el); });
-      // instant reveal for anything already on screen (covers no-scroll loads)
-      requestAnimationFrame(function () {
-        reveals.forEach(function (el) { if (el.getBoundingClientRect().top < window.innerHeight * 0.95) show(el); });
-      });
-      // safety net: never leave content hidden
-      setTimeout(function () { reveals.forEach(show); }, 1400);
-    }
-  </script>
 </body>
 </html>
