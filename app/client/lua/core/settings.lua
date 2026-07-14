@@ -105,12 +105,14 @@ local function apply_theme()
   end
 end
 
--- Real zoom: webFrame in the shell (scales EVERYTHING), CSS zoom in browser.
+-- Keep the desktop page at a stable device scale.  Chromium page zoom also
+-- scales embedded iframes, which stretches PoB's canvas and makes its images
+-- blurry.  The font preference remains available for browser builds, while
+-- packaged desktop windows use the OS/window scale instead.
 local function apply_typography()
   local scale = tonumber(ui.store_get("ec.fontscale") or "1") or 1
   local sh = shell()
   if sh then
-    sh:setZoom(scale)
     document.body.style.zoom = ""
   else
     document.body.style.zoom = (scale == 1) and "" or tostring(scale)
