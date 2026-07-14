@@ -174,13 +174,13 @@ local function mount(body)
 end
 
 codex.registry.register{
-  id = "xile-tools",
+  id = "tools",
   name = "Map Regex",
   icon = "bi-braces",
   order = 34,
   status = "alpha",
   width = 500,
-  wiki = "xile-tools/wiki/index.html",
+  wiki = "tools/wiki/index.html",
   desc = "Build a Waystone search regex — toggle the mods you want, copy it into the in-game search.",
   mount = mount,
 }

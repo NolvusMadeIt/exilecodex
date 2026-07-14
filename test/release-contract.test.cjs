@@ -9,7 +9,7 @@ const workflow = read('.github', 'workflows', 'release.yml');
 const pkg = JSON.parse(read('package.json'));
 const lock = JSON.parse(read('package-lock.json'));
 const manifest = JSON.parse(read('app', 'plugins.manifest.json'));
-const releaseVersion = '2.1.4-alpha';
+const releaseVersion = pkg.version;
 
 test('release workflow creates one complete prerelease from a version tag', () => {
   assert.doesNotMatch(workflow, /workflow_dispatch/);

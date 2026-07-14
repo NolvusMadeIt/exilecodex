@@ -72,7 +72,7 @@ Dev URL: http://localhost:4400/app/client/ui/ (the root URL redirects there).
 | `app/media/fonts/`     | `public/assets/fonts/` (Fontin)            | the PoE font |
 | `app/media/sounds/`    | `public/sounds/`                           | filter alert sounds |
 | `app/media/brand/`     | `landing/img/` + `public/*.png`            | logos, wordmark, promo shots |
-| `app/media/xilehud/`   | `public/xilehud/`                          | HUD art |
+| `app/media/gamedata/`  | `public/gamedata/`                         | bundled game data |
 
 ## Plugin roster (all 10 ported from concept1)
 
@@ -83,12 +83,12 @@ Dev URL: http://localhost:4400/app/client/ui/ (the root URL redirects there).
 | Market Companion | stub | `src/plugins/market-companion` |
 | Price Check | stub | `src/plugins/price-check` |
 | Filter & Build Editor | stub | `src/plugins/filter-editor` |
-| Item Database | stub | `src/plugins/xile-items` |
-| Modifiers | stub | `src/plugins/xile-modifiers` |
-| Crafting | stub | `src/plugins/xile-crafting` |
-| Character | stub | `src/plugins/xile-character` |
-| Map Regex | stub | `src/plugins/xile-tools` |
-| Merchant History | stub | `src/plugins/xile-history` |
+| Item Database | stub | `src/plugins/items` |
+| Modifiers | stub | `src/plugins/modifiers` |
+| Crafting | stub | `src/plugins/crafting` |
+| Character | stub | `src/plugins/character` |
+| Map Regex | stub | `src/plugins/tools` |
+| Merchant History | stub | `src/plugins/history` |
 
 ## Phases
 

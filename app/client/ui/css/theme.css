@@ -57,6 +57,10 @@ body {
 /* Windowless desktop shell: the page IS the screen — fully transparent, only
    the orb and widgets exist. (The painted background above is browser-only.) */
 body.shell { background: transparent; }
+/* The marquee is useful in the desktop window but its continuous transform is
+   unnecessary over the game. Bounded overlay mode keeps the data refresh while
+   removing a perpetual animated layer from Chromium's compositor. */
+body.shell .mkt-tickrun { animation: none; }
 .min-w-0 { min-width: 0; }
 h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter-spacing: 0.02em; }
 
@@ -113,6 +117,10 @@ h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter
   max-width: calc(100vw - 12px); max-height: calc(100vh - 12px);
   background: var(--ec-panel); border: 1px solid #46381f; border-radius: 9px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(201, 164, 92, 0.12);
+  /* Keep a large plugin's layout work inside its own island while the shell
+     or another widget is moving. This is layout/style containment only, so
+     shadows and the existing window chrome remain unchanged. */
+  contain: layout style;
 }
 /* Widget title bar uses the game's window-title-bar art (ornate left/right caps
    + repeating middle). */
@@ -164,10 +172,37 @@ h1, h2, h3, .ec-title { font-family: 'Fontin SmallCaps', 'Fontin', serif; letter
    is resized taller (no dead space). Plugins mark that region with `flex:1;
    min-height:0` (e.g. .mkt-tablewrap). max-height keeps un-resized widgets sane;
    the resize grip sets an explicit height + maxHeight:none to override it. */
-.ec-widget-body { padding: 10px; overflow: auto; max-height: 72vh; display: flex; flex-direction: column; }
+.ec-widget-body { padding: 10px; overflow: auto; max-height: 72vh; display: flex; flex-direction: column; contain: layout style; }
 .ec-widget-body.flush { padding: 0; }
 /* Build Planner — pob-web (real PoB in WASM) fills the widget */
-.pobweb-frame { width: 100%; height: 72vh; min-height: 480px; border: none; display: block; background: #12100c; }
+.pobweb-frame {
+  width: 100%; height: 72vh; min-height: 480px; border: none; display: block;
+  background: #12100c; contain: strict; content-visibility: auto;
+  contain-intrinsic-size: 1180px 720px;
+}
+.pob-planner-shell { position: relative; width: 100%; height: 100%; min-height: 480px; overflow: hidden; background: #12100c; }
+.pob-planner-shell .pobweb-frame { position: relative; z-index: 1; height: 100%; min-height: 0; }
+.pob-loader {
+  position: absolute; inset: 0; z-index: 2; display: grid; place-items: center;
+  padding: 24px; background: rgba(7, 8, 10, .92); color: var(--ec-text-strong);
+  transition: opacity .22s ease, visibility .22s ease;
+}
+.pob-loader[data-ready="true"] { opacity: 0; visibility: hidden; pointer-events: none; }
+.pob-loader-card {
+  width: min(420px, 100%); padding: 22px 24px 20px; border: 1px solid var(--ec-border);
+  border-radius: 10px; background: linear-gradient(145deg, rgba(29, 26, 21, .98), rgba(14, 15, 18, .98));
+  box-shadow: 0 14px 42px rgba(0, 0, 0, .5); text-align: left;
+}
+.pob-loader-kicker { color: var(--ec-gold); font-size: 10px; font-weight: 700; letter-spacing: .18em; }
+.pob-loader-title { margin-top: 8px; color: var(--ec-text-strong); font: 700 22px/1.2 'Fontin', Georgia, serif; }
+.pob-loader-detail { margin-top: 8px; color: var(--ec-text-soft); font-size: 12.5px; line-height: 1.5; }
+.pob-loader-track { height: 4px; margin-top: 17px; overflow: hidden; border-radius: 4px; background: rgba(218, 167, 77, .16); }
+.pob-loader-fill { width: 42%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, transparent, var(--ec-gold), transparent); animation: ec-pob-loader-sweep 1.35s ease-in-out infinite; }
+.pob-loader-wait { display: none; margin-top: 11px; color: var(--ec-muted); font-size: 11px; line-height: 1.4; }
+.pob-loader[data-waiting="true"] .pob-loader-wait { display: block; }
+.pob-loader[data-error="true"] .pob-loader-fill { background: var(--ec-red, #b85b4c); animation: none; }
+@keyframes ec-pob-loader-sweep { 0% { transform: translateX(-140%); } 100% { transform: translateX(340%); } }
+@media (prefers-reduced-motion: reduce) { .pob-loader-fill { animation: none; width: 100%; opacity: .7; } }
 /* App-wide fill: a plugin that renders a single root wrapper has it stretch to
    fill the body (content scrolls, footers pin to the bottom — no dead space when
    the window is dragged taller). Multi-child bodies (settings, guide, filter
@@ -915,6 +950,58 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
   background: var(--ec-red-bg); border: 1px solid var(--ec-red-border); color: var(--ec-red-text);
   border-radius: 7px; padding: 8px 12px; font-size: 12px; font-family: monospace;
   max-height: 160px; overflow: auto;
+}
+
+/* ---- first-launch walkthrough -------------------------------------------- */
+.ec-onboarding {
+  position: fixed; inset: 0; z-index: 5000; pointer-events: auto;
+  color: var(--ec-text-strong); font-family: 'Fontin', Georgia, serif;
+}
+.ec-onboarding-shade {
+  position: absolute; inset: 0; background: rgba(5, 6, 9, .78);
+  transition: opacity .18s ease;
+}
+.ec-onboarding-shade.has-target { opacity: 0; pointer-events: none; }
+.ec-onboarding-spotlight {
+  position: absolute; display: none; border: 1px solid var(--ec-gold);
+  border-radius: 10px; box-shadow: 0 0 0 9999px rgba(5, 6, 9, .78), 0 0 28px rgba(201,164,92,.42);
+  transition: left .2s ease, top .2s ease, width .2s ease, height .2s ease;
+  pointer-events: none;
+}
+.ec-onboarding-spotlight.visible { display: block; }
+.ec-onboarding-target {
+  position: absolute; display: none; z-index: 3; padding: 0; border: 0;
+  background: transparent; cursor: pointer;
+}
+.ec-onboarding-target.visible { display: block; }
+.ec-onboarding-card {
+  position: absolute; z-index: 4; width: min(520px, calc(100vw - 44px));
+  padding: 25px 28px 21px; border: 1px solid rgba(201,164,92,.62); border-radius: 10px;
+  background: linear-gradient(145deg, rgba(27,24,19,.99), rgba(14,13,11,.99));
+  box-shadow: 0 24px 70px rgba(0,0,0,.62), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.ec-onboarding-card.center { left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.ec-onboarding-card.top { left: 50%; top: 28px; transform: translateX(-50%); }
+.ec-onboarding-brand { display:flex; align-items:center; gap:8px; color:var(--ec-gold); font:700 11px/1 'Fontin SmallCaps','Fontin',serif; letter-spacing:.18em; }
+.ec-onboarding-mark { display:inline-flex; width:22px; height:22px; align-items:center; justify-content:center; border:1px solid var(--ec-gold); border-radius:50%; color:var(--ec-text-strong); font:700 14px/1 Georgia,serif; letter-spacing:0; }
+.ec-onboarding-step { margin-top:22px; color:var(--ec-gold-dim); font:700 10px/1 'Fontin SmallCaps','Fontin',serif; letter-spacing:.15em; }
+.ec-onboarding-card h1 { margin:8px 0 9px; color:var(--ec-text-strong); font-size:28px; line-height:1.12; }
+.ec-onboarding-card p { margin:0; max-width:60ch; color:var(--ec-text-soft); font:400 14px/1.6 'Fontin',Georgia,serif; }
+.ec-onboarding-progress { display:flex; gap:6px; margin-top:19px; }
+.ec-onboarding-progress span { width:28px; height:3px; border-radius:3px; background:var(--ec-border); }
+.ec-onboarding-progress span.active, .ec-onboarding-progress span.done { background:var(--ec-gold); }
+.ec-onboarding-actions { display:flex; align-items:center; gap:13px; margin-top:21px; }
+.ec-onboarding-primary { margin-left:auto; border:1px solid #e6c77f; border-radius:6px; padding:9px 16px; color:#17130b; background:linear-gradient(#f4d993,#c99d4e); font:700 12px 'Fontin',Georgia,serif; cursor:pointer; }
+.ec-onboarding-primary:hover { filter:brightness(1.08); }
+.ec-onboarding-skip { border:0; padding:8px 0; color:var(--ec-text-soft); background:transparent; font:400 12px 'Fontin',Georgia,serif; cursor:pointer; }
+.ec-onboarding-skip:hover { color:var(--ec-text-strong); }
+.ec-onboarding-hint { color:var(--ec-muted); font-size:11px; line-height:1.3; }
+@media (max-width: 720px) {
+  .ec-onboarding-card { padding:21px 22px 18px; }
+  .ec-onboarding-card h1 { font-size:24px; }
+  .ec-onboarding-actions { flex-wrap:wrap; }
+  .ec-onboarding-hint { flex:1 1 100%; order:3; }
+  .ec-onboarding-primary { margin-left:auto; }
 }
 
 /* ---- Filter and Build Editor (Monaco IDE) --------------------------------- */

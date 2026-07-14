@@ -51,6 +51,21 @@ contextBridge.exposeInMainWorld('exileShell', {
   onDetectEvent: (cb) => ipcRenderer.on('ec:detect-event', (_e, ev) => cb(ev)),
   // Tray commands: {cmd:'settings', group} — open the Settings panel to a group.
   onTray: (cb) => ipcRenderer.on('ec:tray', (_e, msg) => cb(msg)),
+  // First-launch guided tour: the renderer reports live target rectangles and
+  // receives state/commands for the in-app walkthrough layer.
+  tutorialStart: () => ipcRenderer.send('ec:tutorial-start'),
+  tutorialAction: (action) => ipcRenderer.send('ec:tutorial-action', String(action || '')),
+  tutorialTarget: (kind, x, y, width, height) =>
+    ipcRenderer.send('ec:tutorial-target', {
+      kind: String(kind || ''), x: Number(x) || 0, y: Number(y) || 0,
+      width: Number(width) || 0, height: Number(height) || 0,
+    }),
+  onTutorialState: (cb) => ipcRenderer.on('ec:tutorial-state', (_e, state) => cb(state)),
+  onTutorialCommand: (cb) => ipcRenderer.on('ec:tutorial-command', (_e, command) => cb(command)),
+  // Bounded overlay geometry: the renderer reports only visible UI bounds and
+  // compensates local coordinates when the native window moves.
+  overlayLayout: (json) => ipcRenderer.send('ec:overlay-layout', String(json || '{}')),
+  onOverlayOrigin: (cb) => ipcRenderer.on('ec:overlay-origin', (_e, origin) => cb(origin)),
   // Game overlay: arm the global show/hide hotkey + pin to a display.
   setOverlayConfig: (enabled, hotkey, display) =>
     ipcRenderer.send('ec:overlay-config', {

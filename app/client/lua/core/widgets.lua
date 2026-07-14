@@ -49,6 +49,7 @@ end
 local function notify()
   save_open_list()
   if W.onchange then W.onchange() end
+  if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
 end
 
 function W.is_open(id)
@@ -98,8 +99,18 @@ W.clamp_onscreen = clamp_onscreen
 
 -- When the app window resizes (window mode is resizable), pull every open widget
 -- back on-screen so nothing is ever stranded off the edge.
+-- Window resizing can emit a burst of events while the user drags the frame.
+-- Clamp once per animation frame so every intermediate event does not force a
+-- full layout pass across all open widgets (especially the planner iframe).
+local resize_pending = false
 window:addEventListener("resize", function()
-  for _, fr in pairs(W.open) do clamp_onscreen(fr) end
+  if resize_pending then return end
+  resize_pending = true
+  window:requestAnimationFrame(function()
+    resize_pending = false
+    for _, fr in pairs(W.open) do clamp_onscreen(fr) end
+    if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
+  end)
 end)
 
 local function save_state(id, fr)
@@ -140,6 +151,7 @@ function W.spawn(spec)
   end
 
   local fr = ui.el("div", "ec-widget")
+  fr:setAttribute("data-widget-id", spec.id)
 
   -- fresh widgets open centered on screen; from then on position AND size are
   -- remembered (saved on drag/resize/collapse and on spawn)
@@ -263,6 +275,7 @@ document:addEventListener("mousemove", function(_, ev)
     rd.body.style.height = math.floor(newH) .. "px"
     rd.body.style.maxHeight = "none"
     W.reposition_anchored(rd.id)
+    if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
     return
   end
   local d = W.drag
@@ -286,6 +299,7 @@ document:addEventListener("mousemove", function(_, ev)
   d.fr.style.left = math.floor(nx) .. "px"
   d.fr.style.top = math.floor(ny) .. "px"
   W.reposition_anchored(d.id)
+  if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
 end)
 
 document:addEventListener("mouseup", function()
@@ -298,6 +312,7 @@ document:addEventListener("mouseup", function()
     save_state(d.id, d.fr)
     W.drag = nil
   end
+  if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
 end)
 
 -- Remount every open widget in place (used when the language changes).

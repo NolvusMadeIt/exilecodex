@@ -24,8 +24,29 @@
   <div id="ec-tooltip" class="ec-tooltip d-none"></div>
   <div id="boot-error" class="ec-booterror d-none"></div>
 
+  <!-- First-launch walkthrough. It lives in the main app surface so the real
+       widget being explained stays visible underneath the dim layer. -->
+  <div id="onboarding" class="ec-onboarding d-none" aria-hidden="true">
+    <div class="ec-onboarding-shade"></div>
+    <div class="ec-onboarding-spotlight" aria-hidden="true"></div>
+    <button id="ec-onboarding-target" class="ec-onboarding-target" type="button" aria-label="Continue the guided tour"></button>
+    <section id="ec-onboarding-card" class="ec-onboarding-card center" role="dialog" aria-modal="true" aria-labelledby="ec-onboarding-title">
+      <div class="ec-onboarding-brand"><span class="ec-onboarding-mark">E</span><span>EXILECODEX</span></div>
+      <div id="ec-onboarding-step" class="ec-onboarding-step">FIRST LAUNCH</div>
+      <h1 id="ec-onboarding-title">Welcome</h1>
+      <p id="ec-onboarding-body">Your companion tools are ready.</p>
+      <div id="ec-onboarding-progress" class="ec-onboarding-progress" aria-label="Tour progress"></div>
+      <div class="ec-onboarding-actions">
+        <button id="ec-onboarding-skip" class="ec-onboarding-skip" type="button">Skip tour</button>
+        <span id="ec-onboarding-hint" class="ec-onboarding-hint">You can change these choices later in Settings.</span>
+        <button id="ec-onboarding-primary" class="ec-onboarding-primary" type="button">Begin tour</button>
+      </div>
+    </section>
+  </div>
+
   <script src="./vendor/bootstrap.bundle.min.js"></script>
   <script src="./js/boot.js"></script>
+  <script src="./js/onboarding.js"></script>
   <script src="./vendor/fengari-web.js"></script>
 
   <!-- Monaco editor for the Filter Editor plugin. Loaded lazily (only when that plugin first mounts)
@@ -55,11 +76,13 @@
   <script type="application/lua" src="../lua/core/registry.lua"></script>
   <script type="application/lua" src="../lua/core/plugins.lua"></script>
   <script type="application/lua" src="../lua/core/widgets.lua"></script>
+  <script type="application/lua" src="../lua/core/overlay.lua"></script>
   <script type="application/lua" src="../lua/core/wiki.lua"></script>
   <script type="application/lua" src="../lua/core/guide.lua"></script>
   <script type="application/lua" src="../lua/core/detect.lua"></script>
   <script type="application/lua" src="../lua/core/update.lua"></script>
   <script type="application/lua" src="../lua/core/settings.lua"></script>
+  <script type="application/lua" src="../lua/core/onboarding.lua"></script>
 
   <script type="application/lua" src="../../addons/campaign-guide/guides/campaign-terms.lua"></script>
   <script type="application/lua" src="../../addons/campaign-guide/guides/campaign-acts.lua"></script>
@@ -71,12 +94,12 @@
   <script type="application/lua" src="../../addons/market-companion/plugin.lua"></script>
   <script type="application/lua" src="../../addons/price-check/plugin.lua"></script>
   <script type="application/lua" src="../../addons/filter-editor/plugin.lua"></script>
-  <script type="application/lua" src="../../addons/xile-items/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/items/plugin.lua"></script>
   <!-- Modifiers + Crafting reference plugins merged into the interactive Crafting bench below. -->
   <script type="application/lua" src="../../addons/crafting/plugin.lua"></script>
-  <script type="application/lua" src="../../addons/xile-character/plugin.lua"></script>
-  <script type="application/lua" src="../../addons/xile-tools/plugin.lua"></script>
-  <script type="application/lua" src="../../addons/xile-history/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/character/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/tools/plugin.lua"></script>
+  <script type="application/lua" src="../../addons/history/plugin.lua"></script>
 
   <script type="application/lua" src="../lua/core/keybinds.lua"></script>
   <script type="application/lua" src="../lua/core/boot.lua"></script>

@@ -271,7 +271,7 @@ RENDER.general = function(pane)
     '<select id="set-default" class="form-select form-select-sm">',
     (function()
       local opts = {}
-      local current = ui.store_get("ec.default_view") or "campaign-guide"
+      local current = ui.store_get("ec.default_view") or "market-companion"
       for _, p in ipairs(codex.registry.visible()) do
         opts[#opts + 1] = '<option value="' .. p.id .. '"' .. (p.id == current and ' selected' or '') .. '>' .. p.name .. '</option>'
       end

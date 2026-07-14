@@ -53,11 +53,15 @@ local function toggle_widget(id)
       W.close(id)
     else
       W.spawn{ id = id, title = b.title, icon = b.icon, width = b.width, mount = b.mount }
+      if id == "__settings" and codex.onboarding and codex.onboarding.on_widget_open then
+        codex.onboarding.on_widget_open(id)
+      end
     end
   else
     W.toggle_plugin(id)
   end
 end
+codex.toggle_widget = toggle_widget
 
 -- the menu (unfolds from the orb) --------------------------------------------
 
@@ -169,6 +173,7 @@ end
 local function close_menu()
   rail.classList:remove("open")
   rail.classList:add("d-none")
+  if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
 end
 
 local function open_menu()
@@ -177,8 +182,14 @@ local function open_menu()
   sync_rail()
   window:setTimeout(function()
     rail.classList:add("open")
+    if codex.onboarding and codex.onboarding.on_menu_open then codex.onboarding.on_menu_open() end
+    if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
+    window:setTimeout(function()
+      if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
+    end, 220)
   end, 20)
 end
+codex.open_menu = open_menu
 
 -- the orb ---------------------------------------------------------------------
 
@@ -202,11 +213,17 @@ local function orb_place(x, y)
 end
 
 local function orb_load()
-  local v = ui.store_get("ec.orb")
+  local sh = window.exileShell
+  local overlay_mode = sh ~= nil and sh ~= js.null and sh.mode == "overlay"
+  local v = overlay_mode and (ui.store_get("ec.orb.screen") or ui.store_get("ec.orb")) or ui.store_get("ec.orb")
   local x, y = 14, math.floor(window.innerHeight * 0.4)
   if v then
     local sx, sy = v:match("^(-?%d+),(-?%d+)$")
     if sx then x, y = tonumber(sx), tonumber(sy) end
+  end
+  if overlay_mode then
+    x = x - (tonumber(window.screenX) or 0)
+    y = y - (tonumber(window.screenY) or 0)
   end
   orb_place(x, y)
   tuck_orb()
@@ -247,11 +264,19 @@ document:addEventListener("mouseup", function()
   if not d then return end
   orb_drag = nil
   if d.moved then
-    ui.store_set("ec.orb", math.floor(orb.offsetLeft) .. "," .. math.floor(orb.offsetTop))
+    local sh = window.exileShell
+    if sh ~= nil and sh ~= js.null and sh.mode == "overlay" then
+      ui.store_set("ec.orb.screen",
+        math.floor((tonumber(window.screenX) or 0) + orb.offsetLeft) .. ","
+        .. math.floor((tonumber(window.screenY) or 0) + orb.offsetTop))
+    else
+      ui.store_set("ec.orb", math.floor(orb.offsetLeft) .. "," .. math.floor(orb.offsetTop))
+    end
     tuck_orb()
   else
     if is_menu_open() then close_menu() else open_menu() end
   end
+  if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
 end)
 
 -- click outside the orb/menu closes the menu
@@ -286,7 +311,10 @@ codex.refresh_ui = function()
 end
 
 codex.settings.apply()
-W.onchange = sync_rail
+W.onchange = function()
+  sync_rail()
+  if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
+end
 render_rail()
 orb_load()
 
@@ -296,6 +324,27 @@ orb_load()
 
 -- Restore the whole workspace: reopen every plugin that was open last session
 -- (each at its remembered position/size). Falls back to the default view.
+local first_run = ui.store_get("ec.onboarding.completed") ~= "1"
+if first_run then
+  -- Treat an incomplete onboarding record as a genuinely fresh workspace. A
+  -- previous test may have left overlay mode, widget positions, timers, or
+  -- plugin preferences behind; keeping those values makes the first screen
+  -- look broken and can even put the tour over another application.
+  local stale = {}
+  local count = tonumber(window.localStorage.length) or 0
+  for i = 0, count - 1 do
+    local key = window.localStorage:key(i)
+    if key ~= nil and key ~= js.null and tostring(key):match("^ec%.") then
+      stale[#stale + 1] = tostring(key)
+    end
+  end
+  for _, key in ipairs(stale) do window.localStorage:removeItem(key) end
+  ui.store_set("ec.openwidgets", "")
+  ui.store_set("ec.default_view", "market-companion")
+  if codex.guide and codex.guide.reset_campaign_state then codex.guide.reset_campaign_state() end
+  if window.ecSaveVars ~= nil and window.ecSaveVars ~= js.null then window.ecSaveVars() end
+end
+
 local reopened = false
 local openlist = ui.store_get("ec.openwidgets")
 if openlist and openlist ~= "" then
@@ -304,10 +353,11 @@ if openlist and openlist ~= "" then
   end
 end
 if not reopened then
-  local start = ui.store_get("ec.default_view") or "campaign-guide"
-  if codex.registry.is_visible(start) then W.open_plugin(start) else W.open_plugin("campaign-guide") end
+  local start = ui.store_get("ec.default_view") or "market-companion"
+  if codex.registry.is_visible(start) then W.open_plugin(start) else W.open_plugin("market-companion") end
 end
 sync_rail()
+if codex.overlay and codex.overlay.request_report then codex.overlay.request_report() end
 
 -- Tray → renderer: the system-tray menu can open Settings (optionally to a
 -- specific group). Mode switches are handled entirely in the shell (recreate).
@@ -344,7 +394,12 @@ do
     -- Run the launch update phase (app/plugin updates shown right in the splash),
     -- then hand off. run_boot_updates calls done() when there's nothing to apply;
     -- if it applies updates it reloads/restarts instead (done() is not called).
-    local function ready() if sh.bootReady ~= nil then pcall(function() sh:bootReady() end) end end
+    local function ready()
+      if sh.bootReady ~= nil then pcall(function() sh:bootReady() end) end
+      if first_run and codex.onboarding and codex.onboarding.start then
+        window:setTimeout(function() codex.onboarding.start() end, 250)
+      end
+    end
     if codex.run_boot_updates then codex.run_boot_updates(ready) else ready() end
   end
 end

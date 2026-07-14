@@ -163,7 +163,7 @@ local function mount(body)
 end
 
 codex.registry.register{
-  id = "xile-character",
+  id = "character",
   name = "Character",
   icon = "bi-person-badge",
   order = 33,

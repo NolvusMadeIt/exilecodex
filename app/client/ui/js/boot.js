@@ -171,10 +171,12 @@ if (window.exileShell) {
   // so this is skipped entirely there.
   if (_shellMode === 'overlay') {
     var through = null
+    var movePending = false
+    var lastMoveEvent = null
     function overUI(t) {
       return !!(t && t.closest && t.closest('.ec-widget, #orb, #rail, #boot-error'))
     }
-    function updateThrough(e) {
+    function applyThrough(e) {
       if (e.buttons) return // never flip modes mid-drag
       // While a widget control has focus (open <select> dropdown, text input),
       // never re-enable pass-through — the native dropdown popup sits outside
@@ -192,6 +194,15 @@ if (window.exileShell) {
         through = want
         window.exileShell.setMouseThrough(want)
       }
+    }
+    function updateThrough(e) {
+      lastMoveEvent = e
+      if (movePending) return
+      movePending = true
+      window.requestAnimationFrame(function () {
+        movePending = false
+        if (lastMoveEvent) applyThrough(lastMoveEvent)
+      })
     }
     document.addEventListener('mousemove', updateThrough, true)
 

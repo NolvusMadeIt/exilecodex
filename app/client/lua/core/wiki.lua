@@ -8,7 +8,7 @@ local ui = codex.ui
 
 codex.wiki = {}
 
--- path is relative to app/addons/, e.g. "xile-tools/wiki/index.html"
+-- path is relative to app/addons/, e.g. "tools/wiki/index.html"
 function codex.wiki.open(path, title)
   if not path or path == "" then return end
   codex.widgets.spawn{

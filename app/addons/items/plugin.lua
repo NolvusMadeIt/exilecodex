@@ -125,7 +125,7 @@ local function mount(body)
 end
 
 codex.registry.register{
-  id = "xile-items",
+  id = "items",
   name = "Item Database",
   icon = "bi-box-seam",
   order = 30,

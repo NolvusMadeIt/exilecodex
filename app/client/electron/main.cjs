@@ -12,6 +12,13 @@ const fs = require('fs')
 const os = require('os')
 const path = require('path')
 const { parseLogLine } = require('./log-parse.cjs')
+const { createOverlayLayoutController } = require('./overlay-controller.cjs')
+const {
+  DEFAULT_POB_VERSION,
+  POB_ASSET_ORIGIN,
+  checkPobUpdate,
+  safeAssetRelativePath,
+} = require('./pob-updater.cjs')
 
 const ROOT = path.resolve(__dirname, '..', '..', '..')
 const BRAND_ICON = path.join(ROOT, 'app', 'media', 'brand', 'logo_v2.png')
@@ -128,11 +135,82 @@ const FIXED_PORT = 46620
 // can be updated without shipping a whole new app build.
 function pluginsDir() { return path.join(app.getPath('userData'), 'plugins') }
 
+// The bundled planner remains the offline-safe baseline. When the upstream
+// manifest advertises a newer PoE2 release, the local server proxies that
+// release through the same-origin loopback URL and caches each requested asset
+// under the user's data directory. The iframe itself can stay unchanged.
+let pobAssetVersion = DEFAULT_POB_VERSION
+let pobAssetSource = 'bundled'
+function pobAssetCacheDir() { return path.join(app.getPath('userData'), 'pob-assets', 'versions') }
+function pobAssetMetadataPath() { return path.join(app.getPath('userData'), 'pob-assets', 'version.json') }
+
+function servePobFile(file, res) {
+  if (!fs.existsSync(file) || !fs.statSync(file).isFile()) return false
+  res.setHeader('Content-Type', MIME[path.extname(file).toLowerCase()] || 'application/octet-stream')
+  fs.createReadStream(file).on('error', () => {
+    if (!res.headersSent) res.statusCode = 500
+    res.end()
+  }).pipe(res)
+  return true
+}
+
+async function proxyPobAsset(pathname, res) {
+  const match = /^\/app\/vendor\/pobweb\/game-assets\/games\/poe2\/versions\/(v\d+\.\d+\.\d+)\/(.*)$/.exec(pathname)
+  if (!match) return false
+
+  const requestedVersion = match[1]
+  const relative = safeAssetRelativePath(match[2])
+  if (!relative) {
+    res.statusCode = 400
+    res.end('invalid asset path')
+    return true
+  }
+
+  const useRemote = pobAssetSource === 'remote' || pobAssetSource === 'cached'
+  const targetVersion = useRemote ? pobAssetVersion : requestedVersion
+  const relativeParts = relative.split('/')
+  const cacheFile = path.join(pobAssetCacheDir(), targetVersion, ...relativeParts)
+  const bundledFile = path.join(ROOT, 'app', 'vendor', 'pobweb', 'game-assets', 'games', 'poe2', 'versions', requestedVersion, ...relativeParts)
+
+  if (fs.existsSync(cacheFile) && servePobFile(cacheFile, res)) return true
+  if (!useRemote && servePobFile(bundledFile, res)) return true
+
+  if (useRemote) {
+    const remoteUrl = `${POB_ASSET_ORIGIN}/games/poe2/versions/${targetVersion}/${relative}`
+    try {
+      const response = await fetch(remoteUrl, { signal: AbortSignal.timeout(15000) })
+      if (!response.ok) throw new Error(`asset request failed: HTTP ${response.status}`)
+      const data = Buffer.from(await response.arrayBuffer())
+      fs.mkdirSync(path.dirname(cacheFile), { recursive: true })
+      const temp = `${cacheFile}.tmp-${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}`
+      fs.writeFileSync(temp, data)
+      fs.renameSync(temp, cacheFile)
+      res.setHeader('Content-Type', response.headers.get('content-type') || MIME[path.extname(cacheFile).toLowerCase()] || 'application/octet-stream')
+      res.end(data)
+      return true
+    } catch (error) {
+      console.warn(`ExileCodex: PoB asset unavailable (${targetVersion}/${relative})`, error.message)
+      if (servePobFile(bundledFile, res)) return true
+      res.statusCode = 502
+      res.end('planner asset unavailable')
+      return true
+    }
+  }
+
+  res.statusCode = 404
+  res.end('planner asset not found')
+  return true
+}
+
 function serveRepo() {
   return new Promise((resolve) => {
     const server = http.createServer((req, res) => {
+      void (async () => {
       let pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname)
       if (pathname === '/') pathname = '/app/client/ui/index.html'
+
+      if (await proxyPobAsset(pathname, res)) return
+
       let file = path.resolve(path.join(ROOT, pathname))
       // If a downloaded override exists for this plugin, serve it in place of the
       // bundled file — this is what makes plugin updates "stick" across launches.
@@ -148,6 +226,11 @@ function serveRepo() {
       }
       res.setHeader('Content-Type', MIME[path.extname(file).toLowerCase()] || 'application/octet-stream')
       fs.createReadStream(file).pipe(res)
+      })().catch((error) => {
+        console.error('ExileCodex: local server request failed', error)
+        if (!res.headersSent) res.statusCode = 500
+        res.end('server error')
+      })
     })
     server.on('error', () => {
       console.warn(`ExileCodex: port ${FIXED_PORT} is taken — settings will not persist this run`)
@@ -187,7 +270,7 @@ app.whenReady().then(async () => {
     try {
       splashReady = false
       splash = new BrowserWindow({
-        width: 480, height: 360, show: false, frame: false, transparent: true,
+        width: 540, height: 400, show: false, frame: false, transparent: true,
         backgroundColor: '#00000000', hasShadow: false, resizable: false, movable: false,
         center: true, alwaysOnTop: true, skipTaskbar: true, focusable: false, fullscreenable: false,
         webPreferences: {
@@ -228,8 +311,58 @@ app.whenReady().then(async () => {
   boot('Server ready on 127.0.0.1:' + port, 'ok')
   console.log(`ExileCodex desktop shell: serving on http://127.0.0.1:${port}`)
 
-  currentMode = readSavedMode()
+  // Keep the embedded PoE2 planner current without requiring a full
+  // ExileCodex installer release. The server-side check avoids renderer CORS
+  // restrictions; planner assets are fetched and cached only when requested.
+  boot('Checking Path of Building data…', 'info')
+  const pobStatus = await checkPobUpdate({ metadataPath: pobAssetMetadataPath() })
+  pobAssetVersion = pobStatus.version
+  pobAssetSource = pobStatus.source
+  boot(`Planner data ${pobAssetVersion} (${pobAssetSource})`, pobAssetSource === 'bundled' ? 'dim' : 'ok')
+
+  // A first launch must be a real foreground app window. If a previous test
+  // left the overlay preference behind while onboarding was still incomplete,
+  // opening the tour over the desktop hides the very plugin it is explaining.
+  // The user can enable overlay mode from Settings after the walkthrough.
+  const firstLaunch = getVar('ec.onboarding.completed', '') !== '1'
+  currentMode = firstLaunch ? 'window' : readSavedMode()
   boot('Display mode: ' + currentMode, 'info')
+
+  // Bounded overlay is the default. Set ec.overlay.host=legacy in the durable
+  // variables file to recover the old full-work-area behavior while diagnosing
+  // a machine-specific issue.
+  const overlayHost = getVar('ec.overlay.host', 'bounded') === 'legacy' ? 'legacy' : 'bounded'
+  const overlayController = createOverlayLayoutController({
+    getBounds: () => win.getBounds(),
+    getWorkArea: (bounds) => screen.getDisplayMatching(bounds).workArea,
+    setBounds: (bounds) => win.setBounds(bounds),
+    sendOrigin: (origin) => { try { win.webContents.send('ec:overlay-origin', origin) } catch { /* renderer is reloading */ } },
+  })
+
+  function overlayInitialBounds() {
+    const wa = screen.getPrimaryDisplay().workArea
+    const raw = getVar('ec.orb.screen', getVar('ec.orb', ''))
+    const match = String(raw || '').match(/(-?\d+),(-?\d+)/)
+    const targetX = match ? Number(match[1]) : wa.x + wa.width - 42
+    const targetY = match ? Number(match[2]) : wa.y + wa.height - 42
+    const rects = [{ x: targetX, y: targetY, width: 46, height: 46 }]
+    const open = String(getVar('ec.openwidgets', '') || '')
+    for (const id of open.split(',').map((s) => s.trim()).filter(Boolean)) {
+      const rawWidget = String(getVar(`ec.widget.${id}`, '') || '')
+      const m = rawWidget.match(/^(-?\d+),(-?\d+),(\d),?(\d*),?(\d*)/)
+      if (!m) continue
+      rects.push({ x: Number(m[1]), y: Number(m[2]), width: Number(m[4] || 320), height: Number(m[3] === '1' ? 42 : (m[5] || 240)) })
+    }
+    const left = Math.min(...rects.map((r) => r.x)) - 24
+    const top = Math.min(...rects.map((r) => r.y)) - 24
+    const right = Math.max(...rects.map((r) => r.x + r.width)) + 24
+    const bottom = Math.max(...rects.map((r) => r.y + r.height)) + 24
+    const width = Math.min(wa.width, Math.max(220, right - left))
+    const height = Math.min(wa.height, Math.max(220, bottom - top))
+    const x = Math.max(wa.x, Math.min(wa.x + wa.width - width, left))
+    const y = Math.max(wa.y, Math.min(wa.y + wa.height - height, top))
+    return { x: Math.round(x), y: Math.round(y), width: Math.round(width), height: Math.round(height) }
+  }
 
   // The two window personalities. Overlay = transparent, click-through,
   // always-on-top, covering the work area. Window = a normal framed, opaque,
@@ -247,8 +380,11 @@ app.whenReady().then(async () => {
     }
     const wa = screen.getPrimaryDisplay().workArea
     if (mode === 'overlay') {
+      const initial = overlayHost === 'legacy'
+        ? { x: wa.x, y: wa.y, width: wa.width, height: wa.height }
+        : overlayInitialBounds()
       return {
-        ...base, x: wa.x, y: wa.y, width: wa.width, height: wa.height,
+        ...base, ...initial,
         frame: false, transparent: true, backgroundColor: '#00000000', hasShadow: false,
         resizable: false, movable: false, alwaysOnTop: true,
         // Never show in the taskbar/alt-tab — it's an overlay, not an app window.
@@ -262,7 +398,7 @@ app.whenReady().then(async () => {
         focusable: false,
       }
     }
-    const w = Math.min(1360, wa.width - 80), h = Math.min(900, wa.height - 80)
+    const w = Math.min(1440, wa.width - 80), h = Math.min(900, wa.height - 80)
     return {
       ...base, width: w, height: h, minWidth: 900, minHeight: 600, center: true,
       frame: true, transparent: false, backgroundColor: '#0e0d0b', hasShadow: true,
@@ -272,6 +408,7 @@ app.whenReady().then(async () => {
 
   function createWindow(mode, hidden) {
     currentMode = mode
+    overlayController.reset()
     const opts = windowOpts(mode)
     // Only the initial launch window starts hidden (revealed by the boot-splash
     // handoff). Mode switches recreate the window shown, as before.
@@ -284,6 +421,8 @@ app.whenReady().then(async () => {
       win.on('blur', () => { if (!win.isDestroyed()) win.setAlwaysOnTop(true, 'screen-saver', 1) })
       // Default to pass-through: if hover detection ever breaks, the failure
       // mode is "orb not clickable", never "invisible wall over the desktop".
+      // Bounded mode forwards pointer movement only inside the small union
+      // window; legacy mode retains the old full-screen behavior for rollback.
       win.setIgnoreMouseEvents(true, { forward: true })
     }
     // Closing the window hides to the tray instead of quitting (the app lives in
@@ -303,6 +442,77 @@ app.whenReady().then(async () => {
     win.loadURL(`http://127.0.0.1:${port}/app/client/ui/index.html?shell=${mode}`)
     return win
   }
+
+  ipcMain.on('ec:overlay-layout', (event, json) => {
+    if (currentMode !== 'overlay' || overlayHost === 'legacy' || !win || win.isDestroyed()) return
+    if (event.sender.id !== win.webContents.id) return
+    let payload
+    try { payload = JSON.parse(String(json || '{}')) } catch { return }
+    overlayController.update(payload)
+  })
+
+  // ---- First-launch guided tour ------------------------------------------
+  // The tour is rendered in the main app surface. The shell only coordinates
+  // phase/state and forwards semantic commands to Lua; no second desktop window
+  // is created, so the real plugin remains visible underneath the dim layer.
+  let tutorialPhase = 'welcome'
+  const tutorialTargets = new Map()
+  const targetForPhase = { market: 'market', orb: 'orb', menu: 'settings-button', settings: 'settings' }
+  function tutorialCompleted() { return getVar('ec.onboarding.completed', '') === '1' }
+  function tutorialPayload() {
+    const kind = targetForPhase[tutorialPhase]
+    return { phase: tutorialPhase, target: kind ? (tutorialTargets.get(kind) || { kind, x: 0, y: 0, width: 0, height: 0 }) : null }
+  }
+  function tutorialSendState() {
+    if (!win || win.isDestroyed()) return
+    try { win.webContents.send('ec:tutorial-state', tutorialPayload()) } catch { /* renderer is reloading */ }
+  }
+  function tutorialSendCommand(command) {
+    if (!win || win.isDestroyed()) return
+    try { win.webContents.send('ec:tutorial-command', command) } catch { /* renderer is reloading */ }
+  }
+  function closeTutorial(markComplete) {
+    if (markComplete) setSavedVar('ec.onboarding.completed', '1')
+    tutorialPhase = 'closed'
+    tutorialSendState()
+  }
+
+  ipcMain.on('ec:tutorial-start', (event) => {
+    if (!win || event.sender.id !== win.webContents.id || tutorialCompleted()) return
+    tutorialPhase = 'welcome'
+    tutorialTargets.clear()
+    tutorialSendState()
+  })
+  ipcMain.on('ec:tutorial-target', (event, payload) => {
+    if (!win || event.sender.id !== win.webContents.id || !payload) return
+    const kind = String(payload.kind || '')
+    if (!kind) return
+    tutorialTargets.set(kind, {
+      kind,
+      // Renderer and in-app walkthrough share the same content viewport, so
+      // keep these coordinates local instead of translating to screen space.
+      x: Number(payload.x || 0),
+      y: Number(payload.y || 0),
+      width: Math.max(0, Number(payload.width || 0)),
+      height: Math.max(0, Number(payload.height || 0)),
+    })
+    tutorialSendState()
+  })
+  ipcMain.on('ec:tutorial-action', (event, action) => {
+    if (!win || event.sender.id !== win.webContents.id) return
+    action = String(action || '')
+    if (action === 'skip' || action === 'finish') { closeTutorial(true); return }
+    if (action === 'begin') {
+      tutorialPhase = 'market'; tutorialSendState(); tutorialSendCommand('show-market'); return
+    }
+    if (action === 'market-next') { tutorialPhase = 'orb'; tutorialSendState(); return }
+    if (action === 'open-menu') {
+      tutorialPhase = 'menu'; tutorialSendState(); tutorialSendCommand('open-menu'); return
+    }
+    if (action === 'open-settings') {
+      tutorialPhase = 'settings'; tutorialSendState(); tutorialSendCommand('open-settings'); return
+    }
+  })
 
   // Switch personalities by recreating the window (transparent is immutable
   // after creation). Create the new one BEFORE destroying the old so

@@ -226,6 +226,29 @@ function M.timer_reset()
   ui.store_set("ec.timer.run", "0")
 end
 
+-- Clear only stale Campaign Guide progress for the first-launch walkthrough.
+-- User preferences (timer auto-start, pause-in-town, theme, layout, etc.) stay
+-- intact; this removes the run-specific state that can make a fresh install
+-- look as though an old test session is still active.
+function M.reset_campaign_state()
+  local keys = {
+    "ec.step.campaign-league-start", "ec.goals.campaign-league-start",
+    "ec.step.campaign-speedrun", "ec.goals.campaign-speedrun",
+    "ec.guide.tabs", "ec.guide.active",
+    "ec.timer.acc", "ec.timer.run", "ec.timer.ts",
+  }
+  for _, key in ipairs(keys) do window.localStorage:removeItem(key) end
+  M.tabs = {}
+  M.active = nil
+  for id, g in pairs(M.guides) do
+    if tostring(id):match("^campaign%-") then
+      g.current = 1
+      g.done = {}
+    end
+  end
+  if window.ecSaveVars ~= nil and window.ecSaveVars ~= js.null then window.ecSaveVars() end
+end
+
 -- The run timer only counts while the game is actually running: auto-start (and
 -- manual start) require Client.txt detection to be live. Never ticks on a dead log.
 local function detection_live()

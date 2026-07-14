@@ -34,6 +34,15 @@ try {
   const man = JSON.parse(fs.readFileSync(MAN, "utf8"));
   let manDirty = false;
 
+  const writeJson = (file, value) => {
+    fs.writeFileSync(file, JSON.stringify(value, null, 2) + "\n");
+  };
+
+  const replaceVersion = (file, previous, next) => {
+    if (!fs.existsSync(file)) return;
+    fs.writeFileSync(file, fs.readFileSync(file, "utf8").split(previous).join(next));
+  };
+
   // 1) per-plugin bumps
   const changed = new Set();
   for (const f of staged) {
@@ -52,22 +61,35 @@ try {
   );
   if (appChanged) {
     const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-    const nv = bump(pkg.version);
+    const previous = pkg.version;
+    const nv = bump(previous);
     pkg.version = nv;
-    fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");
-    const uiPath = "app/client/lua/core/ui.lua";
-    fs.writeFileSync(
-      uiPath,
-      fs.readFileSync(uiPath, "utf8").replace(/(codex\.VERSION\s*=\s*")[^"]*(")/, `$1${nv}$2`),
-    );
+    writeJson("package.json", pkg);
+
+    const lockPath = "package-lock.json";
+    if (fs.existsSync(lockPath)) {
+      const lock = JSON.parse(fs.readFileSync(lockPath, "utf8"));
+      lock.version = nv;
+      if (lock.packages && lock.packages[""]) lock.packages[""].version = nv;
+      writeJson(lockPath, lock);
+    }
+
+    const versionSurfaces = [
+      "app/client/lua/core/ui.lua",
+      "app/client/lua/core/boot.lua",
+      "app/client/ui/splash.html",
+      "site/index.html",
+    ];
+    for (const file of versionSurfaces) replaceVersion(file, previous, nv);
+
     man.app = nv;
     manDirty = true;
     console.log(`[bump:${level}] app -> ${nv}`);
-    sh(`git add package.json ${uiPath}`);
+    sh(`git add package.json package-lock.json ${versionSurfaces.join(" ")}`);
   }
 
   if (manDirty) {
-    fs.writeFileSync(MAN, JSON.stringify(man, null, 2) + "\n");
+    writeJson(MAN, man);
     sh(`git add ${MAN}`);
   }
 } catch (e) {
