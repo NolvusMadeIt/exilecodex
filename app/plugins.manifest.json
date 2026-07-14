@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "note": "Per-plugin update manifest. Bump a plugin's version here (and ship its plugin.lua) to notify users that an update is available. `url` points at the raw source used for single-plugin hot-reload.",
-  "app": "2.1.7-alpha",
+  "app": "2.1.8-alpha",
   "plugins": {
     "campaign-guide": {
       "version": "2.0.0-alpha.4",

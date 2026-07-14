@@ -1,6 +1,6 @@
 {
   "name": "exilecodex",
-  "version": "2.1.7-alpha",
+  "version": "2.1.8-alpha",
   "description": "ExileCodex — companion overlay for Path of Exile 2",
   "author": "NolvusMadeIt",
   "private": true,
@@ -35,7 +35,7 @@
       "target": [
         "nsis"
       ],
-      "icon": "app/media/brand/logo_v2.png"
+      "icon": "app/media/brand/logo_icon.png"
     },
     "nsis": {
       "oneClick": false,

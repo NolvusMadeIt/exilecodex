@@ -21,7 +21,7 @@ const {
 } = require('./pob-updater.cjs')
 
 const ROOT = path.resolve(__dirname, '..', '..', '..')
-const BRAND_ICON = path.join(ROOT, 'app', 'media', 'brand', 'logo_v2.png')
+const BRAND_ICON = path.join(ROOT, 'app', 'media', 'brand', 'logo_icon.png')
 
 // Single-instance lock: a second launch must NOT spawn a competing HTTP server
 // on a random port — that changes the origin and wipes localStorage (every
