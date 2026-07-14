@@ -1,8 +1,8 @@
-version: 2.1.8-alpha
+version: 2.1.9-alpha
 files:
-  - url: ExileCodex-Setup-2.1.8-alpha.exe
-    sha512: oV8VL6k/Jlpnn9PoRyCEoiPZN25kkuR1rmFwY2wdoah6PhTcEcs6ITCv92GirQ0G590xRrgccXRiHOj7n9w1NQ==
-    size: 311854484
-path: ExileCodex-Setup-2.1.8-alpha.exe
-sha512: oV8VL6k/Jlpnn9PoRyCEoiPZN25kkuR1rmFwY2wdoah6PhTcEcs6ITCv92GirQ0G590xRrgccXRiHOj7n9w1NQ==
-releaseDate: '2026-07-14T14:18:11.508Z'
+  - url: ExileCodex-Setup-2.1.9-alpha.exe
+    sha512: yRmNs1JzgCrVs4JSiXATwiK31NGnQJ6Gg4AT16yTpjJnVQFvhLjZXe3aGS2bohGgxPidFvYgKnMHMAGRD8jfAg==
+    size: 311855763
+path: ExileCodex-Setup-2.1.9-alpha.exe
+sha512: yRmNs1JzgCrVs4JSiXATwiK31NGnQJ6Gg4AT16yTpjJnVQFvhLjZXe3aGS2bohGgxPidFvYgKnMHMAGRD8jfAg==
+releaseDate: '2026-07-14T14:50:45.133Z'
