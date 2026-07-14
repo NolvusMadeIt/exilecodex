@@ -940,6 +940,9 @@ RENDER.about = function(pane)
     end
     paint_status()
     if codex.update.on_change then codex.update.on_change(paint_status) end
+    -- Auto-check on open so the panel reflects the latest version without a
+    -- manual click (a no-op in dev; a real check in the packaged build).
+    if codex.update.check then codex.update.check() end
   end
 end
 

@@ -651,6 +651,47 @@ app.whenReady().then(async () => {
   } catch { /* tray unavailable on this platform — non-fatal */ }
 
   createWindow(currentMode)
+
+  // Application menu — replace Electron's default (whose Help pointed at
+  // electronjs.org) with one whose Help matches our repo.
+  const REPO = 'https://github.com/NolvusMadeIt/nolvusfilter-releases'
+  const openExt = (u) => () => shell.openExternal(u)
+  // Native About panel — shows the installed version (auto-reflects across updates,
+  // since app.getVersion() is the running build's version).
+  app.setAboutPanelOptions({
+    applicationName: 'ExileCodex',
+    applicationVersion: 'v' + app.getVersion(),
+    copyright: 'Companion overlay for Path of Exile 2 — unofficial, not affiliated with Grinding Gear Games.',
+    website: REPO,
+    iconPath: BRAND_ICON,
+  })
+  Menu.setApplicationMenu(Menu.buildFromTemplate([
+    { role: 'fileMenu' },
+    { role: 'editMenu' },
+    {
+      label: 'View',
+      submenu: [
+        ...(app.isPackaged ? [] : [{ role: 'reload' }, { role: 'forceReload' }, { role: 'toggleDevTools' }, { type: 'separator' }]),
+        { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' },
+      ],
+    },
+    { role: 'windowMenu' },
+    {
+      role: 'help',
+      submenu: [
+        { label: 'Learn More', click: openExt(REPO) },
+        { label: 'Documentation', click: openExt(REPO + '#readme') },
+        { label: 'Community Discussions', click: openExt(REPO + '/discussions') },
+        { label: 'Search Issues', click: openExt(REPO + '/issues') },
+        { type: 'separator' },
+        { label: 'Download the Latest Version', click: openExt(REPO + '/releases/latest') },
+        { label: 'Check for Updates…', click: () => { openSettings('about'); if (app.isPackaged) autoUpdater.checkForUpdates().catch(() => {}) } },
+        { type: 'separator' },
+        { label: 'About ExileCodex', role: 'about' },
+      ],
+    },
+  ]))
+
   // Kick off the update check once the UI is ready to receive the events.
   win.webContents.once('did-finish-load', () => initUpdater())
 })
