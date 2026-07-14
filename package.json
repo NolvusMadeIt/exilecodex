@@ -1,18 +1,17 @@
 {
   "name": "exilecodex",
-  "version": "2.1.3-alpha",
+  "version": "2.1.4-alpha",
   "description": "ExileCodex — companion overlay for Path of Exile 2",
   "author": "NolvusMadeIt",
   "private": true,
   "main": "app/client/electron/main.cjs",
   "scripts": {
-    "test": "node --test test/overlay-bootstrap.test.cjs test/log-parse.test.cjs test/site-landing.test.cjs",
+    "test": "node --test test/overlay-bootstrap.test.cjs test/log-parse.test.cjs test/site-landing.test.cjs test/release-contract.test.cjs",
     "postinstall": "node scripts/copy-vendor.cjs",
     "dev": "http-server -p 4400 -c-1 .",
     "app": "electron .",
     "dist": "electron-builder --win nsis --x64",
     "dist:portable": "electron-builder --win portable --x64",
-    "dist:publish": "electron-builder --win nsis --x64 --publish always",
     "pack": "electron-builder --dir"
   },
   "build": {
@@ -49,7 +48,7 @@
         "provider": "github",
         "owner": "NolvusMadeIt",
         "repo": "exilecodex",
-        "releaseType": "release"
+        "releaseType": "prerelease"
       }
     ]
   },

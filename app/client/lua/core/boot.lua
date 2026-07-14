@@ -30,12 +30,12 @@ end
 local function run_sim(done)
   local seq = {
     function() phase("Checking for updates…", "updating"); step("Checking for updates…", "dim") end,
-    function() step("ExileCodex 2.1.3-alpha available", "update") end,
-    function() progress(0, "Downloading ExileCodex 2.1.3-alpha") end,
+    function() step("ExileCodex 2.1.4-alpha available", "update") end,
+    function() progress(0, "Downloading ExileCodex 2.1.4-alpha") end,
     function() progress(38) end,
     function() progress(72) end,
     function() progress(100) end,
-    function() progress(-1); step("✓ Downloaded ExileCodex 2.1.3-alpha", "ok") end,
+    function() progress(-1); step("✓ Downloaded ExileCodex 2.1.4-alpha", "ok") end,
     function() step("Updating Crafting Bench → 2.0.2-alpha…", "update") end,
     function() step("✓ Crafting Bench 2.0.2-alpha", "ok") end,
     function() step("Updating Filter Editor → 2.0.3-alpha…", "update") end,

@@ -783,7 +783,7 @@ app.whenReady().then(async () => {
         { label: 'Community Discussions', click: openExt(REPO + '/discussions') },
         { label: 'Search Issues', click: openExt(REPO + '/issues') },
         { type: 'separator' },
-        { label: 'Download the Latest Version', click: openExt(REPO + '/releases/latest') },
+        { label: 'Download the Latest Version', click: openExt(REPO + '/releases') },
         { label: 'Check for Updates…', click: () => { openSettings('about'); if (app.isPackaged) autoUpdater.checkForUpdates().catch(() => {}) } },
         { type: 'separator' },
         { label: 'About ExileCodex', role: 'about' },

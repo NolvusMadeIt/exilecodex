@@ -38,7 +38,7 @@ test('landing page uses the real local captures and truthful release details', (
   assert.match(html, /older filter branding/i);
   assert.match(html, new RegExp(pkg.version.replace('.', '\\.')));
   assert.match(html, /Windows 10\s*\/\s*11/i);
-  assert.match(html, /https:\/\/github\.com\/NolvusMadeIt\/exilecodex\/releases\/latest/);
+  assert.match(html, new RegExp(`https://github\\.com/NolvusMadeIt/exilecodex/releases/download/v${pkg.version}/ExileCodex-Setup-${pkg.version.replaceAll('.', '\\.')}\\.exe`));
   assert.match(html, /<strong role="cell">Merchant History<\/strong>/);
   assert.doesNotMatch(html, /<strong role="cell">Uniques &amp; Gems<\/strong>/);
 });
