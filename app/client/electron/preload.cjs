@@ -39,6 +39,10 @@ contextBridge.exposeInMainWorld('exileShell', {
   // Native path pickers + install-location scanning (settings → Game paths).
   pickPath: (isFile, cb) => ipcRenderer.invoke('ec:pick-path', { file: !!isFile }).then(cb),
   autoLocate: (kind, hint, cb) => ipcRenderer.invoke('ec:auto-locate', { kind, hint }).then(cb),
+  // Loot filter: write the generated .filter straight into the PoE2 filter folder.
+  saveFilter: (folder, name, content, cb) =>
+    ipcRenderer.invoke('ec:save-filter', { folder: folder || '', name: name || '', content: content || '' }).then(cb),
+  openFilterFolder: (folder, cb) => ipcRenderer.invoke('ec:open-filter-folder', folder || '').then(cb || (() => {})),
   // Client.txt smart detection: point the watcher at a path, subscribe to
   // { char, cls, level, area, active } updates (zone changes + level-ups).
   watchClientTxt: (p) => ipcRenderer.send('ec:watch-clienttxt', p || ''),

@@ -194,10 +194,40 @@ end
 local function do_download()
   if not ED then return end
   local text = tostring(ED:getValue())
+  local name = ui.store_get("ec.filter.name") or "ExileCodex"
   local href = "data:text/plain;charset=utf-8," .. tostring(window:encodeURIComponent(text))
   local a = document:createElement("a")
-  a.href = href; a.download = "exilecodex.filter"
+  a.href = href; a.download = name .. ".filter"
   document.body:appendChild(a); a:click(); a:remove()
+end
+
+-- Write the filter straight into the PoE2 filter folder — one click, it's in-game.
+local function do_save_game(btn)
+  if not ED then return end
+  local sh = window.exileShell
+  if sh == nil or sh == js.null or sh.saveFilter == nil then
+    flash(btn, '<i class="bi bi-x-lg"></i> Desktop app only'); return
+  end
+  local text = tostring(ED:getValue())
+  local folder = ui.store_get("ec.path.filters") or ""
+  local nm = q("#fe-filtername")
+  local name = (nm ~= js.null and tostring(nm.value) ~= "") and tostring(nm.value) or (ui.store_get("ec.filter.name") or "ExileCodex")
+  flash(btn, '<i class="bi bi-hourglass-split"></i> Saving…')
+  sh:saveFilter(folder, name, text, function(_, res)
+    if res ~= nil and res ~= js.null and res.ok then
+      flash(btn, '<i class="bi bi-check-lg"></i> Saved to game')
+    else
+      local err = (res ~= nil and res ~= js.null) and tostring(res.error or "failed") or "failed"
+      flash(btn, '<i class="bi bi-exclamation-triangle"></i> ' .. err)
+    end
+  end)
+end
+
+local function do_open_filters()
+  local sh = window.exileShell
+  if sh ~= nil and sh ~= js.null and sh.openFilterFolder ~= nil then
+    pcall(function() sh:openFilterFolder(ui.store_get("ec.path.filters") or "") end)
+  end
 end
 
 local function do_regenerate()
@@ -278,7 +308,9 @@ local function toolbar_html()
       '<button class="fe-tbtn" data-act="output" title="Filter output options — syntax highlighting + custom top/bottom comments"><i class="bi bi-sliders"></i> Output</button>',
       '<button class="fe-tbtn fe-icon" data-act="find" title="Find (Ctrl+F)"><i class="bi bi-search"></i></button>',
       '<button class="fe-tbtn" data-act="copy" title="Copy filter"><i class="bi bi-clipboard"></i> Copy</button>',
-      '<button class="fe-tbtn fe-gold" data-act="download" title="Download .filter"><i class="bi bi-download"></i> Download</button>',
+      '<button class="fe-tbtn fe-gold" data-act="save-game" title="Save the filter straight into your PoE2 filter folder — pick it in-game"><i class="bi bi-controller"></i> Save to game</button>',
+      '<button class="fe-tbtn fe-icon" data-act="open-filters" title="Open the PoE2 filter folder"><i class="bi bi-folder2-open"></i></button>',
+      '<button class="fe-tbtn fe-icon" data-act="download" title="Download .filter to your Downloads folder"><i class="bi bi-download"></i></button>',
     '</div>',
   })
 end
@@ -292,6 +324,8 @@ local function output_panel_html()
   return table.concat({
     '<div class="fe-output" id="fe-output" style="display:none">',
       '<div class="fe-out-title">Filter output</div>',
+      '<label class="fe-out-lbl">Filter name (this is what you pick in-game)</label>',
+      '<input id="fe-filtername" class="form-control form-control-sm" style="margin-bottom:8px" value="', fe_esc(ui.store_get("ec.filter.name") or "ExileCodex"), '">',
       '<label class="fe-out-check"><input type="checkbox" id="fe-out-syntax"',
         ((ui.store_get("ec.filter.syntax") or "1") == "1") and " checked" or "", '> Syntax highlighting in the exported filter</label>',
       '<label class="fe-out-lbl">Custom top comment</label>',
@@ -366,6 +400,10 @@ local function wire_editor()
   click('[data-act="find"]', function() if ED then ED:run("actions.find") end end)
   click('[data-act="copy"]', function(_, btn) do_copy(btn) end)
   click('[data-act="download"]', function() do_download() end)
+  click('[data-act="save-game"]', function(_, btn) do_save_game(btn) end)
+  click('[data-act="open-filters"]', function() do_open_filters() end)
+  local nm = q("#fe-filtername")
+  if nm ~= js.null then ui.on(nm, "input", function() ui.store_set("ec.filter.name", tostring(nm.value)) end) end
 end
 
 local function wire_builder()

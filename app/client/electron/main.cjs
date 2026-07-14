@@ -296,6 +296,36 @@ app.whenReady().then(async () => {
   })
   ipcMain.on('ec:quit', () => app.quit())
 
+  // ---- Save the generated loot filter straight into the PoE2 filter folder ---
+  function poe2FilterFolder(hint) {
+    const ok = (p) => { try { return p && fs.existsSync(p) && fs.statSync(p).isDirectory() } catch { return false } }
+    if (ok(hint)) return hint
+    const home = os.homedir()
+    return [
+      path.join(home, 'Documents', 'My Games', 'Path of Exile 2'),
+      path.join(home, 'OneDrive', 'Documents', 'My Games', 'Path of Exile 2'),
+      path.join(home, 'OneDrive', 'My Games', 'Path of Exile 2'),
+    ].find(ok) || null
+  }
+  ipcMain.handle('ec:save-filter', (_e, { folder, name, content }) => {
+    try {
+      const dir = poe2FilterFolder(folder)
+      if (!dir) return { ok: false, error: 'PoE2 filter folder not found — set it in Settings → Game paths.' }
+      const safe = String(name || 'ExileCodex').replace(/[^A-Za-z0-9 _().-]/g, '').trim() || 'ExileCodex'
+      const file = path.join(dir, safe + '.filter')
+      fs.writeFileSync(file, String(content || ''), 'utf8')
+      return { ok: true, path: file, name: safe }
+    } catch (err) { return { ok: false, error: String((err && err.message) || err) } }
+  })
+  ipcMain.handle('ec:open-filter-folder', (_e, folder) => {
+    try {
+      const dir = poe2FilterFolder(folder)
+      if (!dir) return { ok: false, error: 'PoE2 filter folder not found.' }
+      shell.openPath(dir)
+      return { ok: true, path: dir }
+    } catch (err) { return { ok: false, error: String(err) } }
+  })
+
   ipcMain.handle('ec:pick-path', async (_e, opts) => {
     const r = await dialog.showOpenDialog(win, {
       properties: [opts && opts.file ? 'openFile' : 'openDirectory'],
