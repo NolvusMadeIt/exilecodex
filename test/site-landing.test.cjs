@@ -39,6 +39,8 @@ test('landing page uses the real local captures and truthful release details', (
   assert.match(html, new RegExp(pkg.version.replace('.', '\\.')));
   assert.match(html, /Windows 10\s*\/\s*11/i);
   assert.match(html, /https:\/\/github\.com\/NolvusMadeIt\/exilecodex\/releases\/latest/);
+  assert.match(html, /<strong role="cell">Merchant History<\/strong>/);
+  assert.doesNotMatch(html, /<strong role="cell">Uniques &amp; Gems<\/strong>/);
 });
 
 test('landing page publishes its own revision separately from the app build', () => {
