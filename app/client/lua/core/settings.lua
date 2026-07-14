@@ -918,11 +918,22 @@ RENDER.about = function(pane)
     '<div class="ec-muted mt-1">Unofficial fan-made tool — not affiliated with or endorsed by Grinding Gear Games.</div>',
     '</div>',
   }))
+  parts[#parts + 1] = sec(T("First-launch tour"), nil, table.concat({
+    '<div class="ec-dim" style="font-size:11.5px;line-height:1.5">',
+    T("Show the guided tour again the next time the app starts."), '</div>',
+    '<button id="set-reset-tour" class="btn btn-ec-ghost btn-sm mt-2"><i class="bi bi-arrow-counterclockwise"></i> ', T("Show tour again"), '</button>',
+  }))
   pane.innerHTML = table.concat(parts)
 
   if desktop then
     local btn = pane:querySelector("#set-checkupd")
     if btn ~= js.null then ui.on(btn, "click", function() codex.update.check() end) end
+    local resetTour = pane:querySelector("#set-reset-tour")
+    if resetTour ~= js.null then ui.on(resetTour, "click", function()
+      if codex.onboarding and codex.onboarding.reset then codex.onboarding.reset() end
+      resetTour.textContent = T("Tour enabled for next launch")
+      resetTour.disabled = true
+    end) end
     local autoTog = pane:querySelector("#set-updauto")
     if autoTog ~= js.null then ui.on(autoTog, "change", function() codex.update.set_auto(autoTog.checked and true or false) end) end
     local function paint_status()

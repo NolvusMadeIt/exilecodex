@@ -108,6 +108,16 @@ function getVar(key, def) {
 }
 ipcMain.on('ec:get-mode', (e) => { e.returnValue = currentMode })
 ipcMain.on('ec:app-version', (e) => { e.returnValue = app.getVersion() })
+ipcMain.on('ec:window-minimize', (event) => {
+  if (currentMode === 'window' && win && event.sender.id === win.webContents.id) win.minimize()
+})
+ipcMain.on('ec:window-maximize-toggle', (event) => {
+  if (currentMode !== 'window' || !win || event.sender.id !== win.webContents.id) return
+  if (win.isMaximized()) win.unmaximize(); else win.maximize()
+})
+ipcMain.on('ec:window-close', (event) => {
+  if (currentMode === 'window' && win && event.sender.id === win.webContents.id) win.close()
+})
 
 // Developer mode is a *session* unlock (Settings → tap About six times). It's
 // held in main-process memory so it survives a window↔overlay switch (which
@@ -325,6 +335,7 @@ app.whenReady().then(async () => {
   // opening the tour over the desktop hides the very plugin it is explaining.
   // The user can enable overlay mode from Settings after the walkthrough.
   const firstLaunch = getVar('ec.onboarding.completed', '') !== '1'
+    && getVar('ec.onboarding.suppressed', '') !== '1'
   currentMode = firstLaunch ? 'window' : readSavedMode()
   boot('Display mode: ' + currentMode, 'info')
 
@@ -401,7 +412,7 @@ app.whenReady().then(async () => {
     const w = Math.min(1440, wa.width - 80), h = Math.min(900, wa.height - 80)
     return {
       ...base, width: w, height: h, minWidth: 900, minHeight: 600, center: true,
-      frame: true, transparent: false, backgroundColor: '#0e0d0b', hasShadow: true,
+      frame: false, transparent: false, backgroundColor: '#0e0d0b', hasShadow: true,
       resizable: true, movable: true, alwaysOnTop: false,
     }
   }
@@ -414,6 +425,14 @@ app.whenReady().then(async () => {
     // handoff). Mode switches recreate the window shown, as before.
     if (hidden) opts.show = false
     win = new BrowserWindow(opts)
+    if (mode === 'window') {
+      const sendWindowState = () => {
+        if (win && !win.isDestroyed()) win.webContents.send('ec:window-state', { maximized: win.isMaximized() })
+      }
+      win.on('maximize', sendWindowState)
+      win.on('unmaximize', sendWindowState)
+      win.webContents.once('did-finish-load', sendWindowState)
+    }
     if (mode === 'overlay') {
       // Screen-saver level keeps the overlay above borderless games (PoE2 in
       // Borderless); reassert on blur so it never sinks behind the game.

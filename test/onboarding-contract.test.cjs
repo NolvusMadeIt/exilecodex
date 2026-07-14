@@ -47,6 +47,17 @@ test('first launch uses a normal foreground window before overlay mode is enable
   assert.match(read('app/client/electron/main.cjs'), /currentMode\s*=\s*.*window/)
 })
 
+test('onboarding supports a durable suppression preference and reset path', () => {
+  const index = read('app/client/ui/index.html')
+  const js = read('app/client/ui/js/onboarding.js')
+  const lua = read('app/client/lua/core/onboarding.lua')
+  const settings = read('app/client/lua/core/settings.lua')
+  assert.match(index, /ec-onboarding-never/)
+  assert.match(js, /ec\.onboarding\.suppressed/)
+  assert.match(lua, /onboarding\.suppressed/)
+  assert.match(settings, /set-reset-tour/)
+})
+
 test('Electron tutorial bridge and page exist', () => {
   assert.ok(exists('app/client/electron/tutorial.html'))
   assert.ok(exists('app/client/electron/tutorial-preload.cjs'))

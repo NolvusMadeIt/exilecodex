@@ -1,12 +1,12 @@
 {
   "name": "exilecodex",
-  "version": "2.1.8-alpha",
+  "version": "2.1.9-alpha",
   "description": "ExileCodex — companion overlay for Path of Exile 2",
   "author": "NolvusMadeIt",
   "private": true,
   "main": "app/client/electron/main.cjs",
   "scripts": {
-    "test": "node --test test/overlay-bootstrap.test.cjs test/log-parse.test.cjs test/site-landing.test.cjs test/release-contract.test.cjs test/plugin-identity.test.cjs test/plugin-update-callback-contract.test.cjs test/onboarding-contract.test.cjs test/overlay-bounds.test.cjs test/bounded-overlay-contract.test.cjs test/overlay-controller-smoke.test.cjs test/pob-updater.test.cjs test/build-planner-loader-contract.test.cjs test/bump-versions.test.cjs",
+    "test": "node --test test/overlay-bootstrap.test.cjs test/log-parse.test.cjs test/site-landing.test.cjs test/release-contract.test.cjs test/plugin-identity.test.cjs test/plugin-update-callback-contract.test.cjs test/onboarding-contract.test.cjs test/window-toolbar-contract.test.cjs test/overlay-bounds.test.cjs test/bounded-overlay-contract.test.cjs test/overlay-controller-smoke.test.cjs test/pob-updater.test.cjs test/build-planner-loader-contract.test.cjs test/bump-versions.test.cjs",
     "postinstall": "node scripts/copy-vendor.cjs",
     "dev": "http-server -p 4400 -c-1 .",
     "app": "electron .",

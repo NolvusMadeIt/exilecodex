@@ -16,6 +16,7 @@
   var primary = document.getElementById('ec-onboarding-primary')
   var skip = document.getElementById('ec-onboarding-skip')
   var targetHit = document.getElementById('ec-onboarding-target')
+  var never = document.getElementById('ec-onboarding-never')
   var spotlight = root.querySelector('.ec-onboarding-spotlight')
   var shade = root.querySelector('.ec-onboarding-shade')
   var targets = {}
@@ -49,6 +50,7 @@
     var spec = copy[phase] || copy.welcome
     root.classList.remove('d-none')
     root.setAttribute('aria-hidden', 'false')
+    if (never) never.checked = window.localStorage.getItem('ec.onboarding.suppressed') === '1'
     card.className = 'ec-onboarding-card ' + spec.card
     step.textContent = spec.step
     title.textContent = spec.title
@@ -89,6 +91,9 @@
     if (spec && spec.targetAction) send(spec.targetAction)
   })
   skip.addEventListener('click', function () { send('skip') })
+  if (never) never.addEventListener('change', function () {
+    window.localStorage.setItem('ec.onboarding.suppressed', never.checked ? '1' : '0')
+  })
   document.addEventListener('keydown', function (event) {
     if (!root.classList.contains('d-none') && event.key === 'Escape') {
       event.preventDefault()
@@ -97,4 +102,19 @@
   }, true)
   window.addEventListener('resize', function () { render({ phase: phase, target: copy[phase] && targets[copy[phase].target] }) })
   window.exileShell.onTutorialState(render)
+
+  var shell = window.exileShell
+  var min = document.getElementById('ec-window-minimize')
+  var max = document.getElementById('ec-window-maximize')
+  var close = document.getElementById('ec-window-close')
+  if (shell.mode === 'window') {
+    min.addEventListener('click', function () { shell.windowMinimize() })
+    max.addEventListener('click', function () { shell.windowMaximizeToggle() })
+    close.addEventListener('click', function () { shell.windowClose() })
+    shell.onWindowState(function (state) {
+      var maximized = !!state.maximized
+      max.setAttribute('aria-label', maximized ? 'Restore' : 'Maximize')
+      max.innerHTML = '<i class="bi ' + (maximized ? 'bi-copy' : 'bi-square') + '"></i>'
+    })
+  }
 }())

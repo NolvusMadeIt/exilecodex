@@ -67,6 +67,11 @@ codex.toggle_widget = toggle_widget
 
 local orb = ui.byId("orb")
 local rail = ui.byId("rail")
+local menu_context = "normal"
+local function is_window_mode()
+  local sh = window.exileShell
+  return sh ~= nil and sh ~= js.null and sh.mode == "window"
+end
 
 -- The DOM is the single source of truth for menu state — a Lua-side flag can
 -- drift out of sync if an event is lost (e.g. mouseup outside the window).
@@ -79,6 +84,8 @@ local function rail_button(id, icon, title)
   return '<button class="ec-rail-btn" data-view="' .. id .. '" title="' .. codex.T(title)
     .. '"><i class="bi ' .. icon .. '"></i></button>'
 end
+
+local place_menu
 
 local function sync_rail()
   ui.each(rail, ".ec-rail-btn", function(btn)
@@ -93,10 +100,18 @@ end
 
 local function render_rail()
   local parts = {}
-  for _, p in ipairs(codex.registry.visible()) do
-    parts[#parts + 1] = rail_button(p.id, p.icon or "bi-puzzle", p.name)
+  if is_window_mode() then
+    parts[#parts + 1] = rail_button("__context-normal", "bi-grid", "Normal")
+    parts[#parts + 1] = rail_button("__context-plugins", "bi-puzzle", "Plugins")
   end
-  parts[#parts + 1] = rail_button("__plugins", "bi-puzzle", "Plugins")
+  for _, p in ipairs(codex.registry.visible()) do
+    if menu_context == "normal" or not is_window_mode() or menu_context == "plugins" then
+      parts[#parts + 1] = rail_button(p.id, p.icon or "bi-puzzle", p.name)
+    end
+  end
+  if menu_context == "normal" or not is_window_mode() then
+    parts[#parts + 1] = rail_button("__plugins", "bi-puzzle", "Plugins")
+  end
   parts[#parts + 1] = rail_button("__settings", "bi-gear", "Settings")
   if window.exileShell ~= nil and window.exileShell ~= js.null then
     parts[#parts + 1] = rail_button("__quit", "bi-power", "Quit ExileCodex")
@@ -104,7 +119,15 @@ local function render_rail()
   rail.innerHTML = table.concat(parts)
 
   ui.each(rail, ".ec-rail-btn", function(btn)
-    ui.on(btn, "click", function() toggle_widget(ui.attr(btn, "data-view")) end)
+    ui.on(btn, "click", function()
+      local id = ui.attr(btn, "data-view")
+      if id == "__context-normal" or id == "__context-plugins" then
+        menu_context = (id == "__context-plugins") and "plugins" or "normal"
+        render_rail(); place_menu(); sync_rail()
+      else
+        toggle_widget(id)
+      end
+    end)
   end)
 end
 
@@ -115,7 +138,7 @@ local RINGS = { 80, 132, 184, 236 }
 local ARC_GAP = 48    -- px between button centers along an arc
 local MAX_SPAN = 150  -- max degrees a ring may fan across
 
-local function place_menu()
+place_menu = function()
   local vw, vh = window.innerWidth, window.innerHeight
   local cx = orb.offsetLeft + 23
   local cy = orb.offsetTop + 23
@@ -325,6 +348,7 @@ orb_load()
 -- Restore the whole workspace: reopen every plugin that was open last session
 -- (each at its remembered position/size). Falls back to the default view.
 local first_run = ui.store_get("ec.onboarding.completed") ~= "1"
+  and ui.store_get("ec.onboarding.suppressed") ~= "1"
 if first_run then
   -- Treat an incomplete onboarding record as a genuinely fresh workspace. A
   -- previous test may have left overlay mode, widget positions, timers, or

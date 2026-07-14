@@ -57,12 +57,18 @@ function M.finish()
 end
 
 function M.start()
-  if ui.store_get("ec.onboarding.completed") == "1" then return end
+  if ui.store_get("ec.onboarding.completed") == "1" or ui.store_get("ec.onboarding.suppressed") == "1" then return end
   local sh = shell()
   if not sh or sh.tutorialStart == nil then return end
   pcall(function() sh:tutorialStart() end)
   M.report_targets()
   window:setTimeout(function() M.report_targets() end, 120)
+end
+
+function M.reset()
+  ui.store_set("ec.onboarding.completed", "0")
+  ui.store_set("ec.onboarding.suppressed", "0")
+  M.start()
 end
 
 local function command_callback(a, b)

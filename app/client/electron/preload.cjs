@@ -34,6 +34,10 @@ contextBridge.exposeInMainWorld('exileShell', {
   setKeybinds: (json) => { try { ipcRenderer.send('ec:set-keybinds', JSON.parse(json || '{}')) } catch { /* */ } },
   onKeybind: (cb) => ipcRenderer.on('ec:keybind', (_e, action) => cb(action)),
   quit: () => ipcRenderer.send('ec:quit'),
+  windowMinimize: () => ipcRenderer.send('ec:window-minimize'),
+  windowMaximizeToggle: () => ipcRenderer.send('ec:window-maximize-toggle'),
+  windowClose: () => ipcRenderer.send('ec:window-close'),
+  onWindowState: (cb) => ipcRenderer.on('ec:window-state', (_e, state) => cb(state || {})),
   // Real page zoom — scales everything, unlike body font-size.
   setZoom: (factor) => webFrame.setZoomFactor(Number(factor) || 1),
   // Native path pickers + install-location scanning (settings → Game paths).

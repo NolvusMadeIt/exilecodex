@@ -10,6 +10,17 @@
   <link rel="stylesheet" href="./css/theme.css">
 </head>
 <body>
+  <header id="ec-window-toolbar" class="ec-window-toolbar" aria-label="ExileCodex window controls">
+    <div class="ec-window-toolbar-drag">
+      <img src="../../media/brand/logo_icon.png" alt="" aria-hidden="true">
+      <span>EXILECODEX</span>
+    </div>
+    <div class="ec-window-toolbar-actions">
+      <button id="ec-window-minimize" type="button" aria-label="Minimize"><i class="bi bi-dash-lg"></i></button>
+      <button id="ec-window-maximize" type="button" aria-label="Maximize"><i class="bi bi-square"></i></button>
+      <button id="ec-window-close" type="button" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+    </div>
+  </header>
   <!-- The desktop: widgets float here, like addon frames over the game. -->
   <div id="desktop"></div>
 
@@ -41,6 +52,7 @@
         <span id="ec-onboarding-hint" class="ec-onboarding-hint">You can change these choices later in Settings.</span>
         <button id="ec-onboarding-primary" class="ec-onboarding-primary" type="button">Begin tour</button>
       </div>
+      <label class="ec-onboarding-never"><input id="ec-onboarding-never" type="checkbox"> <span>Don’t show this again</span></label>
     </section>
   </div>
 
