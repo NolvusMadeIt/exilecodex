@@ -36,7 +36,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build installer & publish to the releases repo
+      - name: Build installer (publishes when RELEASES_TOKEN is set)
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.RELEASES_TOKEN }}
-        run: npx electron-builder --win --publish always
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning title=RELEASES_TOKEN missing::No RELEASES_TOKEN secret set on this repo, so the installer is built but NOT published to nolvusfilter-releases. Download it from this run's Artifacts. Add the secret (a PAT with write access to nolvusfilter-releases) to enable auto-publish + in-app updates."
+            npx electron-builder --win --publish never
+          else
+            npx electron-builder --win --publish always
+          fi
+
+      # Always keep the built installer, even when publish is skipped or fails —
+      # so a build is never lost and can be hand-uploaded / tested.
+      - name: Upload installer artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExileCodex-Setup-${{ github.ref_name }}
+          path: |
+            dist/*.exe
+            dist/latest.yml
+          if-no-files-found: warn

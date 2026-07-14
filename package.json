@@ -1,7 +1,8 @@
 {
   "name": "exilecodex",
   "version": "2.1.2-alpha",
-  "description": "ExileCodex",
+  "description": "ExileCodex — companion overlay for Path of Exile 2",
+  "author": "NolvusMadeIt",
   "private": true,
   "main": "app/client/electron/main.cjs",
   "scripts": {
