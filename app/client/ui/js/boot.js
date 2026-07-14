@@ -181,7 +181,12 @@ if (window.exileShell) {
       // the page, and flipping modes under it made settings feel like they
       // "kept closing".
       var ae = document.activeElement
-      var focusHeld = !!(ae && ae.closest && ae.closest('.ec-widget, #rail'))
+      // Only HOLD the overlay solid while a text field or dropdown is focused —
+      // a stray pass-through there loses your typing or closes a native <select>.
+      // A focused button/checkbox must NOT trap the overlay; that made clicking
+      // off a widget still feel like you were "on the plugin".
+      var focusHeld = !!(ae && ae.closest && ae.closest('.ec-widget, #rail') && ae.matches &&
+        ae.matches('input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]), textarea, select, [contenteditable="true"], .monaco-editor, .monaco-editor *'))
       var want = !(overUI(e.target) || focusHeld)
       if (want !== through) {
         through = want

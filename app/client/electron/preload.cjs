@@ -23,6 +23,16 @@ contextBridge.exposeInMainWorld('exileShell', {
   // Overlay only: temporarily make the (non-activating) overlay focusable so a
   // text field can take keyboard focus; dropped again when the field blurs.
   setOverlayFocusable: (flag) => ipcRenderer.send('ec:overlay-focusable', !!flag),
+  // Per-plugin updates: downloaded plugin .lua files persist to userData and are
+  // served over the bundled file, so a plugin updates without a full app rebuild.
+  pluginOverrides: () => ipcRenderer.sendSync('ec:plugin-overrides') || {},
+  pluginWrite: (id, version, source) =>
+    ipcRenderer.invoke('ec:plugin-write', { id: String(id), version: String(version || ''), source: String(source || '') }),
+  pluginRemove: (id) => ipcRenderer.invoke('ec:plugin-remove', String(id)),
+  // Configurable global keybinds. setKeybinds takes a JSON string { accel: action };
+  // onKeybind streams the action string when a bound shortcut fires.
+  setKeybinds: (json) => { try { ipcRenderer.send('ec:set-keybinds', JSON.parse(json || '{}')) } catch { /* */ } },
+  onKeybind: (cb) => ipcRenderer.on('ec:keybind', (_e, action) => cb(action)),
   quit: () => ipcRenderer.send('ec:quit'),
   // Real page zoom — scales everything, unlike body font-size.
   setZoom: (factor) => webFrame.setZoomFactor(Number(factor) || 1),

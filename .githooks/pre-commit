@@ -1,0 +1,3 @@
+#!/bin/sh
+# Auto-bump plugin/app versions for whatever changed in this commit.
+node scripts/bump-versions.cjs

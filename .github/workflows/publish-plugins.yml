@@ -1,0 +1,57 @@
+name: Publish plugins
+
+# Mirrors each plugin's source + a public manifest to the PUBLIC releases repo so
+# the in-app per-plugin updater can fetch them. Push a plugin change to `main`
+# (and bump its version in app/plugins.manifest.json) and every user's app pulls
+# just that plugin — no new app build, no reinstall.
+#
+# Needs the repo secret RELEASES_TOKEN (write access to NolvusMadeIt/nolvusfilter-releases).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/addons/**/plugin.lua'
+      - 'app/plugins.manifest.json'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Stage plugin files + public manifest
+        run: |
+          node - <<'EOF'
+          const fs = require('fs'), path = require('path');
+          const man = JSON.parse(fs.readFileSync('app/plugins.manifest.json', 'utf8'));
+          const RAW = 'https://raw.githubusercontent.com/NolvusMadeIt/nolvusfilter-releases/main/plugins';
+          fs.mkdirSync('out/plugins', { recursive: true });
+          const plugins = {};
+          for (const [id, meta] of Object.entries(man.plugins || {})) {
+            const src = path.join('app', 'addons', id, 'plugin.lua');
+            if (!fs.existsSync(src)) { console.log('skip (no file):', id); continue; }
+            fs.copyFileSync(src, path.join('out/plugins', id + '.lua'));
+            plugins[id] = { version: meta.version, url: `${RAW}/${id}.lua`, name: meta.name || id };
+          }
+          fs.writeFileSync('out/plugins/manifest.json',
+            JSON.stringify({ schema: 1, app: man.app, generated: new Date().toISOString(), plugins }, null, 2));
+          console.log('staged', Object.keys(plugins).length, 'plugins');
+          EOF
+
+      - name: Push to the public releases repo
+        env:
+          TOKEN: ${{ secrets.RELEASES_TOKEN }}
+        run: |
+          git clone --depth 1 "https://x-access-token:${TOKEN}@github.com/NolvusMadeIt/nolvusfilter-releases.git" rel
+          rm -rf rel/plugins && mkdir -p rel/plugins
+          cp -r out/plugins/. rel/plugins/
+          cd rel
+          git config user.name "exilecodex-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add plugins
+          if git diff --cached --quiet; then echo "no plugin changes to publish"; exit 0; fi
+          git commit -m "publish plugins ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
+          git push

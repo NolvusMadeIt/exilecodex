@@ -5,7 +5,7 @@ local window = js.global
 local document = window.document
 
 codex = codex or {}
-codex.VERSION = "2.0.0-alpha.4"
+codex.VERSION = "2.1.0-alpha"
 codex.ui = { window = window, document = document }
 local ui = codex.ui
 

@@ -124,13 +124,25 @@ const MIME = {
 // something else owns ours (settings won't persist in that degraded mode).
 const FIXED_PORT = 46620
 
+// Downloaded plugin updates live here and override the bundled file, so a plugin
+// can be updated without shipping a whole new app build.
+function pluginsDir() { return path.join(app.getPath('userData'), 'plugins') }
+
 function serveRepo() {
   return new Promise((resolve) => {
     const server = http.createServer((req, res) => {
       let pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname)
       if (pathname === '/') pathname = '/app/client/ui/index.html'
-      const file = path.resolve(path.join(ROOT, pathname))
-      if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
+      let file = path.resolve(path.join(ROOT, pathname))
+      // If a downloaded override exists for this plugin, serve it in place of the
+      // bundled file — this is what makes plugin updates "stick" across launches.
+      const ov = /^\/app\/addons\/([A-Za-z0-9_-]+)\/plugin\.lua$/.exec(pathname)
+      if (ov) {
+        const cand = path.join(pluginsDir(), ov[1], 'plugin.lua')
+        if (fs.existsSync(cand)) file = cand
+      }
+      const okRoot = file.startsWith(ROOT) || file.startsWith(pluginsDir())
+      if (!okRoot || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
         res.statusCode = 404
         return res.end('not found')
       }
@@ -171,6 +183,10 @@ app.whenReady().then(async () => {
         ...base, x: wa.x, y: wa.y, width: wa.width, height: wa.height,
         frame: false, transparent: true, backgroundColor: '#00000000', hasShadow: false,
         resizable: false, movable: false, alwaysOnTop: true,
+        // Never show in the taskbar/alt-tab — it's an overlay, not an app window.
+        // (Opening a native dropdown briefly makes the window focusable to take
+        // keyboard focus; without this that flashed the app into the taskbar.)
+        skipTaskbar: true,
         // Non-activating: clicking the overlay UI must NOT steal foreground from
         // the game, otherwise the first click back on the game is eaten by the
         // window-activation and you have to click twice. Focus is re-enabled just
@@ -232,12 +248,51 @@ app.whenReady().then(async () => {
   ipcMain.on('ec:overlay-focusable', (_e, flag) => {
     if (currentMode === 'overlay' && win && !win.isDestroyed()) {
       win.setFocusable(!!flag)
+      win.setSkipTaskbar(true) // setFocusable(true) can re-add the window to the taskbar on Windows
       if (flag) win.focus()
     }
   })
   ipcMain.on('ec:mouse-through', (_e, flag) => {
     // Only the overlay is ever click-through; a normal window stays solid.
     if (currentMode === 'overlay' && win && !win.isDestroyed()) win.setIgnoreMouseEvents(!!flag, { forward: true })
+  })
+
+  // ---- Per-plugin updates (download + persist, no full-app rebuild) ---------
+  // Installed overrides: { id: version } for every plugin we've downloaded.
+  ipcMain.on('ec:plugin-overrides', (e) => {
+    const out = {}
+    try {
+      const dir = pluginsDir()
+      if (fs.existsSync(dir)) for (const id of fs.readdirSync(dir)) {
+        try {
+          if (!fs.existsSync(path.join(dir, id, 'plugin.lua'))) continue
+          const vp = path.join(dir, id, 'version')
+          out[id] = fs.existsSync(vp) ? fs.readFileSync(vp, 'utf8').trim() : '1'
+        } catch { /* skip a bad entry */ }
+      }
+    } catch { /* no overrides yet */ }
+    e.returnValue = out
+  })
+  // Persist a downloaded plugin as an override (served over the bundled file).
+  ipcMain.handle('ec:plugin-write', (_e, { id, version, source }) => {
+    try {
+      if (!/^[A-Za-z0-9_-]+$/.test(String(id))) return { ok: false, error: 'bad id' }
+      // Only accept something that actually looks like one of our plugins.
+      if (!/codex\.registry\.register/.test(String(source || ''))) return { ok: false, error: 'not a valid plugin file' }
+      const dir = path.join(pluginsDir(), String(id))
+      fs.mkdirSync(dir, { recursive: true })
+      fs.writeFileSync(path.join(dir, 'plugin.lua'), String(source), 'utf8')
+      fs.writeFileSync(path.join(dir, 'version'), String(version || ''), 'utf8')
+      return { ok: true }
+    } catch (err) { return { ok: false, error: String((err && err.message) || err) } }
+  })
+  // Remove an override (revert that plugin to the bundled version on next launch).
+  ipcMain.handle('ec:plugin-remove', (_e, id) => {
+    try {
+      if (!/^[A-Za-z0-9_-]+$/.test(String(id))) return { ok: false }
+      fs.rmSync(path.join(pluginsDir(), String(id)), { recursive: true, force: true })
+      return { ok: true }
+    } catch (err) { return { ok: false, error: String(err) } }
   })
   ipcMain.on('ec:quit', () => app.quit())
 
@@ -431,6 +486,25 @@ app.whenReady().then(async () => {
     const wa = target.workArea
     win.setBounds({ x: wa.x, y: wa.y, width: wa.width, height: wa.height })
   }
+
+  // ---- Configurable keybinds (launcher + per-plugin) -----------------------
+  // The renderer sends { accel: action }; we register a global shortcut for each
+  // so they fire even while PoE2 is focused. On trigger we send the action back
+  // to the renderer, which toggles the launcher orb or that plugin's window.
+  const keybinds = new Map() // accel -> action
+  ipcMain.on('ec:set-keybinds', (_e, map) => {
+    for (const accel of keybinds.keys()) { try { globalShortcut.unregister(accel) } catch { /* */ } }
+    keybinds.clear()
+    for (const [accel, action] of Object.entries(map || {})) {
+      if (!accel || !action || accel === overlayHotkey) continue
+      try {
+        const ok = globalShortcut.register(accel, () => {
+          if (win && !win.isDestroyed()) win.webContents.send('ec:keybind', String(action))
+        })
+        if (ok) keybinds.set(accel, action)
+      } catch { /* invalid accelerator — skip */ }
+    }
+  })
 
   ipcMain.on('ec:overlay-config', (_e, cfg) => {
     cfg = cfg || {}

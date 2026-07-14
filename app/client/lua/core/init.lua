@@ -264,18 +264,17 @@ document:addEventListener("mousedown", function(_, ev)
   if inMenu == js.null and inOrb == js.null then close_menu() end
 end)
 
--- Alt+1: hide/show the orb itself. Open widgets are never touched.
-document:addEventListener("keydown", function(_, ev)
-  if ev.altKey and (tostring(ev.key) == "1" or tostring(ev.code) == "Digit1") then
-    ev:preventDefault()
-    if orb.classList:contains("d-none") then
-      orb.classList:remove("d-none")
-    else
-      orb.classList:add("d-none")
-      close_menu()
-    end
+-- Toggle the launcher orb (show/hide) — open widgets are never touched. Bound to
+-- a global hotkey (default Alt+1) through codex.keybinds so it fires even while
+-- PoE2 is focused; users can rebind it in Settings → Keybinds.
+codex.launcher_toggle = function()
+  if orb.classList:contains("d-none") then
+    orb.classList:remove("d-none")
+  else
+    orb.classList:add("d-none")
+    close_menu()
   end
-end)
+end
 
 -- boot ----------------------------------------------------------------------
 

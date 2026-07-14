@@ -843,6 +843,16 @@ button.ec-chip:hover { border-color: var(--ec-gold-dim); }
 .set-plugname { font-size: 12.5px; color: var(--ec-text-strong); }
 .set-plugver { font-size: 10.5px; color: var(--ec-muted); font-variant-numeric: tabular-nums; }
 .set-plugok { font-size: 11px; color: var(--ec-green); white-space: nowrap; }
+/* Keybinds panel */
+.set-kbrow { display: flex; align-items: center; gap: 8px; padding: 5px 4px; border-bottom: 1px solid var(--ec-border-soft); }
+.set-kbrow:last-child { border-bottom: none; }
+.set-kblabel { flex: 1; min-width: 0; font-size: 12.5px; color: var(--ec-text-strong); }
+.set-kbcap { min-width: 122px; text-align: center; font-size: 11.5px; font-family: monospace; padding: 4px 10px; cursor: pointer;
+  border: 1px solid var(--ec-border-soft); border-radius: 3px; background: var(--ec-panel-3); color: var(--ec-gold); }
+.set-kbcap:hover { border-color: var(--ec-gold-dim); }
+.set-kbcap.recording { color: var(--ec-red-text); border-color: var(--ec-red-text); }
+.set-kbclear { border: none; background: none; color: var(--ec-muted); cursor: pointer; font-size: 15px; line-height: 1; padding: 0 4px; }
+.set-kbclear:hover { color: var(--ec-red-text); }
 
 /* guide forge */
 .gf-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }

@@ -175,6 +175,7 @@ local GROUPS = {
   { id = "paths", name = "Game paths", icon = "bi-folder2-open" },
   { id = "detection", name = "Smart detection", icon = "bi-broadcast" },
   { id = "overlay", name = "Game overlay", icon = "bi-pip" },
+  { id = "keybinds", name = "Keybinds", icon = "bi-keyboard" },
   { id = "plugins", name = "Plugins", icon = "bi-puzzle" },
   { id = "about", name = "About", icon = "bi-info-circle" },
 }
@@ -556,7 +557,7 @@ RENDER.paths = function(pane)
     })
   end
 
-  local note = sh and "" or ('<div class="ec-muted mb-2" style="font-size:11px">' .. T("desktop shell") .. ' &mdash; Browse/Auto-locate need the desktop app; typing paths works anywhere.</div>')
+  local note = sh and "" or ('<div class="ec-muted mb-2" style="font-size:11px">' .. T("Browse and Auto-locate need the desktop app — you can also type or paste a path.") .. '</div>')
   pane.innerHTML = sec(T("Game paths"), nil, table.concat({
     note,
     path_row("set-path-game", T("PoE2 game folder"), "ec.path.game", false, "game"),
@@ -636,13 +637,13 @@ end
 RENDER.detection = function(pane)
   pane.innerHTML = sec(T("Detection status"), nil,
     '<div id="set-det-live">' .. (codex.detect and codex.detect.status_html() or "") .. '</div>')
-  .. sec(T("Detection"), T("desktop shell"), table.concat({
+  .. sec(T("Detection"), nil, table.concat({
     toggle_html("set-det-zone", "Zone detection", (ui.store_get("ec.det.zone") or "1") == "1"),
     '<div class="mt-2"></div>',
     toggle_html("set-det-level", "Level detection", (ui.store_get("ec.det.level") or "1") == "1"),
     '<div class="mt-2"></div>',
     toggle_html("set-det-advance", "Auto-complete goals from the log", (ui.store_get("ec.det.advance") or "1") == "1"),
-    '<div class="ec-muted mt-2" style="font-size:11px">Reads the Client.txt set under Game paths. Wiring lands with the watcher.</div>',
+    '<div class="ec-muted mt-2" style="font-size:11px">Reads the Client.txt set under Game paths.</div>',
   }))
   bind_toggle(pane, "#set-det-zone", "ec.det.zone")
   bind_toggle(pane, "#set-det-level", "ec.det.level")
@@ -650,7 +651,7 @@ RENDER.detection = function(pane)
 end
 
 RENDER.overlay = function(pane)
-  pane.innerHTML = sec(T("Game overlay"), T("desktop shell"), table.concat({
+  pane.innerHTML = sec(T("Game overlay"), nil, table.concat({
     toggle_html("set-ov-on", "Enable game overlay", ui.store_get("ec.overlay.enabled") == "1"),
     '<div class="d-flex gap-2 mt-2">',
     '<select id="set-ov-side" class="form-select form-select-sm">',
@@ -668,8 +669,7 @@ RENDER.overlay = function(pane)
     '<input id="set-ov-hotkey" class="form-control form-control-sm" style="max-width:130px" value="',
     ui.store_get("ec.overlay.hotkey") or "Shift+Alt+F", '">',
     '</div>',
-    '<div class="ec-muted mt-1" style="font-size:11px"><b>Off (default):</b> ExileCodex runs as a normal resizable window. '
-      .. '<b>On:</b> it reloads as a transparent, click-through overlay on top of the game — the show/hide hotkey arms (works while PoE2 is focused); run PoE2 in Borderless so the overlay can sit on top. Switching reloads the app.</div>',
+    '<div class="ec-muted mt-1" style="font-size:11px"><b>On:</b> ExileCodex becomes a transparent, click-through overlay pinned over Path of Exile 2, with a global show/hide hotkey. Run PoE2 in Borderless. <b>Off:</b> a normal window. Toggling reloads the app.</div>',
   }))
   bind_toggle(pane, "#set-ov-on", "ec.overlay.enabled", push_overlay)
   bind_store(pane, "#set-ov-side", "ec.overlay.side")
@@ -761,6 +761,73 @@ RENDER.sync = function(pane)
   end)
 end
 
+RENDER.keybinds = function(pane)
+  local K = codex.keybinds
+  if not K then
+    pane.innerHTML = sec(T("Keybinds"), nil, '<div class="ec-muted" style="font-size:11px">' .. T("Keybinds need the desktop app.") .. '</div>')
+    return
+  end
+  local function row(action, label)
+    local accel = K.get(action)
+    return table.concat({
+      '<div class="set-kbrow">',
+        '<span class="set-kblabel">', esc(label), '</span>',
+        '<button class="set-kbcap" data-kb="', esc(action), '">', accel ~= "" and esc(accel) or T("Set hotkey…"), '</button>',
+        '<button class="set-kbclear" data-kbclear="', esc(action), '" title="Clear">&times;</button>',
+      '</div>',
+    })
+  end
+  local parts = { sec(T("Launcher"), nil, row("launcher", T("Show / hide the launcher orb"))) }
+  local rows = {}
+  for _, p in ipairs(codex.registry.visible()) do rows[#rows + 1] = row("plugin:" .. p.id, p.name) end
+  parts[#parts + 1] = sec(T("Plugins"), T("open / close each"), table.concat(rows))
+  parts[#parts + 1] = '<div class="ec-muted" style="font-size:11px;padding:2px 4px">' ..
+    T("Hotkeys fire even while the game is focused. Click a hotkey, then press your combo (needs Ctrl/Alt/Shift unless it's an F-key). Esc cancels.") .. '</div>'
+  pane.innerHTML = table.concat(parts)
+
+  -- Build an Electron accelerator from a keydown event.
+  local function accel_from(ev)
+    local key = tostring(ev.key)
+    if key == "Control" or key == "Alt" or key == "Shift" or key == "Meta" then return nil end
+    if key == "Escape" then return "__cancel" end
+    local mods = {}
+    if ev.ctrlKey then mods[#mods + 1] = "Ctrl" end
+    if ev.altKey then mods[#mods + 1] = "Alt" end
+    if ev.shiftKey then mods[#mods + 1] = "Shift" end
+    if ev.metaKey then mods[#mods + 1] = "Super" end
+    local tok
+    if #key == 1 then tok = key:upper()
+    elseif key:match("^[fF]%d+$") then tok = key:upper()
+    elseif key == " " then tok = "Space"
+    elseif key == "ArrowUp" then tok = "Up" elseif key == "ArrowDown" then tok = "Down"
+    elseif key == "ArrowLeft" then tok = "Left" elseif key == "ArrowRight" then tok = "Right"
+    else tok = key end
+    if #mods == 0 and not key:match("^[fF]%d+$") then return nil end -- need a modifier
+    mods[#mods + 1] = tok
+    return table.concat(mods, "+")
+  end
+
+  ui.each(pane, "[data-kb]", function(btn)
+    ui.on(btn, "click", function()
+      local action = ui.attr(btn, "data-kb")
+      btn.textContent = T("Press keys…"); btn.classList:add("recording")
+      local handler
+      handler = function(_, ev)
+        ev:preventDefault(); ev:stopPropagation()
+        local a = accel_from(ev)
+        if a == nil then return end -- lone modifier: keep waiting
+        document:removeEventListener("keydown", handler, true)
+        if a ~= "__cancel" then K.set(action, a) end
+        RENDER.keybinds(pane)
+      end
+      document:addEventListener("keydown", handler, true)
+    end)
+  end)
+  ui.each(pane, "[data-kbclear]", function(btn)
+    ui.on(btn, "click", function() K.set(ui.attr(btn, "data-kbclear"), nil); RENDER.keybinds(pane) end)
+  end)
+end
+
 RENDER.plugins = function(pane)
   local P = codex.plugins or {}
   local function vstr(p) return tostring((P.version_of and P.version_of(p)) or p.version or codex.VERSION) end
@@ -830,7 +897,7 @@ RENDER.about = function(pane)
   local U = codex.update or {}
   local ver = (U.version and U.version()) or codex.VERSION
   local desktop = U.available and U.available()
-  parts[#parts + 1] = sec(T("Updates"), T("desktop shell"), table.concat({
+  parts[#parts + 1] = sec(T("Updates"), nil, table.concat({
     '<div class="d-flex align-items-center gap-2 flex-wrap">',
     '<span style="font-size:12px;color:var(--ec-text)">', T("Current version"), ' <span style="color:var(--ec-gold);font-family:monospace">v', esc(ver), '</span></span>',
     desktop and ('<button id="set-checkupd" class="btn btn-ec-ghost btn-sm"><i class="bi bi-arrow-repeat"></i> ' .. T("Check for updates") .. '</button>') or '',

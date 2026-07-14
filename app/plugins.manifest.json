@@ -1,19 +1,55 @@
 {
   "schema": 1,
   "note": "Per-plugin update manifest. Bump a plugin's version here (and ship its plugin.lua) to notify users that an update is available. `url` points at the raw source used for single-plugin hot-reload.",
-  "app": "2.0.0-alpha.4",
+  "app": "2.1.0-alpha",
   "plugins": {
-    "campaign-guide": { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/campaign-guide/plugin.lua" },
-    "guide-forge":    { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/guide-forge/plugin.lua" },
-    "run-tracker":    { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/run-tracker/plugin.lua" },
-    "crafting":       { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/crafting/plugin.lua" },
-    "market-companion":{ "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/market-companion/plugin.lua" },
-    "price-check":    { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/price-check/plugin.lua" },
-    "filter-editor":  { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/filter-editor/plugin.lua" },
-    "build-planner":  { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/build-planner/plugin.lua" },
-    "xile-character": { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/xile-character/plugin.lua" },
-    "xile-items":     { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/xile-items/plugin.lua" },
-    "xile-history":   { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/xile-history/plugin.lua" },
-    "xile-tools":     { "version": "2.0.0-alpha.4", "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/xile-tools/plugin.lua" }
+    "campaign-guide": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/campaign-guide/plugin.lua"
+    },
+    "guide-forge": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/guide-forge/plugin.lua"
+    },
+    "run-tracker": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/run-tracker/plugin.lua"
+    },
+    "crafting": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/crafting/plugin.lua"
+    },
+    "market-companion": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/market-companion/plugin.lua"
+    },
+    "price-check": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/price-check/plugin.lua"
+    },
+    "filter-editor": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/filter-editor/plugin.lua"
+    },
+    "build-planner": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/build-planner/plugin.lua"
+    },
+    "xile-character": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/xile-character/plugin.lua"
+    },
+    "xile-items": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/xile-items/plugin.lua"
+    },
+    "xile-history": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/xile-history/plugin.lua"
+    },
+    "xile-tools": {
+      "version": "2.0.0-alpha.4",
+      "url": "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/addons/xile-tools/plugin.lua"
+    }
   }
 }
