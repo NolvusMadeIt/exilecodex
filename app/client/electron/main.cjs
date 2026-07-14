@@ -158,10 +158,78 @@ function serveRepo() {
 }
 
 app.whenReady().then(async () => {
+  // ---- Boot splash -------------------------------------------------------
+  // A small always-on-top window shown the instant the app launches. It streams
+  // the real init steps (server, mode, window, then the renderer's plugins) as a
+  // PoB-style console, ends on the green "ready" line, then hands off to the main
+  // window — which stays hidden (show:false) until the handoff.
+  let splash = null
+  let splashReady = false
+  let bootDone = false
+  let safetyTimer = null
+  const splashStart = Date.now()
+  const bootBuffer = []
+  // Any splash activity (a streamed line, a phase change, download progress)
+  // resets the "boot looks stuck" safety timer, so a legit long step (an update
+  // download, a reload) never trips it — only 12s of true silence does.
+  function bumpSafety() {
+    if (bootDone) return
+    if (safetyTimer) clearTimeout(safetyTimer)
+    safetyTimer = setTimeout(finishBoot, 12000)
+  }
+  function splashSend(msg) {
+    if (splash && !splash.isDestroyed() && splashReady) { try { splash.webContents.send('ec:boot', msg) } catch { /* */ } }
+    else bootBuffer.push(msg)
+    bumpSafety()
+  }
+  function boot(line, level) { splashSend({ line: String(line == null ? '' : line), level: level || 'info' }) }
+  function createSplash() {
+    try {
+      splashReady = false
+      splash = new BrowserWindow({
+        width: 480, height: 360, show: false, frame: false, transparent: true,
+        backgroundColor: '#00000000', hasShadow: false, resizable: false, movable: false,
+        center: true, alwaysOnTop: true, skipTaskbar: true, focusable: false, fullscreenable: false,
+        webPreferences: {
+          preload: path.join(__dirname, 'splash-preload.cjs'),
+          contextIsolation: true, nodeIntegration: false, sandbox: true,
+        },
+      })
+      splash.setAlwaysOnTop(true, 'screen-saver', 1)
+      splash.once('ready-to-show', () => { try { if (splash && !splash.isDestroyed()) splash.show() } catch { /* */ } })
+      splash.webContents.once('did-finish-load', () => {
+        splashReady = true
+        for (const m of bootBuffer) { try { splash.webContents.send('ec:boot', m) } catch { /* */ } }
+        bootBuffer.length = 0
+      })
+      splash.loadFile(path.join(__dirname, '..', 'ui', 'splash.html'))
+    } catch { splash = null }
+  }
+  // Close the splash and reveal the app. Idempotent + heavily guarded so the
+  // main window is NEVER left hidden, even if the renderer never signals ready.
+  function finishBoot() {
+    if (bootDone) return
+    bootDone = true
+    if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null }
+    boot('Loaded and ready (running in background)', 'done')
+    const wait = Math.max(850, 1700 - (Date.now() - splashStart)) // let the splash breathe
+    setTimeout(() => {
+      try { if (win && !win.isDestroyed() && !win.isVisible()) { win.show(); if (currentMode === 'window') win.focus() } } catch { /* */ }
+      try { if (splash && !splash.isDestroyed()) splash.close() } catch { /* */ }
+      splash = null
+    }, wait)
+  }
+  createSplash()
+  boot('ExileCodex ' + app.getVersion() + ' — starting…', 'accent')
+  boot('Electron ' + process.versions.electron + ' · Chromium ' + process.versions.chrome + ' · Node ' + process.versions.node, 'dim')
+  boot('Starting local server…', 'info')
+
   const port = await serveRepo()
+  boot('Server ready on 127.0.0.1:' + port, 'ok')
   console.log(`ExileCodex desktop shell: serving on http://127.0.0.1:${port}`)
 
   currentMode = readSavedMode()
+  boot('Display mode: ' + currentMode, 'info')
 
   // The two window personalities. Overlay = transparent, click-through,
   // always-on-top, covering the work area. Window = a normal framed, opaque,
@@ -202,9 +270,13 @@ app.whenReady().then(async () => {
     }
   }
 
-  function createWindow(mode) {
+  function createWindow(mode, hidden) {
     currentMode = mode
-    win = new BrowserWindow(windowOpts(mode))
+    const opts = windowOpts(mode)
+    // Only the initial launch window starts hidden (revealed by the boot-splash
+    // handoff). Mode switches recreate the window shown, as before.
+    if (hidden) opts.show = false
+    win = new BrowserWindow(opts)
     if (mode === 'overlay') {
       // Screen-saver level keeps the overlay above borderless games (PoE2 in
       // Borderless); reassert on blur so it never sinks behind the game.
@@ -564,8 +636,22 @@ app.whenReady().then(async () => {
   // "Automatically download updates" (ec.update.auto) decides whether a new
   // version downloads in the background (then a "restart to update" toast) or
   // just notifies you with a "download" toast. Only runs when packaged.
+  let updateReadyVer = null
   function sendUpdate(payload) {
     if (win && !win.isDestroyed()) win.webContents.send('ec:update-event', payload)
+  }
+  // Reuse the splash aesthetic for the "installing + restarting" beat before an
+  // app update applies (the boot splash is long gone by now, so make a fresh one),
+  // then quitAndInstall. Guarded — any failure just installs directly.
+  function restartToUpdate() {
+    try {
+      createSplash()
+      const v = updateReadyVer ? ' v' + updateReadyVer : ''
+      splashSend({ sub: 'Restarting to install' + v + '…', mode: 'restart' })
+      splashSend({ line: 'Installing ExileCodex' + v + '…', level: 'update' })
+      splashSend({ line: 'Restarting…', level: 'accent' })
+      setTimeout(() => installUpdate(), 2000)
+    } catch { installUpdate() }
   }
   function initUpdater() {
     if (updaterInited || !app.isPackaged) return
@@ -579,6 +665,7 @@ app.whenReady().then(async () => {
       autoUpdater.on('download-progress', (p) => sendUpdate({ type: 'progress', percent: Math.round((p && p.percent) || 0) }))
       autoUpdater.on('update-downloaded', (info) => {
         updateReady = true
+        updateReadyVer = info && info.version
         sendUpdate({ type: 'downloaded', version: info && info.version })
         if (tray) tray.setContextMenu(buildTrayMenu())
       })
@@ -590,10 +677,20 @@ app.whenReady().then(async () => {
     isQuitting = true
     try { autoUpdater.quitAndInstall(false, true) } catch { app.quit() }
   }
-  ipcMain.on('ec:update-check', () => { if (app.isPackaged) autoUpdater.checkForUpdates().catch(() => {}) })
-  ipcMain.on('ec:update-install', () => installUpdate())
+  ipcMain.on('ec:update-check', () => {
+    if (app.isPackaged) autoUpdater.checkForUpdates().catch(() => {})
+    else sendUpdate({ type: 'none' }) // dev: no updater — report "up to date" so callers don't hang
+  })
+  ipcMain.on('ec:update-install', () => restartToUpdate())
   ipcMain.on('ec:update-auto', (_e, flag) => { autoUpdater.autoDownload = !!flag })
   ipcMain.on('ec:update-download', () => { if (app.isPackaged) autoUpdater.downloadUpdate().catch(() => {}) })
+
+  // Boot splash bridge: the renderer streams its init milestones here, then
+  // signals ready so the shell can close the splash and reveal the app.
+  ipcMain.on('ec:boot-step', (_e, m) => boot(m && m.line, m && m.level))
+  ipcMain.on('ec:boot-phase', (_e, m) => splashSend({ sub: (m && m.sub) || '', mode: (m && m.mode) || '' }))
+  ipcMain.on('ec:boot-progress', (_e, m) => splashSend({ progress: (m && typeof m.progress === 'number') ? m.progress : -1, plabel: m && m.label }))
+  ipcMain.on('ec:boot-ready', () => finishBoot())
 
   // ---- System tray -------------------------------------------------------
   // A hidden-app tray icon: toggle the window, switch window<->overlay (kept in
@@ -650,11 +747,13 @@ app.whenReady().then(async () => {
     tray.on('click', () => { if (win && !win.isDestroyed()) { win.show(); win.focus() } })
   } catch { /* tray unavailable on this platform — non-fatal */ }
 
-  createWindow(currentMode)
+  boot('Creating main window…', 'info')
+  createWindow(currentMode, true)
+  boot('Loading interface…', 'info')
 
   // Application menu — replace Electron's default (whose Help pointed at
   // electronjs.org) with one whose Help matches our repo.
-  const REPO = 'https://github.com/NolvusMadeIt/nolvusfilter-releases'
+  const REPO = 'https://github.com/NolvusMadeIt/exilecodex'
   const openExt = (u) => () => shell.openExternal(u)
   // Native About panel — shows the installed version (auto-reflects across updates,
   // since app.getVersion() is the running build's version).
@@ -692,7 +791,8 @@ app.whenReady().then(async () => {
     },
   ]))
 
-  // Kick off the update check once the UI is ready to receive the events.
+  // Kick off the update check once the UI is ready. The boot splash hands off on
+  // the renderer's ready signal; bumpSafety()'s silence timer is the fallback.
   win.webContents.once('did-finish-load', () => initUpdater())
 })
 

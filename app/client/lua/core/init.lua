@@ -324,3 +324,27 @@ do
     end)
   end
 end
+
+-- Boot splash: stream the real renderer-side init milestones to the launch
+-- splash window, then signal ready so the shell hands off from the splash to
+-- the app. All guarded — a harmless no-op once the splash has closed (or in a
+-- plain browser with no shell bridge).
+do
+  local sh = js.global.exileShell
+  if sh ~= nil and sh ~= js.null and sh.bootStep ~= nil then
+    pcall(function()
+      sh:bootStep("Interface core initialised", "ok")
+      local vis = codex.registry.visible()
+      sh:bootStep("Registering plugins (" .. #vis .. ")…", "info")
+      for _, p in ipairs(vis) do
+        sh:bootStep("▸ " .. (p.name or p.id), "accent")
+      end
+      sh:bootStep("Workspace restored", "info")
+    end)
+    -- Run the launch update phase (app/plugin updates shown right in the splash),
+    -- then hand off. run_boot_updates calls done() when there's nothing to apply;
+    -- if it applies updates it reloads/restarts instead (done() is not called).
+    local function ready() if sh.bootReady ~= nil then pcall(function() sh:bootReady() end) end end
+    if codex.run_boot_updates then codex.run_boot_updates(ready) else ready() end
+  end
+end

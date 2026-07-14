@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:;" />
+<title>ExileCodex — starting</title>
+<style>
+  :root{
+    --gold-1:#f5cf86; --gold-2:#e0a848; --gold-3:#c98a2e;
+    --amber:#e6b45a; --green:#6ad39a; --warn:#e8c96a;
+    --txt:#b6b0a2; --dim:#6f6a5c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:transparent;overflow:hidden;
+    font-family:"Segoe UI",system-ui,sans-serif;-webkit-user-select:none;user-select:none;cursor:default}
+  .wrap{height:100%;display:flex;align-items:center;justify-content:center;padding:16px}
+  .panel{
+    position:relative;width:100%;max-width:448px;
+    background:linear-gradient(160deg,#16120c 0%,#0c0a07 100%);
+    border:1px solid rgba(230,180,90,.16);border-radius:16px;
+    padding:20px 22px 18px;
+    box-shadow:0 18px 50px rgba(0,0,0,.62),0 0 0 1px rgba(0,0,0,.4),
+      inset 0 1px 0 rgba(255,225,170,.05);
+    overflow:hidden;
+    animation:rise .45s cubic-bezier(.2,.7,.2,1) both;
+    transition:border-color .3s ease;
+  }
+  .panel::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(240,200,120,.55),transparent);
+    animation:sweep 3.2s ease-in-out infinite}
+  @keyframes rise{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes sweep{0%,100%{transform:translateX(-60%);opacity:.2}50%{transform:translateX(60%);opacity:.8}}
+
+  .head{display:flex;align-items:center;gap:12px}
+  .brand{
+    flex:1;min-width:0;font-size:27px;font-weight:800;letter-spacing:.5px;line-height:1;
+    background:linear-gradient(180deg,var(--gold-1),var(--gold-2) 55%,var(--gold-3));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 22px rgba(230,170,80,.18);
+  }
+  .spin{position:relative;width:26px;height:26px;flex:0 0 auto}
+  .spin i{position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 0deg,rgba(240,200,120,0) 0deg,rgba(240,200,120,.15) 120deg,var(--gold-2) 320deg,var(--gold-1) 360deg);
+    -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
+            mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));
+    animation:spin .85s linear infinite}
+  .spin .chk{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    opacity:0;transform:scale(.5);color:var(--green);font-size:20px;font-weight:900;
+    transition:opacity .3s ease,transform .3s cubic-bezier(.2,1.5,.4,1)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .sub{margin-top:9px;font-size:10.5px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--dim);font-weight:600;transition:color .3s ease}
+
+  .log{
+    margin-top:14px;height:150px;overflow:hidden;position:relative;
+    font-family:"Cascadia Code",Consolas,"Courier New",monospace;
+    font-size:11px;line-height:1.55;color:var(--txt);
+    -webkit-mask-image:linear-gradient(180deg,transparent,#000 22px,#000);
+            mask-image:linear-gradient(180deg,transparent,#000 22px,#000);
+  }
+  .ln{white-space:pre;overflow:hidden;text-overflow:ellipsis;animation:fade .22s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+  .ln.dim{color:var(--dim)}
+  .ln.accent{color:var(--amber)}
+  .ln.update{color:var(--amber)}
+  .ln.ok{color:var(--green)}
+  .ln.warn{color:var(--warn)}
+  .ln.done{color:var(--green);font-weight:700}
+
+  /* download / update progress bar */
+  .prog{margin-top:10px;height:0;opacity:0;overflow:hidden;transition:height .25s ease,opacity .25s ease}
+  .prog.on{height:26px;opacity:1}
+  .prog-lab{display:flex;justify-content:space-between;font-size:10.5px;color:var(--dim);
+    font-family:"Cascadia Code",Consolas,monospace;margin-bottom:5px}
+  .prog-lab b{color:var(--amber);font-weight:600}
+  .prog-track{height:4px;border-radius:3px;background:rgba(230,180,90,.14);overflow:hidden}
+  .prog-fill{height:100%;width:0;border-radius:3px;
+    background:linear-gradient(90deg,var(--gold-3),var(--gold-1));transition:width .35s ease}
+
+  /* states */
+  body.ready .spin i{animation:none;opacity:0;transition:opacity .25s}
+  body.ready .spin .chk{opacity:1;transform:scale(1)}
+  body.ready .sub{color:var(--green)}
+  body.ready .panel{border-color:rgba(106,211,154,.28)}
+  body.updating .sub,body.restarting .sub{color:var(--amber)}
+  body.updating .panel,body.restarting .panel{border-color:rgba(230,180,90,.34)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <div class="head">
+        <div class="brand">Exile<b>Codex</b></div>
+        <div class="spin"><i></i><div class="chk">✓</div></div>
+      </div>
+      <div class="sub" id="sub">Starting overlay…</div>
+      <div class="log" id="log"></div>
+      <div class="prog" id="prog"><div class="prog-lab"><span id="plab">Downloading</span><b id="ppct">0%</b></div><div class="prog-track"><div class="prog-fill" id="pfill"></div></div></div>
+    </div>
+  </div>
+<script>
+  var logEl=document.getElementById('log'),subEl=document.getElementById('sub'),body=document.body;
+  var progEl=document.getElementById('prog'),plab=document.getElementById('plab'),ppct=document.getElementById('ppct'),pfill=document.getElementById('pfill');
+  var MODES=['updating','restarting','ready'];
+  function setMode(m){ MODES.forEach(function(c){body.classList.remove(c)}); if(m){body.classList.add(m);} }
+  function setProgress(p,label){
+    if(p==null||p<0){ progEl.classList.remove('on'); return; }
+    progEl.classList.add('on');
+    if(label) plab.textContent=label;
+    var v=Math.max(0,Math.min(100,Math.round(p)));
+    pfill.style.width=v+'%'; ppct.textContent=v+'%';
+  }
+  function addLine(m){
+    var div=document.createElement('div');
+    div.className='ln '+(m.level||'info');
+    div.textContent=String(m.line==null?'':m.line);
+    logEl.appendChild(div); logEl.scrollTop=logEl.scrollHeight;
+    while(logEl.children.length>80) logEl.removeChild(logEl.firstChild);
+    if(m.level==='done'){ setMode('ready'); subEl.textContent='Loaded and ready (running in background)'; }
+  }
+  function onMsg(m){
+    if(!m) return;
+    if(m.sub!==undefined){ subEl.textContent=m.sub; setMode(m.mode||''); return; }
+    if(m.progress!==undefined){ setProgress(m.progress,m.plabel); return; }
+    addLine(m);
+  }
+  if(window.ecSplash&&window.ecSplash.onBoot){
+    window.ecSplash.onBoot(onMsg);
+  } else {
+    // Preview / fallback: play the full launch → update → restart → relaunch → ready
+    // sequence so the design is visible on its own (real app streams live events).
+    var boot=[
+      {line:'ExileCodex 2.1.2-alpha — starting…',level:'accent'},
+      {line:'Electron 33.4 · Chromium 130 · Node 20',level:'dim'},
+      {line:'Server ready on 127.0.0.1:46620',level:'ok'},
+      {line:'Display mode: window',level:'info'},
+      {line:'Loading interface…',level:'info'},
+      {line:'Interface core initialised',level:'ok'}
+    ];
+    var upd=[
+      {sub:'Checking for updates…',mode:'updating'},
+      {line:'Checking for updates…',level:'dim'},
+      {line:'ExileCodex 2.1.3-alpha available',level:'update'},
+      {progress:0,plabel:'Downloading ExileCodex 2.1.3-alpha'},
+      {progress:34},{progress:68},{progress:100},
+      {line:'✓ Downloaded ExileCodex 2.1.3-alpha',level:'ok'},
+      {line:'Updating Crafting Bench → 2.0.2-alpha…',level:'update'},
+      {line:'✓ Crafting Bench 2.0.2-alpha',level:'ok'},
+      {line:'Updating Filter Editor → 2.0.3-alpha…',level:'update'},
+      {line:'✓ Filter Editor 2.0.3-alpha',level:'ok'},
+      {progress:-1},
+      {sub:'Restarting to apply updates…',mode:'restarting'}
+    ];
+    var done=[
+      {sub:'Starting overlay…',mode:''},
+      {line:'Interface core initialised',level:'ok'},
+      {line:'Registering plugins (6)…',level:'info'},
+      {line:'Checking for updates…',level:'dim'},
+      {line:'Everything up to date',level:'ok'},
+      {line:'Loaded and ready (running in background)',level:'done'}
+    ];
+    function play(seq,gap,after){
+      var i=0;(function s(){ if(i>=seq.length){ setTimeout(after,gap*4); return; } onMsg(seq[i++]); setTimeout(s,gap); })();
+    }
+    function loop(){
+      logEl.innerHTML=''; setMode(''); setProgress(-1); subEl.textContent='Starting overlay…';
+      play(boot,190,function(){ play(upd,300,function(){
+        setTimeout(function(){ logEl.innerHTML=''; setMode(''); play(done,220,loop); },1600);
+      });});
+    }
+    loop();
+  }
+</script>
+</body>
+</html>

@@ -22,10 +22,11 @@ local listeners = {}
 -- Base installed version per plugin id, from the bundled manifest (loaded at init).
 local bundled_versions = nil
 
--- Public host: the releases repo — the private code repo can't be fetched by
--- users. A publish workflow mirrors each plugin + this manifest there on push.
+-- exilecodex is public, so the manifest + every plugin's source are fetched
+-- straight from it — no mirror repo. Pushing a bumped plugin.lua to main is all
+-- it takes for the raw URL to serve the update. Override in prefs ec.plugins.manifest.
 local DEFAULT_MANIFEST =
-  "https://raw.githubusercontent.com/NolvusMadeIt/nolvusfilter-releases/main/plugins/manifest.json"
+  "https://raw.githubusercontent.com/NolvusMadeIt/exilecodex/main/app/plugins.manifest.json"
 
 local function esc(s) return (tostring(s):gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")) end
 local function T(k) return codex.T and codex.T(k) or k end
@@ -216,6 +217,35 @@ end
 -- Apply an update: download the latest source, persist it as an override (the
 -- shell serves it over the bundled file so it STICKS past a restart), then reload
 -- to load it. This is what makes plugins updatable on their own, no app rebuild.
+-- Download the latest source and persist it as an override — no toast, no
+-- reload, no status paint. cb(ok, info, err). Used by the boot update phase to
+-- apply plugin updates silently before the app reveals.
+function P.apply_silent(id, cb)
+  local info = P.updates[id]
+  local sh = window.exileShell
+  if not info or not info.url or window.ecHtml == nil or window.ecHtml == js.null
+    or sh == nil or sh == js.null or sh.pluginWrite == nil then
+    if cb then pcall(cb, false, info, "unavailable") end
+    return
+  end
+  window.ecHtml:get(info.url, function(_, src)
+    if src == nil or src == js.null or tostring(src) == "" then
+      if cb then pcall(cb, false, info, "download failed") end
+      return
+    end
+    sh:pluginWrite(id, info.latest, tostring(src)):then_(function(_, res)
+      if res ~= nil and res ~= js.null and res.ok then
+        overrides_cache = nil -- re-read installed versions next time
+        P.updates[id] = nil
+        if cb then pcall(cb, true, info) end
+      else
+        local e = (res ~= nil and res ~= js.null) and tostring(res.error or "") or "write failed"
+        if cb then pcall(cb, false, info, e) end
+      end
+    end)
+  end)
+end
+
 function P.apply(id)
   local info = P.updates[id]
   local p = codex.registry.find(id)
@@ -226,21 +256,12 @@ function P.apply(id)
     return
   end
   P.status = "installing"; emit()
-  window.ecHtml:get(info.url, function(_, src)
-    if src == nil or src == js.null or tostring(src) == "" then
-      P.status = "error"; emit(); P.install_toast(info, false, "download failed"); return
+  P.apply_silent(id, function(ok, inf, err)
+    if ok then
+      P.status = "ok"; emit(); P.install_toast(inf, true)
+    else
+      P.status = "error"; emit(); P.install_toast(inf, false, err or "update failed")
     end
-    sh:pluginWrite(id, info.latest, tostring(src)):then_(function(_, res)
-      if res ~= nil and res ~= js.null and res.ok then
-        overrides_cache = nil -- re-read installed versions next time
-        P.updates[id] = nil
-        P.status = "ok"; emit()
-        P.install_toast(info, true)
-      else
-        local e = (res ~= nil and res ~= js.null) and tostring(res.error or "") or "write failed"
-        P.status = "error"; emit(); P.install_toast(info, false, e)
-      end
-    end)
   end)
 end
 

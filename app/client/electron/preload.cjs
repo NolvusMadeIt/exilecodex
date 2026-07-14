@@ -69,4 +69,13 @@ contextBridge.exposeInMainWorld('exileShell', {
   installUpdate: () => ipcRenderer.send('ec:update-install'),
   setUpdateAuto: (flag) => ipcRenderer.send('ec:update-auto', !!flag),
   downloadUpdate: () => ipcRenderer.send('ec:update-download'),
+  // Boot splash: stream renderer-side init milestones to the launch splash
+  // window, then signal that the UI is ready so the shell hands off from the
+  // splash to the app. Both are no-ops if the splash has already closed.
+  bootStep: (line, level) =>
+    ipcRenderer.send('ec:boot-step', { line: String(line == null ? '' : line), level: String(level || 'info') }),
+  // Boot splash update phase: set the subtitle/visual mode, and drive a progress bar.
+  bootPhase: (sub, mode) => ipcRenderer.send('ec:boot-phase', { sub: String(sub == null ? '' : sub), mode: String(mode || '') }),
+  bootProgress: (percent, label) => ipcRenderer.send('ec:boot-progress', { progress: Number(percent), label: label == null ? '' : String(label) }),
+  bootReady: () => ipcRenderer.send('ec:boot-ready'),
 })
