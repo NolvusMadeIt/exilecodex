@@ -58,8 +58,11 @@ jobs:
       - name: Validate release artifacts
         shell: pwsh
         run: |
-          $installer = @(Get-ChildItem -LiteralPath dist -File -Filter 'ExileCodex-Setup-*.exe')
-          $blockmap = @(Get-ChildItem -LiteralPath dist -File -Filter 'ExileCodex-Setup-*.exe.blockmap')
+          # dist/ is versioned for provenance and may contain older releases.
+          # Validate only the artifacts produced for this tag.
+          $version = node -p "require('./package.json').version"
+          $installer = @(Get-Item -LiteralPath "dist/ExileCodex-Setup-$version.exe")
+          $blockmap = @(Get-Item -LiteralPath "dist/ExileCodex-Setup-$version.exe.blockmap")
           $latest = @(Get-ChildItem -LiteralPath dist -File -Filter 'latest.yml')
 
           if ($installer.Count -ne 1) { throw "Expected one installer, found $($installer.Count)." }
